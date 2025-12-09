@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import '../../../controllers/home_controller/home_controller.dart';
-import 'favorites_coutner.dart';
+import 'package:public_apis_desktop_client/app/utils/snackbar_helper.dart';
 
-class BookmarkPageIcon extends GetView<HomeController> {
-  const BookmarkPageIcon({
-    Key? key,
-  }) : super(key: key);
+class BookmarkPageIcon extends StatelessWidget {
+  const BookmarkPageIcon({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +11,10 @@ class BookmarkPageIcon extends GetView<HomeController> {
       children: [
         IconButton(
           onPressed: () {
-            Get.toNamed("/favorites");
+            AppSnackbar.show(
+              title: 'Favorites',
+              message: 'Favorites are currently empty.',
+            );
           },
           icon: const Icon(
             Icons.bookmarks,
@@ -27,16 +26,21 @@ class BookmarkPageIcon extends GetView<HomeController> {
           child: Stack(
             alignment: Alignment.center,
             children: [
-              Positioned(
-                child: Obx(
-                  () => Container(
-                    width: 15,
-                    height: 15,
-                    decoration: BoxDecoration(
-                      color: controller.badgeBackgroundColor.value,
-                      borderRadius: const BorderRadius.all(Radius.circular(50)),
+              Container(
+                width: 15,
+                height: 15,
+                decoration: const BoxDecoration(
+                  color: Colors.grey,
+                  borderRadius: BorderRadius.all(Radius.circular(50)),
+                ),
+                child: const Center(
+                  child: Text(
+                    '0',
+                    style: TextStyle(
+                      fontSize: 9,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
                     ),
-                    child: const FavoritesCounter(),
                   ),
                 ),
               ),

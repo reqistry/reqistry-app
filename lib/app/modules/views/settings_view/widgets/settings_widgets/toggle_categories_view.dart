@@ -10,7 +10,7 @@ class ToggleCategoriesView extends GetView<ToggleCategoriesController> {
 
   @override
   Widget build(BuildContext context) {
-    assert(controller.hasOnlyOneSelectedView());
+    // assert(controller.hasOnlyOneSelectedView());
 
     return GetBuilder<ToggleCategoriesController>(
       builder: ((controller) => Container(

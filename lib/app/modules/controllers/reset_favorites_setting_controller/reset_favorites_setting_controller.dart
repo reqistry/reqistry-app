@@ -4,11 +4,12 @@ import 'package:hive/hive.dart';
 import 'package:public_apis_desktop_client/app/services/local_db/hive/favorites_db.dart';
 import 'package:public_apis_desktop_client/app/utils/extensions/getx_controller_extension.dart';
 import 'package:public_apis_desktop_client/app/utils/text_helper_methods.dart';
-
-import '../../../data/models/favoriteApi.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:public_apis_desktop_client/app/services/firestore/firestore_favorites_service.dart';
 
 class ResetFavoritesController extends GetxController {
   FavoritesDB favorites = FavoritesDB.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   BuildContext? context;
 
   ResetFavoritesController({this.context});
@@ -39,9 +40,14 @@ class ResetFavoritesController extends GetxController {
     );
   }
 
-  void clearTheFavorites() {
+  Future<void> clearTheFavorites() async {
     try {
-      favorites.clear();
+      await favorites.clear();
+      final user = _auth.currentUser;
+      if (user != null) {
+        // Also remove cloud favorites for the signed-in user.
+        await FirestoreFavoritesService().clearAllFavorites();
+      }
     } catch (e) {
     } finally {
       Get.back();

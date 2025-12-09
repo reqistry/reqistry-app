@@ -31,7 +31,7 @@ class CustomSliverTextField extends GetView<HomeController> {
           height: controller.searchBarHeight,
           child: TextField(
             focusNode: controller.focusNode,
-            style: theme.textTheme.headline3?.copyWith(
+            style: theme.textTheme.headlineMedium?.copyWith(
               color: Colors.white,
               fontSize: 14,
             ),

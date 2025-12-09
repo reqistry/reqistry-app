@@ -18,7 +18,7 @@ class FilterChoiceChips extends GetView<ApisViewController> {
       direction: Axis.horizontal,
       children: <Widget>[
         ...List.generate(
-          controller.filterOptions.length,
+          controller.filterOptions.length, 
           (index) {
             return FilterChoiceChip(
               index: index,

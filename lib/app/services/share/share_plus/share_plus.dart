@@ -8,7 +8,8 @@ class ShareService implements ShareText {
 
   @override
   Future shareText(String textToShare) async {
-    ShareResult share = await Share.shareWithResult(textToShare);
-    print(share.raw);
+    await SharePlus.instance.share(ShareParams(
+      text: textToShare,
+    ));
   }
 }

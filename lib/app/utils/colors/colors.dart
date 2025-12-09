@@ -1,4 +1,4 @@
-import 'colors_helper.dart';
+import 'package:public_apis_desktop_client/app/utils/colors/Colors_helper.dart';
 
 class AppColors {
   static final purple = hex("#590696");

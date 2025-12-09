@@ -5,7 +5,6 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:public_apis_desktop_client/app/modules/controllers/category_box_controller/extensions/bottom_sheet_pptions_extension.dart';
 import '../../../data/models/category_box_data_model.dart';
-import '../favorites_controller/favorites_controller.dart';
 
 enum BottomSheetMode {
   normalBottomSheet,
@@ -60,16 +59,7 @@ class CategoryBoxController extends GetxController {
         );
 
         currentCategoryData = data;
-        makeSureTheFavoritesControllerIsInjected();
       },
     );
-  }
-
-  void makeSureTheFavoritesControllerIsInjected() {
-    if (GetInstance().isRegistered<FavoritesController>()) {
-      return;
-    }
-
-    Get.put<FavoritesController>(FavoritesController());
   }
 }

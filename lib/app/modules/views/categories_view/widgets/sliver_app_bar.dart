@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import '../../../../utils/text_helper_methods.dart';
 import '../../../controllers/home_controller/home_controller.dart';
 import 'bookmark_page_icon.dart';
-import 'hidden_categories_counter.dart';
 import 'settings_page_icon.dart';
 
 class CustomSliverAppBar extends GetView<HomeController> {
@@ -36,7 +35,6 @@ class CustomSliverAppBar extends GetView<HomeController> {
                 letterSpacing: 1.25,
               ),
             ),
-            const HiddenCategoriesCounter(),
           ],
         ),
         background: Container(

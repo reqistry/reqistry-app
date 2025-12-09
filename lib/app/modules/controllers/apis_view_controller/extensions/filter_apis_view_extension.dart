@@ -23,7 +23,7 @@ Future<List<Api>> runAndGetFilteredApisMethodOnSeparateIsolate(
   await Isolate.spawn(filteredApis, [
     receivePort.sendPort,
     categoryApis,
-    newController.selectedFilterOptions,
+    newController.selectedFilterOptions, 
   ]);
 
   /// the ReceivePort.first will return the first message that is sent to the isolate,

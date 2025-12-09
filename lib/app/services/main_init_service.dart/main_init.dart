@@ -8,9 +8,10 @@ import '../local_db/hive/initializer.dart';
 class MainInit {
   Future<void> init({bool testMode = false}) async {
     WidgetsFlutterBinding.ensureInitialized();
-    Firebase.initializeApp(
+    await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+    
     await LocalDatabase.instance.initDatabases();
     await LocalDatabase.instance.clearDatabasesWhile(kDebugMode);
     _configureCrashlytics();

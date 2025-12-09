@@ -2,11 +2,11 @@ import 'dart:collection';
 
 import 'package:get/get.dart';
 import 'package:public_apis_desktop_client/app/modules/controllers/apis_view_controller/extensions/initialize_variables.dart';
+import 'package:public_apis_desktop_client/app/modules/controllers/apis_view_controller/mixins/filter_options_Lists.dart';
 
 import '../../../services/analytics/mixin.dart';
 import '../../../services/crashlytics/mixin.dart';
 import '../../../services/in_app_review/in_app_review.dart';
-import 'mixins/filter_options_lists.dart';
 
 class ApisViewController extends GetxController
     with FilterOptionsListsInitMixin, AnalyticsMixin, CrashlyticsMixin {

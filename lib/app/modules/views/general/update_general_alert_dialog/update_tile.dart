@@ -32,7 +32,7 @@ class UpdateTile extends StatelessWidget {
               ),
               Text(
                 "✨",
-                style: Theme.of(context).textTheme.bodyText2,
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
             ],
           ),

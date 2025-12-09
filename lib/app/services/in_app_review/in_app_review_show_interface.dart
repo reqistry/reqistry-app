@@ -11,6 +11,9 @@ class InAppReviewShowLogicInterface {
   /// key for the counter of number of times an API link was opened by user
   final String _timesUserOpenApisKey = "numberOfTimesUserOpenedAnApiLink";
 
+  /// key to track if we already asked for review after the first five opens
+  final String _fiveOpensPromptedKey = "reviewPromptedAfterFiveApiOpens";
+
   /// key for first [DateTime] when the user opens app for first time
   final String _dateOfFirstAppOpenKey = "dateOfFirstAppOpen";
 
@@ -53,9 +56,19 @@ class InAppReviewShowLogicInterface {
   }
 
   void incrementNumberOfApisOpenedByUser() {
-    int numberOfTimesUserOpenedAnApiLink = locals.get(_timesUserOpenApisKey);
+    final current = locals.get(_timesUserOpenApisKey) ?? 0;
+    locals.put(_timesUserOpenApisKey, current + 1);
+  }
 
-    locals.put(_timesUserOpenApisKey, ++numberOfTimesUserOpenedAnApiLink);
+  /// Quick prompt: show after the user opens 5 API links, only once.
+  Future<void> requestReviewAfterFiveApiOpens() async {
+    final currentOpens = locals.get(_timesUserOpenApisKey) ?? 0;
+    final alreadyPrompted = locals.get(_fiveOpensPromptedKey) ?? false;
+
+    if (currentOpens >= 5 && alreadyPrompted == false) {
+      await _inAppReviewService.request();
+      locals.put(_fiveOpensPromptedKey, true);
+    }
   }
 
   bool isFirstTimeOpenedTheApp() {

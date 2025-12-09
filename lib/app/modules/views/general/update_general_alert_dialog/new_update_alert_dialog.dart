@@ -26,7 +26,7 @@ class NewUpdateAlertWidget extends GetView<HomeController> {
           ),
           Text(
             "version: ${controller.appVersion}",
-            style: textTheme.subtitle1,
+            style: textTheme.bodyMedium,
           ),
         ],
       ),

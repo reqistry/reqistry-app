@@ -37,7 +37,7 @@ extension HandleOptionOnTapExtension on CategoryBoxController {
       dismissDirection: DismissDirection.up,
       content: Text(
         message,
-        style: theme.textTheme.button?.copyWith(
+        style: theme.textTheme.bodyMedium?.copyWith(
           color: theme.bottomSheetTheme.backgroundColor,
         ),
       ),

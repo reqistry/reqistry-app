@@ -105,7 +105,7 @@ class CategoryBox extends GetView<CategoryBoxController> {
                         child: AutoSizeText(
                           data.title,
                           textAlign: TextAlign.center,
-                          style: theme.textTheme.headline3?.copyWith(
+                          style: theme.textTheme.bodyMedium?.copyWith(
                             fontSize: data.title.handleFontSizeValue(),
                           ),
                           maxLines: 3,

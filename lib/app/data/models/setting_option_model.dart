@@ -28,8 +28,9 @@ extension BoolExtensionChecks on SettingOptionModel {
   bool get isResetSetting => title.toLowerCase().contains("reset");
   bool get isPrivacySetting => title.toLowerCase().contains("privacy");
   bool get isShareSetting => title.toLowerCase().contains("share");
+  bool get isContactSetting => title.toLowerCase().contains("contact");
 
   bool get shouldNotExpandSettingTile =>
-      isResetSetting || isPrivacySetting || isShareSetting;
-  bool get shouldExpandSettingTile => !shouldExpandSettingTile;
+      isResetSetting || isPrivacySetting || isShareSetting || isContactSetting;
+  bool get shouldExpandSettingTile => !shouldNotExpandSettingTile;
 }

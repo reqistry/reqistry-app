@@ -1,175 +1,398 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:public_apis_desktop_client/app/data/models/favoriteApi.dart';
-import 'package:public_apis_desktop_client/app/modules/controllers/favorites_controller/extensions/generate_api_key.dart';
-import 'package:public_apis_desktop_client/app/modules/controllers/favorites_controller/extensions/toggle_favorite_status.dart';
-import 'package:public_apis_desktop_client/app/services/key_generators/keys_generators.dart';
-import 'package:public_apis_desktop_client/app/utils/extensions/api_model_extension.dart';
 
 import '../../../../data/models/AllApis.dart';
-import '../../../controllers/favorites_controller/favorites_controller.dart';
-import 'api_chip.dart';
-import 'api_open_link_button.dart';
+import '../../../../data/models/api.dart' as new_api;
+import '../../../../services/metadata/metadata_service.dart';
+import '../../../controllers/firestore_favorites_controller.dart';
+import '../../../../utils/snackbar_helper.dart';
 
-class ApiCard extends GetView<FavoritesController> {
-  ApiCard({
+class ApiCard extends StatefulWidget {
+  const ApiCard({
     Key? key,
     required this.api,
     required this.category,
-    this.isFavorite = false,
   }) : super(key: key);
 
   final Api api;
-  bool isFavorite;
   final String category;
+
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor.withOpacity(.15),
-        borderRadius: BorderRadius.circular(5),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Expanded(
-                child: AutoSizeText(
-                  api.name,
-                  style: Theme.of(context).textTheme.headline3!.copyWith(
-                        fontSize: 20,
-                      ),
-                  minFontSize: 20,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                  wrapWords: false,
+  State<ApiCard> createState() => _ApiCardState();
+}
+
+class _ApiCardState extends State<ApiCard> {
+  final MetadataService _metadataService = MetadataService();
+  ApiMetadata? _metadata;
+  bool _loadingMetadata = false;
+  bool _isFavorited = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchMetadata();
+    _checkFavoriteStatus();
+  }
+
+  Future<void> _fetchMetadata() async {
+    if (!mounted) return;
+    setState(() => _loadingMetadata = true);
+
+    try {
+      final metadata = await _metadataService.fetchMetadata(widget.api.link);
+      if (mounted && metadata != null) {
+        setState(() => _metadata = metadata);
+      }
+    } catch (e) {
+      // Silently fail
+    } finally {
+      if (mounted) {
+        setState(() => _loadingMetadata = false);
+      }
+    }
+  }
+
+  Future<void> _checkFavoriteStatus() async {
+    try {
+      final controller = Get.find<FirestoreFavoritesController>();
+      final isFav = await controller.isFavorited(widget.api.link);
+      if (mounted) {
+        setState(() => _isFavorited = isFav);
+      }
+    } catch (e) {
+      // Controller might not be ready yet
+    }
+  }
+
+  void _navigateToDetail() {
+    // Convert legacy Api to new Api model
+    final newApiModel = new_api.Api(
+      id: '${widget.category}-${widget.api.name}',
+      name: widget.api.name,
+      description: _metadata?.description ?? widget.api.description,
+      auth: widget.api.auth,
+      https: widget.api.https.toLowerCase() == 'yes',
+      cors: widget.api.cors.toLowerCase() == 'yes',
+      link: widget.api.link,
+      categoryId: widget.category,
+    );
+
+    Get.toNamed('/api-detail', arguments: newApiModel);
+  }
+
+  Future<void> _toggleFavorite() async {
+    final controller = Get.find<FirestoreFavoritesController>();
+    final description = _metadata?.description ?? widget.api.description;
+
+    try {
+      if (_isFavorited) {
+        // Remove from favorites
+        final allFavs = await controller.favoritesService.getFavorites();
+        final fav = allFavs.firstWhereOrNull(
+          (f) => f.apiLink == widget.api.link,
+        );
+        if (fav != null) {
+          await controller.removeFavorite(fav.id);
+          setState(() => _isFavorited = false);
+          AppSnackbar.show(
+            title: 'Removed',
+            message: '${widget.api.name} removed from favorites',
+          );
+        }
+      } else {
+        // Show dialog to add notes (optional)
+        final notes = await _showAddNotesDialog();
+        if (notes == null) return; // User cancelled
+
+        // Add to favorites
+        await controller.addFavorite(
+          apiName: widget.api.name,
+          apiLink: widget.api.link,
+          category: widget.category,
+          description: description,
+          auth: widget.api.auth,
+          https: widget.api.https,
+          cors: widget.api.cors,
+          personalNotes: notes,
+        );
+        setState(() => _isFavorited = true);
+        AppSnackbar.show(
+          title: 'Added',
+          message: '${widget.api.name} added to favorites',
+        );
+      }
+    } catch (e) {
+      AppSnackbar.show(
+        title: 'Error',
+        message: 'Failed to update favorite',
+        isError: true,
+      );
+    }
+  }
+
+  Future<String?> _showAddNotesDialog() async {
+    final notesController = TextEditingController();
+
+    return await Get.dialog<String>(
+      Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Add to Favorites',
+                style: Get.textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Builder(builder: (context) {
-                    final key = KeyGenerator.consistentKey(
-                      category,
-                      api.name,
-                    );
-
-                    return GetBuilder<FavoritesController>(
-                      init: FavoritesController(),
-                      global: false,
-                      id: key,
-                      builder: (controller) {
-                        return GestureDetector(
-                          onTap: () {
-                            isFavorite = !isFavorite;
-                            final currentFav = FavoriteApi.from(api, category);
-                            controller.toggleFavoriteStatus(
-                              currentFav,
-                              isFavorite,
-                              key,
-                            );
-                          },
-                          child: ClipRRect(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(100)),
-                            child: Container(
-                              decoration: const BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(200)),
-                              ),
-                              height: 30,
-                              width: 30,
-                              child: Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  AnimatedContainer(
-                                    decoration: BoxDecoration(
-                                      color: Colors.white.withOpacity(.7),
-                                      borderRadius: BorderRadius.circular(100),
-                                    ),
-                                    duration: const Duration(milliseconds: 50),
-                                    height: isFavorite ? 30 : 0,
-                                    width: isFavorite ? 30 : 0,
-                                  ),
-                                  Icon(
-                                    Icons.bookmark,
-                                    color: isFavorite
-                                        ? Theme.of(context).primaryColor
-                                        : Colors.grey,
-                                    size: 22,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  }),
-                  const SizedBox(
-                    width: 5,
+              const SizedBox(height: 16),
+              TextField(
+                controller: notesController,
+                maxLines: 3,
+                decoration: InputDecoration(
+                  hintText: 'Add personal notes (optional)',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  ApiButton(
-                    link: api.link,
+                  filled: true,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () => Get.back(result: null),
+                    child: const Text('Cancel'),
+                  ),
+                  const SizedBox(width: 8),
+                  FilledButton(
+                    onPressed: () => Get.back(result: notesController.text),
+                    child: const Text('Add'),
                   ),
                 ],
               ),
             ],
           ),
-          const SizedBox(
-            height: 10,
-          ),
-          Text(
-            api.description,
-            style: Theme.of(context).textTheme.headline3!.copyWith(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w300,
-                  letterSpacing: 1.2,
-                ),
-          ),
-          const SizedBox(
-            height: 15,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              if (api.hasAuthWithApiKey()) ...[
-                const ApiChip(
-                  text: "apiKey",
-                ),
-              ] else if (api.hasAuth()) ...[
-                const ApiChip(
-                  text: "auth",
-                ),
-              ],
-              const SizedBox(
-                width: 5,
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final description = _metadata?.description ?? widget.api.description;
+    final theme = Theme.of(context);
+
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(
+          color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5),
+          width: 1,
+        ),
+      ),
+      margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 0),
+      child: InkWell(
+        onTap: _navigateToDetail,
+        borderRadius: BorderRadius.circular(16),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header with favicon, name and favorite button
+              Row(
+                children: [
+                  // Favicon
+                  if (_metadata?.favicon != null)
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: theme.colorScheme.surfaceContainerHighest,
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.network(
+                          _metadata!.favicon!,
+                          width: 40,
+                          height: 40,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Icon(
+                            Icons.api,
+                            color: theme.colorScheme.primary,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                    )
+                  else
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: theme.colorScheme.primaryContainer,
+                      ),
+                      child: Icon(
+                        Icons.api,
+                        color: theme.colorScheme.primary,
+                        size: 20,
+                      ),
+                    ),
+                  const SizedBox(width: 12),
+                  // API Name
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.api.name,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: -0.3,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        if (_metadata?.banner != null)
+                          Container(
+                            margin: const EdgeInsets.only(top: 4),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.tertiaryContainer,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Text(
+                              _metadata!.banner!,
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color: theme.colorScheme.onTertiaryContainer,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                  // Favorite button
+                  IconButton(
+                    onPressed: _toggleFavorite,
+                    icon: Icon(
+                      _isFavorited ? Icons.bookmark : Icons.bookmark_border,
+                      color: _isFavorited
+                          ? theme.colorScheme.primary
+                          : theme.colorScheme.onSurfaceVariant,
+                    ),
+                    tooltip: _isFavorited
+                        ? 'Remove from favorites'
+                        : 'Add to favorites',
+                  ),
+                ],
               ),
-              if (api.isHttps()) ...[
-                const ApiChip(
-                  text: "https",
+              const SizedBox(height: 12),
+              // Description
+              Text(
+                description,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                  height: 1.4,
                 ),
-              ],
-              if (api.isHttp()) ...[
-                const ApiChip(
-                  text: "http",
-                ),
-              ],
-              const SizedBox(
-                width: 5,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
-              if (api.hasCors() || api.hasUnknownCors()) ...[
-                const ApiChip(
-                  text: "cors",
+              const SizedBox(height: 12),
+              // Chips row
+              Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: [
+                  if (widget.api.https.toLowerCase() == 'yes')
+                    _buildChip(
+                      context,
+                      Icons.lock_outline,
+                      'HTTPS',
+                      theme.colorScheme.primaryContainer,
+                      theme.colorScheme.onPrimaryContainer,
+                    )
+                  else
+                    _buildChip(
+                      context,
+                      Icons.lock_open,
+                      'HTTP',
+                      theme.colorScheme.errorContainer,
+                      theme.colorScheme.onErrorContainer,
+                    ),
+                  if (widget.api.auth.toLowerCase() != 'no' &&
+                      widget.api.auth.isNotEmpty)
+                    _buildChip(
+                      context,
+                      Icons.key_outlined,
+                      widget.api.auth.toLowerCase() == 'apikey'
+                          ? 'API Key'
+                          : 'Auth',
+                      theme.colorScheme.secondaryContainer,
+                      theme.colorScheme.onSecondaryContainer,
+                    ),
+                  if (widget.api.cors.toLowerCase() == 'yes')
+                    _buildChip(
+                      context,
+                      Icons.public,
+                      'CORS',
+                      theme.colorScheme.tertiaryContainer,
+                      theme.colorScheme.onTertiaryContainer,
+                    ),
+                ],
+              ),
+              // Loading indicator
+              if (_loadingMetadata)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: LinearProgressIndicator(
+                    minHeight: 2,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
                 ),
-              ]
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildChip(
+    BuildContext context,
+    IconData icon,
+    String label,
+    Color backgroundColor,
+    Color foregroundColor,
+  ) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 14, color: foregroundColor),
+          const SizedBox(width: 4),
+          Text(
+            label,
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: foregroundColor,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.3,
+                ),
           ),
         ],
       ),

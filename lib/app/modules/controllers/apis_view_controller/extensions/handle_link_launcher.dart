@@ -15,6 +15,7 @@ extension HandleLaunchLinkExtension on ApisViewController {
       await tryMultipleLaunchModes(parsedLink);
       _logSuccessfullyOpenedApis(link);
       hiveService.incrementNumberOfApisOpenedByUser();
+      await hiveService.requestReviewAfterFiveApiOpens();
     } else {
       _showSnackbarOfFailureToUser(context);
       _logUnSuccessfullyOpenedApis(link);

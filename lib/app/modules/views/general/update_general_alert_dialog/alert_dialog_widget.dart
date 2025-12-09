@@ -23,7 +23,7 @@ class AlertDialogWidget extends StatelessWidget {
       ),
       content: Text(
         dialogData.content.capitalizeAllWordsFirstLetter(),
-        style: textTheme.bodyText1,
+        style: textTheme.bodyMedium,
       ),
       actions: <Widget>[
         TextButton(

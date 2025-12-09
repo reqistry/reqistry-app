@@ -2,13 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:public_apis_desktop_client/app/modules/controllers/apis_view_controller/extensions/filter_apis_view_extension.dart';
-import 'package:public_apis_desktop_client/app/modules/controllers/favorites_controller/extensions/is_api_bookmarked.dart';
-import 'package:public_apis_desktop_client/app/modules/controllers/favorites_controller/favorites_controller.dart';
 import 'package:public_apis_desktop_client/app/modules/views/apis_view/widgets/api_card.dart';
 import 'package:public_apis_desktop_client/app/utils/text_helper_methods.dart';
 
 import '../../../data/models/AllApis.dart';
-import '../../../data/models/favoriteApi.dart';
 import '../../controllers/apis_view_controller/apis_view_controller.dart';
 import 'widgets/apis_view_app_bar.dart';
 
@@ -42,7 +39,6 @@ class ApisView extends StatelessWidget {
                 context,
                 AsyncSnapshot<List<Api>> snapshot,
               ) {
-                Get.put(FavoritesController());
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return LinearProgressIndicator(
                     minHeight: 3,
@@ -65,13 +61,6 @@ class ApisView extends StatelessWidget {
                             "${processedApis[index].name} $index",
                           ),
                           category: category,
-                          isFavorite:
-                              Get.find<FavoritesController>().isApiBookmarked(
-                            FavoriteApi.from(
-                              processedApis[index],
-                              category,
-                            ),
-                          ),
                         ),
                       ),
                     ),
@@ -90,7 +79,7 @@ class ApisView extends StatelessWidget {
                       textAlign: TextAlign.center,
                       style: Theme.of(context)
                           .textTheme
-                          .headline5!
+                          .bodyMedium!
                           .copyWith(color: Colors.white),
                     ),
                   ),

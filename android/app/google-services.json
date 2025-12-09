@@ -2,7 +2,7 @@
   "project_info": {
     "project_number": "74408620937",
     "project_id": "public-apis-gwhyy",
-    "storage_bucket": "public-apis-gwhyy.appspot.com"
+    "storage_bucket": "public-apis-gwhyy.firebasestorage.app"
   },
   "client": [
     {
@@ -14,7 +14,7 @@
       },
       "oauth_client": [
         {
-          "client_id": "74408620937-5gr9akkb8du0mei1rumiof8ffn85h8fs.apps.googleusercontent.com",
+          "client_id": "74408620937-u8sudbefuc474bn59gokgb644in8l3eg.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -27,8 +27,15 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "74408620937-5gr9akkb8du0mei1rumiof8ffn85h8fs.apps.googleusercontent.com",
+              "client_id": "74408620937-u8sudbefuc474bn59gokgb644in8l3eg.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "74408620937-j3smecbb6nk4v2omvf8svam4heoognn2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.gwhyyy.publicApisDesktopClient"
+              }
             }
           ]
         }
@@ -43,7 +50,7 @@
       },
       "oauth_client": [
         {
-          "client_id": "74408620937-5gr9akkb8du0mei1rumiof8ffn85h8fs.apps.googleusercontent.com",
+          "client_id": "74408620937-u8sudbefuc474bn59gokgb644in8l3eg.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -56,8 +63,15 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "74408620937-5gr9akkb8du0mei1rumiof8ffn85h8fs.apps.googleusercontent.com",
+              "client_id": "74408620937-u8sudbefuc474bn59gokgb644in8l3eg.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "74408620937-j3smecbb6nk4v2omvf8svam4heoognn2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.gwhyyy.publicApisDesktopClient"
+              }
             }
           ]
         }

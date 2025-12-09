@@ -6,7 +6,8 @@ import 'package:get/get.dart';
 import 'package:public_apis_desktop_client/app/utils/themes.dart';
 import 'app/services/main_init_service.dart/main_init.dart';
 
-import 'app/modules/controllers/themes_buttons_setting_controller/themes_buttons_setting_controller.dart';
+import 'app/modules/controllers/auth_controller.dart';
+import 'app/modules/controllers/firestore_favorites_controller.dart';
 import 'app/routes/app_pages.dart';
 
 Future<void> main() async {
@@ -27,13 +28,14 @@ class PublicApisApp extends StatelessWidget {
     return GetMaterialApp(
       useInheritedMediaQuery: true,
       builder: DevicePreview.appBuilder,
-      initialBinding: BindingsBuilder.put(
-        () => ThemesButtonsSettingController(),
-      ),
+      initialBinding: BindingsBuilder(() {
+        Get.put(AuthController());
+        Get.put(FirestoreFavoritesController());
+      }),
       defaultTransition: Transition.native,
       debugShowCheckedModeBanner: false,
       title: "Public Apis",
-      initialRoute: Routes.homeCategoriesView,
+      initialRoute: Routes.auth,
       getPages: AppPages.routes,
       theme: AppThemes().lightTheme,
     );

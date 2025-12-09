@@ -58,7 +58,7 @@ class CategoryBoxOptionTile extends GetView<CategoryBoxOptionTileController> {
                 Expanded(
                   child: AutoSizeText(
                     option.title.capitalizeAllWordsFirstLetter(),
-                    style: theme.textTheme.button?.copyWith(
+                    style: theme.textTheme.bodyMedium?.copyWith(
                       fontSize: 18,
                     ),
                     maxLines: 1,
