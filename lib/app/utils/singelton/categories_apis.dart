@@ -1,4 +1,4 @@
-import '../../data/models/AllApis.dart';
+import 'package:public_apis_desktop_client/app/data/models/category_apis.dart';
 
 class CategoriesApisSingleton {
   CategoriesApisSingleton._();

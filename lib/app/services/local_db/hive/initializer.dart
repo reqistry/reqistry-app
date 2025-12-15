@@ -14,7 +14,7 @@ class LocalDatabase {
   Future<void> initDatabases() async {
     await Hive.initFlutter();
     Hive.registerAdapter(FavoriteApiAdapter());
-    final ignore = await Future.wait(
+    await Future.wait(
       <Future>[
         Hive.openBox<FavoriteApi>(BoxesConstants.favorites),
         Hive.openBox(BoxesConstants.locals),

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hive/hive.dart';
 import 'package:public_apis_desktop_client/app/services/local_db/hive/favorites_db.dart';
-import 'package:public_apis_desktop_client/app/utils/extensions/getx_controller_extension.dart';
 import 'package:public_apis_desktop_client/app/utils/text_helper_methods.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:public_apis_desktop_client/app/services/firestore/firestore_favorites_service.dart';

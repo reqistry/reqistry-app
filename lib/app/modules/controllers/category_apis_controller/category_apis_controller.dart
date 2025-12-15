@@ -1,22 +1,36 @@
 import 'package:get/get.dart';
+import 'package:public_apis_desktop_client/app/data/models/category_apis.dart';
 import 'package:public_apis_desktop_client/app/data/models/category.dart';
-import 'package:public_apis_desktop_client/app/data/models/api.dart'
-    as api_model;
 import 'package:public_apis_desktop_client/app/services/fetch_api/remote_service.dart';
 import 'package:public_apis_desktop_client/app/services/fetch_api/failure.dart';
-import 'package:public_apis_desktop_client/app/data/models/AllApis.dart'
-    as legacy;
 
 class CategoryApisController extends GetxController {
-  late Category category;
-  final RxList<api_model.Api> apis = <api_model.Api>[].obs;
+  late CategoryApis category;
+  late String _categoryTitle;
+  final RxList<ApiItem> apis = <ApiItem>[].obs;
   final RxBool isLoading = false.obs;
   final RxString errorMessage = ''.obs;
 
   @override
   void onInit() {
     super.onInit();
-    category = Get.arguments;
+    final arg = Get.arguments;
+
+    // Support multiple argument types to avoid route data mismatch issues
+    if (arg is CategoryApis) {
+      category = arg;
+      _categoryTitle = arg.title;
+    } else if (arg is Category) {
+      _categoryTitle = arg.name;
+      category = CategoryApis(title: _categoryTitle, apis: const []);
+    } else if (arg is String) {
+      _categoryTitle = arg;
+      category = CategoryApis(title: _categoryTitle, apis: const []);
+    } else {
+      errorMessage('Invalid navigation argument: ${arg.runtimeType}');
+      return;
+    }
+
     fetchApisByCategory();
   }
 
@@ -24,35 +38,19 @@ class CategoryApisController extends GetxController {
     try {
       isLoading(true);
       errorMessage('');
-      final legacyData = await RemoteService.getData();
+      final response = await RemoteService.getData();
 
       // Try to find the matching category by title
-      final match = legacyData.firstWhere(
-        (item) => item.title == category.name,
-        orElse: () => legacy.CategoryApis(title: '', apis: []),
-      );
+      final match = response.getCategoryByTitle(_categoryTitle);
 
-      if (match.title.isEmpty) {
+      if (match == null) {
         throw Failure(
           'Not found',
           'No APIs found for this category',
         );
       }
 
-      final mapped = match.apis
-          .map((a) => api_model.Api(
-                id: '${category.id}-${a.name}',
-                name: a.name,
-                description: a.description,
-                auth: a.auth,
-                https: _toBool(a.https),
-                cors: _toBool(a.cors),
-                link: a.link,
-                categoryId: category.id,
-              ))
-          .toList();
-
-      apis.assignAll(mapped);
+      apis.assignAll(match.apis);
     } on Failure catch (e) {
       errorMessage('${e.title}: ${e.content}');
     } catch (e) {
@@ -60,11 +58,6 @@ class CategoryApisController extends GetxController {
     } finally {
       isLoading(false);
     }
-  }
-
-  bool _toBool(String value) {
-    final v = value.toLowerCase();
-    return v == 'true' || v == 'yes' || v == 'y' || v == '1';
   }
 
   Future<void> retryFetch() async {

@@ -15,395 +15,361 @@ class SearchApisScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
       body: SafeArea(
-        child: Stack(
+        child: Column(
           children: [
-            Column(
-              children: [
-                // Search Header
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.primaryContainer
-                        .withValues(alpha: 0.3),
-                    border: Border(
-                      bottom: BorderSide(
-                        color: theme.colorScheme.outlineVariant,
-                      ),
-                    ),
+            // Search Header
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color:
+                    theme.colorScheme.primaryContainer.withValues(alpha: 0.3),
+                border: Border(
+                  bottom: BorderSide(
+                    color: theme.colorScheme.outlineVariant,
                   ),
-                  child: Column(
-                    children: [
-                      // Search Bar
-                      TextField(
-                        controller: controller.searchTextController,
-                        decoration: InputDecoration(
-                          hintText: 'Search APIs (e.g., weather, payment...)',
-                          prefixIcon: const Icon(Icons.search),
-                          suffixIcon: Obx(
-                              () => controller.filters.value.hasActiveFilters
-                                  ? IconButton(
-                                      icon: const Icon(Icons.clear),
-                                      onPressed: controller.resetFilters,
-                                      tooltip: 'Clear all',
-                                    )
-                                  : const SizedBox.shrink()),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          filled: true,
-                          fillColor: theme.colorScheme.surface,
-                        ),
-                        onSubmitted: (_) => controller.performSearch(),
+                ),
+              ),
+              child: Column(
+                children: [
+                  // Search Bar
+                  TextField(
+                    controller: controller.searchTextController,
+                    decoration: InputDecoration(
+                      hintText: 'Search APIs (e.g., weather, payment...)',
+                      prefixIcon: const Icon(Icons.search),
+                      suffixIcon:
+                          Obx(() => controller.filters.value.hasActiveFilters
+                              ? IconButton(
+                                  icon: const Icon(Icons.clear),
+                                  onPressed: controller.resetFilters,
+                                  tooltip: 'Clear all',
+                                )
+                              : const SizedBox.shrink()),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      const SizedBox(height: 12),
-                      // Quick Filters
-                      Obx(() {
-                        final active = controller.activeQuickFilter.value;
-                        return SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: [
-                              _QuickFilterChip(
-                                label: 'Free',
-                                icon: Icons.money_off,
-                                selected: active == 'free',
-                                onTap: () {
-                                  if (active == 'free') {
-                                    controller.resetFilters();
-                                  } else {
-                                    controller.quickFilter(preset: 'free');
-                                  }
-                                },
-                              ),
-                              _QuickFilterChip(
-                                label: 'No Auth',
-                                icon: Icons.lock_open,
-                                selected: active == 'no-auth',
-                                onTap: () {
-                                  if (active == 'no-auth') {
-                                    controller.resetFilters();
-                                  } else {
-                                    controller.quickFilter(preset: 'no-auth');
-                                  }
-                                },
-                              ),
-                              _QuickFilterChip(
-                                label: 'Fast (<500ms)',
-                                icon: Icons.speed,
-                                selected: active == 'fast',
-                                onTap: () {
-                                  if (active == 'fast') {
-                                    controller.resetFilters();
-                                  } else {
-                                    controller.quickFilter(preset: 'fast');
-                                  }
-                                },
-                              ),
-                              _QuickFilterChip(
-                                label: 'Secure (HTTPS)',
-                                icon: Icons.security,
-                                selected: active == 'secure',
-                                onTap: () {
-                                  if (active == 'secure') {
-                                    controller.resetFilters();
-                                  } else {
-                                    controller.quickFilter(preset: 'secure');
-                                  }
-                                },
-                              ),
-                              _QuickFilterChip(
-                                label: 'CORS Enabled',
-                                icon: Icons.public,
-                                selected: active == 'cors',
-                                onTap: () {
-                                  if (active == 'cors') {
-                                    controller.resetFilters();
-                                  } else {
-                                    controller.quickFilter(preset: 'cors');
-                                  }
-                                },
-                              ),
-                            ],
-                          ),
-                        );
-                      }),
-                      const SizedBox(height: 12),
-                      // Search & Filter Buttons
-                      Row(
+                      filled: true,
+                      fillColor: theme.colorScheme.surface,
+                    ),
+                    onSubmitted: (_) {
+                      final q = controller.searchTextController.text.trim();
+                      final can = q.isNotEmpty ||
+                          controller.filters.value.hasActiveFilters;
+                      if (can) controller.performSearch();
+                    },
+                  ),
+                  const SizedBox(height: 8),
+
+                  // Quick Filters
+                  Obx(() {
+                    final active = controller.activeQuickFilter.value;
+                    return SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
                         children: [
-                          Expanded(
-                            child: FilledButton.icon(
-                              onPressed: () => controller.performSearch(),
-                              icon: const Icon(Icons.search),
-                              label: const Text('Apply search & filters'),
-                            ),
+                          _QuickFilterChip(
+                            label: 'Free',
+                            icon: Icons.money_off,
+                            selected: active == 'free',
+                            onTap: () {
+                              if (active == 'free') {
+                                controller.resetFilters();
+                              } else {
+                                controller.quickFilter(preset: 'free');
+                              }
+                            },
                           ),
-                          const SizedBox(width: 8),
-                          FilledButton.tonalIcon(
-                            onPressed: () =>
-                                _showAdvancedFilters(context, controller),
-                            icon: const Icon(Icons.tune),
-                            label: Obx(() {
-                              final count = _getActiveFilterCount(
-                                  controller.filters.value);
-                              return Text(
-                                  count > 0 ? 'Filters ($count)' : 'Filters');
-                            }),
+                          _QuickFilterChip(
+                            label: 'No Auth',
+                            icon: Icons.lock_open,
+                            selected: active == 'no-auth',
+                            onTap: () {
+                              if (active == 'no-auth') {
+                                controller.resetFilters();
+                              } else {
+                                controller.quickFilter(preset: 'no-auth');
+                              }
+                            },
+                          ),
+                          _QuickFilterChip(
+                            label: 'Fast (<500ms)',
+                            icon: Icons.speed,
+                            selected: active == 'fast',
+                            onTap: () {
+                              if (active == 'fast') {
+                                controller.resetFilters();
+                              } else {
+                                controller.quickFilter(preset: 'fast');
+                              }
+                            },
+                          ),
+                          _QuickFilterChip(
+                            label: 'Secure (HTTPS)',
+                            icon: Icons.security,
+                            selected: active == 'secure',
+                            onTap: () {
+                              if (active == 'secure') {
+                                controller.resetFilters();
+                              } else {
+                                controller.quickFilter(preset: 'secure');
+                              }
+                            },
+                          ),
+                          _QuickFilterChip(
+                            label: 'CORS Enabled',
+                            icon: Icons.public,
+                            selected: active == 'cors',
+                            onTap: () {
+                              if (active == 'cors') {
+                                controller.resetFilters();
+                              } else {
+                                controller.quickFilter(preset: 'cors');
+                              }
+                            },
                           ),
                         ],
                       ),
+                    );
+                  }),
+                  const SizedBox(height: 12),
+                  // Search & Filter Buttons
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ValueListenableBuilder<TextEditingValue>(
+                          valueListenable: controller.searchTextController,
+                          builder: (context, value, _) {
+                            final can = value.text.trim().isNotEmpty ||
+                                controller.filters.value.hasActiveFilters;
+                            return FilledButton.icon(
+                              onPressed:
+                                  can ? () => controller.performSearch() : null,
+                              icon: const Icon(Icons.search),
+                              label: const Text('Apply search & filters'),
+                            );
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      FilledButton.tonalIcon(
+                        onPressed: () =>
+                            _showAdvancedFilters(context, controller),
+                        icon: const Icon(Icons.tune),
+                        label: Obx(() {
+                          final count =
+                              _getActiveFilterCount(controller.filters.value);
+                          return Text(
+                              count > 0 ? 'Filters ($count)' : 'Filters');
+                        }),
+                      ),
                     ],
                   ),
-                ),
-                // Results
-                Expanded(
-                  child: Obx(() {
-                    if (controller.isSearching.value &&
-                        controller.searchResults.isEmpty) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
+                ],
+              ),
+            ),
+            // Results
+            Expanded(
+              child: Obx(() {
+                if (controller.isSearching.value &&
+                    controller.searchResults.isEmpty) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-                    if (controller.errorMessage.value.isNotEmpty &&
-                        controller.searchResults.isEmpty) {
-                      return Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(24),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.error_outline,
-                                size: 64,
-                                color: theme.colorScheme.error,
-                              ),
-                              const SizedBox(height: 16),
-                              Text(
-                                'Search Error',
-                                style: theme.textTheme.titleLarge,
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                controller.errorMessage.value,
-                                textAlign: TextAlign.center,
-                                style: theme.textTheme.bodyMedium,
-                              ),
-                              const SizedBox(height: 24),
-                              FilledButton.icon(
-                                onPressed: () => controller.performSearch(),
+                if (controller.errorMessage.value.isNotEmpty &&
+                    controller.searchResults.isEmpty) {
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.error_outline,
+                            size: 64,
+                            color: theme.colorScheme.error,
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Search Error',
+                            style: theme.textTheme.titleLarge,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            controller.errorMessage.value,
+                            textAlign: TextAlign.center,
+                            style: theme.textTheme.bodyMedium,
+                          ),
+                          const SizedBox(height: 24),
+                          ValueListenableBuilder<TextEditingValue>(
+                            valueListenable: controller.searchTextController,
+                            builder: (context, value, _) {
+                              final can = value.text.trim().isNotEmpty ||
+                                  controller.filters.value.hasActiveFilters;
+                              return FilledButton.icon(
+                                onPressed: can
+                                    ? () => controller.performSearch()
+                                    : null,
                                 icon: const Icon(Icons.refresh),
                                 label: const Text('Try Again'),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    }
-
-                    if (controller.searchResults.isEmpty) {
-                      return Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(24),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.search,
-                                size: 80,
-                                color: theme.colorScheme.primary
-                                    .withValues(alpha: 0.5),
-                              ),
-                              const SizedBox(height: 16),
-                              Text(
-                                'Search for APIs',
-                                style: theme.textTheme.titleLarge,
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                'Use the search bar and filters above to find APIs',
-                                textAlign: TextAlign.center,
-                                style: theme.textTheme.bodyMedium?.copyWith(
-                                  color: theme.colorScheme.onSurfaceVariant,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    }
-
-                    return Column(
-                      children: [
-                        // Results Header
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 12,
-                          ),
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.surfaceContainerHighest,
-                            border: Border(
-                              bottom: BorderSide(
-                                color: theme.colorScheme.outlineVariant,
-                              ),
-                            ),
-                          ),
-                          child: Row(
-                            children: [
-                              Text(
-                                '${controller.totalResults.value} results',
-                                style: theme.textTheme.titleSmall?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const Spacer(),
-                              // Sort dropdown
-                              PopupMenuButton<String>(
-                                icon: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      Icons.sort,
-                                      size: 18,
-                                      color: theme.colorScheme.primary,
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      'Sort',
-                                      style:
-                                          theme.textTheme.labelMedium?.copyWith(
-                                        color: theme.colorScheme.primary,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                onSelected: (value) {
-                                  final parts = value.split('_');
-                                  controller.filters.value.sortBy = parts[0];
-                                  controller.filters.value.sortOrder = parts[1];
-                                  controller.filters.refresh();
-                                },
-                                itemBuilder: (context) => [
-                                  const PopupMenuItem(
-                                    value: 'name_asc',
-                                    child: Text('Name (A-Z)'),
-                                  ),
-                                  const PopupMenuItem(
-                                    value: 'name_desc',
-                                    child: Text('Name (Z-A)'),
-                                  ),
-                                  const PopupMenuItem(
-                                    value: 'responseTime_asc',
-                                    child: Text('Fastest First'),
-                                  ),
-                                  const PopupMenuItem(
-                                    value: 'responseTime_desc',
-                                    child: Text('Slowest First'),
-                                  ),
-                                  const PopupMenuItem(
-                                    value: 'category_asc',
-                                    child: Text('Category (A-Z)'),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        // Results List
-                        Expanded(
-                          child: ListView.builder(
-                            controller: controller.scrollController,
-                            padding: const EdgeInsets.all(16),
-                            itemCount: controller.searchResults.length +
-                                (controller.hasMore.value ? 1 : 0),
-                            itemBuilder: (context, index) {
-                              if (index == controller.searchResults.length) {
-                                return Padding(
-                                  padding: const EdgeInsets.all(16),
-                                  child: Center(
-                                    child: controller.isLoadingMore.value
-                                        ? const CircularProgressIndicator()
-                                        : FilledButton.icon(
-                                            onPressed:
-                                                controller.loadMoreResults,
-                                            icon: const Icon(Icons.refresh),
-                                            label: const Text('Load More'),
-                                          ),
-                                  ),
-                                );
-                              }
-
-                              final api = controller.searchResults[index];
-                              final category =
-                                  controller.filters.value.category.isNotEmpty
-                                      ? controller.filters.value.category.first
-                                      : 'Search';
-
-                              return ApiCard(
-                                api: api,
-                                category: category,
                               );
                             },
                           ),
-                        ),
-                      ],
-                    );
-                  }),
-                ),
-              ],
-            ),
-            if (kDebugMode)
-              Obx(
-                () {
-                  final debugText = controller.lastRequestDebug.value;
-                  if (debugText.isEmpty) return const SizedBox.shrink();
-
-                  return Positioned(
-                    right: 12,
-                    bottom: 12,
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 360),
-                      child: Material(
-                        elevation: 4,
-                        borderRadius: BorderRadius.circular(12),
-                        color: theme.colorScheme.surfaceContainerHighest,
-                        child: Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    'Request (debug only)',
-                                    style: theme.textTheme.labelLarge,
-                                  ),
-                                  const Spacer(),
-                                  IconButton(
-                                    icon: const Icon(Icons.close, size: 18),
-                                    onPressed: () =>
-                                        controller.lastRequestDebug.value = '',
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 8),
-                              SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: SelectableText(
-                                  debugText,
-                                  style: theme.textTheme.bodySmall?.copyWith(
-                                    fontFamily: 'monospace',
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                        ],
                       ),
                     ),
                   );
-                },
-              ),
+                }
+
+                if (controller.searchResults.isEmpty) {
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.search,
+                            size: 80,
+                            color: theme.colorScheme.primary
+                                .withValues(alpha: 0.5),
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Search for APIs',
+                            style: theme.textTheme.titleLarge,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Use the search bar and filters above to find APIs',
+                            textAlign: TextAlign.center,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+
+                return Column(
+                  children: [
+                    // Results Header
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.surfaceContainerHighest,
+                        border: Border(
+                          bottom: BorderSide(
+                            color: theme.colorScheme.outlineVariant,
+                          ),
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Text(
+                            '${controller.totalResults.value} results',
+                            style: theme.textTheme.titleSmall?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const Spacer(),
+                          // Sort dropdown
+                          PopupMenuButton<String>(
+                            icon: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.sort,
+                                  size: 18,
+                                  color: theme.colorScheme.primary,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  'Sort',
+                                  style: theme.textTheme.labelMedium?.copyWith(
+                                    color: theme.colorScheme.primary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            onSelected: (value) {
+                              final parts = value.split('_');
+                              controller.filters.value.sortBy = parts[0];
+                              controller.filters.value.sortOrder = parts[1];
+                              controller.filters.refresh();
+                              // Apply local sorting immediately
+                              controller.applyLocalSort();
+                            },
+                            itemBuilder: (context) => [
+                              const PopupMenuItem(
+                                value: 'name_asc',
+                                child: Text('Name (A-Z)'),
+                              ),
+                              const PopupMenuItem(
+                                value: 'name_desc',
+                                child: Text('Name (Z-A)'),
+                              ),
+                              const PopupMenuItem(
+                                value: 'responseTime_asc',
+                                child: Text('Fastest First'),
+                              ),
+                              const PopupMenuItem(
+                                value: 'responseTime_desc',
+                                child: Text('Slowest First'),
+                              ),
+                              const PopupMenuItem(
+                                value: 'category_asc',
+                                child: Text('Category (A-Z)'),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Results List
+                    Expanded(
+                      child: ListView.builder(
+                        controller: controller.scrollController,
+                        padding: const EdgeInsets.all(16),
+                        itemCount: controller.searchResults.length +
+                            (controller.hasMore.value ? 1 : 0),
+                        itemBuilder: (context, index) {
+                          if (index == controller.searchResults.length) {
+                            return Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Center(
+                                child: controller.isLoadingMore.value
+                                    ? const CircularProgressIndicator()
+                                    : FilledButton.icon(
+                                        onPressed: controller.loadMoreResults,
+                                        icon: const Icon(Icons.refresh),
+                                        label: const Text('Load More'),
+                                      ),
+                              ),
+                            );
+                          }
+
+                          final api = controller.searchResults[index];
+                          final category =
+                              controller.filters.value.category.isNotEmpty
+                                  ? controller.filters.value.category.first
+                                  : 'Search';
+
+                          return ApiCard(
+                            api: api,
+                            category: category,
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                );
+              }),
+            ),
           ],
         ),
       ),

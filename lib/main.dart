@@ -1,5 +1,4 @@
 import 'package:device_preview/device_preview.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -14,7 +13,7 @@ Future<void> main() async {
   await MainInit().init();
   runApp(
     DevicePreview(
-      enabled: !kReleaseMode,
+      enabled: false,
       builder: (context) => const PublicApisApp(),
     ),
   );
@@ -34,7 +33,7 @@ class PublicApisApp extends StatelessWidget {
       }),
       defaultTransition: Transition.native,
       debugShowCheckedModeBanner: false,
-      title: "Public Apis",
+      title: "Public APIs",
       initialRoute: Routes.auth,
       getPages: AppPages.routes,
       theme: AppThemes().lightTheme,

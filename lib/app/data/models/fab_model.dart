@@ -1,5 +1,3 @@
-import 'package:flutter/cupertino.dart';
-
 typedef FabCallback = void Function();
 
 class FabData {

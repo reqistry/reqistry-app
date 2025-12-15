@@ -14,14 +14,14 @@ extension AddCategoryApisToBookmark on CategoryBoxController {
   Future<void> addAllApisToBookmarks() async {
     final data = CategoryBoxController.currentCategoryData;
     final category = data!.title;
-    _favoritesController.addAllApisOfCategoryToBookmarks(data!.apis, category);
+    _favoritesController.addAllApisOfCategoryToBookmarks(data.apis, category);
   }
 
   Future<void> removeAllApisFromBookmarks() async {
     final data = CategoryBoxController.currentCategoryData;
     final category = data!.title;
     _favoritesController.removeAllApisOfCategoryFromBookmarks(
-    data!.apis,
+      data.apis,
       category,
     );
   }

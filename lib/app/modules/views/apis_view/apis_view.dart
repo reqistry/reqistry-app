@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hive/hive.dart';
 import 'package:public_apis_desktop_client/app/modules/controllers/apis_view_controller/extensions/filter_apis_view_extension.dart';
 import 'package:public_apis_desktop_client/app/modules/views/apis_view/widgets/api_card.dart';
 import 'package:public_apis_desktop_client/app/utils/text_helper_methods.dart';
 
-import '../../../data/models/AllApis.dart';
+import '../../../data/models/category_apis.dart';
 import '../../controllers/apis_view_controller/apis_view_controller.dart';
 import 'widgets/apis_view_app_bar.dart';
 
 class ApisView extends StatelessWidget {
-  final List<Api> apis;
+  final List<ApiItem> apis;
   final String category;
 
   const ApisView({
@@ -37,7 +36,7 @@ class ApisView extends StatelessWidget {
               future: runAndGetFilteredApisMethodOnSeparateIsolate(apis),
               builder: ((
                 context,
-                AsyncSnapshot<List<Api>> snapshot,
+                AsyncSnapshot<List<ApiItem>> snapshot,
               ) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return LinearProgressIndicator(
@@ -46,7 +45,7 @@ class ApisView extends StatelessWidget {
                   );
                 }
                 if (snapshot.hasData) {
-                  List<Api> processedApis = snapshot.data!;
+                  List<ApiItem> processedApis = snapshot.data!;
 
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 15),

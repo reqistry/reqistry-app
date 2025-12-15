@@ -7,7 +7,7 @@ import 'package:public_apis_desktop_client/app/modules/controllers/home_controll
 import 'package:public_apis_desktop_client/app/modules/controllers/home_controller/extensions/show_error.dart';
 import 'package:public_apis_desktop_client/app/modules/views/categories_view/widgets/retry_manually_widget.dart';
 
-import '../../../../data/models/AllApis.dart';
+import '../../../../data/models/apis_data_response.dart';
 import '../../../../data/models/category_box_data_model.dart';
 import '../../../controllers/category_box_controller/category_box_controller.dart';
 import '../../../controllers/home_controller/home_controller.dart';
@@ -16,7 +16,7 @@ import '../../widgets/nil.dart';
 import 'category_box/category_box.dart';
 
 class FutureSliverCategoriesGridView extends GetView<HomeController> {
-  final Future<List<CategoryApis>> future;
+  final Future<APIsDataResponse> future;
   const FutureSliverCategoriesGridView({
     super.key,
     required this.future,
@@ -24,11 +24,11 @@ class FutureSliverCategoriesGridView extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<CategoryApis>>(
+    return FutureBuilder<APIsDataResponse>(
       future: future,
       builder: (
         BuildContext context,
-        AsyncSnapshot<List<CategoryApis>> snapshot,
+        AsyncSnapshot<APIsDataResponse> snapshot,
       ) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return LoadingWidget(
@@ -41,7 +41,7 @@ class FutureSliverCategoriesGridView extends GetView<HomeController> {
             id: controller.categoriesGridViewId,
             builder: (controller) {
               final resultList = controller.filteredList(
-                snapshot.data ?? [],
+                snapshot.data?.data ?? [],
               );
 
               return SliverGrid.count(

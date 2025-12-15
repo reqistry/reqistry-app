@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../data/models/AllApis.dart';
+import '../../../../data/models/category_apis.dart';
 import '../../../../data/models/api.dart' as new_api;
 import '../../../../services/metadata/metadata_service.dart';
 import '../../../controllers/firestore_favorites_controller.dart';
@@ -14,7 +14,7 @@ class ApiCard extends StatefulWidget {
     required this.category,
   }) : super(key: key);
 
-  final Api api;
+  final ApiItem api;
   final String category;
 
   @override
@@ -186,6 +186,8 @@ class _ApiCardState extends State<ApiCard> {
   Widget build(BuildContext context) {
     final description = _metadata?.description ?? widget.api.description;
     final theme = Theme.of(context);
+    final faviconUrl =
+        _metadata?.favicon ?? _buildFaviconFromLink(widget.api.link);
 
     return Card(
       elevation: 0,
@@ -208,44 +210,29 @@ class _ApiCardState extends State<ApiCard> {
               // Header with favicon, name and favorite button
               Row(
                 children: [
-                  // Favicon
-                  if (_metadata?.favicon != null)
-                    Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: theme.colorScheme.surfaceContainerHighest,
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: Image.network(
-                          _metadata!.favicon!,
-                          width: 40,
-                          height: 40,
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => Icon(
-                            Icons.api,
-                            color: theme.colorScheme.primary,
-                            size: 20,
-                          ),
+                  // Favicon (always attempt from /favicon.ico, fallback to icon)
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: theme.colorScheme.surfaceContainerHighest,
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.network(
+                        faviconUrl,
+                        width: 40,
+                        height: 40,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => Icon(
+                          Icons.api,
+                          color: theme.colorScheme.primary,
+                          size: 20,
                         ),
                       ),
-                    )
-                  else
-                    Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: theme.colorScheme.primaryContainer,
-                      ),
-                      child: Icon(
-                        Icons.api,
-                        color: theme.colorScheme.primary,
-                        size: 20,
-                      ),
                     ),
+                  ),
                   const SizedBox(width: 12),
                   // API Name
                   Expanded(
@@ -280,6 +267,36 @@ class _ApiCardState extends State<ApiCard> {
                               ),
                             ),
                           ),
+                        // Category tag from ApiItem
+                        Container(
+                          margin: const EdgeInsets.only(top: 4),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.primaryContainer,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.category,
+                                  size: 12,
+                                  color: theme.colorScheme.onPrimaryContainer),
+                              const SizedBox(width: 4),
+                              Text(
+                                widget.api.category.isNotEmpty
+                                    ? widget.api.category
+                                    : widget.category,
+                                style: theme.textTheme.labelSmall?.copyWith(
+                                  color: theme.colorScheme.onPrimaryContainer,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -315,7 +332,7 @@ class _ApiCardState extends State<ApiCard> {
                 spacing: 6,
                 runSpacing: 6,
                 children: [
-                  if (widget.api.https.toLowerCase() == 'yes')
+                  if (_isHttps(widget.api.https))
                     _buildChip(
                       context,
                       Icons.lock_outline,
@@ -350,6 +367,44 @@ class _ApiCardState extends State<ApiCard> {
                       theme.colorScheme.tertiaryContainer,
                       theme.colorScheme.onTertiaryContainer,
                     ),
+                  // API Type
+                  if (widget.api.apiType.isNotEmpty)
+                    _buildChip(
+                      context,
+                      Icons.api,
+                      widget.api.apiType,
+                      theme.colorScheme.surfaceContainerHighest,
+                      theme.colorScheme.onSurface,
+                    ),
+                  // Pricing
+                  if (widget.api.pricing.isNotEmpty)
+                    _buildChip(
+                      context,
+                      Icons.attach_money,
+                      widget.api.pricing,
+                      theme.colorScheme.surfaceContainerHighest,
+                      theme.colorScheme.onSurface,
+                    ),
+                  // Response time
+                  _buildChip(
+                    context,
+                    Icons.speed,
+                    widget.api.responseTimeFormatted,
+                    theme.colorScheme.surfaceContainerHighest,
+                    theme.colorScheme.onSurface,
+                  ),
+                  // Status
+                  _buildChip(
+                    context,
+                    Icons.power,
+                    widget.api.healthStatus,
+                    widget.api.isAlive
+                        ? theme.colorScheme.primaryContainer
+                        : theme.colorScheme.errorContainer,
+                    widget.api.isAlive
+                        ? theme.colorScheme.onPrimaryContainer
+                        : theme.colorScheme.onErrorContainer,
+                  ),
                 ],
               ),
               // Loading indicator
@@ -366,6 +421,23 @@ class _ApiCardState extends State<ApiCard> {
         ),
       ),
     );
+  }
+
+  bool _isHttps(String value) {
+    final v = value.toLowerCase();
+    return v == 'yes' || v == 'true';
+  }
+
+  String _buildFaviconFromLink(String link) {
+    try {
+      final uri = Uri.parse(link);
+      if (uri.hasScheme && uri.host.isNotEmpty) {
+        return '${uri.scheme}://${uri.host}/favicon.ico';
+      }
+    } catch (_) {
+      // ignore
+    }
+    return 'https://example.com/favicon.ico';
   }
 
   Widget _buildChip(

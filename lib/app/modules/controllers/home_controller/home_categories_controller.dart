@@ -41,10 +41,13 @@ class HomeCategoriesController extends GetxController {
     try {
       isLoading(true);
       errorMessage('');
-      final response = await RemoteService.getCategories(token: "secret123");
+      final response = await RemoteService.getCategories();
       categoriesResponse(response);
-      categories.assignAll(response.toCategories());
-      filteredCategories.assignAll(response.toCategories());
+
+      // Fetch categories with remote trendy categories list
+      final categoryList = await response.toCategories();
+      categories.assignAll(categoryList);
+      filteredCategories.assignAll(categoryList);
     } on Failure catch (e) {
       errorMessage('${e.title}: ${e.content}');
     } catch (e) {

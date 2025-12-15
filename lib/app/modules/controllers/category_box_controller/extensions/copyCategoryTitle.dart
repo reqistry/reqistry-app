@@ -2,8 +2,6 @@ import 'package:flutter/services.dart';
 import 'package:public_apis_desktop_client/app/modules/controllers/category_box_controller/category_box_controller.dart';
 import 'package:public_apis_desktop_client/app/modules/controllers/category_box_controller/extensions/generate_text_about_category.dart';
 
-import '../../../../data/config/constants.dart';
-
 extension CopyCategoryTitleExtension on CategoryBoxController {
   Future<void> copyCategoryTitle() async {
     final data = CategoryBoxController.currentCategoryData;
@@ -22,6 +20,4 @@ extension CopyCategoryTitleExtension on CategoryBoxController {
     final clipboardData = ClipboardData(text: text);
     await Clipboard.setData(clipboardData);
   }
-
-
 }

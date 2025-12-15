@@ -1,9 +1,9 @@
-import 'AllApis.dart';
+import 'category_apis.dart';
 
 class CategoryBoxData {
   final String title;
   final String assetPath;
-  final List<Api> apis;
+  final List<ApiItem> apis;
   CategoryBoxData({
     required this.title,
     required this.assetPath,

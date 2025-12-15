@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'category.dart';
+import '../../services/fetch_api/remote_service.dart';
 
 CategoriesResponse categoriesResponseFromJson(String str) =>
     CategoriesResponse.fromJson(json.decode(str));
@@ -46,18 +47,42 @@ class CategoriesResponse {
       };
 
   /// Convert categories list to Category objects with metadata
-  List<Category> toCategories() {
-    return data.asMap().entries.map((entry) {
-      int index = entry.key;
-      String name = entry.value;
-      return Category(
-        id: index.toString(),
-        name: name,
-        description: null,
-        imageUrl: null,
-        icon: null,
-        tags: null,
-      );
-    }).toList();
+  /// Fetches trendy categories from remote source
+  Future<List<Category>> toCategories() async {
+    try {
+      // Fetch trendy categories from remote source
+      final trendyCategories = await RemoteService.getTrendyCategories();
+      final trendyLowercase =
+          trendyCategories.map((c) => c.toLowerCase()).toList();
+
+      return data.asMap().entries.map((entry) {
+        int index = entry.key;
+        String name = entry.value;
+        return Category(
+          id: index.toString(),
+          hasTrendyBorder: trendyLowercase.contains(name.toLowerCase()),
+          name: name,
+          description: null,
+          imageUrl: null,
+          icon: null,
+          tags: null,
+        );
+      }).toList();
+    } catch (e) {
+      // Fallback: no trendy categories if fetch fails
+      return data.asMap().entries.map((entry) {
+        int index = entry.key;
+        String name = entry.value;
+        return Category(
+          id: index.toString(),
+          hasTrendyBorder: false,
+          name: name,
+          description: null,
+          imageUrl: null,
+          icon: null,
+          tags: null,
+        );
+      }).toList();
+    }
   }
 }

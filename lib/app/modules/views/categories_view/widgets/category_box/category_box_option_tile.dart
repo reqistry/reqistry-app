@@ -1,6 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/state_manager.dart';
 import 'package:public_apis_desktop_client/app/utils/text_helper_methods.dart';
 

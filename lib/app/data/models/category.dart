@@ -22,6 +22,7 @@ class Category {
   final int apiCount;
   final String? icon;
   final List<String>? tags;
+  final bool hasTrendyBorder;
 
   Category({
     required this.id,
@@ -31,6 +32,7 @@ class Category {
     this.apiCount = 0,
     this.icon,
     this.tags,
+    this.hasTrendyBorder = false,
   });
 
   factory Category.fromJson(Map<String, dynamic> json) => Category(
@@ -41,6 +43,7 @@ class Category {
         apiCount: json["apiCount"] ?? (json["apis"] as List?)?.length ?? 0,
         icon: json["icon"],
         tags: json["tags"] != null ? List<String>.from(json["tags"]) : null,
+        hasTrendyBorder: json["hasTrendyBorder"] ?? false,
       );
 
   Map<String, dynamic> toJson() => {
@@ -51,5 +54,6 @@ class Category {
         "apiCount": apiCount,
         if (icon != null) "icon": icon,
         if (tags != null) "tags": tags,
+        "hasTrendyBorder": hasTrendyBorder,
       };
 }

@@ -1,12 +1,12 @@
-import '../../data/models/AllApis.dart';
+import '../../data/models/category_apis.dart';
 
-extension ApiBoolExtension on Api {
+extension ApiBoolExtension on ApiItem {
   bool hasAuth() {
-    return auth.toLowerCase() != "no";
+    return auth.toLowerCase() != "none";
   }
 
   bool isHttps() {
-    return https.toLowerCase() == "yes";
+    return https.toLowerCase() == "true";
   }
 
   bool isHttp() {
@@ -24,6 +24,7 @@ extension ApiBoolExtension on Api {
   bool hasAuthWithApiKey() {
     return auth.toLowerCase() == "apikey";
   }
+
   bool isOpenSource() {
     return link.toLowerCase().contains("github");
   }

@@ -7,7 +7,7 @@ import 'package:public_apis_desktop_client/app/modules/controllers/home_controll
 import 'package:public_apis_desktop_client/app/modules/controllers/home_controller/extensions/scroll_controller_init.dart';
 import 'package:public_apis_desktop_client/app/modules/controllers/home_controller/extensions/update.dart';
 
-import '../../../data/models/AllApis.dart';
+import '../../../data/models/apis_data_response.dart';
 import '../../../services/fetch_api/remote_service.dart';
 import '../../../services/in_app_review/in_app_review.dart';
 import '../../../services/local_db/hive/locals_box.dart';
@@ -30,7 +30,7 @@ class HomeController extends GetxController {
     begin: badgeBackgroundColor.value,
     end: Theme.of(_context!).scaffoldBackgroundColor,
   ).obs;
-  late Future<List<CategoryApis>> getAllApisData;
+  late Future<APIsDataResponse> getAllApisData;
   late final TextEditingController searchInputController;
   late int crossAxisCount;
   late Map<String, FabData> fabOptionsData;

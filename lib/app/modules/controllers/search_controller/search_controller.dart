@@ -3,8 +3,9 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import '../../../data/models/AllApis.dart' as legacy;
+import '../../../data/models/category_apis.dart';
 import '../../../services/fetch_api/remote_service.dart';
+import '../../../services/local_db/hive/locals_box.dart';
 import '../../../utils/snackbar_helper.dart';
 
 class SearchFilters {
@@ -22,17 +23,20 @@ class SearchFilters {
 
   SearchFilters({
     this.query,
-    this.pricing = const [],
-    this.auth = const [],
-    this.apiType = const [],
-    this.category = const [],
+    List<String>? pricing,
+    List<String>? auth,
+    List<String>? apiType,
+    List<String>? category,
     this.cors,
     this.https,
     this.alive,
     this.maxResponseTime,
     this.sortBy = 'name',
     this.sortOrder = 'asc',
-  });
+  })  : pricing = List<String>.from(pricing ?? const []),
+        auth = List<String>.from(auth ?? const []),
+        apiType = List<String>.from(apiType ?? const []),
+        category = List<String>.from(category ?? const []);
 
   bool get hasActiveFilters =>
       (query?.isNotEmpty ?? false) ||
@@ -61,7 +65,7 @@ class SearchFilters {
 }
 
 class SearchResult {
-  final List<legacy.Api> apis;
+  final List<ApiItem> apis;
   final int total;
   final int totalPages;
   final int currentPage;
@@ -81,7 +85,7 @@ class SearchApiController extends GetxController {
   final ScrollController scrollController = ScrollController();
 
   final filters = SearchFilters().obs;
-  final RxList<legacy.Api> searchResults = <legacy.Api>[].obs;
+  final RxList<ApiItem> searchResults = <ApiItem>[].obs;
   final RxBool isSearching = false.obs;
   final RxBool isLoadingMore = false.obs;
   final RxString errorMessage = ''.obs;
@@ -90,6 +94,7 @@ class SearchApiController extends GetxController {
   final RxInt totalPages = 0.obs;
   final RxBool hasMore = false.obs;
   final RxnString activeQuickFilter = RxnString();
+  final RxString searchToken = ''.obs;
 
   // Debug request capture
   final RxString lastRequestDebug = ''.obs;
@@ -107,6 +112,34 @@ class SearchApiController extends GetxController {
     scrollController.addListener(_onScroll);
   }
 
+  bool get canSearch {
+    final q = searchTextController.text.trim();
+    final f = filters.value;
+    return q.isNotEmpty ||
+        f.pricing.isNotEmpty ||
+        f.auth.isNotEmpty ||
+        f.apiType.isNotEmpty ||
+        f.category.isNotEmpty ||
+        f.cors != null ||
+        f.https != null ||
+        f.alive != null ||
+        f.maxResponseTime != null;
+  }
+
+  Future<void> saveToken(String token) async {
+    try {
+      await LocalsDB.instance.putWithKey('searchToken', token);
+      searchToken.value = token;
+      AppSnackbar.show(title: 'Saved', message: 'Search token saved');
+    } catch (e) {
+      AppSnackbar.show(
+        title: 'Save Error',
+        message: 'Could not save token',
+        isError: true,
+      );
+    }
+  }
+
   void _onScroll() {
     if (scrollController.position.pixels >=
         scrollController.position.maxScrollExtent - 200) {
@@ -120,7 +153,7 @@ class SearchApiController extends GetxController {
     isLoadingCategories.value = true;
     try {
       final response = await RemoteService.getCategories();
-      final categories = response.toCategories();
+      final categories = await response.toCategories();
       availableCategories.value = categories.map((c) => c.name).toList();
     } catch (e) {
       // Silently fail
@@ -130,6 +163,10 @@ class SearchApiController extends GetxController {
   }
 
   Future<void> performSearch({bool reset = true}) async {
+    // Prevent empty searches: require query text or any filter
+    if (!canSearch) {
+      return;
+    }
     if (reset) {
       currentPage.value = 1;
       searchResults.clear();
@@ -152,47 +189,37 @@ class SearchApiController extends GetxController {
       }
 
       final response = await RemoteService.searchApis(
-        query: requestParams['query'] as String?,
-        pricing: requestParams['pricing'] as String?,
-        auth: requestParams['auth'] as String?,
-        apiType: requestParams['apiType'] as String?,
-        category: requestParams['category'] as String?,
+        q: requestParams['q'] as String?,
+        pricing: (requestParams['pricing'] as List<String>?),
+        auth: (requestParams['auth'] as List<String>?),
+        apiType: (requestParams['apiType'] as List<String>?),
+        category: (requestParams['category'] as List<String>?),
         cors: requestParams['cors'] as String?,
-        https: requestParams['https'] as String?,
-        alive: requestParams['alive'] as String?,
-        maxResponseTime: requestParams['maxResponseTime'] as String?,
-        sortBy: requestParams['sortBy'] as String?,
-        sortOrder: requestParams['sortOrder'] as String?,
+        https: requestParams['https'] as bool?,
+        alive: requestParams['alive'] as bool?,
+        maxResponseTime: requestParams['maxResponseTime'] as int?,
+        sortBy: requestParams['sortBy'] as String? ?? 'name',
+        sortOrder: requestParams['sortOrder'] as String? ?? 'asc',
         page: requestParams['page'] as int? ?? currentPage.value,
         limit: requestParams['limit'] as int? ?? limit,
       );
 
-      if (response['success'] == true) {
-        final data = response['data'] as List<dynamic>;
-        final pagination = response['pagination'] as Map<String, dynamic>;
-
-        final apis = data.map((item) {
-          return legacy.Api(
-            name: item['name'] ?? '',
-            description: item['description'] ?? '',
-            auth: item['auth'] ?? 'no',
-            https: item['https']?.toString() ?? 'false',
-            cors: item['cors']?.toString() ?? 'unknown',
-            link: item['link'] ?? '',
-          );
-        }).toList();
-
+      if (response.success) {
+        final apis = response.data;
         if (reset) {
           searchResults.value = apis;
         } else {
           searchResults.addAll(apis);
         }
 
-        totalResults.value = pagination['total'] ?? 0;
-        totalPages.value = pagination['totalPages'] ?? 1;
-        hasMore.value = pagination['hasMore'] ?? false;
+        // Keep ordering consistent with current local sort
+        applyLocalSort();
+
+        totalResults.value = response.pagination.total;
+        totalPages.value = response.pagination.totalPages;
+        hasMore.value = response.pagination.hasMore;
       } else {
-        throw Exception(response['message'] ?? 'Search failed');
+        throw Exception(response.message ?? 'Search failed');
       }
     } catch (e) {
       errorMessage.value = e.toString();
@@ -219,6 +246,32 @@ class SearchApiController extends GetxController {
     } finally {
       isLoadingMore.value = false;
     }
+  }
+
+  void applyLocalSort() {
+    final by = filters.value.sortBy;
+    final order = filters.value.sortOrder;
+
+    final list = List<ApiItem>.from(searchResults);
+    int mod = order.toLowerCase() == 'desc' ? -1 : 1;
+
+    list.sort((a, b) {
+      int cmp;
+      switch (by) {
+        case 'category':
+          cmp = a.category.toLowerCase().compareTo(b.category.toLowerCase());
+          break;
+        case 'responseTime':
+          cmp = a.responseTime.compareTo(b.responseTime);
+          break;
+        case 'name':
+        default:
+          cmp = a.name.toLowerCase().compareTo(b.name.toLowerCase());
+      }
+      return cmp * mod;
+    });
+
+    searchResults.value = list;
   }
 
   void toggleFilter<T>(List<T> list, T value) {
@@ -284,22 +337,25 @@ class SearchApiController extends GetxController {
 
   Map<String, dynamic> _buildRequestParams() {
     return {
-      'query': filters.value.query,
+      'q': filters.value.query,
       'pricing': filters.value.pricing.isNotEmpty
-          ? filters.value.pricing.join(',')
+          ? List<String>.from(filters.value.pricing)
           : null,
-      'auth':
-          filters.value.auth.isNotEmpty ? filters.value.auth.join(',') : null,
+      'auth': filters.value.auth.isNotEmpty
+          ? List<String>.from(filters.value.auth)
+          : null,
       'apiType': filters.value.apiType.isNotEmpty
-          ? filters.value.apiType.join(',')
+          ? List<String>.from(filters.value.apiType)
           : null,
       'category': filters.value.category.isNotEmpty
-          ? filters.value.category.join(',')
+          ? List<String>.from(filters.value.category)
           : null,
       'cors': filters.value.cors,
-      'https': filters.value.https,
-      'alive': filters.value.alive,
-      'maxResponseTime': filters.value.maxResponseTime?.toString(),
+      'https':
+          filters.value.https == null ? null : (filters.value.https == 'true'),
+      'alive':
+          filters.value.alive == null ? null : (filters.value.alive == 'true'),
+      'maxResponseTime': filters.value.maxResponseTime,
       'sortBy': filters.value.sortBy,
       'sortOrder': filters.value.sortOrder,
       'page': currentPage.value,

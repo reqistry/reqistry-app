@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:public_apis_desktop_client/app/modules/controllers/category_apis_controller/category_apis_controller.dart';
-import 'package:public_apis_desktop_client/app/data/models/AllApis.dart'
-    as legacy;
 import '../apis_view/widgets/api_card.dart';
 
 class CategoryApisView extends GetView<CategoryApisController> {
-  const CategoryApisView({super.key});
+  const   CategoryApisView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(controller.category.name),
+        title: Text(controller.category.title),
         elevation: 0,
       ),
       body: Obx(() {
@@ -62,18 +60,9 @@ class CategoryApisView extends GetView<CategoryApisController> {
           separatorBuilder: (_, __) => const SizedBox(height: 10),
           itemBuilder: (context, index) {
             final api = controller.apis[index];
-            // Convert new Api model to legacy Api model for the card
-            final legacyApi = legacy.Api(
-              name: api.name,
-              description: api.description,
-              auth: api.auth,
-              https: api.https ? 'yes' : 'no',
-              cors: api.cors ? 'yes' : 'no',
-              link: api.link,
-            );
             return ApiCard(
-              api: legacyApi,
-              category: controller.category.name,
+              api: api,
+              category: controller.category.title,
             );
           },
         );

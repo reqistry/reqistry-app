@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate_border/flutter_animate_border.dart';
 import 'package:get/get.dart';
 import 'package:public_apis_desktop_client/app/modules/controllers/home_controller/home_categories_controller.dart';
+import 'package:public_apis_desktop_client/app/data/models/category.dart';
 
 class HomeCategoriesPageNew extends GetView<HomeCategoriesController> {
   final VoidCallback? onSearchTap;
@@ -13,6 +15,7 @@ class HomeCategoriesPageNew extends GetView<HomeCategoriesController> {
   /// Map category names to asset image file names
   String _getCategoryImageAsset(String categoryName) {
     final nameMap = {
+      'AI': 'Ai.jpg',
       'Animals': 'animals.jpg',
       'Anime': 'anime.jpg',
       'Anti-Malware': 'anti-malware.jpg',
@@ -229,9 +232,9 @@ class HomeCategoriesPageNew extends GetView<HomeCategoriesController> {
   }
 }
 
-/// Beautiful Category Card Widget
+/// Beautiful Category Card Widget with Animated Gradient Border
 class _CategoryCard extends StatefulWidget {
-  final dynamic category;
+  final Category category;
   final String imagePath;
 
   const _CategoryCard({
@@ -243,102 +246,173 @@ class _CategoryCard extends StatefulWidget {
   State<_CategoryCard> createState() => _CategoryCardState();
 }
 
-class _CategoryCardState extends State<_CategoryCard>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _scaleAnimation;
+class _CategoryCardState extends State<_CategoryCard> {
+  late final FlutterAnimateBorderController _borderController;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 200),
-      vsync: this,
-    );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    // Initialize controller with animation settings
+    // isLoading: true starts the animation immediately
+    // doFreeze: false allows animation to run continuously
+    _borderController = FlutterAnimateBorderController(
+      loopDuration: const Duration(milliseconds: 3000),
+      loopCurve: Curves.linear,
+      isLoading: widget.category.hasTrendyBorder,
+      doFreeze: false,
     );
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _borderController.isLoading = false;
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return ScaleTransition(
-      scale: _scaleAnimation,
-      child: Card(
-        elevation: 4,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: Stack(
-          children: [
-            /// Background Image
-            Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image:
-                      AssetImage('assets/categoriesImages/${widget.imagePath}'),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.transparent,
-                      Colors.black.withOpacity(0.6),
-                    ],
-                  ),
-                ),
+    final card = Card(
+      elevation: widget.category.hasTrendyBorder ? 8 : 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      margin: EdgeInsets.zero,
+      clipBehavior: Clip.antiAlias,
+      child: Stack(
+        children: [
+          /// Background Image
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image:
+                    AssetImage('assets/categoriesImages/${widget.imagePath}'),
+                fit: BoxFit.cover,
               ),
             ),
-
-            /// Category Name Overlay
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.transparent,
-                      Colors.black.withOpacity(0.7),
-                    ],
-                  ),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.category.name,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        height: 1.2,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.transparent,
+                    Colors.black.withOpacity(
+                        widget.category.hasTrendyBorder ? 0.5 : 0.6),
                   ],
                 ),
               ),
             ),
+          ),
+
+          /// Featured Badge - Only for special categories
+          if (widget.category.hasTrendyBorder)
+            Positioned(
+              top: 8,
+              right: 8,
+              child: _buildFeaturedChip(context),
+            ),
+
+          /// Category Name Overlay
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.transparent,
+                    Colors.black.withOpacity(
+                        widget.category.hasTrendyBorder ? 0.85 : 0.7),
+                  ],
+                ),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.category.name,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: widget.category.hasTrendyBorder ? 16 : 15,
+                      fontWeight: FontWeight.bold,
+                      height: 1.2,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    // Wrap card with animated border only if hasTrendyBorder is true
+    if (widget.category.hasTrendyBorder) {
+      return Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Theme.of(context).primaryColor.withOpacity(0.15),
+              blurRadius: 16,
+              spreadRadius: 2,
+              offset: const Offset(0, 4),
+            ),
           ],
         ),
+        child: FlutterAnimateBorder(
+          controller: _borderController,
+          lineThickness: 3,
+          lineWidth: 100,
+          linePadding: 2,
+          cornerRadius: 16.0,
+          gradient: LinearGradient(
+            colors: [
+              Theme.of(context).primaryColor,
+              Theme.of(context).primaryColor.withOpacity(0.5),
+              Theme.of(context).primaryColor.withOpacity(0.2),
+              Theme.of(context).primaryColor.withOpacity(0.5),
+              Theme.of(context).primaryColor,
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          child: card,
+        ),
+      );
+    }
+
+    return card;
+  }
+
+  Widget _buildFeaturedChip(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: Theme.of(context).primaryColor.withOpacity(0.65),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.star_rounded, size: 14, color: Colors.white),
+          const SizedBox(width: 4),
+          Text(
+            'Featured',
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.3,
+                ),
+          ),
+        ],
       ),
     );
   }

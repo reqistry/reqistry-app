@@ -1,5 +1,5 @@
 name: public_apis_desktop_client
-version: 2.0.0+6
+version: 3.0.0+8
 publish_to: none
 description: A new Flutter project.
 environment:
@@ -18,6 +18,7 @@ dependencies:
   firebase_crashlytics: 
   firebase_auth: 
   flutter_html: 
+  flutter_animate_border: ^1.2.0
   google_sign_in: ^6.2.0
   flutter:
     sdk: flutter

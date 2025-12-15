@@ -26,17 +26,14 @@ class FavoritesDB
 
   FavoritesDB._();
 
-  @override
   dynamic getWithKey(String key) {
     return HiveBoxes.favoritesBox.get(key);
   }
 
-  @override
   Future<void> putWithKey(String key, value) async {
     return HiveBoxes.favoritesBox.put(key, value);
   }
 
-  @override
   Future<int> clear() async {
     return HiveBoxes.favoritesBox.clear();
   }
@@ -69,7 +66,10 @@ class FavoritesDB
   List<String> keysStartingWith(String staringText) {
     return HiveBoxes.favoritesBox.keys
         .where(
-          (key) => key.toString().toLowerCase().startsWith(staringText.toLowerCase()),
+          (key) => key
+              .toString()
+              .toLowerCase()
+              .startsWith(staringText.toLowerCase()),
         )
         .toList()
         .cast<String>();

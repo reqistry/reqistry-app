@@ -1,7 +1,7 @@
 import 'package:public_apis_desktop_client/app/modules/controllers/home_controller/extensions/update.dart';
 import 'package:public_apis_desktop_client/app/services/local_db/hive/hidden_categories_db.dart';
 
-import '../../../../data/models/AllApis.dart';
+import '../../../../data/models/category_apis.dart';
 import '../home_controller.dart';
 
 extension SearchBarChangeExtension on HomeController {
@@ -49,7 +49,8 @@ extension SearchBarChangeExtension on HomeController {
   bool _isSearchFieldEmpty() {
     return searchInputController.text.isEmpty;
   }
-bool _isHiddenCategoriesEmpty() {
-  return hiddenCategoriesDB.isEmpty;
-}
+
+  bool _isHiddenCategoriesEmpty() {
+    return hiddenCategoriesDB.isEmpty;
+  }
 }

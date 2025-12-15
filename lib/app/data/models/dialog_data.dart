@@ -1,5 +1,3 @@
-import 'package:flutter/widgets.dart';
-
 class DialogData {
   final String title;
   final String content;

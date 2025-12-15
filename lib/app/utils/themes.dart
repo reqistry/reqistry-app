@@ -62,9 +62,7 @@ class AppThemes {
         color: scheme.surface,
         elevation: 4,
         shadowColor: scheme.shadow.withOpacity(0.12),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -93,8 +91,10 @@ class AppThemes {
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: scheme.primary, width: 1.6),
         ),
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 14,
+          vertical: 12,
+        ),
         labelStyle: text.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
         hintStyle: text.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
       ),
@@ -113,13 +113,12 @@ class AppThemes {
       ),
       snackBarTheme: SnackBarThemeData(
         backgroundColor: scheme.inverseSurface,
-        contentTextStyle:
-            text.bodyMedium?.copyWith(color: scheme.onInverseSurface),
+        contentTextStyle: text.bodyMedium?.copyWith(
+          color: scheme.onInverseSurface,
+        ),
         actionTextColor: scheme.inversePrimary,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
       dialogBackgroundColor: Colors.white,
       bottomSheetTheme: const BottomSheetThemeData(
@@ -130,14 +129,13 @@ class AppThemes {
       ),
       chipTheme: ChipThemeData(
         backgroundColor: scheme.primaryContainer,
-        labelStyle:
-            text.labelMedium?.copyWith(color: scheme.onPrimaryContainer),
+        labelStyle: text.labelMedium?.copyWith(
+          color: scheme.onPrimaryContainer,
+        ),
         selectedColor: scheme.primary.withOpacity(0.2),
         secondarySelectedColor: scheme.primary.withOpacity(0.16),
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
   }
