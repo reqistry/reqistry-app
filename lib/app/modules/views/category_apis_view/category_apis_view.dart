@@ -4,7 +4,7 @@ import 'package:public_apis_desktop_client/app/modules/controllers/category_apis
 import '../apis_view/widgets/api_card.dart';
 
 class CategoryApisView extends GetView<CategoryApisController> {
-  const   CategoryApisView({super.key});
+  const CategoryApisView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -54,17 +54,20 @@ class CategoryApisView extends GetView<CategoryApisController> {
           );
         }
 
-        return ListView.separated(
-          itemCount: controller.apis.length,
-          padding: const EdgeInsets.all(16),
-          separatorBuilder: (_, __) => const SizedBox(height: 10),
-          itemBuilder: (context, index) {
-            final api = controller.apis[index];
-            return ApiCard(
-              api: api,
-              category: controller.category.title,
-            );
-          },
+        return RefreshIndicator(
+          onRefresh: () => controller.retryFetch(),
+          child: ListView.separated(
+            itemCount: controller.apis.length,
+            padding: const EdgeInsets.all(16),
+            separatorBuilder: (_, __) => const SizedBox(height: 10),
+            itemBuilder: (context, index) {
+              final api = controller.apis[index];
+              return ApiCard(
+                api: api,
+                category: controller.category.title,
+              );
+            },
+          ),
         );
       }),
     );

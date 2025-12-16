@@ -46,8 +46,9 @@ class HomeCategoriesController extends GetxController {
 
       // Fetch categories with remote trendy categories list
       final categoryList = await response.toCategories();
-      categories.assignAll(categoryList);
-      filteredCategories.assignAll(categoryList);
+      final sortedCategories = _sortByTrendy(categoryList);
+      categories.assignAll(sortedCategories);
+      filteredCategories.assignAll(sortedCategories);
     } on Failure catch (e) {
       errorMessage('${e.title}: ${e.content}');
     } catch (e) {
@@ -59,17 +60,34 @@ class HomeCategoriesController extends GetxController {
 
   void filterCategories() {
     final query = searchController.text.toLowerCase();
+    List<Category> filtered;
+
     if (query.isEmpty) {
-      filteredCategories.assignAll(categories);
+      filtered = categories.toList();
     } else {
-      filteredCategories.assignAll(
-        categories
-            .where((category) =>
-                category.name.toLowerCase().contains(query) ||
-                (category.description?.toLowerCase().contains(query) ?? false))
-            .toList(),
-      );
+      filtered = categories
+          .where((category) =>
+              category.name.toLowerCase().contains(query) ||
+              (category.description?.toLowerCase().contains(query) ?? false))
+          .toList();
     }
+
+    // Apply trendy sorting to filtered results
+    filteredCategories.assignAll(_sortByTrendy(filtered));
+  }
+
+  /// Sort categories by trendy status (trendy first, then alphabetically)
+  List<Category> _sortByTrendy(List<Category> categoryList) {
+    final sorted = List<Category>.from(categoryList);
+    sorted.sort((a, b) {
+      // Trendy categories come first
+      if (a.hasTrendyBorder != b.hasTrendyBorder) {
+        return a.hasTrendyBorder ? -1 : 1;
+      }
+      // Within same trendy status, sort alphabetically
+      return a.name.compareTo(b.name);
+    });
+    return sorted;
   }
 
   Future<void> retryFetch() async {

@@ -1,5 +1,5 @@
 name: public_apis_desktop_client
-version: 3.0.0+8
+version: 3.0.1+9
 publish_to: none
 description: A new Flutter project.
 environment:

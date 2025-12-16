@@ -202,27 +202,30 @@ class HomeCategoriesPageNew extends GetView<HomeCategoriesController> {
                 );
               }
 
-              return GridView.builder(
-                padding: const EdgeInsets.all(16),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 1.0,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                ),
-                itemCount: controller.filteredCategories.length,
-                itemBuilder: (context, index) {
-                  final category = controller.filteredCategories[index];
-                  final imagePath = _getCategoryImageAsset(category.name);
+              return RefreshIndicator(
+                onRefresh: () => controller.fetchCategories(),
+                child: GridView.builder(
+                  padding: const EdgeInsets.all(16),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 1.0,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                  ),
+                  itemCount: controller.filteredCategories.length,
+                  itemBuilder: (context, index) {
+                    final category = controller.filteredCategories[index];
+                    final imagePath = _getCategoryImageAsset(category.name);
 
-                  return GestureDetector(
-                    onTap: () => controller.navigateToCategoryApis(category),
-                    child: _CategoryCard(
-                      category: category,
-                      imagePath: imagePath,
-                    ),
-                  );
-                },
+                    return GestureDetector(
+                      onTap: () => controller.navigateToCategoryApis(category),
+                      child: _CategoryCard(
+                        category: category,
+                        imagePath: imagePath,
+                      ),
+                    );
+                  },
+                ),
               );
             }),
           ),
@@ -246,33 +249,49 @@ class _CategoryCard extends StatefulWidget {
   State<_CategoryCard> createState() => _CategoryCardState();
 }
 
-class _CategoryCardState extends State<_CategoryCard> {
+class _CategoryCardState extends State<_CategoryCard>
+    with SingleTickerProviderStateMixin {
   late final FlutterAnimateBorderController _borderController;
+  late AnimationController _scaleController;
+  late Animation<double> _scaleAnimation;
 
   @override
   void initState() {
     super.initState();
     // Initialize controller with animation settings
-    // isLoading: true starts the animation immediately
-    // doFreeze: false allows animation to run continuously
     _borderController = FlutterAnimateBorderController(
       loopDuration: const Duration(milliseconds: 3000),
       loopCurve: Curves.linear,
       isLoading: widget.category.hasTrendyBorder,
       doFreeze: false,
     );
+
+    // Subtle scale pulse animation for trendy cards
+    if (widget.category.hasTrendyBorder) {
+      _scaleController = AnimationController(
+        duration: const Duration(milliseconds: 2500),
+        vsync: this,
+      )..repeat(reverse: true);
+
+      _scaleAnimation = Tween<double>(begin: 0.98, end: 1.02).animate(
+        CurvedAnimation(parent: _scaleController, curve: Curves.easeInOut),
+      );
+    }
   }
 
   @override
   void dispose() {
     _borderController.isLoading = false;
+    if (widget.category.hasTrendyBorder) {
+      _scaleController.dispose();
+    }
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final card = Card(
-      elevation: widget.category.hasTrendyBorder ? 8 : 4,
+      elevation: widget.category.hasTrendyBorder ? 12 : 4,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
@@ -297,12 +316,42 @@ class _CategoryCardState extends State<_CategoryCard> {
                   colors: [
                     Colors.transparent,
                     Colors.black.withOpacity(
-                        widget.category.hasTrendyBorder ? 0.5 : 0.6),
+                        widget.category.hasTrendyBorder ? 0.45 : 0.6),
                   ],
                 ),
               ),
             ),
           ),
+
+          /// Decorative stars background for trendy cards
+          if (widget.category.hasTrendyBorder)
+            Positioned.fill(
+              child: Opacity(
+                opacity: 0.15,
+                child: Stack(
+                  children: [
+                    Positioned(
+                      top: 12,
+                      left: 12,
+                      child: Icon(Icons.star_rounded,
+                          size: 20, color: Theme.of(context).primaryColor),
+                    ),
+                    Positioned(
+                      top: 16,
+                      right: 8,
+                      child: Icon(Icons.star_rounded,
+                          size: 14, color: Theme.of(context).primaryColor),
+                    ),
+                    Positioned(
+                      bottom: 60,
+                      right: 12,
+                      child: Icon(Icons.star_rounded,
+                          size: 16, color: Theme.of(context).primaryColor),
+                    ),
+                  ],
+                ),
+              ),
+            ),
 
           /// Featured Badge - Only for special categories
           if (widget.category.hasTrendyBorder)
@@ -326,7 +375,7 @@ class _CategoryCardState extends State<_CategoryCard> {
                   colors: [
                     Colors.transparent,
                     Colors.black.withOpacity(
-                        widget.category.hasTrendyBorder ? 0.85 : 0.7),
+                        widget.category.hasTrendyBorder ? 0.88 : 0.7),
                   ],
                 ),
               ),
@@ -341,6 +390,7 @@ class _CategoryCardState extends State<_CategoryCard> {
                       fontSize: widget.category.hasTrendyBorder ? 16 : 15,
                       fontWeight: FontWeight.bold,
                       height: 1.2,
+                      letterSpacing: widget.category.hasTrendyBorder ? 0.3 : 0,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -353,38 +403,48 @@ class _CategoryCardState extends State<_CategoryCard> {
       ),
     );
 
-    // Wrap card with animated border only if hasTrendyBorder is true
+    // Wrap card with animated border and scale effect if hasTrendyBorder is true
     if (widget.category.hasTrendyBorder) {
-      return Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Theme.of(context).primaryColor.withOpacity(0.15),
-              blurRadius: 16,
-              spreadRadius: 2,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: FlutterAnimateBorder(
-          controller: _borderController,
-          lineThickness: 3,
-          lineWidth: 100,
-          linePadding: 2,
-          cornerRadius: 16.0,
-          gradient: LinearGradient(
-            colors: [
-              Theme.of(context).primaryColor,
-              Theme.of(context).primaryColor.withOpacity(0.5),
-              Theme.of(context).primaryColor.withOpacity(0.2),
-              Theme.of(context).primaryColor.withOpacity(0.5),
-              Theme.of(context).primaryColor,
+      return ScaleTransition(
+        scale: _scaleAnimation,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Theme.of(context).primaryColor.withOpacity(0.2),
+                blurRadius: 20,
+                spreadRadius: 3,
+                offset: const Offset(0, 6),
+              ),
+              // Additional glow layer
+              BoxShadow(
+                color: Theme.of(context).primaryColor.withOpacity(0.08),
+                blurRadius: 32,
+                spreadRadius: 8,
+                offset: const Offset(0, 8),
+              ),
             ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
           ),
-          child: card,
+          child: FlutterAnimateBorder(
+            controller: _borderController,
+            lineThickness: 3.5,
+            lineWidth: 110,
+            linePadding: 2,
+            cornerRadius: 16.0,
+            gradient: LinearGradient(
+              colors: [
+                Theme.of(context).primaryColor,
+                Theme.of(context).primaryColor.withOpacity(0.6),
+                Theme.of(context).primaryColor.withOpacity(0.2),
+                Theme.of(context).primaryColor.withOpacity(0.6),
+                Theme.of(context).primaryColor,
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            child: card,
+          ),
         ),
       );
     }
@@ -394,22 +454,30 @@ class _CategoryCardState extends State<_CategoryCard> {
 
   Widget _buildFeaturedChip(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor.withOpacity(0.65),
-        borderRadius: BorderRadius.circular(8),
+        color: Theme.of(context).primaryColor.withOpacity(0.85),
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).primaryColor.withOpacity(0.4),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.star_rounded, size: 14, color: Colors.white),
-          const SizedBox(width: 4),
+          const Icon(Icons.star_rounded, size: 16, color: Colors.white),
+          const SizedBox(width: 5),
           Text(
             'Featured',
             style: Theme.of(context).textTheme.labelSmall?.copyWith(
                   color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0.3,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.4,
+                  fontSize: 12,
                 ),
           ),
         ],

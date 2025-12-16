@@ -332,38 +332,46 @@ class SearchApisScreen extends StatelessWidget {
                     ),
                     // Results List
                     Expanded(
-                      child: ListView.builder(
-                        controller: controller.scrollController,
-                        padding: const EdgeInsets.all(16),
-                        itemCount: controller.searchResults.length +
-                            (controller.hasMore.value ? 1 : 0),
-                        itemBuilder: (context, index) {
-                          if (index == controller.searchResults.length) {
-                            return Padding(
-                              padding: const EdgeInsets.all(16),
-                              child: Center(
-                                child: controller.isLoadingMore.value
-                                    ? const CircularProgressIndicator()
-                                    : FilledButton.icon(
-                                        onPressed: controller.loadMoreResults,
-                                        icon: const Icon(Icons.refresh),
-                                        label: const Text('Load More'),
-                                      ),
-                              ),
-                            );
-                          }
-
-                          final api = controller.searchResults[index];
-                          final category =
-                              controller.filters.value.category.isNotEmpty
-                                  ? controller.filters.value.category.first
-                                  : 'Search';
-
-                          return ApiCard(
-                            api: api,
-                            category: category,
-                          );
+                      child: RefreshIndicator(
+                        onRefresh: () async {
+                          controller.performSearch();
+                          // Wait a moment for the search to complete
+                          await Future.delayed(
+                              const Duration(milliseconds: 500));
                         },
+                        child: ListView.builder(
+                          controller: controller.scrollController,
+                          padding: const EdgeInsets.all(16),
+                          itemCount: controller.searchResults.length +
+                              (controller.hasMore.value ? 1 : 0),
+                          itemBuilder: (context, index) {
+                            if (index == controller.searchResults.length) {
+                              return Padding(
+                                padding: const EdgeInsets.all(16),
+                                child: Center(
+                                  child: controller.isLoadingMore.value
+                                      ? const CircularProgressIndicator()
+                                      : FilledButton.icon(
+                                          onPressed: controller.loadMoreResults,
+                                          icon: const Icon(Icons.refresh),
+                                          label: const Text('Load More'),
+                                        ),
+                                ),
+                              );
+                            }
+
+                            final api = controller.searchResults[index];
+                            final category =
+                                controller.filters.value.category.isNotEmpty
+                                    ? controller.filters.value.category.first
+                                    : 'Search';
+
+                            return ApiCard(
+                              api: api,
+                              category: category,
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ],
