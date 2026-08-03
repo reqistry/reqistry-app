@@ -321,6 +321,7 @@ class ApiAlternative extends Equatable {
   final String pricing;
   final String authentication;
   final String link;
+  final String? imageUrl;
 
   const ApiAlternative({
     required this.id,
@@ -330,6 +331,7 @@ class ApiAlternative extends Equatable {
     required this.pricing,
     required this.authentication,
     required this.link,
+    this.imageUrl,
   });
 
   Map<String, dynamic> toJson() => {
@@ -340,6 +342,7 @@ class ApiAlternative extends Equatable {
         'pricing': pricing,
         'authentication': authentication,
         'link': link,
+        'imageUrl': imageUrl,
       };
 
   factory ApiAlternative.fromJson(Map<String, dynamic> json) => ApiAlternative(
@@ -358,6 +361,7 @@ class ApiAlternative extends Equatable {
           json['authentication']?.toString() ?? '',
         ),
         link: json['baseUrl']?.toString() ?? json['link']?.toString() ?? '',
+        imageUrl: json['imageUrl']?.toString(),
       );
 
   @override

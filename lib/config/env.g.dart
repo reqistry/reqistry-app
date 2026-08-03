@@ -10,7 +10,8 @@ part of 'env.dart';
 // ignore_for_file: type=lint
 // generated_from: .env.dev
 final class _Env {
-  static const String apiUrl = 'https://publicapis.gwhyyy.com';
+  static const String apiUrl =
+      'https://51a7-2a09-bac5-48dd-254b-00-3b7-5d.ngrok-free.app';
 
   static const String appName = 'API Scout';
 
@@ -25,8 +26,6 @@ final class _Env {
   static const String contactEmail = 'work@gwhyyy.com';
 
   static const String privacyPolicyUrl = 'https://gwhyyy.com/privacy';
-
-  static const String fallbackFaviconUrl = 'https://example.com/favicon.ico';
 
   static const String metadataUserAgent =
       'Mozilla/5.0 (compatible; API Scout/1.0; +https://gwhyyy.com)';

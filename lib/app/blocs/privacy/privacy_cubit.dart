@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:api_scout/app/services/auth/dio_client.dart';
@@ -52,20 +53,34 @@ class PrivacyCubit extends Cubit<PrivacyState> {
       }
     } on DioException catch (e) {
       if (state.content.isEmpty) {
-        emit(state.copyWith(
-          isLoading: false,
-          errorMessage: _isConnectivityError(e)
-              ? 'No internet connection'
-              : 'Failed to load privacy content',
-        ));
+        await _loadBundledFallback(e);
       }
     } catch (_) {
       if (state.content.isEmpty) {
+        await _loadBundledFallback();
+      }
+    }
+  }
+
+  Future<void> _loadBundledFallback([DioException? error]) async {
+    try {
+      final content =
+          await rootBundle.loadString('assets/md_content/privacy.md');
+      if (content.isNotEmpty) {
+        await PrivacyCacheDB.instance.saveContent(content);
         emit(state.copyWith(
           isLoading: false,
-          errorMessage: 'Failed to load privacy content',
+          content: content,
+          errorMessage: '',
         ));
       }
+    } catch (_) {
+      emit(state.copyWith(
+        isLoading: false,
+        errorMessage: error != null && _isConnectivityError(error)
+            ? 'No internet connection'
+            : 'Failed to load privacy content',
+      ));
     }
   }
 

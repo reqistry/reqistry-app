@@ -17,6 +17,8 @@ import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
 import 'package:api_scout/app/widgets/app_snackbar.dart';
 import 'package:api_scout/config/app_routes.dart';
+import 'package:api_scout/config/env.dart';
+import 'package:api_scout/shared/widgets/app_error_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,7 +26,7 @@ import 'package:go_router/go_router.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-enum _OverflowAction { addToProject, share, copyLink, homepage, report }
+enum _OverflowAction { addToProject, share, homepage, report }
 
 class ApiDetailView extends StatefulWidget {
   const ApiDetailView({super.key, required this.slug});
@@ -135,13 +137,6 @@ class _ApiDetailViewState extends State<ApiDetailView> {
                     child: _MenuItem(
                       icon: PhosphorIconsRegular.shareNetwork,
                       label: 'Share',
-                    ),
-                  ),
-                  PopupMenuItem(
-                    value: _OverflowAction.copyLink,
-                    child: _MenuItem(
-                      icon: PhosphorIconsRegular.copy,
-                      label: 'Copy API link',
                     ),
                   ),
                   PopupMenuItem(
@@ -316,20 +311,18 @@ class _ApiDetailViewState extends State<ApiDetailView> {
     _track('api_detail_endpoint_copied', detail);
   }
 
-  Future<void> _copyDeepLink(ApiDetail detail) async {
-    final link = 'api-scout:///apis/${detail.slug}';
-    await Clipboard.setData(ClipboardData(text: link));
-    if (mounted) _message('API link copied', link, false);
-  }
-
   Future<void> _share(ApiDetail detail) async {
     final text = StringBuffer()
-      ..writeln(detail.name)
-      ..writeln(detail.shortDescription)
-      ..writeln('api-scout:///apis/${detail.slug}');
-    if (detail.links.documentationUrl != null) {
-      text.writeln(detail.links.documentationUrl);
+      ..writeln('Name: ${detail.name}');
+    if (detail.links.baseUrl != null) {
+      text.writeln('URL: ${detail.links.baseUrl}');
     }
+    if (detail.links.homepageUrl != null) {
+      text.writeln('Homepage: ${detail.links.homepageUrl}');
+    }
+    text
+      ..writeln()
+      ..write('this API was shared by ${Env.appName} - ${Env.appShareUrl}');
     try {
       await ShareService.instance.shareText(text.toString().trim());
       _track('api_detail_shared', detail);
@@ -356,9 +349,6 @@ class _ApiDetailViewState extends State<ApiDetailView> {
         return;
       case _OverflowAction.share:
         _share(detail);
-        return;
-      case _OverflowAction.copyLink:
-        _copyDeepLink(detail);
         return;
       case _OverflowAction.homepage:
         final homepage = detail.links.homepageUrl;
@@ -594,26 +584,13 @@ class _CoreStateScaffold extends StatelessWidget {
           const SliverAppBar(pinned: true),
           SliverFillRemaining(
             hasScrollBody: false,
-            child: Center(
-              child: isLoading
-                  ? const CircularProgressIndicator(strokeWidth: 2)
-                  : Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(PhosphorIconsRegular.warningCircle,
-                            size: 32),
-                        const SizedBox(height: AppSpacing.s12),
-                        Text(message ?? 'API unavailable'),
-                        const SizedBox(height: AppSpacing.s12),
-                        OutlinedButton.icon(
-                          onPressed: onRetry,
-                          icon:
-                              const Icon(PhosphorIconsRegular.arrowsClockwise),
-                          label: const Text('Retry'),
-                        ),
-                      ],
-                    ),
-            ),
+            child: isLoading
+                ? const Center(child: CircularProgressIndicator(strokeWidth: 2))
+                : AppErrorState(
+                    title: 'API unavailable',
+                    message: message ?? 'Failed to load this API',
+                    onRetry: onRetry,
+                  ),
           ),
         ],
       ),

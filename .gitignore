@@ -52,3 +52,8 @@ key.properties
 .env
 .env.*
 !.env.example
+
+# Local tooling & debug artifacts
+opencode.json
+firepit-log.txt
+*.sksl.json

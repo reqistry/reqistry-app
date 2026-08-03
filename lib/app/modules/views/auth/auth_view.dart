@@ -10,6 +10,7 @@ import '../../../../config/env.dart';
 import '../../../utils/design_system/app_colors.dart';
 import '../../../utils/design_system/app_spacing.dart';
 import '../../../utils/design_system/app_text_styles.dart';
+import '../../../utils/snackbar_helper.dart';
 
 class AuthView extends StatelessWidget {
   const AuthView({super.key, this.returnTo});
@@ -31,6 +32,9 @@ class _AuthViewBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
+        if (state is AuthError) {
+          AppSnackBarHelper.error(title: 'ERROR', message: state.message);
+        }
         if (state is Authenticated) {
           final destination = returnTo;
           context.go(

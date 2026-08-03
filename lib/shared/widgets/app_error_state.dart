@@ -8,6 +8,7 @@ class AppErrorState extends StatelessWidget {
   final String title;
   final String message;
   final VoidCallback? onRetry;
+  final String actionLabel;
   final bool compact;
   final bool scrollable;
 
@@ -16,6 +17,7 @@ class AppErrorState extends StatelessWidget {
     this.title = 'Error',
     this.message = 'Something went wrong',
     this.onRetry,
+    this.actionLabel = 'RETRY',
     this.compact = false,
     this.scrollable = false,
   });
@@ -66,7 +68,7 @@ class AppErrorState extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                  'RETRY',
+                  actionLabel,
                   style: AppTextStyles.labelSmUpper
                       .copyWith(color: AppColors.primary),
                 ),

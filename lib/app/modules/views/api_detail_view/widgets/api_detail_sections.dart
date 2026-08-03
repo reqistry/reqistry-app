@@ -441,6 +441,22 @@ class ApiAlternativesSection extends StatelessWidget {
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 minTileHeight: 72,
+                leading: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: AppColors.surfaceVariant),
+                  ),
+                  child: ClipRect(
+                    child: AppCachedImage(
+                      imageUrl: alternative.imageUrl,
+                      fallback: CategoryImagePlaceholder(
+                        name: alternative.name,
+                        size: 40,
+                      ),
+                    ),
+                  ),
+                ),
                 title: Text(
                   alternative.name,
                   style: AppTextStyles.bodyMd

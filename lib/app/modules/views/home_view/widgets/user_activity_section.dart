@@ -39,7 +39,7 @@ class UserActivitySection extends StatelessWidget {
                   children: [
                     Expanded(
                       child: _StatCard(
-                        label: 'bookmarks',
+                        label: 'You saved',
                         count: state.totalBookmarks,
                         objectLabel: state.totalBookmarks == 1 ? 'API' : 'APIs',
                       ),
@@ -47,10 +47,10 @@ class UserActivitySection extends StatelessWidget {
                     const SizedBox(width: AppSpacing.s12),
                     Expanded(
                       child: _StatCard(
-                        label: 'projects',
+                        label: 'You have',
                         count: state.totalProjects,
                         objectLabel:
-                            state.totalProjects == 1 ? 'project' : 'projects',
+                            state.totalProjects == 1 ? 'Project' : 'Projects',
                       ),
                     ),
                   ],

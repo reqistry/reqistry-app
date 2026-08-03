@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -24,7 +23,7 @@ import 'package:api_scout/app/modules/views/contact_view/contact_view.dart';
 import 'package:api_scout/app/modules/views/account_settings_view/account_settings_view.dart';
 import 'package:api_scout/app/modules/views/app_settings_view/app_settings_view.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
-import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
+import 'package:api_scout/shared/widgets/app_error_state.dart';
 
 import 'app_routes.dart';
 
@@ -168,24 +167,11 @@ class _ErrorPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(PhosphorIconsRegular.warningCircle,
-                size: 48, color: AppColors.danger),
-            const SizedBox(height: 16),
-            Text(
-              message,
-              style: AppTextStyles.bodyMd.copyWith(color: AppColors.onSurface),
-            ),
-            const SizedBox(height: 24),
-            FilledButton(
-              onPressed: () => context.go(AppRoutes.home),
-              child: const Text('GO HOME'),
-            ),
-          ],
-        ),
+      body: AppErrorState(
+        title: 'Error',
+        message: message,
+        onRetry: () => context.go(AppRoutes.home),
+        actionLabel: 'GO HOME',
       ),
     );
   }

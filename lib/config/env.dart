@@ -25,9 +25,6 @@ abstract class Env {
   @EnviedField(varName: 'PRIVACY_POLICY_URL')
   static const String privacyPolicyUrl = _Env.privacyPolicyUrl;
 
-  @EnviedField(varName: 'FALLBACK_FAVICON_URL')
-  static const String fallbackFaviconUrl = _Env.fallbackFaviconUrl;
-
   @EnviedField(varName: 'METADATA_USER_AGENT')
   static const String metadataUserAgent = _Env.metadataUserAgent;
 
