@@ -1,4 +1,4 @@
-import 'package:public_apis_desktop_client/app/services/local_db/hive/constants/boxes.dart';
+import 'package:api_scout/app/services/local_db/hive/constants/boxes.dart';
 
 import '../interfaces/clear.dart';
 import '../interfaces/get_with_key.dart';

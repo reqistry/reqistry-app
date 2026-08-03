@@ -1,5 +1,5 @@
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:public_apis_desktop_client/app/services/in_app_review/in_app_review_service.dart';
+import 'package:api_scout/app/services/in_app_review/in_app_review_service.dart';
 
 class InAppReviewShowLogicInterface {
   /// box where we gonna store data

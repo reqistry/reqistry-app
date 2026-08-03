@@ -1,7 +1,7 @@
 # AI Agent Prompt: Search API Integration
 
 ## Context
-You are integrating a powerful search and filtering system for a Public APIs discovery platform. The server provides a comprehensive `/search` endpoint that supports full-text search, multi-criterion filtering, sorting, and pagination. This prompt contains complete specifications for accurate implementation.
+You are integrating a powerful search and filtering system for the API Scout discovery platform. The server provides a comprehensive `/search` endpoint that supports full-text search, multi-criterion filtering, sorting, and pagination. This prompt contains complete specifications for accurate implementation.
 
 ---
 

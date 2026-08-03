@@ -1,0 +1,3602 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Public APIs — Mobile Client API",
+    "description": "API reference for the Public APIs Flutter mobile app. Includes anonymous device auth, email/password account linking, profile management, bookmarks, folders, discovery, categories, search, and legacy JSON endpoints.\n\n## Authentication\n\nAll `/v1/*` endpoints (except `/v1/auth/anonymous`, `/v1/auth/login-email`, `/v1/recently-added`, and `GET /v1/recommend`) require a Bearer token:\n\n```\nAuthorization: Bearer <accessToken>\n```\n\nTokens are obtained via `POST /v1/auth/anonymous` or `POST /v1/auth/login-email`.\n\n## Account Types\n- **Anonymous**: Device-only, no email. Data tied to device fingerprint.\n- **Email-linked**: Has email + password. Can login from any device. Data merges on link.\n\n## Token Lifecycle\n- **Access token**: 15 minutes, used for API requests\n- **Refresh token**: 30 days, used to rotate access tokens\n- Refreshing a token invalidates the old one (single-use rotation)\n- Revoking deactivates all tokens for a device",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Public APIs",
+      "url": "https://publicapis.gwhyyy.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:4000",
+      "description": "Local development"
+    },
+    {
+      "url": "https://publicapis.gwhyyy.com",
+      "description": "Production"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Health",
+      "description": "Server health and status"
+    },
+    {
+      "name": "Auth",
+      "description": "Anonymous device authentication (v1)"
+    },
+    {
+      "name": "Discover",
+      "description": "API discovery — recently added, recommendations"
+    },
+    {
+      "name": "Categories",
+      "description": "Browse and list API categories"
+    },
+    {
+      "name": "Search",
+      "description": "Full-text search across the API catalog"
+    },
+    {
+      "name": "Submit",
+      "description": "Submit an API for review"
+    },
+    {
+      "name": "Bookmarks",
+      "description": "User API bookmarks (v1)"
+    },
+    {
+      "name": "Folders",
+      "description": "User API folders (v1)"
+    },
+    {
+      "name": "Push Notifications",
+      "description": "FCM token management for push notifications"
+    },
+    {
+      "name": "Tracking",
+      "description": "Page event tracking"
+    },
+    {
+      "name": "Metadata",
+      "description": "URL metadata extraction"
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": ["Health"],
+        "summary": "Health check",
+        "description": "Returns server health status with uptime, version, and dependency checks.",
+        "operationId": "healthCheck",
+        "responses": {
+          "200": {
+            "description": "Server is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "summary": "Root / Server info",
+        "description": "Returns API metadata, version, and available endpoints.",
+        "operationId": "root",
+        "responses": {
+          "200": {
+            "description": "Server info",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RootResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/search": {
+      "get": {
+        "tags": ["Search"],
+        "summary": "Search APIs",
+        "description": "Full-text search across name and description with filters for category, auth, pricing, CORS, HTTPS, and alive status. Supports sorting and pagination.",
+        "operationId": "searchApis",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Search term (matches name + description)"
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Alias for q"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            },
+            "description": "Filter by category name(s)"
+          },
+          {
+            "name": "auth",
+            "in": "query",
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            },
+            "description": "Filter by auth type(s): No, OAuth, API Key, etc."
+          },
+          {
+            "name": "pricing",
+            "in": "query",
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            },
+            "description": "Filter by pricing type(s): Free, Freemium, Paid"
+          },
+          {
+            "name": "cors",
+            "in": "query",
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            },
+            "description": "Filter by CORS: Yes, No, Unknown"
+          },
+          {
+            "name": "https",
+            "in": "query",
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            },
+            "description": "Filter by HTTPS support: true, false"
+          },
+          {
+            "name": "alive",
+            "in": "query",
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "boolean"
+                }
+              ]
+            },
+            "description": "Filter by alive status: true, false"
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["name", "responseTime", "category"],
+              "default": "name"
+            },
+            "description": "Sort field"
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            },
+            "description": "Sort direction"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            },
+            "description": "Page number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            },
+            "description": "Results per page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Search results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/categories": {
+      "get": {
+        "tags": ["Categories"],
+        "summary": "List all categories",
+        "description": "Returns all active categories with API counts, tags, trending status, descriptions, and image URLs.",
+        "operationId": "getCategories",
+        "responses": {
+          "200": {
+            "description": "Category list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoriesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/categories/{id}": {
+      "get": {
+        "tags": ["Categories"],
+        "summary": "Get single category",
+        "description": "Returns full details for a single category by slug, including description, imageUrl, tags, apiCount, and isTrending.",
+        "operationId": "getCategory",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Category slug (e.g. ai, finance, weather)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Category details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoryDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Category not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/categories/{id}/image": {
+      "get": {
+        "tags": ["Categories"],
+        "summary": "Get category image URL",
+        "description": "Returns the banner/image URL for a category. Returns 404 if no image is set.",
+        "operationId": "getCategoryImage",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Category slug"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Image URL",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "imageUrl": {
+                      "type": "string",
+                      "format": "uri"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Category not found or no image available",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/categories/{id}/apis": {
+      "get": {
+        "tags": ["Categories"],
+        "summary": "List APIs in a category",
+        "description": "Returns all published APIs for a specific category. Paginated.",
+        "operationId": "getCategoryApis",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Category slug"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            },
+            "description": "Page number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            },
+            "description": "Results per page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "APIs in category",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoryApisResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Category not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/trendy-categories": {
+      "get": {
+        "tags": ["Categories"],
+        "summary": "Trendy categories",
+        "description": "Returns trending category names.",
+        "operationId": "getTrendyCategories",
+        "responses": {
+          "200": {
+            "description": "Trendy category names",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/submit": {
+      "post": {
+        "tags": ["Submit"],
+        "summary": "Submit an API",
+        "description": "Submit a new API for review. Creates a pending submission. Returns 200 with status `approved` if the link was already submitted and approved.",
+        "operationId": "submitApi",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitApiRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Duplicate link — already submitted and approved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitApiResponse"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Submission created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitApiResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/auth/anonymous": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Get anonymous device token",
+        "description": "Create or resume an anonymous device session. If the device has an active refresh token, returns a new access token without creating a new session (200). Otherwise, creates a new device session with refresh + access tokens (201).\n\nThis is the entry point for the Flutter app — no account creation required.",
+        "operationId": "anonymousAuth",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnonymousAuthRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Existing device — tokens re-issued (refreshToken is null)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthTokenResponse"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "New device created — full token pair issued",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthTokenResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/auth/refresh": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Refresh access token",
+        "description": "Rotate the refresh token and issue a new access token. The old refresh token is invalidated (single-use rotation).",
+        "operationId": "refreshToken",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshTokenRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "New tokens",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthTokenResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or expired refresh token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/auth/revoke": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Revoke device session",
+        "description": "Deactivate all tokens for a device. The device will need to re-authenticate via `/v1/auth/anonymous`.",
+        "operationId": "revokeSession",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RevokeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Session revoked",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RevokeResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/auth/link-email": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Link email/password to anonymous account",
+        "description": "Links the current anonymous device to an email/password account. If the email already exists on another device, bookmarks and folders are merged to that device and the current device is deactivated (user receives new tokens for the existing account). After linking, the user can login from any device via `/v1/auth/login-email`.",
+        "operationId": "linkEmail",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LinkEmailRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Email linked (or account merged)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LinkEmailResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/auth/login-email": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Login with email/password",
+        "description": "Authenticate with email and password. Returns access + refresh tokens. Only works for accounts that have been linked via `/v1/auth/link-email`.",
+        "operationId": "loginEmail",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmailLoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthTokenResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/auth/me": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Get current user profile + stats",
+        "description": "Returns full user profile including name, email (if linked), auth provider, device info, and aggregated stats (bookmarks count, folders count, folder items count, days since creation, member since date).",
+        "operationId": "getMe",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User profile with stats",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserProfileResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Auth"],
+        "summary": "Update user profile",
+        "description": "Update the current user's profile. Currently only supports updating the name field.",
+        "operationId": "updateMe",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProfileRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Profile updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserProfileResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Auth"],
+        "summary": "Delete account and all data",
+        "description": "Permanently delete the current user's account and all associated data including bookmarks, folders, FCM tokens, and reports. This action is irreversible.",
+        "operationId": "deleteMe",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Account deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "message": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/recently-added": {
+      "get": {
+        "tags": ["Discover"],
+        "summary": "Recently added APIs",
+        "description": "Returns the latest published APIs in the legacy APIs.json flat format. Ordered by creation date descending.",
+        "operationId": "getRecentlyAdded",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            },
+            "description": "Number of APIs to return"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recently added APIs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecentlyAddedResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/recommend": {
+      "get": {
+        "tags": ["Discover"],
+        "summary": "Personalized recommendations",
+        "description": "Returns API recommendations. If a valid Bearer token is provided and the user has bookmarks, returns personalized results scored by shared category, auth type, API type, pricing type, and description keywords with the user's bookmarked APIs. If no bookmarks or no token, returns random APIs.\n\nResults are in the legacy recommendation format.",
+        "operationId": "getPersonalizedRecommend",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 10
+            },
+            "description": "Number of recommendations"
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "description": "Recommendations",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecommendResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/apis/{slug}": {
+      "get": {
+        "tags": ["API Detail"],
+        "summary": "Get exact API detail",
+        "operationId": "getApiDetail",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stored API detail",
+            "headers": {
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiDetailResponse"
+                }
+              }
+            }
+          },
+          "304": {
+            "description": "Not modified"
+          },
+          "404": {
+            "description": "Exact slug not found"
+          }
+        }
+      }
+    },
+    "/v1/apis/{id}/alternatives": {
+      "get": {
+        "tags": ["API Detail"],
+        "summary": "Get similar catalog APIs",
+        "operationId": "getApiAlternatives",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 2,
+              "maximum": 3,
+              "default": 3
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stable alternatives",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiAlternativesResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "API not found"
+          }
+        }
+      }
+    },
+    "/v1/apis/{id}/health-check": {
+      "post": {
+        "tags": ["API Detail"],
+        "summary": "Refresh stored API health",
+        "operationId": "refreshApiHealth",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cached result inside cooldown",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthCheckResponse"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Check queued or deduplicated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthCheckResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token required"
+          },
+          "429": {
+            "description": "Per-user/API rate limit exceeded"
+          }
+        }
+      }
+    },
+    "/v1/apis/{id}/health-checks/{checkId}": {
+      "get": {
+        "tags": ["API Detail"],
+        "summary": "Poll an API health check",
+        "operationId": "pollApiHealth",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "checkId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Check state",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthCheckResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Check not found"
+          }
+        }
+      }
+    },
+    "/v1/apis/{id}/reports": {
+      "post": {
+        "tags": ["Reports"],
+        "summary": "Report incorrect API information",
+        "operationId": "reportApiInformation",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateApiReportRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Existing open report returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiReportResponse"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Report created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiReportResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token required"
+          }
+        }
+      }
+    },
+    "/v1/projects/{projectId}/apis": {
+      "post": {
+        "tags": ["Projects"],
+        "summary": "Add API to project by stable ID",
+        "operationId": "addApiToProjectById",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["apiId"],
+                "properties": {
+                  "apiId": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Updated membership",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectMembershipResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "API already in project"
+          }
+        }
+      }
+    },
+    "/v1/projects/{projectId}/apis/{apiId}": {
+      "delete": {
+        "tags": ["Projects"],
+        "summary": "Remove API from project by stable ID",
+        "operationId": "removeApiFromProjectById",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "apiId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated membership",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectMembershipResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Project or membership not found"
+          }
+        }
+      }
+    },
+    "/v1/bookmarks": {
+      "get": {
+        "tags": ["Bookmarks"],
+        "summary": "List bookmarks",
+        "description": "Returns all bookmarks for the current device with full API data. Paginated.",
+        "operationId": "listBookmarks",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Bookmarks list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookmarksResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Bookmarks"],
+        "summary": "Add bookmark",
+        "description": "Bookmark an API. Returns 409 if already bookmarked.",
+        "operationId": "addBookmark",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddBookmarkRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Bookmark created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookmarkResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Already bookmarked",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/bookmarks/{id}": {
+      "delete": {
+        "tags": ["Bookmarks"],
+        "summary": "Remove bookmark",
+        "description": "Remove a bookmark by its ID.",
+        "operationId": "removeBookmark",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Bookmark ID"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Bookmark removed"
+          },
+          "401": {
+            "description": "Access token required"
+          },
+          "404": {
+            "description": "Bookmark not found"
+          }
+        }
+      }
+    },
+    "/v1/folders": {
+      "get": {
+        "tags": ["Folders"],
+        "summary": "List folders",
+        "description": "Returns all folders for the current device with apiLinks (URL array) and apiCount.",
+        "operationId": "listFolders",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folders list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FoldersResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Folders"],
+        "summary": "Create folder",
+        "description": "Create a new folder for organizing APIs.",
+        "operationId": "createFolder",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFolderRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Folder created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FolderResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/folders/{id}": {
+      "get": {
+        "tags": ["Folders"],
+        "summary": "Get folder",
+        "description": "Returns folder detail with all API link references.",
+        "operationId": "getFolder",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folder detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FolderDetailResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token required"
+          },
+          "404": {
+            "description": "Folder not found"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Folders"],
+        "summary": "Update folder",
+        "description": "Update folder title and/or iconCodePoint.",
+        "operationId": "updateFolder",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateFolderRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Folder updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FolderResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token required"
+          },
+          "404": {
+            "description": "Folder not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Folders"],
+        "summary": "Delete folder",
+        "description": "Delete folder and all its API references (cascade).",
+        "operationId": "deleteFolder",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Folder deleted"
+          },
+          "401": {
+            "description": "Access token required"
+          },
+          "404": {
+            "description": "Folder not found"
+          }
+        }
+      }
+    },
+    "/v1/folders/{id}/api-links": {
+      "post": {
+        "tags": ["Folders"],
+        "summary": "Add API to folder",
+        "description": "Add an API reference to a folder. The API must exist in the catalog. Duplicate links within the same folder are rejected. Returns the updated folder on success.",
+        "operationId": "addApiToFolder",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddApiLinkRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "API added — updated folder returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FolderResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "link required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token required"
+          },
+          "404": {
+            "description": "Folder or API not found"
+          },
+          "409": {
+            "description": "API already in folder"
+          }
+        }
+      }
+    },
+    "/v1/folders/{id}/api-links/{link}": {
+      "delete": {
+        "tags": ["Folders"],
+        "summary": "Remove API from folder",
+        "description": "Remove an API reference from a folder. The link parameter must be URL-encoded. Returns the updated folder on success.",
+        "operationId": "removeApiFromFolder",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "link",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "URL-encoded API link"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "API removed — updated folder returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FolderResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token required"
+          },
+          "404": {
+            "description": "Link not found in folder"
+          }
+        }
+      }
+    },
+    "/v1/folders/{id}/metadata": {
+      "get": {
+        "tags": ["Folders"],
+        "summary": "Folder metadata",
+        "description": "Returns folder preview: totalApis count, lastAdded timestamp, and preview[] (first 5 APIs with name, link, isAlive).",
+        "operationId": "getFolderMetadata",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folder metadata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FolderMetadataResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token required"
+          },
+          "404": {
+            "description": "Folder not found"
+          }
+        }
+      }
+    },
+    "/v1/fcm-tokens": {
+      "get": {
+        "tags": ["Push Notifications"],
+        "summary": "List my FCM tokens",
+        "description": "Returns all registered FCM push notification tokens for the current device.",
+        "operationId": "listFcmTokens",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "FCM tokens list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FcmTokensResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token required"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Push Notifications"],
+        "summary": "Register FCM token",
+        "description": "Register or update a Firebase Cloud Messaging token for push notifications. If the token already exists, updates lastUsedAt.",
+        "operationId": "registerFcmToken",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterFcmTokenRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Token registered",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FcmTokenResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "401": {
+            "description": "Access token required"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Push Notifications"],
+        "summary": "Revoke FCM token",
+        "description": "Deactivate an FCM token so it no longer receives push notifications.",
+        "operationId": "revokeFcmToken",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RevokeFcmTokenRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Token revoked",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RevokeResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token required"
+          }
+        }
+      }
+    },
+    "/track": {
+      "post": {
+        "tags": ["Tracking"],
+        "summary": "Track page events",
+        "description": "Batch insert page view / interaction events. Accepts a single event object or an array of up to 50 events. Client IP and user-agent are captured automatically.",
+        "operationId": "trackEvents",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/TrackEventRequest"
+                  },
+                  {
+                    "$ref": "#/components/schemas/TrackEventsBatchRequest"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Events recorded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrackResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "No events provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/metadata": {
+      "get": {
+        "tags": ["Metadata"],
+        "summary": "Fetch URL metadata",
+        "description": "Extract title, description, and Open Graph image from a URL. Uses a 5-second timeout. Private network addresses (localhost, 169.254.x.x, etc.) are blocked.",
+        "operationId": "getMetadata",
+        "parameters": [
+          {
+            "name": "url",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "URL to fetch metadata from"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Metadata extracted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MetadataResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing or invalid URL",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access to private networks is forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Failed to fetch metadata from target URL",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Anonymous device access token from POST /v1/auth/anonymous"
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        },
+        "required": ["error"]
+      },
+      "HealthResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "healthy"
+          },
+          "version": {
+            "type": "string"
+          },
+          "uptime": {
+            "type": "number"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "RootResponse": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "endpoints": {
+            "type": "object"
+          }
+        }
+      },
+      "LegacyApiItem": {
+        "type": "object",
+        "description": "Legacy API item format (from APIs.json flat or search results)",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "API UUID"
+          },
+          "slug": {
+            "type": "string",
+            "description": "Stable URL slug for this API. Use this when building /v1/apis/{slug} links instead of deriving from name."
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "auth": {
+            "type": "string",
+            "description": "Auth type name"
+          },
+          "https": {
+            "type": "string",
+            "description": "HTTPS support as string: 'true' or 'false'"
+          },
+          "cors": {
+            "type": "string",
+            "description": "CORS status: Yes, No, Unknown"
+          },
+          "link": {
+            "type": "string",
+            "format": "uri"
+          },
+          "imageUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "description": "Custom image URL set in the dashboard"
+          },
+          "category": {
+            "type": "string"
+          },
+          "apiType": {
+            "type": "string",
+            "description": "API protocol: REST, GraphQL, etc."
+          },
+          "pricing": {
+            "type": "string",
+            "description": "Pricing type: Free, Freemium, Paid"
+          },
+          "rateLimit": {
+            "type": "string"
+          },
+          "documentation": {
+            "type": "string",
+            "format": "uri"
+          },
+          "isAlive": {
+            "type": "boolean"
+          },
+          "responseTime": {
+            "type": "number",
+            "description": "Response time in ms, -1 if dead"
+          },
+          "statusCode": {
+            "type": "integer",
+            "nullable": true
+          },
+          "lastChecked": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "LegacyRecommendationItem": {
+        "type": "object",
+        "description": "Legacy recommendation item format",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "auth": {
+            "type": "string"
+          },
+          "https": {
+            "type": "boolean"
+          },
+          "cors": {
+            "type": "boolean"
+          },
+          "link": {
+            "type": "string",
+            "format": "uri"
+          },
+          "imageUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "description": "Custom image URL set in the dashboard"
+          },
+          "categoryId": {
+            "type": "string",
+            "description": "Category name (not ID)"
+          },
+          "pricing": {
+            "type": "string"
+          },
+          "alive": {
+            "type": "boolean"
+          },
+          "slug": {
+            "type": "string",
+            "description": "Stable URL slug for this API. Use this when building detail links."
+          }
+        }
+      },
+      "SearchResponse": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          },
+          "page": {
+            "type": "integer"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "totalPages": {
+            "type": "integer"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LegacyApiItem"
+            }
+          }
+        }
+      },
+      "RecommendResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LegacyRecommendationItem"
+            }
+          }
+        }
+      },
+      "CategoriesResponse": {
+        "type": "object",
+        "properties": {
+          "categories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CategoryDetail"
+            }
+          }
+        }
+      },
+      "CategoryApisResponse": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          },
+          "page": {
+            "type": "integer"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "totalPages": {
+            "type": "integer"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LegacyApiItem"
+            }
+          }
+        }
+      },
+      "CategoryDetail": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Category slug (used as ID)"
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name"
+          },
+          "description": {
+            "type": "string",
+            "description": "Category description"
+          },
+          "imageUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "description": "Banner/image URL"
+          },
+          "apiCount": {
+            "type": "integer",
+            "description": "Number of published APIs in this category"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Searchable tags"
+          },
+          "isTrending": {
+            "type": "boolean",
+            "description": "Whether this category is currently trending"
+          }
+        }
+      },
+      "SubmitApiRequest": {
+        "type": "object",
+        "description": "Submit an API for review. Provide at least 'name' or 'link'.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "API name"
+          },
+          "link": {
+            "type": "string",
+            "format": "uri",
+            "description": "API URL"
+          }
+        }
+      },
+      "SubmitApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "submissionId": {
+            "type": "string",
+            "description": "Public submission ID"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "approved"]
+          }
+        }
+      },
+      "AnonymousAuthRequest": {
+        "type": "object",
+        "properties": {
+          "deviceId": {
+            "type": "string",
+            "description": "Optional client-generated device ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "Optional display name"
+          },
+          "deviceInfo": {
+            "type": "object",
+            "properties": {
+              "platform": {
+                "type": "string",
+                "description": "ios, android, web"
+              },
+              "model": {
+                "type": "string",
+                "description": "Device model"
+              },
+              "osVersion": {
+                "type": "string"
+              },
+              "appVersion": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "RefreshTokenRequest": {
+        "type": "object",
+        "required": ["refreshToken"],
+        "properties": {
+          "refreshToken": {
+            "type": "string"
+          }
+        }
+      },
+      "RevokeRequest": {
+        "type": "object",
+        "required": ["refreshToken"],
+        "properties": {
+          "refreshToken": {
+            "type": "string"
+          }
+        }
+      },
+      "RevokeResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      },
+      "AuthTokenResponse": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "description": "JWT access token (15min expiry)"
+          },
+          "refreshToken": {
+            "type": "string",
+            "description": "Refresh token (30 day expiry, single-use)"
+          },
+          "expiresIn": {
+            "type": "integer",
+            "description": "Access token TTL in seconds",
+            "example": 900
+          },
+          "tokenType": {
+            "type": "string",
+            "example": "Bearer"
+          },
+          "device": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "deviceFingerprint": {
+                "type": "string"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      },
+      "UserProfileResponse": {
+        "type": "object",
+        "description": "Full user profile with aggregated stats",
+        "properties": {
+          "user": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "name": {
+                "type": "string",
+                "nullable": true,
+                "description": "Display name"
+              },
+              "email": {
+                "type": "string",
+                "format": "email",
+                "nullable": true,
+                "description": "Email if linked, null for anonymous"
+              },
+              "authProvider": {
+                "type": "string",
+                "enum": ["anonymous", "email"],
+                "description": "Authentication method"
+              },
+              "deviceInfo": {
+                "type": "object",
+                "nullable": true,
+                "description": "Device platform/model info"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "memberSince": {
+                "type": "string",
+                "format": "date-time",
+                "description": "When the user started using the app"
+              },
+              "lastUsedAt": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true
+              }
+            }
+          },
+          "stats": {
+            "type": "object",
+            "properties": {
+              "totalBookmarks": {
+                "type": "integer"
+              },
+              "totalFolders": {
+                "type": "integer"
+              },
+              "totalFolderItems": {
+                "type": "integer"
+              },
+              "daysSinceCreation": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      "UpdateProfileRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "Display name (1–100 characters)"
+          }
+        }
+      },
+      "LinkEmailRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Email address to link"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 6,
+            "description": "Password (min 6 characters)"
+          },
+          "name": {
+            "type": "string",
+            "description": "Optional display name (defaults to email prefix)"
+          }
+        }
+      },
+      "LinkEmailResponse": {
+        "type": "object",
+        "description": "Response after linking email. If merged, includes new tokens for the existing account.",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "authProvider": {
+            "type": "string",
+            "enum": ["email"]
+          },
+          "merged": {
+            "type": "boolean",
+            "description": "True if data was merged into an existing email account"
+          },
+          "accessToken": {
+            "type": "string",
+            "description": "New access token (only present if merged)"
+          },
+          "refreshToken": {
+            "type": "string",
+            "description": "New refresh token (only present if merged)"
+          },
+          "expiresIn": {
+            "type": "integer",
+            "description": "Token TTL in seconds (only present if merged)"
+          }
+        }
+      },
+      "EmailLoginRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "RecentlyAddedResponse": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LegacyApiItem"
+            }
+          }
+        }
+      },
+      "BookmarksResponse": {
+        "type": "object",
+        "properties": {
+          "bookmarks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BookmarkItem"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        }
+      },
+      "BookmarkItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "api": {
+            "$ref": "#/components/schemas/BookmarkApi"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "BookmarkApi": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "link": {
+            "type": "string",
+            "format": "uri"
+          },
+          "imageUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "description": "Custom image URL set in the dashboard"
+          },
+          "documentationUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "httpsSupport": {
+            "type": "boolean"
+          },
+          "corsStatus": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "category": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            }
+          },
+          "authType": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            }
+          },
+          "apiType": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            }
+          },
+          "pricingType": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            }
+          },
+          "currentHealth": {
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "isAlive": {
+                "type": "boolean"
+              },
+              "responseTimeMs": {
+                "type": "integer",
+                "nullable": true
+              },
+              "statusCode": {
+                "type": "integer",
+                "nullable": true
+              },
+              "uptime30d": {
+                "type": "number",
+                "nullable": true
+              }
+            }
+          }
+        }
+      },
+      "AddBookmarkRequest": {
+        "type": "object",
+        "required": ["apiId"],
+        "properties": {
+          "apiId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "API ID to bookmark"
+          }
+        }
+      },
+      "BookmarkResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "api": {
+            "$ref": "#/components/schemas/BookmarkApi"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "FoldersResponse": {
+        "type": "object",
+        "properties": {
+          "folders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FolderItem"
+            }
+          }
+        }
+      },
+      "FolderItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "iconCodePoint": {
+            "type": "integer"
+          },
+          "sortOrder": {
+            "type": "integer"
+          },
+          "apiLinks": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Array of API URLs in this folder"
+          },
+          "apiIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Stable API IDs in this folder/project"
+          },
+          "apiCount": {
+            "type": "integer"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "FolderResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "iconCodePoint": {
+            "type": "integer"
+          },
+          "sortOrder": {
+            "type": "integer"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "FolderDetailResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "iconCodePoint": {
+            "type": "integer"
+          },
+          "sortOrder": {
+            "type": "integer"
+          },
+          "apiLinks": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          "apiIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "apiCount": {
+            "type": "integer"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "link": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "apiId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "nullable": true
+                },
+                "sortOrder": {
+                  "type": "integer"
+                },
+                "addedAt": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CreateFolderRequest": {
+        "type": "object",
+        "required": ["title"],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Folder name"
+          },
+          "iconCodePoint": {
+            "type": "integer",
+            "description": "Flutter Material icon code point",
+            "default": 0
+          }
+        }
+      },
+      "UpdateFolderRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "iconCodePoint": {
+            "type": "integer"
+          }
+        }
+      },
+      "AddApiLinkRequest": {
+        "type": "object",
+        "required": ["link"],
+        "properties": {
+          "link": {
+            "type": "string",
+            "format": "uri",
+            "description": "API URL reference"
+          },
+          "apiId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Optional API ID for validation"
+          }
+        }
+      },
+      "FolderMetadataResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "iconCodePoint": {
+            "type": "integer"
+          },
+          "totalApis": {
+            "type": "integer"
+          },
+          "lastAdded": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "preview": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "apiId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "nullable": true
+                },
+                "link": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "name": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "isAlive": {
+                  "type": "boolean",
+                  "nullable": true
+                }
+              }
+            }
+          }
+        }
+      },
+      "TrackEventRequest": {
+        "type": "object",
+        "description": "Single page event",
+        "properties": {
+          "eventType": {
+            "type": "string",
+            "maxLength": 50,
+            "description": "Event type (e.g. page_view, click). Aliased as `event`."
+          },
+          "path": {
+            "type": "string",
+            "maxLength": 500,
+            "description": "Page path"
+          },
+          "element": {
+            "type": "string",
+            "maxLength": 500,
+            "description": "UI element identifier"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Arbitrary metadata"
+          },
+          "sessionId": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "Client session ID"
+          }
+        }
+      },
+      "TrackEventsBatchRequest": {
+        "type": "object",
+        "description": "Batch of page events (max 50)",
+        "properties": {
+          "events": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TrackEventRequest"
+            },
+            "maxItems": 50
+          }
+        }
+      },
+      "TrackResponse": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "example": true
+          },
+          "count": {
+            "type": "integer",
+            "description": "Number of events recorded"
+          }
+        }
+      },
+      "MetadataResponse": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "ogImage": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          }
+        }
+      },
+      "RegisterFcmTokenRequest": {
+        "type": "object",
+        "required": ["token", "platform"],
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "FCM device token from Firebase"
+          },
+          "platform": {
+            "type": "string",
+            "enum": ["ios", "android", "web"],
+            "description": "Device platform"
+          },
+          "appVersion": {
+            "type": "string",
+            "description": "App version string"
+          }
+        }
+      },
+      "RevokeFcmTokenRequest": {
+        "type": "object",
+        "required": ["token"],
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "FCM token to revoke"
+          }
+        }
+      },
+      "FcmTokensResponse": {
+        "type": "object",
+        "properties": {
+          "tokens": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FcmTokenItem"
+            }
+          }
+        }
+      },
+      "FcmTokenItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "token": {
+            "type": "string"
+          },
+          "platform": {
+            "type": "string"
+          },
+          "appVersion": {
+            "type": "string",
+            "nullable": true
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "lastUsedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "FcmTokenResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "ApiHealthSummary": {
+        "type": "object",
+        "required": ["status", "observationCount"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "OPERATIONAL",
+              "AUTHENTICATION_REQUIRED",
+              "RATE_LIMITED",
+              "DEGRADED",
+              "UNAVAILABLE",
+              "UNKNOWN"
+            ]
+          },
+          "statusCode": {
+            "type": "integer",
+            "nullable": true
+          },
+          "responseTimeMs": {
+            "type": "integer",
+            "nullable": true
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "checkMethod": {
+            "type": "string",
+            "nullable": true
+          },
+          "checkedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "uptime24h": {
+            "type": "number",
+            "nullable": true
+          },
+          "uptime7d": {
+            "type": "number",
+            "nullable": true
+          },
+          "uptime30d": {
+            "type": "number",
+            "nullable": true
+          },
+          "observationCount": {
+            "type": "integer"
+          }
+        }
+      },
+      "FieldVerification": {
+        "type": "object",
+        "required": ["source", "verifiedAt"],
+        "properties": {
+          "source": {
+            "type": "string",
+            "enum": [
+              "PROVIDER",
+              "AUTOMATED_CHECK",
+              "CORE_API_REVIEW",
+              "COMMUNITY_REPORT",
+              "IMPORTED",
+              "UNKNOWN"
+            ]
+          },
+          "verifiedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "ApiDetailResponse": {
+        "type": "object",
+        "required": ["data"],
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": [
+              "id",
+              "slug",
+              "name",
+              "shortDescription",
+              "category",
+              "access",
+              "links",
+              "capabilities",
+              "health",
+              "verification",
+              "warnings",
+              "updatedAt"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "slug": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "shortDescription": {
+                "type": "string"
+              },
+              "fullDescription": {
+                "type": "string",
+                "nullable": true
+              },
+              "imageUrl": {
+                "type": "string",
+                "format": "uri",
+                "nullable": true
+              },
+              "category": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "slug": {
+                    "type": "string"
+                  }
+                }
+              },
+              "access": {
+                "type": "object",
+                "properties": {
+                  "authType": {
+                    "type": "string",
+                    "enum": ["NONE", "API_KEY", "OAUTH2", "BASIC", "UNKNOWN"]
+                  },
+                  "pricingType": {
+                    "type": "string",
+                    "enum": ["FREE", "FREEMIUM", "PAID", "UNKNOWN"]
+                  },
+                  "rateLimit": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "creditCardRequired": {
+                    "type": "boolean",
+                    "nullable": true
+                  },
+                  "commercialUseAllowed": {
+                    "type": "boolean",
+                    "nullable": true
+                  }
+                }
+              },
+              "links": {
+                "type": "object",
+                "properties": {
+                  "baseUrl": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "homepageUrl": {
+                    "type": "string",
+                    "format": "uri",
+                    "nullable": true
+                  },
+                  "documentationUrl": {
+                    "type": "string",
+                    "format": "uri",
+                    "nullable": true
+                  },
+                  "openApiUrl": {
+                    "type": "string",
+                    "format": "uri",
+                    "nullable": true
+                  },
+                  "statusPageUrl": {
+                    "type": "string",
+                    "format": "uri",
+                    "nullable": true
+                  },
+                  "termsUrl": {
+                    "type": "string",
+                    "format": "uri",
+                    "nullable": true
+                  }
+                }
+              },
+              "capabilities": {
+                "type": "object",
+                "properties": {
+                  "https": {
+                    "type": "boolean",
+                    "nullable": true
+                  },
+                  "cors": {
+                    "type": "string",
+                    "enum": ["SUPPORTED", "UNSUPPORTED", "UNKNOWN"]
+                  },
+                  "protocol": {
+                    "type": "string",
+                    "enum": ["REST", "GRAPHQL", "SOAP", "WEBSOCKET", "UNKNOWN"]
+                  },
+                  "responseFormats": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "sdkLanguages": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "openApiAvailable": {
+                    "type": "boolean",
+                    "nullable": true
+                  }
+                }
+              },
+              "health": {
+                "$ref": "#/components/schemas/ApiHealthSummary"
+              },
+              "verification": {
+                "type": "object",
+                "properties": {
+                  "health": {
+                    "$ref": "#/components/schemas/FieldVerification"
+                  },
+                  "pricing": {
+                    "$ref": "#/components/schemas/FieldVerification"
+                  },
+                  "authentication": {
+                    "$ref": "#/components/schemas/FieldVerification"
+                  },
+                  "documentation": {
+                    "$ref": "#/components/schemas/FieldVerification"
+                  },
+                  "cors": {
+                    "$ref": "#/components/schemas/FieldVerification"
+                  }
+                }
+              },
+              "warnings": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["code", "message", "severity"],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": ["INFO", "WARNING", "ERROR"]
+                    },
+                    "verifiedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "nullable": true
+                    }
+                  }
+                }
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      },
+      "ApiAlternativesResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "slug",
+                "name",
+                "shortDescription",
+                "pricingType",
+                "authType",
+                "baseUrl"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "slug": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "shortDescription": {
+                  "type": "string"
+                },
+                "pricingType": {
+                  "type": "string",
+                  "enum": ["FREE", "FREEMIUM", "PAID", "UNKNOWN"]
+                },
+                "authType": {
+                  "type": "string",
+                  "enum": ["NONE", "API_KEY", "OAUTH2", "BASIC", "UNKNOWN"]
+                },
+                "baseUrl": {
+                  "type": "string",
+                  "format": "uri"
+                }
+              }
+            }
+          }
+        }
+      },
+      "HealthCheckResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": ["state"],
+            "properties": {
+              "state": {
+                "type": "string",
+                "enum": ["CACHED", "QUEUED", "RUNNING", "COMPLETED", "FAILED"]
+              },
+              "checkId": {
+                "type": "string",
+                "nullable": true
+              },
+              "pollUrl": {
+                "type": "string",
+                "nullable": true
+              },
+              "pollAfterMs": {
+                "type": "integer",
+                "nullable": true
+              },
+              "health": {
+                "$ref": "#/components/schemas/ApiHealthSummary"
+              },
+              "previousHealth": {
+                "$ref": "#/components/schemas/ApiHealthSummary"
+              },
+              "cooldownEndsAt": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true
+              },
+              "error": {
+                "type": "string",
+                "nullable": true
+              }
+            }
+          }
+        }
+      },
+      "CreateApiReportRequest": {
+        "type": "object",
+        "required": ["reason"],
+        "properties": {
+          "reason": {
+            "type": "string",
+            "enum": [
+              "API_UNAVAILABLE",
+              "LINK_BROKEN",
+              "PRICING_INCORRECT",
+              "AUTHENTICATION_INCORRECT",
+              "DESCRIPTION_INCORRECT",
+              "DISCONTINUED",
+              "OTHER"
+            ]
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 2000,
+            "nullable": true
+          }
+        }
+      },
+      "ApiReportResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["PENDING", "IN_REVIEW", "RESOLVED", "REJECTED"]
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          },
+          "deduplicated": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ProjectMembershipResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "title": {
+                "type": "string"
+              },
+              "apiIds": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "apiLinks": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                }
+              },
+              "apiCount": {
+                "type": "integer"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      },
+      "Pagination": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          },
+          "totalPages": {
+            "type": "integer"
+          }
+        }
+      }
+    }
+  }
+}

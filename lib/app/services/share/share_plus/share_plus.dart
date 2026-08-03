@@ -1,4 +1,4 @@
-import 'package:public_apis_desktop_client/app/services/share/interfaces/share_text.dart';
+import 'package:api_scout/app/services/share/interfaces/share_text.dart';
 import 'package:share_plus/share_plus.dart';
 
 class ShareService implements ShareText {

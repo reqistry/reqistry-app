@@ -1,0 +1,656 @@
+{
+  "pages": {
+    "login": {
+      "route": "/login",
+      "layout": "centered_card",
+      "background": "#f9f9f9",
+      "cardMaxWidth": 420,
+      "cardShadow": {"offsetX": 4, "offsetY": 4, "blur": 0, "color": "#000000"},
+      "sections": [
+        {
+          "type": "header",
+          "children": [
+            {
+              "type": "icon_container",
+              "width": 32,
+              "height": 32,
+              "background": "#000000",
+              "icon": "terminal",
+              "iconColor": "#ffffff",
+              "iconSize": 16
+            },
+            {"type": "text", "text": "API Scout", "style": "headlineSm", "letterSpacing": -0.03},
+            {"type": "text", "text": "Sign in to your account", "style": "bodyMd", "color": "#7e7576"}
+          ],
+          "gap": 8,
+          "marginBottom": 24
+        },
+        {
+          "type": "form",
+          "fields": [
+            {"name": "email", "label": "EMAIL", "type": "email", "placeholder": "you@example.com", "required": true},
+            {"name": "password", "label": "PASSWORD", "type": "password", "placeholder": "••••••••", "required": true}
+          ],
+          "submitButton": {"label": "SIGN IN", "variant": "primary", "fullWidth": true, "size": "lg"},
+          "errorDisplay": {"position": "below_form", "color": "#dc2626", "style": "bodyMd"}
+        }
+      ]
+    },
+    "dashboard_overview": {
+      "route": "/dashboard",
+      "layout": "page_with_nav",
+      "topNav": {
+        "title": "OVERVIEW",
+        "links": [
+          {"label": "LIVE DOCS", "url": "https://1423-2a09-bac5-3212-2c5a-00-46b-c.ngrok-free.app/docs", "icon": "open_in_new"}
+        ]
+      },
+      "sections": [
+        {
+          "type": "stat_grid",
+          "columns": 4,
+          "gap": 24,
+          "cards": [
+            {"label": "Total APIs", "value": "totalApis", "icon": "api", "style": "metric_large"},
+            {"label": "Total Categories", "value": "totalCategories", "icon": "category", "style": "metric_large"},
+            {"label": "Pending Submissions", "value": "pendingSubmissions", "icon": "pending", "style": "metric_large", "alertWhen": ">0"},
+            {"label": "APIs Added This Week", "value": "apisThisWeek", "icon": "trending_up", "style": "metric_large"}
+          ]
+        },
+        {
+          "type": "two_column",
+          "leftColumn": {
+            "span": 6,
+            "children": [
+              {
+                "type": "bar_chart",
+                "title": "API Status",
+                "data": [
+                  {"label": "Alive", "value": "aliveApis", "color": "#16a34a"},
+                  {"label": "Dead", "value": "deadApis", "color": "#dc2626"},
+                  {"label": "Unknown", "value": "unknownHealth", "color": "#7e7576"}
+                ],
+                "maxBarWidth": 200,
+                "barHeight": 12
+              },
+              {
+                "type": "metric_card",
+                "label": "Health Checks Today",
+                "value": "healthChecksToday",
+                "icon": "health_and_safety"
+              },
+              {
+                "type": "metric_card",
+                "label": "Avg. Response Time",
+                "value": "avgResponseTime",
+                "suffix": "ms",
+                "icon": "speed"
+              }
+            ]
+          },
+          "rightColumn": {
+            "span": 6,
+            "children": [
+              {
+                "type": "top_endpoints_table",
+                "title": "Top Endpoints",
+                "columns": ["Endpoint", "Visits"],
+                "icon": "link",
+                "data": "hardcoded_sample_data"
+              },
+              {
+                "type": "metric_card",
+                "label": "Availability",
+                "value": "availability",
+                "suffix": "%",
+                "icon": "check_circle",
+                "color": "#16a34a"
+              },
+              {
+                "type": "metric_card",
+                "label": "Dead APIs",
+                "value": "deadApis",
+                "icon": "error",
+                "color": "#dc2626"
+              }
+            ]
+          }
+        },
+        {
+          "type": "section",
+          "title": "SYSTEM HEALTH",
+          "icon": "health_and_safety",
+          "children": [
+            {
+              "type": "status_grid",
+              "columns": 3,
+              "items": [
+                {"label": "PostgreSQL", "icon": "storage", "status": "active", "color": "#16a34a"},
+                {"label": "Redis", "icon": "memory", "status": "active", "color": "#16a34a"},
+                {"label": "Worker", "icon": "settings", "status": "active", "color": "#16a34a"}
+              ]
+            },
+            {
+              "type": "activity_log",
+              "title": "RECENT ACTIVITY",
+              "icon": "activity_log",
+              "items": [
+                {"text": "Admin logged in", "icon": "login", "timestamp": "Just now"},
+                {"text": "Health check completed", "icon": "health_and_safety", "timestamp": "2 minutes ago"},
+                {"text": "Worker started", "icon": "play_arrow", "timestamp": "5 minutes ago"}
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "apis_catalog": {
+      "route": "/dashboard/apis",
+      "layout": "page_with_table",
+      "sections": [
+        {
+          "type": "page_header",
+          "title": "API CATALOG",
+          "subtitle": "Manage your public API collection",
+          "actions": [
+            {"label": "NEW API", "icon": "add", "variant": "primary", "action": "openCreateModal"}
+          ]
+        },
+        {
+          "type": "search_bar",
+          "placeholder": "Search APIs...",
+          "filters": [
+            {"name": "status", "options": ["All", "Published", "Draft", "Archived"]},
+            {"name": "category", "options": "dynamic_from_api"},
+            {"name": "source", "options": ["All", "Database", "Import", "Submission"]}
+          ]
+        },
+        {
+          "type": "data_table",
+          "columns": [
+            {"key": "select", "type": "checkbox", "width": 40},
+            {"key": "name", "label": "API Name", "sortable": true, "style": "headlineSm"},
+            {"key": "category", "label": "Category", "sortable": true, "style": "bodyMd"},
+            {"key": "authType", "label": "Auth", "style": "chip"},
+            {"key": "pricingType", "label": "Pricing", "style": "chip"},
+            {"key": "httpsSupport", "label": "HTTPS", "style": "boolean_icon"},
+            {"key": "currentHealth.isAlive", "label": "Status", "style": "status_dot"},
+            {"key": "currentHealth.responseTimeMs", "label": "Response", "style": "response_badge"},
+            {"key": "actions", "type": "actions", "width": 80}
+          ],
+          "rowClick": "openDetailPanel",
+          "selectedStyle": {"leftBorder": "2px #000000", "background": "#e8e8e8"},
+          "pagination": {"pageSize": 20, "showInfo": true}
+        },
+        {
+          "type": "detail_panel",
+          "position": "right",
+          "width": 384,
+          "trigger": "row_click",
+          "closeButton": "top_right",
+          "sections": [
+            {
+              "type": "api_detail_header",
+              "fields": [
+                {"key": "name", "style": "headlineMd"},
+                {"key": "description", "style": "bodyLg", "color": "#4c4546"},
+                {"key": "link", "style": "codeMd", "isLink": true},
+                {"key": "documentationUrl", "style": "codeMd", "isLink": true}
+              ]
+            },
+            {
+              "type": "bento_grid",
+              "columns": 3,
+              "cells": [
+                {"label": "Category", "value": "category.name", "icon": "category"},
+                {"label": "Auth", "value": "authType.name", "icon": "lock"},
+                {"label": "Status", "value": "currentHealth.isAlive", "icon": "check_circle", "format": "alive_status"},
+                {"label": "API Type", "value": "apiType.name", "icon": "dns"},
+                {"label": "Pricing", "value": "pricingType.name", "icon": "payments"},
+                {"label": "Response", "value": "currentHealth.responseTimeMs", "icon": "speed", "format": "response_ms"}
+              ]
+            },
+            {
+              "type": "metadata_section",
+              "title": "METADATA",
+              "fields": [
+                {"label": "HTTPS", "value": "httpsSupport", "format": "boolean_badge"},
+                {"label": "CORS", "value": "corsStatus", "format": "status_badge"},
+                {"label": "Rate Limit", "value": "rateLimitText"},
+                {"label": "Source", "value": "source"},
+                {"label": "Last Checked", "value": "currentHealth.lastCheckedAt", "format": "relative_time"}
+              ]
+            },
+            {
+              "type": "health_history",
+              "title": "RECENT HEALTH CHECKS",
+              "maxItems": 20
+            },
+            {
+              "type": "actions_bar",
+              "buttons": [
+                {"label": "EDIT", "variant": "primary", "action": "openEditModal"},
+                {"label": "VISIT", "variant": "secondary", "action": "openLink"},
+                {"label": "DELETE", "variant": "destructive", "action": "confirmDelete"}
+              ]
+            }
+          ]
+        },
+        {
+          "type": "modal",
+          "id": "create_edit_api",
+          "title": "Create New API",
+          "size": "lg",
+          "fields": [
+            {"name": "name", "label": "NAME", "type": "text", "required": true},
+            {"name": "description", "label": "DESCRIPTION", "type": "textarea", "required": true},
+            {"name": "link", "label": "URL", "type": "url", "required": true},
+            {"name": "documentationUrl", "label": "DOCUMENTATION URL", "type": "url"},
+            {"name": "categoryName", "label": "CATEGORY", "type": "select", "required": true, "options": "dynamic"},
+            {"name": "authType", "label": "AUTH TYPE", "type": "select", "default": "No", "options": ["No", "API Key", "OAuth", "Basic Auth", "Bearer Token"]},
+            {"name": "apiType", "label": "API TYPE", "type": "select", "default": "REST", "options": ["REST", "GraphQL", "WebSocket", "gRPC"]},
+            {"name": "pricingType", "label": "PRICING", "type": "select", "default": "Free", "options": ["Free", "Freemium", "Paid", "Contact for pricing"]},
+            {"name": "httpsSupport", "label": "HTTPS", "type": "checkbox", "default": true},
+            {"name": "corsStatus", "label": "CORS", "type": "select", "default": "Yes", "options": ["Yes", "No", "Unknown"]},
+            {"name": "rateLimitText", "label": "RATE LIMIT", "type": "text"},
+            {"name": "status", "label": "STATUS", "type": "select", "default": "PUBLISHED", "options": ["PUBLISHED", "DRAFT", "ARCHIVED"]}
+          ],
+          "footer": [
+            {"label": "CANCEL", "variant": "secondary", "action": "close"},
+            {"label": "SAVE", "variant": "primary", "action": "submit"}
+          ]
+        }
+      ]
+    },
+    "categories": {
+      "route": "/dashboard/categories",
+      "layout": "page_with_list",
+      "sections": [
+        {
+          "type": "page_header",
+          "title": "CATEGORIES",
+          "subtitle": "Organize your API collection"
+        },
+        {
+          "type": "inline_form",
+          "position": "top",
+          "fields": [
+            {"name": "name", "label": "CATEGORY NAME", "type": "text", "required": true, "flex": 1},
+            {"name": "description", "label": "DESCRIPTION", "type": "text", "flex": 2}
+          ],
+          "submitButton": {"label": "ADD CATEGORY", "variant": "primary"}
+        },
+        {
+          "type": "data_table",
+          "columns": [
+            {"key": "name", "label": "CATEGORY", "sortable": true, "style": "bodyMd"},
+            {"key": "apiCount", "label": "APIs", "style": "metric_small", "width": 60},
+            {"key": "isTrendy", "label": "TRENDY", "style": "boolean_badge", "width": 80},
+            {"key": "isActive", "label": "ACTIVE", "style": "boolean_badge", "width": 80},
+            {"key": "actions", "type": "actions", "width": 120}
+          ],
+          "sortOrder": "trendy_first_then_alpha",
+          "rowActions": [
+            {"label": "TOGGLE TRENDY", "icon": "trending_up", "action": "toggleTrendy"},
+            {"label": "EDIT", "icon": "edit", "action": "edit"},
+            {"label": "DELETE", "icon": "delete", "action": "confirmDelete"}
+          ],
+          "togglingSpinner": true
+        }
+      ]
+    },
+    "submissions": {
+      "route": "/dashboard/submissions",
+      "layout": "page_with_table",
+      "sections": [
+        {
+          "type": "page_header",
+          "title": "SUBMISSIONS",
+          "subtitle": "Review community contributions",
+          "badge": {"value": "pendingCount", "variant": "primary"}
+        },
+        {
+          "type": "status_filter_bar",
+          "style": "segmented_control",
+          "options": ["All", "Pending", "Approved", "Rejected"],
+          "defaultValue": "All"
+        },
+        {
+          "type": "data_table",
+          "columns": [
+            {"key": "name", "label": "NAME", "style": "bodyMd"},
+            {"key": "category", "label": "CATEGORY", "style": "bodyMd"},
+            {"key": "submitterEmail", "label": "SUBMITTER", "style": "codeMd"},
+            {"key": "status", "label": "STATUS", "style": "status_badge"},
+            {"key": "createdAt", "label": "SUBMITTED", "style": "relative_time"},
+            {"key": "actions", "type": "actions", "width": 160}
+          ],
+          "rowActions": [
+            {"label": "REVIEW", "icon": "visibility", "action": "openReviewModal"},
+            {"label": "APPROVE", "icon": "check", "action": "approve", "color": "#16a34a"},
+            {"label": "REJECT", "icon": "close", "action": "reject", "color": "#dc2626"}
+          ]
+        },
+        {
+          "type": "modal",
+          "id": "review_submission",
+          "title": "Review Submission",
+          "size": "lg",
+          "sections": [
+            {
+              "type": "bento_grid",
+              "columns": 3,
+              "cells": [
+                {"label": "Name", "value": "name"},
+                {"label": "Category", "value": "category"},
+                {"label": "Auth", "value": "auth"},
+                {"label": "URL", "value": "link", "isLink": true},
+                {"label": "HTTPS", "value": "httpsSupport", "format": "boolean_badge"},
+                {"label": "CORS", "value": "cors"},
+                {"label": "Pricing", "value": "pricing"},
+                {"label": "Rate Limit", "value": "rateLimit"},
+                {"label": "Documentation", "value": "documentation", "isLink": true}
+              ]
+            },
+            {"type": "field", "label": "DESCRIPTION", "value": "description", "style": "bodyLg"},
+            {"type": "field", "label": "NOTES", "value": "notes", "style": "bodyMd"},
+            {"type": "field", "label": "SUBMITTER", "value": "submitterEmail", "style": "codeMd"}
+          ],
+          "footer": [
+            {"label": "REJECT", "variant": "destructive", "action": "reject"},
+            {"label": "APPROVE", "variant": "primary", "action": "approve"}
+          ]
+        }
+      ]
+    },
+    "jobs": {
+      "route": "/dashboard/jobs",
+      "layout": "page_with_grid",
+      "sections": [
+        {
+          "type": "page_header",
+          "title": "HEALTH & JOBS",
+          "subtitle": "Monitor system health and manage background jobs"
+        },
+        {
+          "type": "stat_grid",
+          "columns": 4,
+          "gap": 24,
+          "cards": [
+            {"label": "Total APIs", "value": "totalApis", "icon": "api"},
+            {"label": "Dead APIs", "value": "deadApis", "icon": "error", "color": "#dc2626"},
+            {"label": "Avg Response", "value": "avgResponseTime", "suffix": "ms", "icon": "speed"},
+            {"label": "Availability", "value": "availability", "suffix": "%", "icon": "check_circle", "color": "#16a34a"}
+          ]
+        },
+        {
+          "type": "section",
+          "title": "SYSTEM STATUS",
+          "children": [
+            {
+              "type": "status_grid",
+              "columns": 3,
+              "items": [
+                {"label": "PostgreSQL", "icon": "storage", "status": "active"},
+                {"label": "Redis", "icon": "memory", "status": "active"},
+                {"label": "Worker", "icon": "settings", "status": "active"}
+              ]
+            }
+          ]
+        },
+        {
+          "type": "section",
+          "title": "BACKGROUND JOBS",
+          "children": [
+            {
+              "type": "job_cards",
+              "columns": 4,
+              "cards": [
+                {"label": "SCRAPE", "icon": "download", "action": "scrape", "description": "Full scrape from publicapis.dev"},
+                {"label": "HEALTH CHECK", "icon": "health_and_safety", "action": "healthCheck", "description": "Check all API health"},
+                {"label": "METADATA", "icon": "info", "action": "metadataRefresh", "description": "Refresh API metadata"},
+                {"label": "EXPORT", "icon": "upload", "action": "export", "description": "Generate legacy export"}
+              ]
+            }
+          ]
+        },
+        {
+          "type": "section",
+          "title": "RECENT JOBS",
+          "children": [
+            {
+              "type": "data_table",
+              "columns": [
+                {"key": "type", "label": "TYPE", "style": "chip"},
+                {"key": "status", "label": "STATUS", "style": "status_badge"},
+                {"key": "startedAt", "label": "STARTED", "style": "relative_time"},
+                {"key": "completedAt", "label": "COMPLETED", "style": "relative_time"}
+              ],
+              "pagination": {"pageSize": 10}
+            }
+          ]
+        }
+      ]
+    },
+    "api_tester": {
+      "route": "/dashboard/tester",
+      "layout": "page_with_tester",
+      "sections": [
+        {
+          "type": "page_header",
+          "title": "API TESTER",
+          "subtitle": "Test all 67 backend endpoints interactively"
+        },
+        {
+          "type": "tabs",
+          "tabGroups": [
+            {"id": "flutter", "label": "FLUTTER CLIENT", "count": 21},
+            {"id": "auth", "label": "AUTH", "count": 3},
+            {"id": "apis", "label": "APIS CRUD", "count": 9},
+            {"id": "categories", "label": "CATEGORIES", "count": 4},
+            {"id": "submissions", "label": "SUBMISSIONS", "count": 7},
+            {"id": "jobs", "label": "JOBS", "count": 5},
+            {"id": "analytics", "label": "ANALYTICS & AUDIT", "count": 2},
+            {"id": "settings", "label": "SETTINGS", "count": 2}
+          ]
+        },
+        {
+          "type": "tester_layout",
+          "split": "horizontal",
+          "leftPanel": {
+            "width": "40%",
+            "title": "ENDPOINTS",
+            "searchable": true,
+            "items": {
+              "style": "compact_list",
+              "showMethodBadge": true,
+              "showPresetIcon": true
+            }
+          },
+          "rightPanel": {
+            "width": "60%",
+            "sections": [
+              {
+                "type": "request_builder",
+                "fields": [
+                  {"name": "method", "type": "method_selector", "options": ["GET", "POST", "PUT", "PATCH", "DELETE"]},
+                  {"name": "path", "type": "text", "placeholder": "/admin/v1/apis"}
+                ],
+                "actionButton": {"label": "SEND", "variant": "primary", "size": "lg"}
+              },
+              {
+                "type": "response_viewer",
+                "tabs": ["Body", "Headers"],
+                "statusBar": {
+                  "fields": [
+                    {"label": "STATUS", "key": "status", "format": "status_badge"},
+                    {"label": "TIME", "key": "time", "format": "duration"},
+                    {"label": "SIZE", "key": "size", "format": "bytes"}
+                  ]
+                },
+                "bodyViewer": {
+                  "type": "code_block",
+                  "language": "json",
+                  "fontFamily": "JetBrains Mono",
+                  "scrollable": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "audit_logs": {
+      "route": "/dashboard/audit",
+      "layout": "page_with_table",
+      "sections": [
+        {
+          "type": "page_header",
+          "title": "AUDIT LOGS",
+          "subtitle": "Track all admin activity"
+        },
+        {
+          "type": "search_bar",
+          "placeholder": "Search logs...",
+          "filters": [
+            {
+              "name": "action",
+              "label": "ACTION",
+              "type": "multi_select_with_counts",
+              "options": "dynamic_from_facets"
+            },
+            {
+              "name": "entityType",
+              "label": "ENTITY TYPE",
+              "type": "multi_select_with_counts",
+              "options": "dynamic_from_facets"
+            },
+            {
+              "name": "dateFrom",
+              "label": "FROM",
+              "type": "date"
+            },
+            {
+              "name": "dateTo",
+              "label": "TO",
+              "type": "date"
+            }
+          ],
+          "activeFilterBadge": {"show": true, "count": "activeFilterCount"},
+          "clearFiltersButton": {"label": "CLEAR FILTERS"}
+        },
+        {
+          "type": "data_table",
+          "columns": [
+            {"key": "action", "label": "ACTION", "style": "action_tag", "width": 140},
+            {"key": "entityType", "label": "ENTITY", "style": "entity_tag", "width": 120},
+            {"key": "description", "label": "DESCRIPTION", "style": "bodyMd", "flex": 1},
+            {"key": "actor", "label": "ACTOR", "style": "avatar_with_name", "width": 160},
+            {"key": "createdAt", "label": "TIME", "style": "relative_time", "width": 120}
+          ],
+          "rowClick": "openDetailModal",
+          "pagination": {"pageSize": 50, "showInfo": true}
+        },
+        {
+          "type": "detail_modal",
+          "id": "audit_detail",
+          "title": "Log Details",
+          "sections": [
+            {
+              "type": "detail_fields",
+              "columns": 2,
+              "fields": [
+                {"label": "Timestamp", "value": "createdAt", "format": "full_datetime"},
+                {"label": "Actor", "value": "actor.name"},
+                {"label": "Email", "value": "actor.email", "style": "codeMd"},
+                {"label": "Entity ID", "value": "entityId", "style": "codeMd"}
+              ]
+            },
+            {
+              "type": "metadata_grid",
+              "title": "METADATA",
+              "columns": 2,
+              "items": "metadata_entries"
+            },
+            {
+              "type": "json_diff",
+              "title": "CHANGES",
+              "leftLabel": "BEFORE",
+              "rightLabel": "AFTER",
+              "format": "side_by_side_json"
+            }
+          ]
+        },
+        {
+          "type": "export_bar",
+          "buttons": [
+            {"label": "EXPORT CSV", "icon": "download", "action": "exportCsv"},
+            {"label": "EXPORT JSON", "icon": "download", "action": "exportJson"}
+          ]
+        }
+      ]
+    },
+    "settings": {
+      "route": "/dashboard/settings",
+      "layout": "page_with_forms",
+      "sections": [
+        {
+          "type": "page_header",
+          "title": "SETTINGS",
+          "subtitle": "Configure your platform"
+        },
+        {
+          "type": "settings_groups",
+          "groups": [
+            {
+              "title": "SCRAPE SETTINGS",
+              "icon": "download",
+              "fields": [
+                {"name": "scrape_interval_minutes", "label": "Scrape Interval (minutes)", "type": "number", "default": 60},
+                {"name": "scrape_enabled", "label": "Auto-Scrape", "type": "toggle", "default": true}
+              ]
+            },
+            {
+              "title": "HEALTH CHECK SETTINGS",
+              "icon": "health_and_safety",
+              "fields": [
+                {"name": "health_check_interval_minutes", "label": "Health Check Interval (minutes)", "type": "number", "default": 30},
+                {"name": "health_check_enabled", "label": "Auto Health Checks", "type": "toggle", "default": true},
+                {"name": "timeout_seconds", "label": "Timeout (seconds)", "type": "number", "default": 10}
+              ]
+            },
+            {
+              "title": "SUBMISSION SETTINGS",
+              "icon": "input",
+              "fields": [
+                {"name": "auto_approve_submissions", "label": "Auto-Approve Submissions", "type": "toggle", "default": false},
+                {"name": "require_email", "label": "Require Submitter Email", "type": "toggle", "default": true}
+              ]
+            },
+            {
+              "title": "DISPLAY SETTINGS",
+              "icon": "display_settings",
+              "fields": [
+                {"name": "max_apis_per_page", "label": "Max APIs Per Page", "type": "number", "default": 100},
+                {"name": "show_response_times", "label": "Show Response Times", "type": "toggle", "default": true}
+              ]
+            },
+            {
+              "title": "API VERSION",
+              "icon": "info",
+              "fields": [
+                {"name": "api_version", "label": "API Version", "type": "text", "default": "v2.4.0", "readonly": true},
+                {"name": "build_date", "label": "Build Date", "type": "text", "default": "2026-07-30", "readonly": true}
+              ]
+            }
+          ]
+        },
+        {
+          "type": "save_bar",
+          "position": "bottom_sticky",
+          "button": {"label": "SAVE ALL SETTINGS", "variant": "primary", "fullWidth": false}
+        }
+      ]
+    }
+  }
+}

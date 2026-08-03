@@ -1,64 +1,108 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:public_apis_desktop_client/app/modules/controllers/app_settings_controller/app_settings_controller.dart';
-import 'package:public_apis_desktop_client/app/utils/colors/colors.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:api_scout/app/blocs/auth/auth_cubit.dart';
+import 'package:api_scout/app/blocs/app_settings/app_settings_cubit.dart';
+import 'package:api_scout/app/blocs/notification/notification_cubit.dart';
+import 'package:api_scout/app/utils/design_system/app_colors.dart';
+import 'package:api_scout/app/utils/design_system/app_spacing.dart';
+import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
+import 'package:api_scout/app/widgets/app_dialog.dart';
+import 'package:api_scout/config/app_routes.dart';
+import 'package:api_scout/config/env.dart';
+import 'package:api_scout/shared/widgets/ui/section_header.dart';
+import 'package:api_scout/shared/widgets/ui/action_card.dart';
 
-class AppSettingsView extends GetView<AppSettingsController> {
+class AppSettingsView extends StatefulWidget {
   const AppSettingsView({super.key});
 
   @override
+  State<AppSettingsView> createState() => _AppSettingsViewState();
+}
+
+class _AppSettingsViewState extends State<AppSettingsView> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) context.read<NotificationCubit>().refresh();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final palette = AppColors.themeColors;
     return Scaffold(
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text('App Settings'),
+        title: Text('APP SETTINGS', style: AppTextStyles.headlineSm),
+        backgroundColor: AppColors.surface,
+        centerTitle: false,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(1),
+          child: SizedBox(
+            height: 1,
+            child: ColoredBox(color: AppColors.surfaceVariant),
+          ),
+        ),
       ),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.pagePaddingH),
         children: [
-          _SectionHeader(label: 'Appearance'),
-          Obx(
-            () => _ThemeColorCard(
-              colors: palette,
-              selectedColor: controller.selectedColor.value,
-              onColorSelected: controller.setThemeColor,
-              onOpenPicker: () => _openCustomColorPicker(context),
+          const SectionHeader(label: 'PREFERENCES'),
+          BlocBuilder<NotificationCubit, NotificationState>(
+            builder: (context, state) {
+              final enabled = state is NotificationEnabled;
+              return _ToggleRow(
+                icon: PhosphorIconsRegular.bellSimple,
+                title: 'Notifications',
+                subtitle: state is NotificationLoading
+                    ? 'Updating notification status.'
+                    : enabled
+                        ? 'Enabled. Push token is registered.'
+                        : 'Disabled. Push token is revoked.',
+                value: enabled,
+                onChanged: state is NotificationLoading
+                    ? null
+                    : (value) {
+                        final cubit = context.read<NotificationCubit>();
+                        if (value) {
+                          cubit.enableNotifications();
+                        } else {
+                          cubit.disableNotifications();
+                        }
+                      },
+              );
+            },
+          ),
+          BlocBuilder<AppSettingsCubit, AppSettingsState>(
+            builder: (context, state) => _InitialTabRow(
+              value: state.initialTabIndex,
+              onChanged: (index) =>
+                  context.read<AppSettingsCubit>().setInitialTab(index),
             ),
           ),
-          const SizedBox(height: 20),
-          _SectionHeader(label: 'Data Management'),
-          _ActionCard(
-            icon: Icons.bookmark_remove_outlined,
-            title: 'Delete all bookmarks',
-            subtitle: 'Remove every saved API from your device.',
-            danger: true,
-            onTap: () => _confirm(context,
-                title: 'Delete all bookmarks',
-                message:
-                    'This will remove all saved APIs from your device. This cannot be undone.',
-                onConfirm: controller.deleteAllBookmarks),
-          ),
-          _ActionCard(
-            icon: Icons.ios_share_outlined,
+          const SizedBox(height: AppSpacing.sectionGap),
+          const SectionHeader(label: 'DATA MANAGEMENT'),
+          ActionCard(
+            icon: PhosphorIconsRegular.export,
             title: 'Export favorites',
             subtitle:
                 'Export a list of your favorite APIs (name, description, link).',
-            onTap: controller.exportFavorites,
+            onTap: () => context.read<AppSettingsCubit>().exportBookmarks(),
           ),
-          const SizedBox(height: 20),
-          _SectionHeader(label: 'Account'),
-          _ActionCard(
-            icon: Icons.delete_forever_outlined,
-            title: 'Delete my account',
-            subtitle:
-                'Remove your account and any associated cloud data. You may need to reauthenticate.',
+          ActionCard(
+            icon: PhosphorIconsRegular.broom,
+            title: 'Clear local data',
+            subtitle: 'Remove local cache, settings, tokens, and saved state.',
             danger: true,
             onTap: () => _confirm(context,
-                title: 'Delete account',
+                title: 'Clear local data',
                 message:
-                    'Your account will be permanently deleted. This action cannot be undone. Continue?',
-                onConfirm: controller.deleteAccount),
+                    'This will clear local app data and return ${Env.appName} to a fresh start.',
+                onConfirm: () => _clearLocalData(context)),
           ),
         ],
       ),
@@ -69,246 +113,213 @@ class AppSettingsView extends GetView<AppSettingsController> {
       {required String title,
       required String message,
       required Future<void> Function() onConfirm}) async {
-    final result = await showDialog<bool>(
-          context: context,
-          builder: (ctx) => AlertDialog(
-            title: Text(title),
-            content: Text(message),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(ctx).pop(false),
-                child: const Text('Cancel'),
+    final result = await AppDialog.showConfirm(
+      context: context,
+      title: title.toUpperCase(),
+      message: message,
+      confirmLabel: 'CONTINUE',
+      cancelLabel: 'CANCEL',
+    );
+    if (result) await onConfirm();
+  }
+
+  Future<void> _clearLocalData(BuildContext context) async {
+    final cleared = await context.read<AppSettingsCubit>().clearLocalData();
+    if (!cleared || !context.mounted) return;
+    await context.read<AuthCubit>().clearLocalSession();
+    if (context.mounted) context.go(AppRoutes.auth);
+  }
+}
+
+class _ToggleRow extends StatelessWidget {
+  const _ToggleRow({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.value,
+    required this.onChanged,
+  });
+
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final bool value;
+  final ValueChanged<bool>? onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: AppSpacing.itemGap),
+      decoration: const BoxDecoration(
+        color: AppColors.surface,
+        border: Border.fromBorderSide(BorderSide(color: AppColors.outline)),
+      ),
+      child: ListTile(
+        leading: CircleAvatar(
+          backgroundColor: AppColors.surfaceVariant,
+          child: Icon(icon, color: AppColors.primary),
+        ),
+        title: Text(
+          title,
+          style: AppTextStyles.bodyMd.copyWith(fontWeight: FontWeight.w600),
+        ),
+        subtitle: Text(
+          subtitle,
+          style: AppTextStyles.bodyMd.copyWith(
+            color: AppColors.onSurfaceVariant,
+          ),
+        ),
+        trailing: _AppToggle(
+          value: value,
+          onChanged: onChanged,
+        ),
+      ),
+    );
+  }
+}
+
+class _AppToggle extends StatelessWidget {
+  const _AppToggle({
+    required this.value,
+    required this.onChanged,
+  });
+
+  final bool value;
+  final ValueChanged<bool>? onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final enabled = onChanged != null;
+    final borderColor = value ? AppColors.primary : AppColors.outlineVariant;
+    final fillColor = value ? AppColors.primary : AppColors.surfaceContainer;
+    final knobColor = value ? AppColors.onPrimary : AppColors.outline;
+
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: enabled ? () => onChanged!(!value) : null,
+      child: AnimatedOpacity(
+        duration: const Duration(milliseconds: 120),
+        opacity: enabled ? 1 : 0.55,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 160),
+          curve: Curves.easeOut,
+          width: 46,
+          height: 26,
+          padding: const EdgeInsets.all(3),
+          decoration: BoxDecoration(
+            color: fillColor,
+            border: Border.all(color: borderColor),
+          ),
+          child: AnimatedAlign(
+            duration: const Duration(milliseconds: 160),
+            curve: Curves.easeOut,
+            alignment: value ? Alignment.centerRight : Alignment.centerLeft,
+            child: Container(
+              width: 18,
+              height: 18,
+              color: knobColor,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _InitialTabRow extends StatelessWidget {
+  const _InitialTabRow({
+    required this.value,
+    required this.onChanged,
+  });
+
+  final int value;
+  final ValueChanged<int> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: AppSpacing.itemGap),
+      padding: const EdgeInsets.all(AppSpacing.cardPadding),
+      decoration: const BoxDecoration(
+        color: AppColors.surface,
+        border: Border.fromBorderSide(BorderSide(color: AppColors.outline)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(
+                PhosphorIconsRegular.signIn,
+                color: AppColors.primary,
               ),
-              TextButton(
-                onPressed: () => Navigator.of(ctx).pop(true),
-                child: const Text('Continue'),
+              const SizedBox(width: AppSpacing.s12),
+              Expanded(
+                child: Text(
+                  'Initial open tab',
+                  style: AppTextStyles.bodyMd
+                      .copyWith(fontWeight: FontWeight.w600),
+                ),
               ),
             ],
           ),
-        ) ??
-        false;
-
-    if (result) {
-      await onConfirm();
-    }
-  }
-
-  Future<void> _openCustomColorPicker(BuildContext context) async {
-    Color pendingColor = controller.selectedColor.value;
-
-    final picked = await showDialog<Color>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Choose any color'),
-        content: SingleChildScrollView(
-          child: BlockPicker(
-            pickerColor: pendingColor,
-            onColorChanged: (color) => pendingColor = color,
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(pendingColor),
-            child: const Text('Apply'),
+          const SizedBox(height: AppSpacing.s12),
+          Row(
+            children: [
+              Expanded(
+                child: _TabChoice(
+                  label: 'Home',
+                  selected: value == AppRoutes.tabIndexHome,
+                  onTap: () => onChanged(AppRoutes.tabIndexHome),
+                ),
+              ),
+              const SizedBox(width: AppSpacing.s8),
+              Expanded(
+                child: _TabChoice(
+                  label: 'Explore',
+                  selected: value == AppRoutes.tabIndexSearch,
+                  onTap: () => onChanged(AppRoutes.tabIndexSearch),
+                ),
+              ),
+            ],
           ),
         ],
       ),
     );
-
-    if (picked != null) {
-      await controller.setThemeColor(picked);
-    }
   }
 }
 
-class _ThemeColorCard extends StatelessWidget {
-  final List<Color> colors;
-  final Color selectedColor;
-  final ValueChanged<Color> onColorSelected;
-  final VoidCallback onOpenPicker;
-
-  const _ThemeColorCard({
-    required this.colors,
-    required this.selectedColor,
-    required this.onColorSelected,
-    required this.onOpenPicker,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Card(
-      elevation: 0,
-      margin: const EdgeInsets.only(bottom: 12),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: theme.colorScheme.outlineVariant),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Theme base color',
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              'Pick a base color to instantly restyle the app.',
-              style: theme.textTheme.bodyMedium,
-            ),
-            const SizedBox(height: 14),
-            Wrap(
-              spacing: 10,
-              runSpacing: 10,
-              children: [
-                for (final color in colors)
-                  _ColorChip(
-                    color: color,
-                    isSelected: color.value == selectedColor.value,
-                    onTap: () => onColorSelected(color),
-                  ),
-              ],
-            ),
-            const SizedBox(height: 14),
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton.icon(
-                    icon: const Icon(Icons.palette_outlined),
-                    label: const Text('Pick any color'),
-                    onPressed: onOpenPicker,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ColorChip extends StatelessWidget {
-  final Color color;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const _ColorChip({
-    required this.color,
-    required this.isSelected,
+class _TabChoice extends StatelessWidget {
+  const _TabChoice({
+    required this.label,
+    required this.selected,
     required this.onTap,
   });
 
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: Container(
-        width: 44,
         height: 44,
+        alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: color,
-          shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.12),
-              blurRadius: 6,
-              offset: const Offset(0, 2),
-            ),
-          ],
-          border: isSelected
-              ? Border.all(color: theme.colorScheme.onPrimary, width: 2)
-              : null,
-        ),
-        child: isSelected
-            ? Icon(
-                Icons.check,
-                color: theme.colorScheme.onPrimary,
-                size: 22,
-              )
-            : null,
-      ),
-    );
-  }
-}
-
-class _SectionHeader extends StatelessWidget {
-  final String label;
-
-  const _SectionHeader({required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Text(
-        label,
-        style: Theme.of(context)
-            .textTheme
-            .titleMedium
-            ?.copyWith(fontWeight: FontWeight.w700),
-      ),
-    );
-  }
-}
-
-class _ActionCard extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-  final VoidCallback onTap;
-  final bool danger;
-
-  const _ActionCard({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    required this.onTap,
-    this.danger = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Card(
-      elevation: 0,
-      margin: const EdgeInsets.only(bottom: 12),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: theme.colorScheme.outlineVariant),
-      ),
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: danger
-              ? theme.colorScheme.errorContainer
-              : theme.colorScheme.primaryContainer,
-          child: Icon(
-            icon,
-            color: danger
-                ? theme.colorScheme.onErrorContainer
-                : theme.colorScheme.primary,
+          color: selected ? AppColors.primary : AppColors.surface,
+          border: Border.all(
+            color: selected ? AppColors.primary : AppColors.outline,
           ),
         ),
-        title: Text(
-          title,
-          style: theme.textTheme.titleMedium?.copyWith(
-            color: danger ? theme.colorScheme.error : null,
-            fontWeight: FontWeight.w600,
+        child: Text(
+          label.toUpperCase(),
+          style: AppTextStyles.labelSmUpper.copyWith(
+            color: selected ? AppColors.onPrimary : AppColors.onSurface,
           ),
         ),
-        subtitle: Text(subtitle),
-        onTap: onTap,
-        trailing: const Icon(Icons.chevron_right),
       ),
     );
   }

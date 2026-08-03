@@ -1,43 +1,85 @@
 import 'package:flutter/material.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
-import 'package:get/get.dart';
-import 'package:public_apis_desktop_client/app/modules/views/general/loading/loading_widget.dart';
-import 'package:public_apis_desktop_client/app/utils/text_helper_methods.dart';
+import 'package:api_scout/app/blocs/privacy/privacy_cubit.dart';
+import 'package:api_scout/app/modules/views/general/loading/loading_widget.dart';
+import 'package:api_scout/app/utils/design_system/app_colors.dart';
+import 'package:api_scout/app/utils/design_system/app_spacing.dart';
+import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
 
-import '../../controllers/privacy_controller/privacy_controller.dart';
-
-class PrivacyView extends GetView<PrivacyController> {
+class PrivacyView extends StatelessWidget {
   const PrivacyView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.background,
       appBar: AppBar(
+        backgroundColor: AppColors.surface,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
         title: Text(
-          "privacy Policy".capitalizeAllWordsFirstLetter(),
+          'PRIVACY POLICY',
+          style: AppTextStyles.labelSmUpper.copyWith(
+            color: AppColors.onSurface,
+          ),
+        ),
+        centerTitle: false,
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(1),
+          child: SizedBox(
+            height: 1,
+            child: ColoredBox(color: AppColors.surfaceVariant),
+          ),
         ),
       ),
-      body: FutureBuilder<String>(
-        future: controller.privacyContent(),
-        builder: (_, AsyncSnapshot<String> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const LoadingWidget(
-              isSliverChild: false,
-            );
+      body: BlocBuilder<PrivacyCubit, PrivacyState>(
+        builder: (context, state) {
+          if (state.isLoading) {
+            return const LoadingWidget(isSliverChild: false);
           }
-          if (snapshot.hasData) {
+
+          if (state.content.isNotEmpty) {
             return Markdown(
-              data: snapshot.data ?? "this sentence won't never be shown ",
+              data: state.content,
               selectable: true,
               styleSheet: MarkdownStyleSheet(
-                textScaleFactor: 1.25,
+                textScaler: TextScaler.linear(1.25),
               ),
             );
           }
 
-          return const Center(
-            child: Text("something went wrong"),
-          );
+          if (state.errorMessage.isNotEmpty) {
+            return Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    PhosphorIconsRegular.warningCircle,
+                    size: 48,
+                    color: AppColors.danger,
+                  ),
+                  const SizedBox(height: AppSpacing.s16),
+                  Text(
+                    'SOMETHING WENT WRONG',
+                    style: AppTextStyles.labelSmUpper.copyWith(
+                      color: AppColors.onSurfaceVariant,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.s16),
+                  FilledButton(
+                    onPressed: () {
+                      context.read<PrivacyCubit>().loadPrivacyContent();
+                    },
+                    child: const Text('RETRY'),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          return const LoadingWidget(isSliverChild: false);
         },
       ),
     );

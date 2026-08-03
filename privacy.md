@@ -1,4 +1,4 @@
-Gwhyyy ( Developer ) built the Public Apis app as an Open Source project. This SERVICE given from this app (Gwhyyy) has no benefit for me, you can use it for free
+Gwhyyy ( Developer ) built the API Scout app as an Open Source project. This SERVICE given from this app (Gwhyyy) has no benefit for me, you can use it for free
 
 This page is used to inform visitors regarding my policies with the collection,
 

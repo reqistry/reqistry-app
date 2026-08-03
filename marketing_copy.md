@@ -1,4 +1,4 @@
-# Marketing Copy for Public APIs Mobile App
+# Marketing Copy for API Scout
 
 Here is some marketing copy you can use to promote your app on various platforms.
 
@@ -36,7 +36,7 @@ Get it on Google Play: [Link to your app]
 
 Hey everyone,
 
-As a developer, I know how much time can be spent searching for the right API for a new project or feature. That's why I built "Public APIs," a free mobile app that catalogs over 1400 public APIs, making it easier than ever to discover and integrate them.
+As a developer, I know how much time can be spent searching for the right API for a new project or feature. That's why I built "API Scout," a free mobile app that catalogs over 1400 public APIs, making it easier than ever to discover and integrate them.
 
 **What can you do with it?**
 
@@ -81,12 +81,12 @@ Hope you find it useful!
 
 ## Product Hunt
 
-**Name:** Public APIs Mobile
+**Name:** API Scout
 
 **Tagline:** The ultimate pocket guide to 1400+ free public APIs for developers.
 
 **Description:**
-Stop wasting time searching for the right API. Public APIs is a free mobile app that puts a massive, curated list of over 1400 public APIs at your fingertips. Whether you're a developer, a founder, or a tech enthusiast looking for inspiration for your next project, this app helps you discover, search, and bookmark the perfect API on the go.
+Stop wasting time searching for the right API. API Scout is a free mobile app that puts a massive, curated list of over 1400 public APIs at your fingertips. Whether you're a developer, a founder, or a tech enthusiast looking for inspiration for your next project, this app helps you discover, search, and bookmark the perfect API on the go.
 
 **Key Features:**
 *   **Massive Library:** Access 1400+ free APIs.

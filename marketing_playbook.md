@@ -1,6 +1,6 @@
 # The Developer's Marketing Playbook
 
-This document is your strategic guide to marketing the "Public APIs" app. The goal is to attract and retain users by being authentic, providing value, and building a community.
+This document is your strategic guide to marketing the "API Scout" app. The goal is to attract and retain users by being authentic, providing value, and building a community.
 
 ---
 
@@ -57,7 +57,7 @@ Your app is about APIs, which is a perfect topic for content.
 ASO is SEO for your app. The goal is to rank higher in Play Store searches.
 
 *   **Keywords are Crucial:**
-    *   **App Title:** "Public APIs: Dev Tools for API Discovery" is better than just "Public APIs".
+    *   **App Title:** "API Scout: API Discovery" is better than just "API Scout".
     *   **Short Description:** Use your main keywords here. "Your pocket guide to 1400+ free REST APIs. Find, search, and bookmark APIs for your next project. The ultimate tool for developers."
     *   **Long Description:** Naturally include keywords like "developer tools," "REST API," "Flutter," "open source," "coding projects," etc.
 *   **Visuals Matter:**

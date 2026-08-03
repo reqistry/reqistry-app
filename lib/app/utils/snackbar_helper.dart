@@ -1,84 +1,54 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:api_scout/app/widgets/app_snackbar.dart';
 
-/// Centralized app snackbar with modern styling.
-class AppSnackbar {
-  AppSnackbar._();
+class AppSnackBarHelper {
+  AppSnackBarHelper._();
 
-  /// Show a snackbar using app color system.
+  static GlobalKey<NavigatorState>? _navigatorKey;
+
+  static void setNavigatorKey(GlobalKey<NavigatorState> key) {
+    _navigatorKey = key;
+  }
+
   static void show({
     required String title,
     required String message,
     bool isError = false,
-    SnackPosition position = SnackPosition.BOTTOM,
-    Duration duration = const Duration(seconds: 3),
+    Duration? duration,
     IconData? icon,
+    AppSnackbarType? type,
+    String? actionLabel,
+    VoidCallback? onAction,
+    bool persistent = false,
   }) {
-    final context = Get.context;
-    final theme = context != null ? Theme.of(context) : Get.theme;
+    final context = _navigatorKey?.currentContext;
+    if (context == null) return;
 
-    final bg = isError
-        ? theme.colorScheme.errorContainer
-        : theme.colorScheme.surfaceContainerHighest;
-    final fg = isError
-        ? theme.colorScheme.onErrorContainer
-        : theme.colorScheme.onSurface;
-    final accent =
-        isError ? theme.colorScheme.error : theme.colorScheme.primary;
-
-    Get.showSnackbar(
-      GetSnackBar(
-        borderRadius: 14,
-        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-        backgroundColor: bg,
-        snackPosition: position,
-        duration: duration,
-        forwardAnimationCurve: Curves.easeOutCubic,
-        reverseAnimationCurve: Curves.easeInCubic,
-        snackStyle: SnackStyle.FLOATING,
-        messageText: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              height: 32,
-              width: 32,
-              decoration: BoxDecoration(
-                color: accent.withOpacity(0.15),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                icon ?? (isError ? Icons.error_outline : Icons.check_circle),
-                color: accent,
-                size: 18,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    title,
-                    style: theme.textTheme.titleSmall?.copyWith(
-                      color: fg,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    message,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: fg.withOpacity(0.9),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
+    AppSnackbarManager.showSnackbar(
+      context: context,
+      title: title,
+      message: message,
+      type: type ?? (isError ? AppSnackbarType.error : AppSnackbarType.success),
+      duration: duration,
+      actionLabel: actionLabel,
+      onAction: onAction,
+      persistent: persistent,
     );
+  }
+
+  static void success({required String title, required String message}) {
+    show(title: title, message: message, type: AppSnackbarType.success);
+  }
+
+  static void info({required String title, required String message}) {
+    inform(title: title, message: message);
+  }
+
+  static void inform({required String title, required String message}) {
+    show(title: title, message: message, type: AppSnackbarType.inform);
+  }
+
+  static void error({required String title, required String message}) {
+    show(title: title, message: message, type: AppSnackbarType.error);
   }
 }

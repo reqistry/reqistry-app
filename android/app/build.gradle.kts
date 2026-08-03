@@ -19,12 +19,19 @@ if (keystorePropertiesFile.exists()) {
     FileInputStream(keystorePropertiesFile).use { keystoreProperties.load(it) }
 }
 
+val envProperties = Properties()
+val envPropertiesFile = rootProject.file("../.env.dev")
+if (envPropertiesFile.exists()) {
+    FileInputStream(envPropertiesFile).use { envProperties.load(it) }
+}
+
 android {
     namespace = "com.gwhyyy.publicApis"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
@@ -38,10 +45,11 @@ android {
         applicationId = "com.gwhyyy.publicApis"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
+        minSdk = maxOf(flutter.minSdkVersion, 21)
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        manifestPlaceholders["appName"] = envProperties.getProperty("APP_NAME", "API Scout")
     }
 
     signingConfigs {
@@ -72,4 +80,8 @@ android {
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 }

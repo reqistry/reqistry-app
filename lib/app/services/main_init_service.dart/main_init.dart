@@ -1,23 +1,36 @@
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import '../../../firebase_options.dart';
-import '../crashlytics/crashlytics.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:api_scout/firebase_options.dart';
 import '../local_db/hive/initializer.dart';
+import '../auth/auth_token_service.dart';
+import '../auth/dio_client.dart';
+import '../notification/fcm_service.dart';
 
 class MainInit {
+  static const bool resetLocalDataOnStartup = false;
+
   Future<void> init({bool testMode = false}) async {
     WidgetsFlutterBinding.ensureInitialized();
+
+    // Initialize Firebase
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    
-    await LocalDatabase.instance.initDatabases();
-    await LocalDatabase.instance.clearDatabasesWhile(kDebugMode);
-    _configureCrashlytics();
-  }
 
-  void _configureCrashlytics() {
-    FlutterError.onError = Crashlytics().crashlyticsInstance.recordFlutterError;
+    // Initialize local databases
+    await LocalDatabase.instance.initDatabases();
+
+    // Initialize auth token service
+    await AuthTokenService().init();
+
+    if (resetLocalDataOnStartup) {
+      await LocalDatabase.instance.clearAllLocalData();
+    }
+
+    // Initialize Dio client
+    DioClient();
+
+    // Initialize FCM service
+    await FcmService().init();
   }
 }

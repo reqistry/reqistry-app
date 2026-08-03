@@ -37,16 +37,15 @@ class APIsDataResponse {
               if (x is Map<String, dynamic>) {
                 return CategoryApis.fromJson(x);
               }
-            } catch (e) {
-              // Skip invalid category entries and log
-              print('Error parsing category: $e');
+            } catch (_) {
+              // Skip invalid category entries
             }
             return null;
           }).whereType<CategoryApis>(),
         );
       }
-    } catch (e) {
-      print('Error parsing data field: $e');
+    } catch (_) {
+      // Failed to parse data field
     }
 
     return APIsDataResponse(

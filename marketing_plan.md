@@ -1,4 +1,4 @@
-# 4-Week Marketing Plan for Public APIs Mobile App
+# 4-Week Marketing Plan for API Scout
 
 This is a marketing schedule designed to create initial buzz and build a sustainable growth channel for your app.
 
@@ -56,7 +56,7 @@ This is a marketing schedule designed to create initial buzz and build a sustain
     *   **Task:** Share a win.
     *   **To-Do:**
         *   Post a "milestone" update on Twitter/X and LinkedIn. Did you hit 100 downloads? 500? Get a great review? Share it!
-        *   "Wow! Blown away by the support for my Public APIs app. Just passed 500 downloads in the first week. Thank you all!"
+        *   "Wow! Blown away by the support for my API Scout app. Just passed 500 downloads in the first week. Thank you all!"
 
 *   **Friday (Day 12): Feature Highlight**
     *   **Task:** Showcase the app's value.
@@ -84,7 +84,7 @@ This is a marketing schedule designed to create initial buzz and build a sustain
 *   **Friday (Day 19): User Feedback**
     *   **Task:** Publicly ask for feedback.
     *   **To-Do:**
-        *   Post on Twitter/X: "What's one feature you'd love to see in the Public APIs app? I'm planning the next update and would love your ideas."
+        *   Post on Twitter/X: "What's one feature you'd love to see in the API Scout app? I'm planning the next update and would love your ideas."
 
 ---
 

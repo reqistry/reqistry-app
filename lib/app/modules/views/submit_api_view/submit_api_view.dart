@@ -1,148 +1,128 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:public_apis_desktop_client/app/modules/controllers/submit_api_controller/submit_api_controller.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:api_scout/app/blocs/submit_api/submit_api_cubit.dart';
+import 'package:api_scout/app/blocs/submit_api/submit_api_state.dart';
+import 'package:api_scout/app/utils/design_system/app_colors.dart';
+import 'package:api_scout/app/utils/design_system/app_spacing.dart';
+import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
 
-class SubmitApiView extends GetView<SubmitApiController> {
+class SubmitApiView extends StatefulWidget {
   const SubmitApiView({super.key});
 
   @override
+  State<SubmitApiView> createState() => _SubmitApiViewState();
+}
+
+class _SubmitApiViewState extends State<SubmitApiView> {
+  final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
+  final _linkController = TextEditingController();
+
+  @override
+  void dispose() {
+    FocusManager.instance.primaryFocus?.unfocus();
+    _nameController.dispose();
+    _linkController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Submit a new API'),
+    return BlocListener<SubmitApiCubit, SubmitApiState>(
+      listenWhen: (prev, curr) => curr.submitted,
+      listener: (context, state) {
+        Navigator.of(context).pop();
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        appBar: AppBar(
+        title: Text('SUBMIT API', style: AppTextStyles.headlineSm),
+        backgroundColor: AppColors.surface,
+        centerTitle: false,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(1),
+          child: SizedBox(
+            height: 1,
+            child: ColoredBox(color: AppColors.surfaceVariant),
+          ),
+        ),
       ),
       body: SafeArea(
         child: Form(
-          key: controller.formKey,
+          key: _formKey,
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpacing.pagePaddingH),
             child: Column(
               children: [
-                _TipCard(),
-                const SizedBox(height: 12),
+                const _TipCard(),
+                const SizedBox(height: AppSpacing.itemGap),
                 _buildTextField(
-                  controller: controller.nameController,
-                  label: 'API Name',
+                  controller: _nameController,
+                  label: 'API NAME',
                   validator: _validateName,
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.itemGap),
                 _buildTextField(
-                  controller: controller.linkController,
-                  label: 'API Link (https://...)',
+                  controller: _linkController,
+                  label: 'API LINK (HTTPS://...)',
                   keyboardType: TextInputType.url,
                   validator: _validateRequiredUrl,
                 ),
-                const SizedBox(height: 12),
-                _buildTextField(
-                  controller: controller.descriptionController,
-                  label: 'Description (10+ chars)',
-                  maxLines: 3,
-                  validator: (value) {
-                    if (value == null || value.trim().length < 10) {
-                      return 'Please enter at least 10 characters';
-                    }
-                    return null;
+                const SizedBox(height: AppSpacing.sectionGap),
+                BlocBuilder<SubmitApiCubit, SubmitApiState>(
+                  builder: (context, state) {
+                    return SizedBox(
+                      width: double.infinity,
+                      child: FilledButton(
+                        onPressed:
+                            state.isSubmitting ? null : () => _submit(context),
+                        style: FilledButton.styleFrom(
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.zero,
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: AppSpacing.s16,
+                          ),
+                        ),
+                        child: state.isSubmitting
+                            ? const SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: AppColors.onPrimary,
+                                ),
+                              )
+                            : Text(
+                                'SUBMIT',
+                                style: AppTextStyles.labelSmUpper.copyWith(
+                                  color: AppColors.onPrimary,
+                                ),
+                              ),
+                      ),
+                    );
                   },
                 ),
-                const SizedBox(height: 12),
-                _buildTextField(
-                  controller: controller.categoryController,
-                  label: 'Category',
-                  validator: _required,
-                ),
-                const SizedBox(height: 12),
-                _buildTextField(
-                  controller: controller.authController,
-                  label: 'Auth (optional, e.g., API Key, OAuth)',
-                ),
-                const SizedBox(height: 12),
-                _buildTextField(
-                  controller: controller.pricingController,
-                  label: 'Pricing (optional, e.g., Free, Freemium)',
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Obx(
-                        () => SwitchListTile.adaptive(
-                          title: const Text('HTTPS supported'),
-                          value: controller.httpsEnabled.value,
-                          onChanged: (value) =>
-                              controller.httpsEnabled.value = value,
-                          contentPadding: EdgeInsets.zero,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                _CorsSelector(controller: controller),
-                const SizedBox(height: 12),
-                _buildTextField(
-                  controller: controller.documentationController,
-                  label: 'Documentation URL (optional)',
-                  keyboardType: TextInputType.url,
-                  validator: _validateOptionalUrl,
-                ),
-                const SizedBox(height: 12),
-                _buildTextField(
-                  controller: controller.rateLimitController,
-                  label: 'Rate limit (optional)',
-                ),
-                const SizedBox(height: 12),
-                _buildTextField(
-                  controller: controller.submitterNameController,
-                  label: 'Your name (optional)',
-                ),
-                const SizedBox(height: 12),
-                _buildTextField(
-                  controller: controller.submitterEmailController,
-                  label: 'Your email (optional)',
-                  keyboardType: TextInputType.emailAddress,
-                  validator: _validateOptionalEmail,
-                ),
-                const SizedBox(height: 12),
-                _buildTextField(
-                  controller: controller.notesController,
-                  label: 'Notes (optional)',
-                  maxLines: 3,
-                ),
-                const SizedBox(height: 20),
-                Obx(() {
-                  final isSubmitting = controller.isSubmitting.value;
-
-                  return SizedBox(
-                    width: double.infinity,
-                    child: FilledButton.icon(
-                      onPressed: isSubmitting ? null : controller.submit,
-                      icon: isSubmitting
-                          ? const SizedBox(
-                              width: 16,
-                              height: 16,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: Colors.white,
-                              ),
-                            )
-                          : const Icon(Icons.send_outlined),
-                      label: Text(isSubmitting ? 'Submitting...' : 'Submit'),
-                    ),
-                  );
-                }),
               ],
             ),
           ),
         ),
       ),
+      ),
     );
   }
 
-  String? _required(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'This field is required';
-    }
-    return null;
+  Future<void> _submit(BuildContext context) async {
+    if (!_formKey.currentState!.validate()) return;
+
+    FocusManager.instance.primaryFocus?.unfocus();
+    await context.read<SubmitApiCubit>().submit(
+          name: _nameController.text.trim(),
+          link: _linkController.text.trim(),
+        );
   }
 
   String? _validateName(String? value) {
@@ -169,27 +149,6 @@ class SubmitApiView extends GetView<SubmitApiController> {
     return null;
   }
 
-  String? _validateOptionalUrl(String? value) {
-    if (value == null || value.trim().isEmpty) return null;
-    final parsed = Uri.tryParse(value.trim());
-    final isValid = parsed != null && parsed.hasScheme && parsed.hasAuthority;
-    if (!isValid ||
-        !(parsed.scheme.toLowerCase() == 'https' ||
-            parsed.scheme.toLowerCase() == 'http')) {
-      return 'Enter a valid http(s) URL';
-    }
-    return null;
-  }
-
-  String? _validateOptionalEmail(String? value) {
-    if (value == null || value.trim().isEmpty) return null;
-    final emailRegex = RegExp(r'^\S+@\S+\.\S+$');
-    if (!emailRegex.hasMatch(value.trim())) {
-      return 'Enter a valid email address';
-    }
-    return null;
-  }
-
   Widget _buildTextField({
     required TextEditingController controller,
     required String label,
@@ -201,10 +160,34 @@ class SubmitApiView extends GetView<SubmitApiController> {
       controller: controller,
       maxLines: maxLines,
       keyboardType: keyboardType,
+      style: AppTextStyles.bodyMd,
       decoration: InputDecoration(
         labelText: label,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+        labelStyle: AppTextStyles.labelSmUpper,
+        floatingLabelStyle: AppTextStyles.labelSmUpper,
+        border: const OutlineInputBorder(
+          borderRadius: BorderRadius.zero,
+          borderSide: BorderSide(color: AppColors.outline),
+        ),
+        enabledBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.zero,
+          borderSide: BorderSide(color: AppColors.outline),
+        ),
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.zero,
+          borderSide: BorderSide(color: AppColors.primary, width: 1),
+        ),
+        errorBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.zero,
+          borderSide: BorderSide(color: AppColors.danger),
+        ),
+        focusedErrorBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.zero,
+          borderSide: BorderSide(color: AppColors.danger, width: 1),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.s12,
+          vertical: AppSpacing.s12,
         ),
       ),
       validator: validator,
@@ -213,73 +196,36 @@ class SubmitApiView extends GetView<SubmitApiController> {
 }
 
 class _TipCard extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Card(
-      elevation: 0,
-      color: theme.colorScheme.primaryContainer,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(
-              Icons.info_outline,
-              color: theme.colorScheme.onPrimaryContainer,
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Text(
-                'Please provide accurate details. Required fields: name, link, description, category.',
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onPrimaryContainer,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _CorsSelector extends StatelessWidget {
-  final SubmitApiController controller;
-
-  const _CorsSelector({required this.controller});
+  const _TipCard();
 
   @override
   Widget build(BuildContext context) {
-    final options = ['Yes', 'No', 'Unknown'];
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'CORS Support',
-          style: Theme.of(context)
-              .textTheme
-              .titleMedium
-              ?.copyWith(fontWeight: FontWeight.w600),
+    return Container(
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.zero,
+        border: Border.fromBorderSide(
+          BorderSide(color: AppColors.outline),
         ),
-        const SizedBox(height: 8),
-        Obx(
-          () => Wrap(
-            spacing: 8,
-            children: options.map((value) {
-              final selected = controller.corsValue.value == value;
-              return ChoiceChip(
-                label: Text(value),
-                selected: selected,
-                onSelected: (_) => controller.corsValue.value = value,
-              );
-            }).toList(),
+      ),
+      padding: const EdgeInsets.all(AppSpacing.cardPadding),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(
+            PhosphorIconsRegular.info,
+            color: AppColors.primary,
           ),
-        ),
-      ],
+          const SizedBox(width: AppSpacing.itemGap),
+          Expanded(
+            child: Text(
+              'Submit an API for review. Provide the API name and URL.',
+              style: AppTextStyles.bodyMd,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

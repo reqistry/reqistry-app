@@ -27,8 +27,4 @@ class InAppReviewService {
   Future<bool> isServiceAvailable() async {
     return await inAppReview.isAvailable();
   }
-
-
-
 }
-

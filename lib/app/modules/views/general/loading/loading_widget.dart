@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:public_apis_desktop_client/app/modules/views/general/loading/spin_kit.dart';
+import 'package:api_scout/app/modules/views/general/loading/spin_kit.dart';
 
 class LoadingWidget extends StatelessWidget {
   final double? height;
   final bool isSliverChild;
+  final double spinnerSize;
+
   const LoadingWidget({
     super.key,
     this.height,
     this.isSliverChild = true,
+    this.spinnerSize = 32,
   });
 
   @override
@@ -16,15 +19,15 @@ class LoadingWidget extends StatelessWidget {
         ? SliverToBoxAdapter(
             child: SizedBox(
               height: height,
-              child: const Center(
-                child: SpinKit(),
+              child: Center(
+                child: SpinKit(size: spinnerSize),
               ),
             ),
           )
         : SizedBox(
             height: height,
-            child: const Center(
-              child: SpinKit(),
+            child: Center(
+              child: SpinKit(size: spinnerSize),
             ),
           );
   }

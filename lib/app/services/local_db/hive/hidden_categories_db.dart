@@ -1,9 +1,9 @@
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:public_apis_desktop_client/app/services/local_db/interfaces/add_to_db_like_list.dart';
-import 'package:public_apis_desktop_client/app/services/local_db/interfaces/database_key_existence_checker.dart';
-import 'package:public_apis_desktop_client/app/services/local_db/interfaces/delete_with_key.dart';
-import 'package:public_apis_desktop_client/app/services/local_db/interfaces/get_with_key.dart';
-import 'package:public_apis_desktop_client/app/services/local_db/interfaces/value_listenable.dart';
+import 'package:api_scout/app/services/local_db/interfaces/add_to_db_like_list.dart';
+import 'package:api_scout/app/services/local_db/interfaces/database_key_existence_checker.dart';
+import 'package:api_scout/app/services/local_db/interfaces/delete_with_key.dart';
+import 'package:api_scout/app/services/local_db/interfaces/get_with_key.dart';
+import 'package:api_scout/app/services/local_db/interfaces/value_listenable.dart';
 import '../interfaces/clear.dart';
 import '../interfaces/database_elements_length.dart';
 import '../interfaces/empty_checker.dart';

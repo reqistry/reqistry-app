@@ -1,15 +1,39 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
+import 'package:api_scout/app/data/models/api.dart' as legacy;
+import 'package:api_scout/app/data/models/api_detail.dart';
+import 'package:api_scout/app/modules/views/api_detail_view/widgets/api_detail_sections.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('Placeholder test', (WidgetTester tester) async {
-    // This is a placeholder test
-    expect(true, true);
+  testWidgets('quick facts expose unknown values at large text size',
+      (tester) async {
+    final detail = ApiDetail.fromApi(
+      legacy.Api(
+        id: 'api-1',
+        name: 'Example API',
+        description: 'Example data',
+        auth: '',
+        https: false,
+        cors: false,
+        link: 'https://example.com/v1',
+        categoryId: 'Development',
+      ),
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: MediaQuery(
+          data: const MediaQueryData(textScaler: TextScaler.linear(2)),
+          child: Scaffold(
+            body: SingleChildScrollView(child: ApiQuickFacts(detail: detail)),
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('Authentication'), findsOneWidget);
+    expect(find.text('HTTPS'), findsOneWidget);
+    expect(find.text('Unknown'), findsWidgets);
+    expect(tester.takeException(), isNull);
   });
 }

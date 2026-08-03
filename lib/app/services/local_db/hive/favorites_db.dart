@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:public_apis_desktop_client/app/data/models/favoriteApi.dart';
-import 'package:public_apis_desktop_client/app/services/local_db/hive/constants/boxes.dart';
-import 'package:public_apis_desktop_client/app/services/local_db/interfaces/delete_with_key.dart';
-import 'package:public_apis_desktop_client/app/services/local_db/interfaces/value_listenable.dart';
+import 'package:api_scout/app/data/models/favoriteApi.dart';
+import 'package:api_scout/app/services/local_db/hive/constants/boxes.dart';
+import 'package:api_scout/app/services/local_db/interfaces/delete_with_key.dart';
+import 'package:api_scout/app/services/local_db/interfaces/value_listenable.dart';
 
 import '../interfaces/box_type.dart';
 import '../interfaces/database_key_existence_checker.dart';

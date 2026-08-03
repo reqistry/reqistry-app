@@ -1,0 +1,29 @@
+import 'package:flutter/material.dart';
+import 'app_colors.dart';
+
+/// Monolithic Technical Interface — Shadow System
+/// No shadows except hard-offset on modals (4px 4px 0px #000000)
+/// and focused inputs (2px 2px 0px #000000).
+class AppShadows {
+  AppShadows._();
+
+  static const List<BoxShadow> none = [];
+
+  static const List<BoxShadow> modal = [
+    BoxShadow(
+      offset: Offset(4, 4),
+      blurRadius: 0,
+      spreadRadius: 0,
+      color: AppColors.primary,
+    ),
+  ];
+
+  static const List<BoxShadow> inputFocus = [
+    BoxShadow(
+      offset: Offset(2, 2),
+      blurRadius: 0,
+      spreadRadius: 0,
+      color: AppColors.primary,
+    ),
+  ];
+}

@@ -1,75 +1,265 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:public_apis_desktop_client/app/modules/controllers/category_apis_controller/category_apis_controller.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:api_scout/app/blocs/category_apis/category_apis_cubit.dart';
+import 'package:api_scout/app/utils/design_system/app_colors.dart';
+import 'package:api_scout/app/utils/design_system/app_spacing.dart';
+import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
+import 'package:api_scout/shared/widgets/app_empty_state.dart';
+import 'package:api_scout/shared/widgets/app_error_state.dart';
+import 'package:api_scout/shared/widgets/app_loading.dart';
+import 'package:api_scout/shared/widgets/app_cached_image.dart';
 import '../apis_view/widgets/api_card.dart';
 
-class CategoryApisView extends GetView<CategoryApisController> {
-  const CategoryApisView({super.key});
+class CategoryApisView extends StatelessWidget {
+  final Object argument;
+
+  const CategoryApisView({super.key, required this.argument});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: Text(controller.category.title),
+        title: BlocBuilder<CategoryApisCubit, CategoryApisState>(
+          builder: (context, state) {
+            return Text(
+              state.categoryTitle.isNotEmpty ? state.categoryTitle : 'Category',
+              style: AppTextStyles.headlineSm,
+            );
+          },
+        ),
+        backgroundColor: AppColors.surface,
         elevation: 0,
+        scrolledUnderElevation: 0,
       ),
-      body: Obx(() {
-        if (controller.isLoading.value) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
+      body: BlocBuilder<CategoryApisCubit, CategoryApisState>(
+        builder: (context, state) {
+          if (state.isLoading) {
+            return const AppLoading(message: 'Loading category APIs');
+          }
 
-        if (controller.errorMessage.isNotEmpty) {
-          return Center(
+          if (state.errorMessage.isNotEmpty) {
+            return AppErrorState(
+              title: 'Could not load category',
+              message: state.errorMessage,
+              onRetry: () => context.read<CategoryApisCubit>().retryFetch(),
+            );
+          }
+
+          if (state.apis.isEmpty) {
+            return const AppEmptyState(
+              title: 'No APIs available',
+              message:
+                  'This category is empty right now. Try another category in the Discover tab.',
+              icon: PhosphorIconsRegular.bracketsCurly,
+            );
+          }
+
+          return RefreshIndicator(
+            onRefresh: () => context.read<CategoryApisCubit>().retryFetch(),
+            child: ListView.separated(
+              itemCount: state.apis.length + 1,
+              padding: const EdgeInsets.all(AppSpacing.pagePaddingH),
+              separatorBuilder: (_, __) =>
+                  const SizedBox(height: AppSpacing.itemGap),
+              itemBuilder: (context, index) {
+                if (index == 0) {
+                  return _CategorySummary(state: state);
+                }
+
+                final api = state.apis[index - 1];
+                return ApiCard(
+                  api: api,
+                  category: state.categoryTitle,
+                );
+              },
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _CategorySummary extends StatelessWidget {
+  final CategoryApisState state;
+
+  const _CategorySummary({required this.state});
+
+  @override
+  Widget build(BuildContext context) {
+    final meta = state.categoryMeta;
+    final apis = state.apis;
+    final aliveCount = apis.where((api) => api.isAlive).length;
+    final httpsCount = apis.where((api) => api.supportsHttps).length;
+    final openAuthCount = apis.where((api) {
+      final auth = api.auth.toLowerCase();
+      return auth == 'none' || auth == 'no' || auth == 'no auth';
+    }).length;
+    final responseTimes = apis
+        .where((api) => api.responseTime > 0)
+        .map((api) => api.responseTime)
+        .toList();
+    final avgResponse = responseTimes.isEmpty
+        ? 0
+        : (responseTimes.reduce((a, b) => a + b) / responseTimes.length)
+            .round();
+
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        border: Border.all(color: AppColors.surfaceVariant),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          AspectRatio(
+            aspectRatio: 16 / 7,
+            child: AppCachedImage(
+              imageUrl: meta?.imageUrl,
+              fallback: CategoryImagePlaceholder(
+                title: meta?.name ?? state.categoryTitle,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(AppSpacing.cardPadding),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Error',
-                  style: Theme.of(context).textTheme.headlineSmall,
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        meta?.name ?? state.categoryTitle,
+                        style: AppTextStyles.headlineSm,
+                      ),
+                    ),
+                    if (meta?.hasTrendyBorder == true)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.s8,
+                          vertical: AppSpacing.s4,
+                        ),
+                        color: AppColors.primary,
+                        child: Text(
+                          'TRENDING',
+                          style: AppTextStyles.labelSmUpper.copyWith(
+                            color: AppColors.onPrimary,
+                            fontSize: 9,
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
-                const SizedBox(height: 16),
-                Text(
-                  controller.errorMessage.value,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-                const SizedBox(height: 24),
-                ElevatedButton(
-                  onPressed: () => controller.retryFetch(),
-                  child: const Text('Retry'),
+                if ((meta?.description ?? '').isNotEmpty) ...[
+                  const SizedBox(height: AppSpacing.s8),
+                  Text(
+                    meta!.description!,
+                    style: AppTextStyles.bodyMd.copyWith(
+                      color: AppColors.onSurfaceVariant,
+                      height: 1.4,
+                    ),
+                  ),
+                ],
+                if ((meta?.tags ?? const <String>[]).isNotEmpty) ...[
+                  const SizedBox(height: AppSpacing.s12),
+                  Wrap(
+                    spacing: AppSpacing.s6,
+                    runSpacing: AppSpacing.s6,
+                    children: meta!.tags!.map((tag) {
+                      return Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.s8,
+                          vertical: AppSpacing.s4,
+                        ),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: AppColors.surfaceVariant),
+                        ),
+                        child: Text(
+                          tag.toUpperCase(),
+                          style: AppTextStyles.labelSmUpper.copyWith(
+                            color: AppColors.onSurfaceVariant,
+                            fontSize: 9,
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ],
+                const SizedBox(height: AppSpacing.sectionGap),
+                GridView.count(
+                  crossAxisCount: 2,
+                  childAspectRatio: 2.6,
+                  crossAxisSpacing: AppSpacing.s8,
+                  mainAxisSpacing: AppSpacing.s8,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: [
+                    _StatTile(label: 'APIS', value: '${apis.length}'),
+                    _StatTile(label: 'ALIVE', value: '$aliveCount'),
+                    _StatTile(label: 'HTTPS', value: '$httpsCount'),
+                    _StatTile(label: 'NO AUTH', value: '$openAuthCount'),
+                    _StatTile(
+                      label: 'AVG RESPONSE',
+                      value: avgResponse > 0 ? '${avgResponse}ms' : 'N/A',
+                    ),
+                    _StatTile(
+                      label: 'CATALOG TOTAL',
+                      value: '${meta?.apiCount ?? apis.length}',
+                    ),
+                  ],
                 ),
               ],
             ),
-          );
-        }
-
-        if (controller.apis.isEmpty) {
-          return Center(
-            child: Text(
-              'No APIs available in this category',
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-          );
-        }
-
-        return RefreshIndicator(
-          onRefresh: () => controller.retryFetch(),
-          child: ListView.separated(
-            itemCount: controller.apis.length,
-            padding: const EdgeInsets.all(16),
-            separatorBuilder: (_, __) => const SizedBox(height: 10),
-            itemBuilder: (context, index) {
-              final api = controller.apis[index];
-              return ApiCard(
-                api: api,
-                category: controller.category.title,
-              );
-            },
           ),
-        );
-      }),
+        ],
+      ),
+    );
+  }
+}
+
+class _StatTile extends StatelessWidget {
+  final String label;
+  final String value;
+
+  const _StatTile({
+    required this.label,
+    required this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.s8),
+      decoration: BoxDecoration(
+        color: AppColors.background,
+        border: Border.all(color: AppColors.surfaceVariant),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            label,
+            style: AppTextStyles.labelSmUpper.copyWith(
+              color: AppColors.onSurfaceVariant,
+              fontSize: 9,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.s4),
+          Text(
+            value,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: AppTextStyles.bodyLg.copyWith(
+              color: AppColors.onSurface,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
