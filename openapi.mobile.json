@@ -6,7 +6,7 @@
     "version": "1.0.0",
     "contact": {
       "name": "Public APIs",
-      "url": "https://publicapis.gwhyyy.com"
+      "url": "---"
     }
   },
   "servers": [
@@ -15,7 +15,7 @@
       "description": "Local development"
     },
     {
-      "url": "https://publicapis.gwhyyy.com",
+      "url": "---",
       "description": "Production"
     }
   ],

@@ -68,19 +68,21 @@ class _SettingsViewState extends State<SettingsView> {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
+
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: c.background,
       appBar: AppBar(
         title: Text('YOU', style: AppTextStyles.headlineSm),
         centerTitle: false,
-        backgroundColor: AppColors.surface,
+        backgroundColor: c.surface,
         elevation: 0,
         scrolledUnderElevation: 0,
-        bottom: const PreferredSize(
-          preferredSize: Size.fromHeight(1),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
           child: SizedBox(
             height: 1,
-            child: ColoredBox(color: AppColors.surfaceVariant),
+            child: ColoredBox(color: c.surfaceVariant),
           ),
         ),
       ),
@@ -186,7 +188,7 @@ class _SettingsViewState extends State<SettingsView> {
                   child: Text(
                     version,
                     style: AppTextStyles.labelSm.copyWith(
-                      color: AppColors.outline,
+                      color: c.outline,
                       letterSpacing: 0,
                     ),
                   ),
@@ -217,10 +219,12 @@ class _ProfilePanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
+
     return Container(
-      decoration: const BoxDecoration(
-        color: AppColors.surface,
-        border: Border.fromBorderSide(BorderSide(color: AppColors.outline)),
+      decoration: BoxDecoration(
+        color: c.surface,
+        border: Border.fromBorderSide(BorderSide(color: c.outline)),
       ),
       padding: const EdgeInsets.all(AppSpacing.s16),
       child: Column(
@@ -232,13 +236,9 @@ class _ProfilePanel extends StatelessWidget {
               Container(
                 width: 56,
                 height: 56,
-                color: AppColors.surfaceContainerHigh,
+                color: c.surfaceContainerHigh,
                 alignment: Alignment.center,
-                child: const Icon(
-                  PhosphorIconsFill.user,
-                  color: AppColors.primary,
-                  size: 28,
-                ),
+                child: Icon(PhosphorIconsFill.user, color: c.primary, size: 28),
               ),
               const SizedBox(width: AppSpacing.s12),
               Expanded(
@@ -257,7 +257,7 @@ class _ProfilePanel extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: AppTextStyles.bodyMd.copyWith(
-                        color: AppColors.onSurfaceVariant,
+                        color: c.onSurfaceVariant,
                       ),
                     ),
                   ],
@@ -350,14 +350,16 @@ class _StatBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
+
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: Container(
         height: 72,
-        decoration: const BoxDecoration(
-          color: AppColors.surface,
-          border: Border.fromBorderSide(BorderSide(color: AppColors.outline)),
+        decoration: BoxDecoration(
+          color: c.surface,
+          border: Border.fromBorderSide(BorderSide(color: c.outline)),
         ),
         padding: const EdgeInsets.all(AppSpacing.s10),
         child: Column(
@@ -375,7 +377,7 @@ class _StatBox extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: AppTextStyles.labelSm.copyWith(
-                color: AppColors.onSurfaceVariant,
+                color: c.onSurfaceVariant,
                 letterSpacing: 0,
               ),
             ),
@@ -394,18 +396,17 @@ class _Section extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(title, style: AppTextStyles.labelSmUpper),
         const SizedBox(height: AppSpacing.s8),
         DecoratedBox(
-          decoration: const BoxDecoration(
-            color: AppColors.surface,
-            border: Border.fromBorderSide(BorderSide(
-              color: AppColors.outline,
-              width: 1,
-            )),
+          decoration: BoxDecoration(
+            color: c.surface,
+            border: Border.fromBorderSide(BorderSide(color: c.outline, width: 1)),
           ),
           child: Column(children: children),
         ),
@@ -427,33 +428,31 @@ class _EntryTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
+
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: Container(
         height: 56,
         padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s14),
-        decoration: const BoxDecoration(
-          border: Border(
-            bottom: BorderSide(color: AppColors.surfaceVariant),
-          ),
+        decoration: BoxDecoration(
+          border: Border(bottom: BorderSide(color: c.surfaceVariant)),
         ),
         child: Row(
           children: [
-            Icon(icon, size: 20, color: AppColors.primary),
+            Icon(icon, size: 20, color: c.primary),
             const SizedBox(width: AppSpacing.s12),
             Expanded(
               child: Text(
                 title,
-                style: AppTextStyles.bodyMd.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+                style: AppTextStyles.bodyMd.copyWith(fontWeight: FontWeight.w600),
               ),
             ),
-            const Icon(
+            Icon(
               PhosphorIconsRegular.caretRight,
               size: 18,
-              color: AppColors.outline,
+              color: c.outline,
             ),
           ],
         ),
@@ -469,12 +468,14 @@ class _MetaChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
+
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.s8,
         vertical: AppSpacing.s4,
       ),
-      color: AppColors.surfaceContainerHigh,
+      color: c.surfaceContainerHigh,
       child: Text(
         label.toUpperCase(),
         style: AppTextStyles.labelSmUpper.copyWith(fontSize: 10),

@@ -1,7 +1,7 @@
 name: api_scout
-version: 4.0.0+10
+version: 5.0.0+11
 publish_to: none
-description: API Scout — Monolithic Technical Interface
+description: Reqistry — API intelligence for builders and agents
 environment:
   sdk: ">=3.0.0 <4.0.0"
 
@@ -26,6 +26,7 @@ dependencies:
   share_plus:
   timezone: ^0.9.4
   url_launcher:
+  flutter_svg:
   phosphoricons_flutter: ^1.0.0
   package_info_plus:
   device_preview_plus: 2.8.2

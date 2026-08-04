@@ -19,6 +19,8 @@ class QuickFilterChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
+
     return Padding(
       padding: const EdgeInsets.only(right: AppSpacing.chipGap),
       child: GestureDetector(
@@ -29,9 +31,9 @@ class QuickFilterChip extends StatelessWidget {
             vertical: AppSpacing.s8,
           ),
           decoration: BoxDecoration(
-            color: selected ? AppColors.primary : AppColors.surface,
+            color: selected ? c.primary : c.surface,
             border: Border.all(
-              color: selected ? AppColors.primary : AppColors.surfaceVariant,
+              color: selected ? c.primary : c.surfaceVariant,
               width: 1,
             ),
           ),
@@ -41,14 +43,14 @@ class QuickFilterChip extends StatelessWidget {
               Icon(
                 icon,
                 size: 16,
-                color: selected ? AppColors.onPrimary : AppColors.onSurface,
+                color: selected ? c.onPrimary : c.onSurface,
               ),
               const SizedBox(width: AppSpacing.s4),
               Text(
                 label,
                 style: AppTextStyles.labelSmUpper.copyWith(
                   fontSize: 10,
-                  color: selected ? AppColors.onPrimary : AppColors.onSurface,
+                  color: selected ? c.onPrimary : c.onSurface,
                 ),
               ),
             ],
@@ -73,6 +75,8 @@ class DesignChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -81,9 +85,9 @@ class DesignChip extends StatelessWidget {
           vertical: AppSpacing.s8,
         ),
         decoration: BoxDecoration(
-          color: selected ? AppColors.primary : AppColors.surface,
+          color: selected ? c.primary : c.surface,
           border: Border.all(
-            color: selected ? AppColors.primary : AppColors.surfaceVariant,
+            color: selected ? c.primary : c.surfaceVariant,
             width: 1,
           ),
         ),
@@ -91,7 +95,7 @@ class DesignChip extends StatelessWidget {
           label,
           style: AppTextStyles.labelSmUpper.copyWith(
             fontSize: 11,
-            color: selected ? AppColors.onPrimary : AppColors.onSurface,
+            color: selected ? c.onPrimary : c.onSurface,
           ),
         ),
       ),
@@ -113,17 +117,18 @@ class FilterSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
-            Icon(icon, size: 20, color: AppColors.primary),
+            Icon(icon, size: 20, color: c.primary),
             const SizedBox(width: AppSpacing.s8),
             Text(
               title,
-              style: AppTextStyles.labelSmUpper
-                  .copyWith(color: AppColors.onSurface),
+              style: AppTextStyles.labelSmUpper.copyWith(color: c.onSurface),
             ),
           ],
         ),

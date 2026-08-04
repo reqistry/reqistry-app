@@ -16,6 +16,7 @@ import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
 import 'package:api_scout/app/utils/snackbar_helper.dart';
 import 'package:api_scout/app/utils/text_input_route.dart';
+import 'package:api_scout/config/app_routes.dart';
 import 'package:api_scout/shared/widgets/profile/edit_name_sheet.dart';
 
 import 'widgets/continue_work_section.dart';
@@ -99,8 +100,9 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: c.background,
       appBar: AppBar(
         title: BlocBuilder<AuthCubit, AuthState>(
           builder: (context, state) {
@@ -137,7 +139,7 @@ class _HomeViewState extends State<HomeView> {
                 Text(
                   _verb.toUpperCase(),
                   style: AppTextStyles.labelSmUpper.copyWith(
-                    color: AppColors.onSurfaceVariant,
+                    color: c.onSurfaceVariant,
                     fontSize: 10,
                   ),
                 ),
@@ -151,8 +153,8 @@ class _HomeViewState extends State<HomeView> {
             child: ElevatedButton(
               onPressed: _showSubmitApiSheet,
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: AppColors.onPrimary,
+                backgroundColor: c.primary,
+                foregroundColor: c.onPrimary,
                 padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.s12,
                   vertical: AppSpacing.s8,
@@ -173,18 +175,18 @@ class _HomeViewState extends State<HomeView> {
           IconButton(
             icon: const Icon(PhosphorIconsRegular.gear),
             onPressed: () {
-              context.read<MainShellCubit>().selectTab(3);
+              context.read<MainShellCubit>().selectTab(AppRoutes.tabIndexSettings);
             },
           ),
         ],
         elevation: 0,
         centerTitle: false,
-        backgroundColor: AppColors.surface,
+        backgroundColor: c.surface,
         toolbarHeight: 72,
-        bottom: const PreferredSize(
-          preferredSize: Size.fromHeight(1),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
           child: SizedBox(
-              height: 1, child: ColoredBox(color: AppColors.surfaceVariant)),
+              height: 1, child: ColoredBox(color: c.surfaceVariant)),
         ),
       ),
       body: RefreshIndicator(
@@ -258,6 +260,7 @@ class _SubmitApiSheetState extends State<_SubmitApiSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
     return Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -266,10 +269,10 @@ class _SubmitApiSheetState extends State<_SubmitApiSheet> {
         constraints: BoxConstraints(
           maxHeight: MediaQuery.of(context).size.height * 0.6,
         ),
-        decoration: const BoxDecoration(
-          color: AppColors.surface,
+        decoration: BoxDecoration(
+          color: c.surface,
           border: Border(
-            top: BorderSide(color: AppColors.primary, width: 1),
+            top: BorderSide(color: c.primary, width: 1),
           ),
         ),
         child: Column(
@@ -278,15 +281,15 @@ class _SubmitApiSheetState extends State<_SubmitApiSheet> {
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(AppSpacing.s20),
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 border: Border(
-                  bottom: BorderSide(color: AppColors.surfaceVariant, width: 1),
+                  bottom: BorderSide(color: c.surfaceVariant, width: 1),
                 ),
               ),
               child: Text(
                 'SUBMIT AN API',
                 style: AppTextStyles.labelSmUpper.copyWith(
-                  color: AppColors.onSurface,
+                  color: c.onSurface,
                 ),
               ),
             ),
@@ -304,27 +307,27 @@ class _SubmitApiSheetState extends State<_SubmitApiSheet> {
                       decoration: InputDecoration(
                         hintText: 'API name',
                         hintStyle: AppTextStyles.bodyMd.copyWith(
-                          color: AppColors.onSurfaceVariant,
+                          color: c.onSurfaceVariant,
                         ),
-                        border: const OutlineInputBorder(
+                        border: OutlineInputBorder(
                           borderRadius: BorderRadius.zero,
-                          borderSide: BorderSide(color: AppColors.surfaceVariant),
+                          borderSide: BorderSide(color: c.surfaceVariant),
                         ),
-                        enabledBorder: const OutlineInputBorder(
+                        enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.zero,
-                          borderSide: BorderSide(color: AppColors.surfaceVariant),
+                          borderSide: BorderSide(color: c.surfaceVariant),
                         ),
-                        focusedBorder: const OutlineInputBorder(
+                        focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.zero,
-                          borderSide: BorderSide(color: AppColors.primary),
+                          borderSide: BorderSide(color: c.primary),
                         ),
-                        errorBorder: const OutlineInputBorder(
+                        errorBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.zero,
-                          borderSide: BorderSide(color: AppColors.danger),
+                          borderSide: BorderSide(color: c.danger),
                         ),
-                        focusedErrorBorder: const OutlineInputBorder(
+                        focusedErrorBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.zero,
-                          borderSide: BorderSide(color: AppColors.danger),
+                          borderSide: BorderSide(color: c.danger),
                         ),
                       ),
                       validator: (value) {
@@ -345,27 +348,27 @@ class _SubmitApiSheetState extends State<_SubmitApiSheet> {
                       decoration: InputDecoration(
                         hintText: 'API LINK (HTTPS://...)',
                         hintStyle: AppTextStyles.bodyMd.copyWith(
-                          color: AppColors.onSurfaceVariant,
+                          color: c.onSurfaceVariant,
                         ),
-                        border: const OutlineInputBorder(
+                        border: OutlineInputBorder(
                           borderRadius: BorderRadius.zero,
-                          borderSide: BorderSide(color: AppColors.surfaceVariant),
+                          borderSide: BorderSide(color: c.surfaceVariant),
                         ),
-                        enabledBorder: const OutlineInputBorder(
+                        enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.zero,
-                          borderSide: BorderSide(color: AppColors.surfaceVariant),
+                          borderSide: BorderSide(color: c.surfaceVariant),
                         ),
-                        focusedBorder: const OutlineInputBorder(
+                        focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.zero,
-                          borderSide: BorderSide(color: AppColors.primary),
+                          borderSide: BorderSide(color: c.primary),
                         ),
-                        errorBorder: const OutlineInputBorder(
+                        errorBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.zero,
-                          borderSide: BorderSide(color: AppColors.danger),
+                          borderSide: BorderSide(color: c.danger),
                         ),
-                        focusedErrorBorder: const OutlineInputBorder(
+                        focusedErrorBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.zero,
-                          borderSide: BorderSide(color: AppColors.danger),
+                          borderSide: BorderSide(color: c.danger),
                         ),
                       ),
                       validator: (value) {
@@ -393,9 +396,9 @@ class _SubmitApiSheetState extends State<_SubmitApiSheet> {
                 horizontal: AppSpacing.s20,
                 vertical: AppSpacing.s12,
               ),
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 border: Border(
-                  top: BorderSide(color: AppColors.surfaceVariant, width: 1),
+                  top: BorderSide(color: c.surfaceVariant, width: 1),
                 ),
               ),
               child: Row(
@@ -406,7 +409,7 @@ class _SubmitApiSheetState extends State<_SubmitApiSheet> {
                     child: Text(
                       'CANCEL',
                       style: AppTextStyles.labelSmUpper.copyWith(
-                        color: AppColors.outline,
+                        color: c.outline,
                       ),
                     ),
                   ),
@@ -414,12 +417,12 @@ class _SubmitApiSheetState extends State<_SubmitApiSheet> {
                   FilledButton(
                     onPressed: _isLoading ? null : _submit,
                     child: _isLoading
-                        ? const SizedBox(
+                        ? SizedBox(
                             width: 16,
                             height: 16,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              color: AppColors.onPrimary,
+                              color: c.onPrimary,
                             ),
                           )
                         : const Text('SUBMIT'),

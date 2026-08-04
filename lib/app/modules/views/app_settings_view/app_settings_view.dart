@@ -8,6 +8,7 @@ import 'package:api_scout/app/blocs/notification/notification_cubit.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
+import 'package:api_scout/app/utils/theme_provider.dart';
 import 'package:api_scout/app/widgets/app_dialog.dart';
 import 'package:api_scout/config/app_routes.dart';
 import 'package:api_scout/config/env.dart';
@@ -32,19 +33,21 @@ class _AppSettingsViewState extends State<AppSettingsView> {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
+
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: c.background,
       appBar: AppBar(
         title: Text('APP SETTINGS', style: AppTextStyles.headlineSm),
-        backgroundColor: AppColors.surface,
+        backgroundColor: c.surface,
         centerTitle: false,
         elevation: 0,
         scrolledUnderElevation: 0,
-        bottom: const PreferredSize(
-          preferredSize: Size.fromHeight(1),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
           child: SizedBox(
             height: 1,
-            child: ColoredBox(color: AppColors.surfaceVariant),
+            child: ColoredBox(color: c.surfaceVariant),
           ),
         ),
       ),
@@ -52,6 +55,12 @@ class _AppSettingsViewState extends State<AppSettingsView> {
         padding: const EdgeInsets.all(AppSpacing.pagePaddingH),
         children: [
           const SectionHeader(label: 'PREFERENCES'),
+
+          // ── Theme ──────────────────────────────────────────────
+          const _ThemeRow(),
+          const SizedBox(height: AppSpacing.itemGap),
+
+          // ── Notifications ──────────────────────────────────────
           BlocBuilder<NotificationCubit, NotificationState>(
             builder: (context, state) {
               final enabled = state is NotificationEnabled;
@@ -77,6 +86,8 @@ class _AppSettingsViewState extends State<AppSettingsView> {
               );
             },
           ),
+
+          // ── Initial tab ────────────────────────────────────────
           BlocBuilder<AppSettingsCubit, AppSettingsState>(
             builder: (context, state) => _InitialTabRow(
               value: state.initialTabIndex,
@@ -131,6 +142,148 @@ class _AppSettingsViewState extends State<AppSettingsView> {
   }
 }
 
+// ── Theme Picker (inline) ─────────────────────────────────────────
+
+class _ThemeRow extends StatelessWidget {
+  const _ThemeRow();
+
+  @override
+  Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
+
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: ThemeProvider.instance.themeNotifier,
+      builder: (context, themeMode, _) {
+        return Container(
+          margin: const EdgeInsets.only(bottom: AppSpacing.itemGap),
+          padding: const EdgeInsets.all(AppSpacing.cardPadding),
+          decoration: BoxDecoration(
+            color: c.surface,
+            border: Border.fromBorderSide(BorderSide(color: c.outline)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  CircleAvatar(
+                    backgroundColor: c.surfaceVariant,
+                    child: Icon(
+                      themeMode == ThemeMode.dark
+                          ? PhosphorIconsRegular.moon
+                          : themeMode == ThemeMode.light
+                              ? PhosphorIconsRegular.sun
+                              : PhosphorIconsRegular.monitor,
+                      color: c.primary,
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.s12),
+                  Expanded(
+                    child: Text(
+                      'Appearance',
+                      style: AppTextStyles.bodyMd
+                          .copyWith(fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.s12),
+              Row(
+                children: [
+                  Expanded(
+                    child: _ThemeChoice(
+                      label: 'System',
+                      icon: PhosphorIconsRegular.monitor,
+                      selected: themeMode == ThemeMode.system,
+                      onTap: () => ThemeProvider.instance
+                          .setThemeMode(ThemeMode.system),
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.s8),
+                  Expanded(
+                    child: _ThemeChoice(
+                      label: 'Light',
+                      icon: PhosphorIconsRegular.sun,
+                      selected: themeMode == ThemeMode.light,
+                      onTap: () => ThemeProvider.instance
+                          .setThemeMode(ThemeMode.light),
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.s8),
+                  Expanded(
+                    child: _ThemeChoice(
+                      label: 'Dark',
+                      icon: PhosphorIconsRegular.moon,
+                      selected: themeMode == ThemeMode.dark,
+                      onTap: () => ThemeProvider.instance
+                          .setThemeMode(ThemeMode.dark),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _ThemeChoice extends StatelessWidget {
+  const _ThemeChoice({
+    required this.label,
+    required this.icon,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final IconData icon;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
+
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 160),
+        curve: Curves.easeOut,
+        height: 44,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: selected ? c.primary : c.surface,
+          border: Border.all(
+            color: selected ? c.primary : c.outline,
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 16,
+              color: selected ? c.onPrimary : c.onSurface,
+            ),
+            const SizedBox(width: AppSpacing.s4),
+            Text(
+              label.toUpperCase(),
+              style: AppTextStyles.labelSmUpper.copyWith(
+                color: selected ? c.onPrimary : c.onSurface,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Toggle Row ────────────────────────────────────────────────────
+
 class _ToggleRow extends StatelessWidget {
   const _ToggleRow({
     required this.icon,
@@ -148,16 +301,18 @@ class _ToggleRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
+
     return Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.itemGap),
-      decoration: const BoxDecoration(
-        color: AppColors.surface,
-        border: Border.fromBorderSide(BorderSide(color: AppColors.outline)),
+      decoration: BoxDecoration(
+        color: c.surface,
+        border: Border.fromBorderSide(BorderSide(color: c.outline)),
       ),
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: AppColors.surfaceVariant,
-          child: Icon(icon, color: AppColors.primary),
+          backgroundColor: c.surfaceVariant,
+          child: Icon(icon, color: c.primary),
         ),
         title: Text(
           title,
@@ -165,9 +320,7 @@ class _ToggleRow extends StatelessWidget {
         ),
         subtitle: Text(
           subtitle,
-          style: AppTextStyles.bodyMd.copyWith(
-            color: AppColors.onSurfaceVariant,
-          ),
+          style: AppTextStyles.bodyMd.copyWith(color: c.onSurfaceVariant),
         ),
         trailing: _AppToggle(
           value: value,
@@ -189,10 +342,11 @@ class _AppToggle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
     final enabled = onChanged != null;
-    final borderColor = value ? AppColors.primary : AppColors.outlineVariant;
-    final fillColor = value ? AppColors.primary : AppColors.surfaceContainer;
-    final knobColor = value ? AppColors.onPrimary : AppColors.outline;
+    final borderColor = value ? c.primary : c.outlineVariant;
+    final fillColor = value ? c.primary : c.surfaceContainer;
+    final knobColor = value ? c.onPrimary : c.outline;
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
@@ -226,6 +380,8 @@ class _AppToggle extends StatelessWidget {
   }
 }
 
+// ── Initial Tab Row ───────────────────────────────────────────────
+
 class _InitialTabRow extends StatelessWidget {
   const _InitialTabRow({
     required this.value,
@@ -237,22 +393,21 @@ class _InitialTabRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
+
     return Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.itemGap),
       padding: const EdgeInsets.all(AppSpacing.cardPadding),
-      decoration: const BoxDecoration(
-        color: AppColors.surface,
-        border: Border.fromBorderSide(BorderSide(color: AppColors.outline)),
+      decoration: BoxDecoration(
+        color: c.surface,
+        border: Border.fromBorderSide(BorderSide(color: c.outline)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              const Icon(
-                PhosphorIconsRegular.signIn,
-                color: AppColors.primary,
-              ),
+              Icon(PhosphorIconsRegular.signIn, color: c.primary),
               const SizedBox(width: AppSpacing.s12),
               Expanded(
                 child: Text(
@@ -302,6 +457,8 @@ class _TabChoice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
+
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
@@ -309,15 +466,15 @@ class _TabChoice extends StatelessWidget {
         height: 44,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: selected ? AppColors.primary : AppColors.surface,
+          color: selected ? c.primary : c.surface,
           border: Border.all(
-            color: selected ? AppColors.primary : AppColors.outline,
+            color: selected ? c.primary : c.outline,
           ),
         ),
         child: Text(
           label.toUpperCase(),
           style: AppTextStyles.labelSmUpper.copyWith(
-            color: selected ? AppColors.onPrimary : AppColors.onSurface,
+            color: selected ? c.onPrimary : c.onSurface,
           ),
         ),
       ),

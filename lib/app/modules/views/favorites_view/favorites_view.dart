@@ -20,18 +20,19 @@ class FavoritesView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: c.background,
       appBar: AppBar(
         title: Text('BOOKMARKS', style: AppTextStyles.headlineSm),
-        backgroundColor: AppColors.surface,
+        backgroundColor: c.surface,
         elevation: 0,
         centerTitle: false,
         scrolledUnderElevation: 0,
-        bottom: const PreferredSize(
+        bottom: PreferredSize(
           preferredSize: Size.fromHeight(1),
           child: SizedBox(
-              height: 1, child: ColoredBox(color: AppColors.surfaceVariant)),
+              height: 1, child: ColoredBox(color: c.surfaceVariant)),
         ),
       ),
       body: RefreshIndicator(

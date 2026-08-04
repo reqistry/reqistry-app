@@ -771,7 +771,7 @@ String verificationSourceLabel(String? value) {
   return switch (normalized) {
     'provider' => 'Provider',
     'automated_check' => 'Automated check',
-    'core_api_review' => 'CORE API review',
+    'core_api_review' => 'Reqistry review',
     'community_report' => 'Community report',
     'imported' => 'Imported',
     'not verified' => 'Not verified',

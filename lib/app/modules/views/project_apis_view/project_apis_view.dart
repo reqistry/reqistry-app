@@ -11,7 +11,7 @@ import 'package:api_scout/app/modules/views/apis_view/widgets/api_card.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
-import 'package:api_scout/app/utils/text_input_route.dart';
+import 'package:api_scout/app/widgets/app_dialog.dart';
 import 'package:api_scout/config/app_routes.dart';
 import 'package:api_scout/shared/widgets/app_empty_state.dart';
 import 'package:api_scout/shared/widgets/app_error_state.dart';
@@ -56,56 +56,28 @@ class _ProjectApisViewState extends State<ProjectApisView> {
   }
 
   Future<void> _rename(ProjectDetail detail) async {
-    final controller = TextEditingController(text: detail.title);
-    final title = await showDialog<String>(
+    final title = await AppDialog.showInput(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Rename project'),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          decoration: const InputDecoration(labelText: 'Project name'),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => dismissTextInputRoute(context),
-            child: const Text('CANCEL'),
-          ),
-          FilledButton(
-            onPressed: () =>
-                dismissTextInputRoute(context, controller.text.trim()),
-            child: const Text('SAVE'),
-          ),
-        ],
-      ),
+      title: 'RENAME PROJECT',
+      hintText: 'Project name',
+      initialValue: detail.title,
+      confirmLabel: 'SAVE',
     );
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.dispose();
-    });
     if (title == null || title.isEmpty || !mounted) return;
     await context.read<ProjectsCubit>().updateProject(detail.id, title: title);
     if (mounted) setState(() => _future = _load());
   }
 
   Future<void> _delete(ProjectDetail detail) async {
-    final confirmed = await showDialog<bool>(
+    final confirmed = await AppDialog.showConfirm(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete project?'),
-        content: Text('Delete "${detail.title}" and its saved API links?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('CANCEL'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('DELETE'),
-          ),
-        ],
-      ),
+      title: 'DELETE PROJECT',
+      message: 'Delete "${detail.title}" and its saved API links?',
+      confirmLabel: 'DELETE',
+      cancelLabel: 'CANCEL',
+      isDestructive: true,
     );
-    if (confirmed != true || !mounted) return;
+    if (!confirmed || !mounted) return;
     await context.read<ProjectsCubit>().deleteProject(detail.id);
     if (mounted) Navigator.pop(context);
   }
@@ -119,15 +91,17 @@ class _ProjectApisViewState extends State<ProjectApisView> {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
+
     return FutureBuilder<_ProjectApisData>(
       future: _future,
       builder: (context, snapshot) {
         final title = snapshot.data?.detail.title ?? widget.project.title;
         return Scaffold(
-          backgroundColor: AppColors.background,
+          backgroundColor: c.background,
           appBar: AppBar(
             title: Text(title, style: AppTextStyles.headlineSm),
-            backgroundColor: AppColors.surface,
+            backgroundColor: c.surface,
             elevation: 0,
             scrolledUnderElevation: 0,
             actions: [
@@ -203,9 +177,9 @@ class _ProjectApisViewState extends State<ProjectApisView> {
           background: Container(
             alignment: Alignment.centerRight,
             padding: const EdgeInsets.only(right: AppSpacing.s16),
-            color: AppColors.dangerBg,
+            color: AppColors.darkDangerBg,
             child: const Icon(PhosphorIconsRegular.trashSimple,
-                color: AppColors.danger),
+                color: AppColors.darkDanger),
           ),
           confirmDismiss: (_) async {
             await _remove(data.detail, api);
@@ -229,23 +203,27 @@ class _ProjectHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
+
+    final iconData = IconData(
+      // ignore: non_const_argument_for_const_parameter
+      detail.iconCodePoint,
+      fontFamily: 'PhosphorRegular',
+      fontPackage: 'phosphoricons_flutter',
+    );
+
     return Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.s12),
       padding: const EdgeInsets.all(AppSpacing.cardPadding),
       decoration: BoxDecoration(
-        color: AppColors.surface,
-        border: Border.all(color: AppColors.surfaceVariant),
+        color: c.surface,
+        border: Border.all(color: c.surfaceVariant),
       ),
       child: Row(
         children: [
           Icon(
-            IconData(
-              // ignore: non_const_argument_for_const_parameter
-              detail.iconCodePoint,
-              fontFamily: 'PhosphorRegular',
-              fontPackage: 'phosphoricons_flutter',
-            ),
-            color: AppColors.primary,
+            iconData,
+            color: c.primary,
             size: 30,
           ),
           const SizedBox(width: AppSpacing.s12),
@@ -258,7 +236,7 @@ class _ProjectHeader extends StatelessWidget {
                 Text(
                   '${metadata.totalApis} saved APIs',
                   style: AppTextStyles.bodyMd.copyWith(
-                    color: AppColors.onSurfaceVariant,
+                    color: c.onSurfaceVariant,
                   ),
                 ),
               ],

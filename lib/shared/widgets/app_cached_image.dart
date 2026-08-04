@@ -50,6 +50,7 @@ class CategoryImagePlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
     final displayName = name ?? title ?? '';
     final initials = displayName
         .trim()
@@ -62,9 +63,7 @@ class CategoryImagePlaceholder extends StatelessWidget {
     return Container(
       width: size,
       height: size,
-      decoration: const BoxDecoration(
-        color: AppColors.surfaceContainerHighest,
-      ),
+      decoration: BoxDecoration(color: c.surfaceContainerHighest),
       child: AppCachedImage(
         imageUrl: imageUrl,
         fit: BoxFit.cover,
@@ -72,7 +71,7 @@ class CategoryImagePlaceholder extends StatelessWidget {
           child: Text(
             initials.isEmpty ? '?' : initials,
             style: AppTextStyles.headlineSm.copyWith(
-              color: AppColors.primary,
+              color: c.primary,
               fontWeight: FontWeight.w800,
               fontSize: size * 0.35,
             ),
@@ -88,9 +87,10 @@ class _ImageLoading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const ColoredBox(
-      color: AppColors.surfaceContainerHighest,
-      child: Center(
+    final c = AppColors.of(Theme.of(context).brightness);
+    return ColoredBox(
+      color: c.surfaceContainerHighest,
+      child: const Center(
         child: SizedBox.square(
           dimension: 18,
           child: CircularProgressIndicator(strokeWidth: 2),
@@ -105,11 +105,12 @@ class _ImageFallback extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const ColoredBox(
-      color: AppColors.surfaceContainerHighest,
+    final c = AppColors.of(Theme.of(context).brightness);
+    return ColoredBox(
+      color: c.surfaceContainerHighest,
       child: Icon(
         PhosphorIconsRegular.imageBroken,
-        color: AppColors.onSurfaceVariant,
+        color: c.onSurfaceVariant,
       ),
     );
   }

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'app_colors.dart';
 
 /// Monolithic Technical Interface — Shadow System
 /// No shadows except hard-offset on modals (4px 4px 0px #000000)
 /// and focused inputs (2px 2px 0px #000000).
+///
+/// In light mode the shadow is pure black; in dark mode it is a dark gray
+/// so it remains visible against the dark surface.
 class AppShadows {
   AppShadows._();
 
@@ -14,7 +16,7 @@ class AppShadows {
       offset: Offset(4, 4),
       blurRadius: 0,
       spreadRadius: 0,
-      color: AppColors.primary,
+      color: Color(0xFF000000),
     ),
   ];
 
@@ -23,7 +25,7 @@ class AppShadows {
       offset: Offset(2, 2),
       blurRadius: 0,
       spreadRadius: 0,
-      color: AppColors.primary,
+      color: Color(0xFF000000),
     ),
   ];
 }

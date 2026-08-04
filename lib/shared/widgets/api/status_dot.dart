@@ -9,6 +9,8 @@ class StatusDot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -16,7 +18,7 @@ class StatusDot extends StatelessWidget {
           width: 8,
           height: 8,
           decoration: BoxDecoration(
-            color: isAlive ? AppColors.success : AppColors.danger,
+            color: isAlive ? c.success : c.danger,
             shape: BoxShape.circle,
           ),
         ),
@@ -24,7 +26,7 @@ class StatusDot extends StatelessWidget {
         Text(
           isAlive ? 'ALIVE' : 'DOWN',
           style: AppTextStyles.labelSmUpper.copyWith(
-            color: isAlive ? AppColors.successText : AppColors.dangerText,
+            color: isAlive ? c.successText : c.dangerText,
             fontSize: 9,
           ),
         ),

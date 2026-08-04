@@ -20,9 +20,10 @@ class AdvancedFiltersSheet extends StatelessWidget {
       builder: (context, scrollController) {
         return BlocBuilder<SearchBloc, SearchState>(
           builder: (context, state) {
+            final c = AppColors.of(Theme.of(context).brightness);
             return Container(
-              decoration: const BoxDecoration(
-                  color: AppColors.surface, borderRadius: BorderRadius.zero),
+              decoration: BoxDecoration(
+                  color: c.surface, borderRadius: BorderRadius.zero),
               child: Column(
                 children: [
                   Container(
@@ -30,20 +31,20 @@ class AdvancedFiltersSheet extends StatelessWidget {
                         top: AppSpacing.s12, bottom: AppSpacing.s8),
                     width: 40,
                     height: 4,
-                    decoration: const BoxDecoration(
-                        color: AppColors.outlineVariant,
+                    decoration: BoxDecoration(
+                        color: c.outlineVariant,
                         borderRadius: BorderRadius.zero),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(AppSpacing.s16),
                     child: Row(
                       children: [
-                        const Icon(PhosphorIconsRegular.slidersHorizontal,
-                            color: AppColors.primary),
+                        Icon(PhosphorIconsRegular.slidersHorizontal,
+                            color: c.primary),
                         const SizedBox(width: AppSpacing.s12),
                         Text('Advanced Filters',
                             style: AppTextStyles.headlineSm
-                                .copyWith(color: AppColors.onBackground)),
+                                .copyWith(color: c.onSurface)),
                         const Spacer(),
                         TextButton(
                           onPressed: () {
@@ -54,12 +55,12 @@ class AdvancedFiltersSheet extends StatelessWidget {
                           },
                           child: Text('RESET ALL',
                               style: AppTextStyles.labelSmUpper.copyWith(
-                                  color: AppColors.primary, fontSize: 11)),
+                                  color: c.primary, fontSize: 11)),
                         ),
                       ],
                     ),
                   ),
-                  const Divider(height: 1, color: AppColors.surfaceVariant),
+                  Divider(height: 1, color: c.surfaceVariant),
                   Expanded(
                     child: ListView(
                       controller: scrollController,
@@ -85,11 +86,11 @@ class AdvancedFiltersSheet extends StatelessWidget {
                   ),
                   Container(
                     padding: const EdgeInsets.all(AppSpacing.s16),
-                    decoration: const BoxDecoration(
-                        color: AppColors.surface,
+                    decoration: BoxDecoration(
+                        color: c.surface,
                         border: Border(
                             top: BorderSide(
-                                color: AppColors.surfaceVariant, width: 1))),
+                                color: c.surfaceVariant, width: 1))),
                     child: SafeArea(
                       child: ElevatedButton.icon(
                         onPressed: () {
@@ -102,8 +103,8 @@ class AdvancedFiltersSheet extends StatelessWidget {
                             style: AppTextStyles.labelSmUpper
                                 .copyWith(fontSize: 11)),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          foregroundColor: AppColors.onPrimary,
+                          backgroundColor: c.primary,
+                          foregroundColor: c.onPrimary,
                           minimumSize: const Size(double.infinity, 50),
                           shape: const RoundedRectangleBorder(
                               borderRadius: BorderRadius.zero),
@@ -126,10 +127,10 @@ class AdvancedFiltersSheet extends StatelessWidget {
       title: 'CATEGORIES',
       icon: PhosphorIconsRegular.squaresFour,
       child: state.isLoadingCategories
-          ? const Center(
+          ? Center(
               child: Padding(
                   padding: EdgeInsets.all(AppSpacing.s16),
-                  child: CircularProgressIndicator(color: AppColors.primary)))
+                  child: CircularProgressIndicator(color: AppColors.of(Theme.of(context).brightness).primary)))
           : Wrap(
               spacing: AppSpacing.chipGap,
               runSpacing: AppSpacing.chipGap,
@@ -310,8 +311,8 @@ class AdvancedFiltersSheet extends StatelessWidget {
                   label: state.maxResponseTime != null
                       ? '${state.maxResponseTime}ms'
                       : 'No limit',
-                  activeColor: AppColors.primary,
-                  inactiveColor: AppColors.surfaceVariant,
+                  activeColor: AppColors.of(Theme.of(context).brightness).primary,
+                  inactiveColor: AppColors.of(Theme.of(context).brightness).surfaceVariant,
                   onChanged: (value) => context.read<SearchBloc>().add(
                       SearchFilterToggled(
                           filterType: FilterType.maxResponseTime,
@@ -326,7 +327,7 @@ class AdvancedFiltersSheet extends StatelessWidget {
                           : 'No limit',
                       textAlign: TextAlign.right,
                       style: AppTextStyles.bodyMd
-                          .copyWith(color: AppColors.onSurface))),
+                          .copyWith(color: AppColors.of(Theme.of(context).brightness).onSurface))),
             ],
           ),
           if (state.maxResponseTime != null)
@@ -336,7 +337,7 @@ class AdvancedFiltersSheet extends StatelessWidget {
                       filterType: FilterType.maxResponseTime, value: 'null')),
               child: Text('REMOVE LIMIT',
                   style: AppTextStyles.labelSmUpper
-                      .copyWith(color: AppColors.primary, fontSize: 10)),
+                      .copyWith(color: AppColors.of(Theme.of(context).brightness).primary, fontSize: 10)),
             ),
         ],
       ),

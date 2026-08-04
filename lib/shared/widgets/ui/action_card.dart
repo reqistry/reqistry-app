@@ -22,36 +22,33 @@ class ActionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
+
     return Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.itemGap),
-      decoration: const BoxDecoration(
-        color: AppColors.surface,
+      decoration: BoxDecoration(
+        color: c.surface,
         borderRadius: BorderRadius.zero,
-        border: Border.fromBorderSide(
-          BorderSide(color: AppColors.outline),
-        ),
+        border: Border.fromBorderSide(BorderSide(color: c.outline)),
       ),
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor:
-              danger ? AppColors.dangerBg : AppColors.surfaceVariant,
+          backgroundColor: danger ? c.dangerBg : c.surfaceVariant,
           child: Icon(
             icon,
-            color: danger ? AppColors.danger : AppColors.primary,
+            color: danger ? c.danger : c.primary,
           ),
         ),
         title: Text(
           title,
           style: AppTextStyles.bodyMd.copyWith(
-            color: danger ? AppColors.danger : AppColors.onSurface,
+            color: danger ? c.danger : c.onSurface,
             fontWeight: FontWeight.w600,
           ),
         ),
         subtitle: Text(
           subtitle,
-          style: AppTextStyles.bodyMd.copyWith(
-            color: AppColors.onSurfaceVariant,
-          ),
+          style: AppTextStyles.bodyMd.copyWith(color: c.onSurfaceVariant),
         ),
         onTap: onTap,
         trailing: const Icon(PhosphorIconsRegular.caretRight),

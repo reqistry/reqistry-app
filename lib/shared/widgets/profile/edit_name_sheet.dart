@@ -60,15 +60,17 @@ class _EditNameSheetState extends State<EditNameSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
+
     return Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
       child: Container(
-        decoration: const BoxDecoration(
-          color: AppColors.surface,
+        decoration: BoxDecoration(
+          color: c.surface,
           border: Border(
-            top: BorderSide(color: AppColors.primary, width: 1),
+            top: BorderSide(color: c.primary, width: 1),
           ),
         ),
         padding: const EdgeInsets.all(AppSpacing.s20),
@@ -83,20 +85,7 @@ class _EditNameSheetState extends State<EditNameSheet> {
               autofocus: true,
               textInputAction: TextInputAction.done,
               style: AppTextStyles.bodyMd,
-              decoration: const InputDecoration(
-                hintText: 'Your name',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.zero,
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.zero,
-                  borderSide: BorderSide(color: AppColors.surfaceVariant),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.zero,
-                  borderSide: BorderSide(color: AppColors.primary),
-                ),
-              ),
+              decoration: const InputDecoration(hintText: 'Your name'),
               onSubmitted: (_) => _save(),
             ),
             const SizedBox(height: AppSpacing.s16),

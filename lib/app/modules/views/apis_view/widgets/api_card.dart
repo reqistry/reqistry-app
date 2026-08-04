@@ -90,13 +90,14 @@ class _ApiCardState extends State<ApiCard> {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
     return GestureDetector(
       onTap: _navigateToDetail,
       child: Container(
         margin: const EdgeInsets.only(bottom: AppSpacing.s8),
         decoration: BoxDecoration(
-          color: AppColors.surface,
-          border: Border.all(color: AppColors.surfaceVariant, width: 1),
+          color: c.surface,
+          border: Border.all(color: c.surfaceVariant, width: 1),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -129,7 +130,7 @@ class _ApiCardState extends State<ApiCard> {
                               ? widget.api.category
                               : widget.category,
                           style: AppTextStyles.labelSmUpper.copyWith(
-                            color: AppColors.onSurfaceVariant,
+                            color: c.onSurfaceVariant,
                             fontSize: 10,
                           ),
                         ),
@@ -147,8 +148,8 @@ class _ApiCardState extends State<ApiCard> {
                           : PhosphorIconsRegular.bookmarkSimple,
                       size: 20,
                       color: _isFavorited
-                          ? AppColors.primary
-                          : AppColors.onSurfaceVariant,
+                          ? c.primary
+                          : c.onSurfaceVariant,
                     ),
                   ),
                 ],
@@ -171,7 +172,7 @@ class _ApiCardState extends State<ApiCard> {
                   Text(
                     widget.api.responseTimeFormatted,
                     style: AppTextStyles.labelSmUpper.copyWith(
-                      color: AppColors.onSurfaceVariant,
+                      color: c.onSurfaceVariant,
                       fontSize: 9,
                     ),
                   ),

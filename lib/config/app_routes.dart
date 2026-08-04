@@ -21,6 +21,7 @@ abstract class AppRoutes {
   // Tab indices (not GoRouter routes)
   static const int tabIndexHome = 0;
   static const int tabIndexSearch = 1;
-  static const int tabIndexFavorites = 2;
-  static const int tabIndexSettings = 3;
+  static const int tabIndexIntelligence = 2;
+  static const int tabIndexFavorites = 3;
+  static const int tabIndexSettings = 4;
 }

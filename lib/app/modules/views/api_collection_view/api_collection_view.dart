@@ -50,11 +50,12 @@ class _ApiCollectionViewState extends State<ApiCollectionView> {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: c.background,
       appBar: AppBar(
         title: Text(_title, style: AppTextStyles.headlineSm),
-        backgroundColor: AppColors.surface,
+        backgroundColor: c.surface,
         elevation: 0,
         scrolledUnderElevation: 0,
       ),

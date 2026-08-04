@@ -8,7 +8,7 @@ class AppTheme {
   AppTheme._();
 
   // ── Brand ──────────────────────────────────────────────────────
-  static const String brandName = 'API Scout';
+  static const String brandName = 'Reqistry';
   static const String brandVersion = 'v2.4.0';
 
   // ── Fonts ──────────────────────────────────────────────────────
@@ -18,25 +18,46 @@ class AppTheme {
 
   // ── Typography Scale ───────────────────────────────────────────
   static TextStyle headlineLg = _headline.copyWith(
-    fontSize: 32, fontWeight: FontWeight.w600, height: 1.25, letterSpacing: -1.28,
+    fontSize: 32,
+    fontWeight: FontWeight.w600,
+    height: 1.25,
+    letterSpacing: -1.28,
   );
   static TextStyle headlineMd = _headline.copyWith(
-    fontSize: 24, fontWeight: FontWeight.w600, height: 1.33, letterSpacing: -0.72,
+    fontSize: 24,
+    fontWeight: FontWeight.w600,
+    height: 1.33,
+    letterSpacing: -0.72,
   );
   static TextStyle headlineSm = _headline.copyWith(
-    fontSize: 18, fontWeight: FontWeight.w600, height: 1.33, letterSpacing: -0.36,
+    fontSize: 18,
+    fontWeight: FontWeight.w600,
+    height: 1.33,
+    letterSpacing: -0.36,
   );
   static TextStyle bodyLg = _body.copyWith(
-    fontSize: 16, fontWeight: FontWeight.w400, height: 1.5, letterSpacing: -0.16,
+    fontSize: 16,
+    fontWeight: FontWeight.w400,
+    height: 1.5,
+    letterSpacing: -0.16,
   );
   static TextStyle bodyMd = _body.copyWith(
-    fontSize: 14, fontWeight: FontWeight.w400, height: 1.43, letterSpacing: 0,
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
+    height: 1.43,
+    letterSpacing: 0,
   );
   static TextStyle labelSm = _body.copyWith(
-    fontSize: 12, fontWeight: FontWeight.w600, height: 1.33, letterSpacing: 0.6,
+    fontSize: 12,
+    fontWeight: FontWeight.w600,
+    height: 1.33,
+    letterSpacing: 0.6,
   );
   static TextStyle codeMd = _code.copyWith(
-    fontSize: 13, fontWeight: FontWeight.w400, height: 1.54, letterSpacing: 0,
+    fontSize: 13,
+    fontWeight: FontWeight.w400,
+    height: 1.54,
+    letterSpacing: 0,
   );
 
   // ── Colors ─────────────────────────────────────────────────────
@@ -106,10 +127,12 @@ class AppTheme {
 
   // ── Shadows ────────────────────────────────────────────────────
   static const List<BoxShadow> modalShadow = [
-    BoxShadow(offset: Offset(4, 4), blurRadius: 0, spreadRadius: 0, color: primary),
+    BoxShadow(
+        offset: Offset(4, 4), blurRadius: 0, spreadRadius: 0, color: primary),
   ];
   static const List<BoxShadow> inputFocusShadow = [
-    BoxShadow(offset: Offset(2, 2), blurRadius: 0, spreadRadius: 0, color: primary),
+    BoxShadow(
+        offset: Offset(2, 2), blurRadius: 0, spreadRadius: 0, color: primary),
   ];
   static const List<BoxShadow> noShadow = [];
 
@@ -156,7 +179,8 @@ class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: surface,
-        contentPadding: const EdgeInsets.symmetric(horizontal: spacing12, vertical: spacing8),
+        contentPadding: const EdgeInsets.symmetric(
+            horizontal: spacing12, vertical: spacing8),
         border: const OutlineInputBorder(
           borderRadius: BorderRadius.zero,
           borderSide: BorderSide(color: surfaceVariant, width: borderWidth),
@@ -177,7 +201,8 @@ class AppTheme {
           backgroundColor: primary,
           foregroundColor: onPrimary,
           elevation: 0,
-          padding: const EdgeInsets.symmetric(horizontal: spacing16, vertical: spacing8),
+          padding: const EdgeInsets.symmetric(
+              horizontal: spacing16, vertical: spacing8),
           minimumSize: const Size(0, 36),
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.zero,
@@ -191,7 +216,8 @@ class AppTheme {
           backgroundColor: surface,
           foregroundColor: onSurface,
           elevation: 0,
-          padding: const EdgeInsets.symmetric(horizontal: spacing16, vertical: spacing8),
+          padding: const EdgeInsets.symmetric(
+              horizontal: spacing16, vertical: spacing8),
           minimumSize: const Size(0, 36),
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.zero,

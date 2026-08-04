@@ -13,36 +13,41 @@ class SearchHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
     return Container(
       padding: const EdgeInsets.all(AppSpacing.s16),
-      decoration: const BoxDecoration(
-        color: AppColors.surface,
+      decoration: BoxDecoration(
+        color: c.surface,
         border: Border(
-            bottom: BorderSide(color: AppColors.surfaceVariant, width: 1)),
+            bottom: BorderSide(color: c.surfaceVariant, width: 1)),
       ),
       child: Column(
         children: [
           TextField(
             controller: searchController,
             autofocus: true,
-            style: AppTextStyles.bodyMd,
+            style: AppTextStyles.bodyMd.copyWith(
+              decoration: TextDecoration.none,
+            ),
             decoration: InputDecoration(
               hintText: 'Search APIs (e.g., weather, payment...)',
-              hintStyle: AppTextStyles.bodyMd
-                  .copyWith(color: AppColors.onSurfaceVariant),
-              prefixIcon: const Icon(PhosphorIconsRegular.magnifyingGlass,
-                  color: AppColors.onSurface),
-              border: const OutlineInputBorder(
+              hintStyle: AppTextStyles.bodyMd.copyWith(
+                color: c.onSurfaceVariant,
+                decoration: TextDecoration.none,
+              ),
+              prefixIcon: Icon(PhosphorIconsRegular.magnifyingGlass,
+                  color: c.onSurface),
+              border: OutlineInputBorder(
                   borderRadius: BorderRadius.zero,
-                  borderSide: BorderSide(color: AppColors.surfaceVariant)),
-              enabledBorder: const OutlineInputBorder(
+                  borderSide: BorderSide(color: c.surfaceVariant)),
+              enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.zero,
-                  borderSide: BorderSide(color: AppColors.surfaceVariant)),
-              focusedBorder: const OutlineInputBorder(
+                  borderSide: BorderSide(color: c.surfaceVariant)),
+              focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.zero,
-                  borderSide: BorderSide(color: AppColors.primary, width: 1)),
+                  borderSide: BorderSide(color: c.primary, width: 1)),
               filled: true,
-              fillColor: AppColors.surface,
+              fillColor: c.surface,
             ),
             onSubmitted: (_) {
               final q = searchController.text.trim();
@@ -64,38 +69,38 @@ class SearchHeader extends StatelessWidget {
                     horizontal: AppSpacing.s16,
                     vertical: AppSpacing.s12,
                   ),
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     border: Border(
                         bottom: BorderSide(
-                            color: AppColors.surfaceVariant, width: 1)),
+                            color: c.surfaceVariant, width: 1)),
                   ),
                   child: Row(
                     children: [
-                      const Icon(PhosphorIconsRegular.slidersHorizontal,
-                          size: 20, color: AppColors.onSurface),
+                      Icon(PhosphorIconsRegular.slidersHorizontal,
+                          size: 20, color: c.onSurface),
                       const SizedBox(width: AppSpacing.s12),
                       Expanded(
                         child: Text(
                           'FILTERS',
                           style: AppTextStyles.headlineSm
-                              .copyWith(color: AppColors.onSurface),
+                              .copyWith(color: c.onSurface),
                         ),
                       ),
                       if (filterCount > 0) ...[
                         Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8, vertical: 2),
-                          color: AppColors.primary,
+                          color: c.primary,
                           child: Text(
                             '$filterCount',
                             style: AppTextStyles.labelSm
-                                .copyWith(color: AppColors.onPrimary),
+                                .copyWith(color: c.onPrimary),
                           ),
                         ),
                         const SizedBox(width: AppSpacing.s8),
                       ],
-                      const Icon(PhosphorIconsRegular.caretRight,
-                          size: 20, color: AppColors.outline),
+                      Icon(PhosphorIconsRegular.caretRight,
+                          size: 20, color: c.outline),
                     ],
                   ),
                 ),

@@ -24,57 +24,59 @@ class AppErrorState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
+
     final child = Center(
-      child: Container(
-        width: double.infinity,
-        margin: EdgeInsets.all(compact ? AppSpacing.s16 : AppSpacing.s32),
-        padding: EdgeInsets.all(compact ? AppSpacing.s16 : AppSpacing.s32),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          border: Border.all(color: AppColors.danger),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(PhosphorIconsRegular.warningCircle,
-                size: compact ? 32 : 48, color: AppColors.danger),
-            const SizedBox(height: AppSpacing.s16),
-            Text(
-              title.toUpperCase(),
-              style: AppTextStyles.headlineSm.copyWith(color: AppColors.danger),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: AppSpacing.s8),
-            Text(
-              message,
-              style: AppTextStyles.bodyMd
-                  .copyWith(color: AppColors.onSurfaceVariant),
-              textAlign: TextAlign.center,
+      child: SingleChildScrollView(
+        child: Container(
+          width: double.infinity,
+          margin: EdgeInsets.all(compact ? AppSpacing.s16 : AppSpacing.s32),
+          padding: EdgeInsets.all(compact ? AppSpacing.s16 : AppSpacing.s32),
+          decoration: BoxDecoration(
+            color: c.surface,
+            border: Border.all(color: c.danger),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(PhosphorIconsRegular.warningCircle,
+                  size: compact ? 32 : 48, color: c.danger),
+              const SizedBox(height: AppSpacing.s16),
+              Text(
+                title.toUpperCase(),
+                style: AppTextStyles.headlineSm.copyWith(color: c.danger),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: AppSpacing.s8),
+              Text(
+                message,
+                style: AppTextStyles.bodyMd.copyWith(color: c.onSurfaceVariant),
+                textAlign: TextAlign.center,
             ),
             if (onRetry != null) ...[
               const SizedBox(height: AppSpacing.s24),
               ElevatedButton(
                 onPressed: onRetry,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.surface,
-                  foregroundColor: AppColors.primary,
+                  backgroundColor: c.surface,
+                  foregroundColor: c.primary,
                   elevation: 0,
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.zero,
-                    side: BorderSide(color: AppColors.primary),
                   ),
+                  side: BorderSide(color: c.primary),
                 ),
                 child: Text(
                   actionLabel,
-                  style: AppTextStyles.labelSmUpper
-                      .copyWith(color: AppColors.primary),
+                  style: AppTextStyles.labelSmUpper.copyWith(color: c.primary),
                 ),
               ),
             ],
           ],
+        ),
         ),
       ),
     );

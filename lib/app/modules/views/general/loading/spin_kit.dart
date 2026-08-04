@@ -15,12 +15,13 @@ class SpinKit extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
     return SizedBox.square(
       dimension: size,
       child: CircularProgressIndicator(
         strokeWidth: borderWidth,
-        color: color ?? AppColors.primary,
-        backgroundColor: AppColors.surfaceVariant,
+        color: color ?? c.primary,
+        backgroundColor: c.surfaceVariant,
       ),
     );
   }

@@ -18,8 +18,9 @@ class CategoryApisView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: c.background,
       appBar: AppBar(
         title: BlocBuilder<CategoryApisCubit, CategoryApisState>(
           builder: (context, state) {
@@ -29,7 +30,7 @@ class CategoryApisView extends StatelessWidget {
             );
           },
         ),
-        backgroundColor: AppColors.surface,
+        backgroundColor: c.surface,
         elevation: 0,
         scrolledUnderElevation: 0,
       ),
@@ -89,6 +90,7 @@ class _CategorySummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
     final meta = state.categoryMeta;
     final apis = state.apis;
     final aliveCount = apis.where((api) => api.isAlive).length;
@@ -108,8 +110,8 @@ class _CategorySummary extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.surface,
-        border: Border.all(color: AppColors.surfaceVariant),
+        color: c.surface,
+        border: Border.all(color: c.surfaceVariant),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -142,11 +144,11 @@ class _CategorySummary extends StatelessWidget {
                           horizontal: AppSpacing.s8,
                           vertical: AppSpacing.s4,
                         ),
-                        color: AppColors.primary,
+                        color: c.primary,
                         child: Text(
                           'TRENDING',
                           style: AppTextStyles.labelSmUpper.copyWith(
-                            color: AppColors.onPrimary,
+                            color: c.onPrimary,
                             fontSize: 9,
                           ),
                         ),
@@ -158,7 +160,7 @@ class _CategorySummary extends StatelessWidget {
                   Text(
                     meta!.description!,
                     style: AppTextStyles.bodyMd.copyWith(
-                      color: AppColors.onSurfaceVariant,
+                      color: c.onSurfaceVariant,
                       height: 1.4,
                     ),
                   ),
@@ -175,12 +177,12 @@ class _CategorySummary extends StatelessWidget {
                           vertical: AppSpacing.s4,
                         ),
                         decoration: BoxDecoration(
-                          border: Border.all(color: AppColors.surfaceVariant),
+                          border: Border.all(color: c.surfaceVariant),
                         ),
                         child: Text(
                           tag.toUpperCase(),
                           style: AppTextStyles.labelSmUpper.copyWith(
-                            color: AppColors.onSurfaceVariant,
+                            color: c.onSurfaceVariant,
                             fontSize: 9,
                           ),
                         ),
@@ -231,11 +233,12 @@ class _StatTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
     return Container(
       padding: const EdgeInsets.all(AppSpacing.s8),
       decoration: BoxDecoration(
-        color: AppColors.background,
-        border: Border.all(color: AppColors.surfaceVariant),
+        color: c.background,
+        border: Border.all(color: c.surfaceVariant),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -244,7 +247,7 @@ class _StatTile extends StatelessWidget {
           Text(
             label,
             style: AppTextStyles.labelSmUpper.copyWith(
-              color: AppColors.onSurfaceVariant,
+              color: c.onSurfaceVariant,
               fontSize: 9,
             ),
           ),
@@ -254,7 +257,7 @@ class _StatTile extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: AppTextStyles.bodyLg.copyWith(
-              color: AppColors.onSurface,
+              color: c.onSurface,
               fontWeight: FontWeight.w700,
             ),
           ),

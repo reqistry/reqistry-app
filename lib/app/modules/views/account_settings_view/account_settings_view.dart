@@ -9,7 +9,6 @@ import 'package:api_scout/config/app_routes.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
-import 'package:api_scout/app/utils/text_input_route.dart';
 import 'package:api_scout/app/widgets/app_dialog.dart';
 import 'package:api_scout/app/widgets/app_snackbar.dart';
 import 'package:api_scout/shared/widgets/ui/info_row.dart';
@@ -19,19 +18,21 @@ class AccountSettingsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
+
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: c.background,
       appBar: AppBar(
         title: Text('ACCOUNT', style: AppTextStyles.headlineSm),
-        backgroundColor: AppColors.surface,
+        backgroundColor: c.surface,
         centerTitle: false,
         elevation: 0,
         scrolledUnderElevation: 0,
-        bottom: const PreferredSize(
-          preferredSize: Size.fromHeight(1),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
           child: SizedBox(
             height: 1,
-            child: ColoredBox(color: AppColors.surfaceVariant),
+            child: ColoredBox(color: c.surfaceVariant),
           ),
         ),
       ),
@@ -50,12 +51,10 @@ class AccountSettingsView extends StatelessWidget {
               children: [
                 Container(
                   width: double.infinity,
-                  decoration: const BoxDecoration(
-                    color: AppColors.surface,
+                  decoration: BoxDecoration(
+                    color: c.surface,
                     borderRadius: BorderRadius.zero,
-                    border: Border.fromBorderSide(
-                      BorderSide(color: AppColors.outline),
-                    ),
+                    border: Border.fromBorderSide(BorderSide(color: c.outline)),
                   ),
                   padding: const EdgeInsets.all(AppSpacing.s20),
                   child: Column(
@@ -65,13 +64,13 @@ class AccountSettingsView extends StatelessWidget {
                         children: [
                           CircleAvatar(
                             radius: 40,
-                            backgroundColor: AppColors.surfaceVariant,
+                            backgroundColor: c.surfaceVariant,
                             backgroundImage: userPhotoUrl.isNotEmpty
                                 ? CachedNetworkImageProvider(userPhotoUrl)
                                 : null,
                             child: userPhotoUrl.isEmpty
-                                ? const Icon(PhosphorIconsFill.user,
-                                    size: 40, color: AppColors.primary)
+                                ? Icon(PhosphorIconsFill.user,
+                                    size: 40, color: c.primary)
                                 : null,
                           ),
                           const SizedBox(width: AppSpacing.s16),
@@ -79,15 +78,12 @@ class AccountSettingsView extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  userName,
-                                  style: AppTextStyles.headlineSm,
-                                ),
+                                Text(userName, style: AppTextStyles.headlineSm),
                                 const SizedBox(height: AppSpacing.s4),
                                 Text(
                                   userEmail,
                                   style: AppTextStyles.bodyMd.copyWith(
-                                    color: AppColors.onSurfaceVariant,
+                                    color: c.onSurfaceVariant,
                                   ),
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -96,14 +92,14 @@ class AccountSettingsView extends StatelessWidget {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: AppSpacing.s10,
                                       vertical: AppSpacing.s4),
-                                  decoration: const BoxDecoration(
-                                    color: AppColors.surfaceVariant,
+                                  decoration: BoxDecoration(
+                                    color: c.surfaceVariant,
                                     borderRadius: BorderRadius.zero,
                                   ),
                                   child: Text(
                                     isGuest ? 'GUEST' : 'REGISTERED',
                                     style: AppTextStyles.labelSmUpper.copyWith(
-                                      color: AppColors.primary,
+                                      color: c.primary,
                                     ),
                                   ),
                                 ),
@@ -116,10 +112,7 @@ class AccountSettingsView extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: AppSpacing.sectionGap),
-                Text(
-                  'PROFILE',
-                  style: AppTextStyles.labelSmUpper,
-                ),
+                Text('PROFILE', style: AppTextStyles.labelSmUpper),
                 const SizedBox(height: AppSpacing.itemGap),
                 _EditProfileTile(
                   userName: userName,
@@ -130,41 +123,38 @@ class AccountSettingsView extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'LINK YOUR ACCOUNT',
-                        style: AppTextStyles.labelSmUpper,
-                      ),
+                      Text('LINK YOUR ACCOUNT', style: AppTextStyles.labelSmUpper),
                       const SizedBox(height: AppSpacing.chipGap),
                       Text(
                         'Save your favorites and notes by linking to an account',
                         style: AppTextStyles.bodyMd.copyWith(
-                          color: AppColors.onSurfaceVariant,
+                          color: c.onSurfaceVariant,
                         ),
                       ),
                       const SizedBox(height: AppSpacing.itemGap),
-                      Container(
-                        decoration: const BoxDecoration(
-                          color: AppColors.surface,
+                          Container(
+                        decoration: BoxDecoration(
+                          color: c.surface,
                           borderRadius: BorderRadius.zero,
-                          border: Border.fromBorderSide(
-                            BorderSide(color: AppColors.outline),
-                          ),
+                          border: Border.fromBorderSide(BorderSide(color: c.outline)),
                         ),
                         child: Column(
                           children: [
-                            ListTile(
-                              leading: CircleAvatar(
-                                backgroundColor: AppColors.surfaceVariant,
-                                child: const Icon(PhosphorIconsRegular.envelope,
-                                    color: AppColors.primary),
+                            Material(
+                              color: c.surface,
+                              child: ListTile(
+                                leading: CircleAvatar(
+                                  backgroundColor: c.surfaceVariant,
+                                  child: Icon(PhosphorIconsRegular.envelope,
+                                      color: c.primary),
+                                ),
+                                title: const Text('Link with Email & Password'),
+                                subtitle: const Text('Create a permanent account'),
+                                trailing: const Icon(
+                                    PhosphorIconsRegular.caretRight,
+                                    size: 16),
+                                onTap: () => _showLinkEmailDialog(context),
                               ),
-                              title: const Text('Link with Email & Password'),
-                              subtitle:
-                                  const Text('Create a permanent account'),
-                              trailing: const Icon(
-                                  PhosphorIconsRegular.caretRight,
-                                  size: 16),
-                              onTap: () => _showLinkEmailDialog(context),
                             ),
                           ],
                         ),
@@ -172,19 +162,14 @@ class AccountSettingsView extends StatelessWidget {
                       const SizedBox(height: AppSpacing.s24),
                     ],
                   ),
-                Text(
-                  'ACCOUNT INFORMATION',
-                  style: AppTextStyles.labelSmUpper,
-                ),
+                Text('ACCOUNT INFORMATION', style: AppTextStyles.labelSmUpper),
                 const SizedBox(height: AppSpacing.itemGap),
                 Container(
                   width: double.infinity,
-                  decoration: const BoxDecoration(
-                    color: AppColors.surface,
+                  decoration: BoxDecoration(
+                    color: c.surface,
                     borderRadius: BorderRadius.zero,
-                    border: Border.fromBorderSide(
-                      BorderSide(color: AppColors.outline),
-                    ),
+                    border: Border.fromBorderSide(BorderSide(color: c.outline)),
                   ),
                   padding: const EdgeInsets.all(AppSpacing.cardPadding),
                   child: Column(
@@ -225,6 +210,7 @@ class AccountSettingsView extends StatelessWidget {
                               'This will permanently delete your account and all associated data including bookmarks, projects, and FCM tokens. This action is irreversible.',
                           confirmLabel: 'DELETE',
                           cancelLabel: 'CANCEL',
+                          isDestructive: true,
                         );
                         if (confirm && context.mounted) {
                           await cubit.deleteAccount();
@@ -238,8 +224,8 @@ class AccountSettingsView extends StatelessWidget {
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
                             vertical: AppSpacing.s14),
-                        side: const BorderSide(color: AppColors.danger),
-                        foregroundColor: AppColors.danger,
+                        side: BorderSide(color: c.danger),
+                        foregroundColor: c.danger,
                         shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.zero,
                         ),
@@ -271,7 +257,7 @@ class AccountSettingsView extends StatelessWidget {
                     style: OutlinedButton.styleFrom(
                       padding:
                           const EdgeInsets.symmetric(vertical: AppSpacing.s14),
-                      side: const BorderSide(color: AppColors.danger),
+                      side: BorderSide(color: c.danger),
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.zero,
                       ),
@@ -293,148 +279,88 @@ class AccountSettingsView extends StatelessWidget {
         : currentName == AuthCubit.guestName
             ? ''
             : currentName;
+
+    final c = AppColors.of(Theme.of(context).brightness);
+
     final emailController = TextEditingController();
     final passwordController = TextEditingController();
     final nameController = TextEditingController(text: displayName);
 
     try {
-      await showDialog(
+      await AppDialog.show(
         context: context,
-        builder: (dialogContext) => Dialog(
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.zero,
-            side: BorderSide(color: AppColors.primary, width: 1),
-          ),
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.s20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'LINK ACCOUNT',
-                    style: AppTextStyles.labelSmUpper,
-                  ),
-                  const SizedBox(height: AppSpacing.chipGap),
-                  Text(
-                    'Create a permanent account to save your data',
-                    style: AppTextStyles.bodyMd.copyWith(
-                      color: AppColors.onSurfaceVariant,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.sectionGap),
-                  TextField(
-                    controller: nameController,
-                    decoration: const InputDecoration(
-                      labelText: 'DISPLAY NAME',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.zero,
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.zero,
-                        borderSide: BorderSide(color: AppColors.outline),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.zero,
-                        borderSide:
-                            BorderSide(color: AppColors.primary, width: 1),
-                      ),
-                      prefixIcon: Icon(PhosphorIconsFill.user),
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.itemGap),
-                  TextField(
-                    controller: emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: const InputDecoration(
-                      labelText: 'EMAIL',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.zero,
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.zero,
-                        borderSide: BorderSide(color: AppColors.outline),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.zero,
-                        borderSide:
-                            BorderSide(color: AppColors.primary, width: 1),
-                      ),
-                      prefixIcon: Icon(PhosphorIconsRegular.envelope),
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.itemGap),
-                  TextField(
-                    controller: passwordController,
-                    obscureText: true,
-                    decoration: const InputDecoration(
-                      labelText: 'PASSWORD',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.zero,
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.zero,
-                        borderSide: BorderSide(color: AppColors.outline),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.zero,
-                        borderSide:
-                            BorderSide(color: AppColors.primary, width: 1),
-                      ),
-                      prefixIcon: Icon(PhosphorIconsRegular.lock),
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.sectionGap),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      TextButton(
-                        onPressed: () => dismissTextInputRoute(dialogContext),
-                        child: const Text('Cancel'),
-                      ),
-                      const SizedBox(width: AppSpacing.chipGap),
-                      ElevatedButton(
-                        onPressed: () async {
-                          if (emailController.text.isEmpty ||
-                              passwordController.text.isEmpty) {
-                            if (dialogContext.mounted) {
-                              AppSnackbarManager.showSnackbar(
-                                context: dialogContext,
-                                title: 'Error',
-                                message: 'Please fill in all fields',
-                                type: AppSnackbarType.error,
-                              );
-                            }
-                            return;
-                          }
-
-                          final email = emailController.text.trim();
-                          final password = passwordController.text;
-                          final name = nameController.text.trim();
-                          dismissTextInputRoute(dialogContext);
-                          await context
-                              .read<AuthCubit>()
-                              .linkAnonymousAccountToEmail(
-                                email: email,
-                                password: password,
-                                displayName: name,
-                              );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.zero,
-                          ),
-                        ),
-                        child: const Text('LINK ACCOUNT'),
-                      ),
-                    ],
-                  ),
-                ],
+        title: 'LINK ACCOUNT',
+        maxWidth: 400,
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Create a permanent account to save your data',
+                style: AppTextStyles.bodyMd.copyWith(color: c.onSurfaceVariant),
               ),
-            ),
+              const SizedBox(height: AppSpacing.sectionGap),
+              TextField(
+                controller: nameController,
+                decoration: const InputDecoration(
+                  labelText: 'DISPLAY NAME',
+                ),
+              ),
+              const SizedBox(height: AppSpacing.itemGap),
+              TextField(
+                controller: emailController,
+                keyboardType: TextInputType.emailAddress,
+                decoration: const InputDecoration(labelText: 'EMAIL'),
+              ),
+              const SizedBox(height: AppSpacing.itemGap),
+              TextField(
+                controller: passwordController,
+                obscureText: true,
+                decoration: const InputDecoration(labelText: 'PASSWORD'),
+              ),
+            ],
           ),
         ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(
+              'CANCEL',
+              style: AppTextStyles.labelSmUpper.copyWith(color: c.outline),
+            ),
+          ),
+          const SizedBox(width: AppSpacing.chipGap),
+          ElevatedButton(
+            onPressed: () async {
+              if (emailController.text.isEmpty ||
+                  passwordController.text.isEmpty) {
+                if (context.mounted) {
+                  AppSnackbarManager.showSnackbar(
+                    context: context,
+                    title: 'Error',
+                    message: 'Please fill in all fields',
+                    type: AppSnackbarType.error,
+                  );
+                }
+                return;
+              }
+
+              final email = emailController.text.trim();
+              final password = passwordController.text;
+              final name = nameController.text.trim();
+              if (context.mounted) Navigator.of(context).pop();
+              await context
+                  .read<AuthCubit>()
+                  .linkAnonymousAccountToEmail(
+                    email: email,
+                    password: password,
+                    displayName: name,
+                  );
+            },
+            child: const Text('LINK ACCOUNT'),
+          ),
+        ],
       );
     } finally {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -477,13 +403,13 @@ class _EditProfileTileState extends State<_EditProfileTile> {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
+
     return Container(
-      decoration: const BoxDecoration(
-        color: AppColors.surface,
+      decoration: BoxDecoration(
+        color: c.surface,
         borderRadius: BorderRadius.zero,
-        border: Border.fromBorderSide(
-          BorderSide(color: AppColors.outline),
-        ),
+        border: Border.fromBorderSide(BorderSide(color: c.outline)),
       ),
       padding: const EdgeInsets.all(AppSpacing.cardPadding),
       child: Column(
@@ -492,30 +418,13 @@ class _EditProfileTileState extends State<_EditProfileTile> {
           Text(
             'DISPLAY NAME',
             style: AppTextStyles.labelSmUpper.copyWith(
-              color: AppColors.onSurfaceVariant,
+              color: c.onSurfaceVariant,
             ),
           ),
           const SizedBox(height: AppSpacing.chipGap),
           TextField(
             controller: _nameController,
-            decoration: const InputDecoration(
-              hintText: 'Your name',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.zero,
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.zero,
-                borderSide: BorderSide(color: AppColors.outline),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.zero,
-                borderSide: BorderSide(color: AppColors.primary, width: 1),
-              ),
-              contentPadding: EdgeInsets.symmetric(
-                horizontal: AppSpacing.s12,
-                vertical: AppSpacing.s12,
-              ),
-            ),
+            decoration: const InputDecoration(hintText: 'Your name'),
           ),
           const SizedBox(height: AppSpacing.s12),
           Align(

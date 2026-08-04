@@ -19,14 +19,15 @@ class ProjectCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
     return GestureDetector(
       onTap: onTap ?? () => context.push(AppRoutes.projectApis, extra: project),
       child: Container(
         width: 140,
         padding: const EdgeInsets.all(AppSpacing.s12),
         decoration: BoxDecoration(
-          color: AppColors.surface,
-          border: Border.all(color: AppColors.surfaceVariant),
+          color: c.surface,
+          border: Border.all(color: c.surfaceVariant),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -39,14 +40,14 @@ class ProjectCard extends StatelessWidget {
                 fontPackage: 'phosphoricons_flutter',
               ),
               size: 28,
-              color: AppColors.primary,
+              color: c.primary,
             ),
             const Spacer(),
             Text(
               project.title,
               style: AppTextStyles.bodyMd.copyWith(
                 fontWeight: FontWeight.w600,
-                color: AppColors.onSurface,
+                color: c.onSurface,
               ),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
@@ -55,7 +56,7 @@ class ProjectCard extends StatelessWidget {
             Text(
               '${project.apiCount} ${project.apiCount == 1 ? 'API' : 'APIs'}',
               style: AppTextStyles.labelSmUpper.copyWith(
-                color: AppColors.onSurfaceVariant,
+                color: c.onSurfaceVariant,
                 fontSize: 10,
               ),
             ),
@@ -73,15 +74,16 @@ class AddProjectCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
     return GestureDetector(
       onTap: onTap,
       child: Container(
         width: 140,
         padding: const EdgeInsets.all(AppSpacing.s12),
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: c.surface,
           border: Border.all(
-            color: AppColors.surfaceVariant,
+            color: c.surfaceVariant,
             style: BorderStyle.solid,
           ),
         ),
@@ -93,21 +95,21 @@ class AddProjectCard extends StatelessWidget {
               height: 48,
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: AppColors.outlineVariant,
+                  color: c.outlineVariant,
                   width: 2,
                 ),
               ),
-              child: const Icon(
+              child: Icon(
                 PhosphorIconsRegular.plus,
                 size: 24,
-                color: AppColors.onSurfaceVariant,
+                color: c.onSurfaceVariant,
               ),
             ),
             const SizedBox(height: AppSpacing.s8),
             Text(
               'NEW',
               style: AppTextStyles.labelSmUpper.copyWith(
-                color: AppColors.onSurfaceVariant,
+                color: c.onSurfaceVariant,
                 fontSize: 10,
               ),
             ),

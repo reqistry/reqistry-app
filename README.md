@@ -1,8 +1,10 @@
-# API Scout
+# Reqistry
 
-> Discover, evaluate, and organize public APIs for your next project.
+> **API intelligence for builders and agents.**
+>
+> Find the right API. Give your agents the right tools.
 
-API Scout is a Flutter mobile app that gives you a browsable catalog of **1,400+ free public APIs** organized into **50+ categories**. Navigate the catalog, search with advanced filters, check live platform-observed health, and keep the APIs you care about organized in bookmarks and projects.
+Reqistry is an API intelligence platform that helps developers and AI agents discover, evaluate, trust, and connect to the right capabilities. This repository contains the **Reqistry mobile app** — the companion product for discovery and evaluation on the go: a browsable catalog of **1,400+ free public APIs** organized into **50+ categories**, with search, health checks, and projects.
 
 [Get it on Google Play](https://play.google.com/store/apps/details?id=com.gwhyyy.publicApis)
 
@@ -12,11 +14,11 @@ API Scout is a Flutter mobile app that gives you a browsable catalog of **1,400+
 
 - **Catalog browsing** — 1,400+ public APIs across 50+ categories, with trending, recommended, and recently-added sections.
 - **Powerful search** — keyword search with advanced filters (auth type, HTTPS, CORS, pricing, category).
-- **API detail screen** — full description, quick facts (auth, pricing, HTTPS/CORS/type), platform-observed health checks, verification fields, warnings, and documentation links.
-- **Similar APIs** — find related APIs with thumbnails and one-tap bookmarking.
-- **Bookmarks & Projects** — save APIs for later and organize them into named projects.
-- **Sharing** — share an API's name, URL, and homepage with a clean "shared by API Scout" signature.
-- **Offline-first** — connectivity-aware with automatic retry of the last failed request; privacy policy and content are cached locally.
+- **API profiles** — full description, quick facts (auth, pricing, HTTPS/CORS/type), platform-observed health checks, verification fields, warnings, and documentation links.
+- **Similar APIs** — related capabilities with thumbnails and one-tap bookmarking.
+- **Bookmarks & Projects** — save capabilities for later and organize them into named projects.
+- **Sharing** — share an API's name, URL, and homepage with a clean "shared by Reqistry" signature.
+- **Offline-first** — connectivity-aware with automatic retry of the last failed request; the privacy policy is cached locally.
 - **Push notifications** — optional FCM-based notifications for relevant updates.
 - **Privacy-respecting** — anonymous sign-in by default; link an email only if you want cross-device continuity.
 
@@ -35,7 +37,7 @@ API Scout is a Flutter mobile app that gives you a browsable catalog of **1,400+
 | Extras | `share_plus`, `url_launcher`, `in_app_review`, `package_info_plus`, `connectivity_plus` |
 | Debug tooling | `device_preview_plus`, `requests_inspector` |
 
-> The app is a pure client. The backend catalog and APIs live outside this repository at `https://publicapis.gwhyyy.com`.
+> The app is a pure client. The catalog and intelligence backend live outside this repository; the platform also includes web, machine API, and MCP surfaces as part of the broader Reqistry product.
 
 ## Getting Started
 

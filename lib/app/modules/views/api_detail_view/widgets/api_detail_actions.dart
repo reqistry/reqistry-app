@@ -19,8 +19,9 @@ class ApiDetailActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
     return Material(
-      color: AppColors.surface,
+      color: c.surface,
       child: SafeArea(
         top: false,
         child: Container(
@@ -30,8 +31,8 @@ class ApiDetailActions extends StatelessWidget {
             AppSpacing.s12,
             AppSpacing.s10,
           ),
-          decoration: const BoxDecoration(
-            border: Border(top: BorderSide(color: AppColors.surfaceVariant)),
+          decoration:  BoxDecoration(
+            border: Border(top: BorderSide(color: c.surfaceVariant)),
           ),
           child: Row(
             children: [

@@ -14,6 +14,7 @@ import 'search_apis_screen.dart';
 import 'search_screen/search_screen.dart';
 import 'settings_view/settings_view.dart';
 import 'favorites_view/favorites_view.dart';
+import 'intelligence_view/intelligence_view.dart';
 
 class MainShellView extends StatefulWidget {
   const MainShellView({super.key});
@@ -23,11 +24,12 @@ class MainShellView extends StatefulWidget {
 }
 
 class _MainShellViewState extends State<MainShellView> {
-  static const _tabCount = 4;
+  static const _tabCount = 5;
 
   static const List<Widget> _tabTabs = [
     HomeView(),
     SearchApisScreen(),
+    IntelligenceView(),
     FavoritesView(),
     SettingsView(),
   ];
@@ -74,6 +76,7 @@ class _MainShellViewState extends State<MainShellView> {
   Widget build(BuildContext context) {
     return BlocBuilder<MainShellCubit, MainShellState>(
       builder: (context, state) {
+        final c = AppColors.of(Theme.of(context).brightness);
         return Scaffold(
           body: IndexedStack(
             index: state.selectedTabIndex,
@@ -93,20 +96,20 @@ class _MainShellViewState extends State<MainShellView> {
                 ),
               );
             },
-            backgroundColor: AppColors.primary,
+            backgroundColor: c.primary,
             elevation: 0,
-            child: const Icon(PhosphorIconsRegular.magnifyingGlass,
-                color: AppColors.onPrimary),
+            child: Icon(PhosphorIconsRegular.magnifyingGlass,
+                color: c.onPrimary),
           ),
           bottomNavigationBar: SafeArea(
             top: false,
             child: Container(
               height: 64,
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s12),
-              decoration: const BoxDecoration(
-                color: AppColors.surface,
+              decoration: BoxDecoration(
+                color: c.surface,
                 border: Border(
-                  top: BorderSide(color: AppColors.outlineVariant, width: 1),
+                  top: BorderSide(color: c.outlineVariant, width: 1),
                 ),
               ),
               child: Row(
@@ -126,18 +129,25 @@ class _MainShellViewState extends State<MainShellView> {
                     onTap: () => _onNavTap(1),
                   ),
                   _NavItem(
+                    icon: PhosphorIconsRegular.brain,
+                    selectedIcon: PhosphorIconsFill.brain,
+                    label: 'Intelligence',
+                    selected: state.selectedTabIndex == 2,
+                    onTap: () => _onNavTap(2),
+                  ),
+                  _NavItem(
                     icon: PhosphorIconsRegular.bookmarkSimple,
                     selectedIcon: PhosphorIconsFill.bookmarkSimple,
                     label: 'Saved',
-                    selected: state.selectedTabIndex == 2,
-                    onTap: () => _onNavTap(2),
+                    selected: state.selectedTabIndex == 3,
+                    onTap: () => _onNavTap(3),
                   ),
                   _NavItem(
                     icon: PhosphorIconsRegular.user,
                     selectedIcon: PhosphorIconsFill.user,
                     label: 'You',
-                    selected: state.selectedTabIndex == 3,
-                    onTap: () => _onNavTap(3),
+                    selected: state.selectedTabIndex == 4,
+                    onTap: () => _onNavTap(4),
                   ),
                 ],
               ),
@@ -166,7 +176,8 @@ class _NavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = selected ? AppColors.primary : AppColors.outline;
+    final c = AppColors.of(Theme.of(context).brightness);
+    final color = selected ? c.primary : c.outline;
 
     return Expanded(
       child: GestureDetector(
@@ -186,7 +197,7 @@ class _NavItem extends StatelessWidget {
                 width: selected ? 18 : 4,
                 height: 2,
                 decoration: BoxDecoration(
-                  color: selected ? AppColors.primary : Colors.transparent,
+                  color: selected ? c.primary : Colors.transparent,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),

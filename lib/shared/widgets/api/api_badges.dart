@@ -25,10 +25,7 @@ class ApiChip extends StatelessWidget {
       decoration: BoxDecoration(color: bg),
       child: Text(
         label,
-        style: AppTextStyles.labelSmUpper.copyWith(
-          color: fg,
-          fontSize: 9,
-        ),
+        style: AppTextStyles.labelSmUpper.copyWith(color: fg, fontSize: 9),
       ),
     );
   }
@@ -40,23 +37,25 @@ class PricingBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
     final normalized = pricing.toLowerCase();
     final label = normalized.isEmpty ? 'UNKNOWN' : pricing.toUpperCase();
+
     Color bg;
     Color fg;
 
     if (normalized == 'free') {
-      bg = AppColors.successBg;
-      fg = AppColors.successText;
+      bg = c.successBg;
+      fg = c.successText;
     } else if (normalized == 'paid') {
-      bg = AppColors.warningBg;
-      fg = AppColors.warningText;
+      bg = c.warningBg;
+      fg = c.warningText;
     } else if (normalized == 'freemium' || normalized == 'free tier') {
-      bg = AppColors.infoBg;
-      fg = AppColors.infoText;
+      bg = c.infoBg;
+      fg = c.infoText;
     } else {
-      bg = AppColors.surfaceContainerHigh;
-      fg = AppColors.onSurface;
+      bg = c.surfaceContainerHigh;
+      fg = c.onSurface;
     }
 
     return ApiChip(label: label, bg: bg, fg: fg);
@@ -69,10 +68,11 @@ class TypeBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
     return ApiChip(
       label: type.toUpperCase(),
-      bg: AppColors.surfaceContainerHighest,
-      fg: AppColors.onSurface,
+      bg: c.surfaceContainerHighest,
+      fg: c.onSurface,
     );
   }
 }
@@ -83,10 +83,11 @@ class HttpsBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
     return ApiChip(
       label: isHttps ? 'HTTPS' : 'HTTP',
-      bg: isHttps ? AppColors.successBg : AppColors.dangerBg,
-      fg: isHttps ? AppColors.successText : AppColors.dangerText,
+      bg: isHttps ? c.successBg : c.dangerBg,
+      fg: isHttps ? c.successText : c.dangerText,
     );
   }
 }
@@ -105,14 +106,15 @@ class FeatureChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.s12,
         vertical: AppSpacing.s8,
       ),
       decoration: BoxDecoration(
-        color: AppColors.surface,
-        border: Border.all(color: AppColors.surfaceVariant),
+        color: c.surface,
+        border: Border.all(color: c.surfaceVariant),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

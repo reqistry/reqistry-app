@@ -18,6 +18,7 @@ class ContinueWorkSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
     return BlocBuilder<ProjectsCubit, ProjectsState>(
       builder: (context, state) {
         return Column(
@@ -31,7 +32,7 @@ class ContinueWorkSection extends StatelessWidget {
                   Text(
                     'CONTINUE YOUR WORK',
                     style: AppTextStyles.labelSmUpper.copyWith(
-                      color: AppColors.onSurface,
+                      color: c.onSurface,
                     ),
                   ),
                   GestureDetector(
@@ -47,7 +48,7 @@ class ContinueWorkSection extends StatelessWidget {
                         Icon(
                           PhosphorIconsRegular.arrowRight,
                           size: 18,
-                          color: AppColors.onSurfaceVariant,
+                          color: c.onSurfaceVariant,
                         ),
                       ],
                     ),

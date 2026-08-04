@@ -76,8 +76,9 @@ class _ApiDetailViewState extends State<ApiDetailView> {
   }
 
   Widget _buildReady(BuildContext context, ApiDetail initialDetail) {
+    final c = AppColors.of(Theme.of(context).brightness);
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: c.background,
       body: RefreshIndicator(
         onRefresh: () => context.read<ApiDetailCubit>().refresh(),
         child: CustomScrollView(
@@ -87,7 +88,7 @@ class _ApiDetailViewState extends State<ApiDetailView> {
           slivers: [
           SliverAppBar(
             pinned: true,
-            backgroundColor: AppColors.surface,
+            backgroundColor: c.surface,
             surfaceTintColor: Colors.transparent,
             titleSpacing: 0,
             title: BlocBuilder<ApiDetailCubit, ApiDetailState>(
@@ -124,36 +125,40 @@ class _ApiDetailViewState extends State<ApiDetailView> {
                 tooltip: 'More actions',
                 constraints: const BoxConstraints(minWidth: 220),
                 onSelected: (action) => _handleOverflow(action),
-                itemBuilder: (_) => const [
-                  PopupMenuItem(
-                    value: _OverflowAction.addToProject,
-                    child: _MenuItem(
-                      icon: PhosphorIconsRegular.folderPlus,
-                      label: 'Add to project',
+                itemBuilder: (_) {
+                  final detail = _detail(context);
+                  return [
+                    const PopupMenuItem(
+                      value: _OverflowAction.addToProject,
+                      child: _MenuItem(
+                        icon: PhosphorIconsRegular.folderPlus,
+                        label: 'Add to project',
+                      ),
                     ),
-                  ),
-                  PopupMenuItem(
-                    value: _OverflowAction.share,
-                    child: _MenuItem(
-                      icon: PhosphorIconsRegular.shareNetwork,
-                      label: 'Share',
+                    const PopupMenuItem(
+                      value: _OverflowAction.share,
+                      child: _MenuItem(
+                        icon: PhosphorIconsRegular.shareNetwork,
+                        label: 'Share',
+                      ),
                     ),
-                  ),
-                  PopupMenuItem(
-                    value: _OverflowAction.homepage,
-                    child: _MenuItem(
-                      icon: PhosphorIconsRegular.house,
-                      label: 'Open homepage',
+                    if (detail.links.homepageUrl != null)
+                      const PopupMenuItem(
+                        value: _OverflowAction.homepage,
+                        child: _MenuItem(
+                          icon: PhosphorIconsRegular.house,
+                          label: 'Open homepage',
+                        ),
+                      ),
+                    const PopupMenuItem(
+                      value: _OverflowAction.report,
+                      child: _MenuItem(
+                        icon: PhosphorIconsRegular.flag,
+                        label: 'Report a problem',
+                      ),
                     ),
-                  ),
-                  PopupMenuItem(
-                    value: _OverflowAction.report,
-                    child: _MenuItem(
-                      icon: PhosphorIconsRegular.flag,
-                      label: 'Report a problem',
-                    ),
-                  ),
-                ],
+                  ];
+                },
               ),
             ],
           ),
@@ -473,7 +478,7 @@ class _ApiDetailViewState extends State<ApiDetailView> {
     if (result != true || !mounted) return;
     _message(
       'Report submitted',
-      'Thanks. CORE API will review this information.',
+      'Thanks. Reqistry will review this information.',
       false,
     );
     _track('api_detail_issue_reported', detail);
@@ -577,8 +582,9 @@ class _CoreStateScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: c.background,
       body: CustomScrollView(
         slivers: [
           const SliverAppBar(pinned: true),
@@ -622,15 +628,18 @@ class _SheetLabel extends StatelessWidget {
   final String text;
 
   @override
-  Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: AppSpacing.s6),
-        child: Text(
-          text,
-          style: AppTextStyles.labelSm.copyWith(
-            color: AppColors.onSurfaceVariant,
-          ),
+  Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.s6),
+      child: Text(
+        text,
+        style: AppTextStyles.labelSm.copyWith(
+          color: c.onSurfaceVariant,
         ),
-      );
+      ),
+    );
+  }
 }
 
 class _ProjectTile extends StatelessWidget {
@@ -663,18 +672,21 @@ class _Notice extends StatelessWidget {
   final String text;
 
   @override
-  Widget build(BuildContext context) => Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(AppSpacing.s10),
-        decoration: BoxDecoration(
-          color: AppColors.warningBg,
-          border: Border.all(color: AppColors.warning),
-        ),
-        child: Text(
-          text,
-          style: AppTextStyles.bodyMd.copyWith(color: AppColors.warningText),
-        ),
-      );
+  Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppSpacing.s10),
+      decoration: BoxDecoration(
+        color: c.warningBg,
+        border: Border.all(color: c.warning),
+      ),
+      child: Text(
+        text,
+        style: AppTextStyles.bodyMd.copyWith(color: c.warningText),
+      ),
+    );
+  }
 }
 
 class _ReportIssueSheet extends StatefulWidget {
@@ -733,7 +745,7 @@ class _ReportIssueSheetState extends State<_ReportIssueSheet> {
           children: [
             Text('WHAT IS INCORRECT?', style: AppTextStyles.labelSmUpper),
             const SizedBox(height: AppSpacing.s8),
-            const _Notice('Reports are sent to CORE API for review.'),
+            const _Notice('Reports are sent to Reqistry for review.'),
             RadioGroup<String>(
               groupValue: _selected,
               onChanged: (value) => setState(() => _selected = value!),

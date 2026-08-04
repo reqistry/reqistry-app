@@ -20,6 +20,8 @@ class InfoRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
+
     return InkWell(
       onTap: onTap,
       child: Padding(
@@ -27,7 +29,7 @@ class InfoRow extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(icon, size: 20, color: AppColors.primary),
+            Icon(icon, size: 20, color: c.primary),
             const SizedBox(width: AppSpacing.itemGap),
             Expanded(
               child: Column(
@@ -48,7 +50,7 @@ class InfoRow extends StatelessWidget {
               Icon(
                 PhosphorIconsRegular.copy,
                 size: 16,
-                color: AppColors.onSurfaceVariant,
+                color: c.onSurfaceVariant,
               ),
           ],
         ),
@@ -73,9 +75,11 @@ class StatusRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
+
     return Row(
       children: [
-        Icon(icon, size: 18, color: AppColors.onSurfaceVariant),
+        Icon(icon, size: 18, color: c.onSurfaceVariant),
         const SizedBox(width: AppSpacing.s8),
         Text(label, style: AppTextStyles.labelSmUpper),
         const Spacer(),

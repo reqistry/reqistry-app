@@ -80,6 +80,8 @@ class _CreateProjectBottomSheetState extends State<CreateProjectBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
+
     return Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -88,10 +90,10 @@ class _CreateProjectBottomSheetState extends State<CreateProjectBottomSheet> {
         constraints: BoxConstraints(
           maxHeight: MediaQuery.of(context).size.height * 0.75,
         ),
-        decoration: const BoxDecoration(
-          color: AppColors.surface,
+        decoration: BoxDecoration(
+          color: c.surface,
           border: Border(
-            top: BorderSide(color: AppColors.primary, width: 1),
+            top: BorderSide(color: c.primary, width: 1),
           ),
         ),
         child: Column(
@@ -100,101 +102,87 @@ class _CreateProjectBottomSheetState extends State<CreateProjectBottomSheet> {
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(AppSpacing.s20),
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 border: Border(
-                  bottom: BorderSide(color: AppColors.surfaceVariant, width: 1),
+                  bottom: BorderSide(color: c.surfaceVariant, width: 1),
                 ),
               ),
               child: Text(
                 'CREATE PROJECT',
-                style: AppTextStyles.labelSmUpper.copyWith(
-                  color: AppColors.onSurface,
-                ),
+                style: AppTextStyles.labelSmUpper.copyWith(color: c.onSurface),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(AppSpacing.s20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TextField(
-                    controller: _titleController,
-                    autofocus: true,
-                    style: AppTextStyles.bodyMd,
-                    decoration: InputDecoration(
-                      labelText: 'Title',
-                      labelStyle: AppTextStyles.labelSmUpper.copyWith(
-                        color: _submitted && _titleController.text.isEmpty
-                            ? AppColors.danger
-                            : AppColors.onSurfaceVariant,
-                      ),
-                      errorText: _submitted && _titleController.text.isEmpty
-                          ? 'Title is required'
-                          : null,
-                      border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.zero,
-                        borderSide: BorderSide(color: AppColors.surfaceVariant),
-                      ),
-                      enabledBorder: const OutlineInputBorder(
-                        borderRadius: BorderRadius.zero,
-                        borderSide: BorderSide(color: AppColors.surfaceVariant),
-                      ),
-                      focusedBorder: const OutlineInputBorder(
-                        borderRadius: BorderRadius.zero,
-                        borderSide: BorderSide(color: AppColors.primary),
+            Flexible(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(AppSpacing.s20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextField(
+                      controller: _titleController,
+                      autofocus: true,
+                      style: AppTextStyles.bodyMd,
+                      decoration: InputDecoration(
+                        labelText: 'Title',
+                        labelStyle: AppTextStyles.labelSmUpper.copyWith(
+                          color: _submitted && _titleController.text.isEmpty
+                              ? c.danger
+                              : c.onSurfaceVariant,
+                        ),
+                        errorText: _submitted && _titleController.text.isEmpty
+                            ? 'Title is required'
+                            : null,
                       ),
                     ),
-                  ),
-                  const SizedBox(height: AppSpacing.s20),
-                  Text(
-                    'ICON',
-                    style: AppTextStyles.labelSmUpper.copyWith(
-                      color: AppColors.onSurfaceVariant,
+                    const SizedBox(height: AppSpacing.s20),
+                    Text(
+                      'ICON',
+                      style: AppTextStyles.labelSmUpper
+                          .copyWith(color: c.onSurfaceVariant),
                     ),
-                  ),
-                  const SizedBox(height: AppSpacing.s12),
-                  SizedBox(
-                    height: 240,
-                    child: GridView.builder(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 6,
-                        mainAxisSpacing: AppSpacing.s8,
-                        crossAxisSpacing: AppSpacing.s8,
-                      ),
-                      itemCount: _projectIconChoices.length,
-                      itemBuilder: (context, index) {
-                        final icon = _projectIconChoices[index];
-                        final isSelected = icon == _selectedIcon;
+                    const SizedBox(height: AppSpacing.s12),
+                    SizedBox(
+                      height: 240,
+                      child: GridView.builder(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 6,
+                          mainAxisSpacing: AppSpacing.s8,
+                          crossAxisSpacing: AppSpacing.s8,
+                        ),
+                        itemCount: _projectIconChoices.length,
+                        itemBuilder: (context, index) {
+                          final icon = _projectIconChoices[index];
+                          final isSelected = icon == _selectedIcon;
 
-                        return GestureDetector(
-                          onTap: () => setState(() => _selectedIcon = icon),
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 150),
-                            decoration: BoxDecoration(
-                              color: isSelected
-                                  ? AppColors.primary
-                                  : AppColors.surfaceContainerLow,
-                              border: Border.all(
+                          return GestureDetector(
+                            onTap: () => setState(() => _selectedIcon = icon),
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 150),
+                              decoration: BoxDecoration(
                                 color: isSelected
-                                    ? AppColors.primary
-                                    : AppColors.surfaceVariant,
-                                width: isSelected ? 2 : 1,
+                                    ? c.primary
+                                    : c.surfaceContainerLow,
+                                border: Border.all(
+                                  color: isSelected
+                                      ? c.primary
+                                      : c.surfaceVariant,
+                                  width: isSelected ? 2 : 1,
+                                ),
+                              ),
+                              child: Icon(
+                                icon,
+                                size: 22,
+                                color:
+                                    isSelected ? c.onPrimary : c.onSurface,
                               ),
                             ),
-                            child: Icon(
-                              icon,
-                              size: 22,
-                              color: isSelected
-                                  ? AppColors.onPrimary
-                                  : AppColors.onSurface,
-                            ),
-                          ),
-                        );
-                      },
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
             Container(
@@ -203,9 +191,9 @@ class _CreateProjectBottomSheetState extends State<CreateProjectBottomSheet> {
                 horizontal: AppSpacing.s20,
                 vertical: AppSpacing.s12,
               ),
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 border: Border(
-                  top: BorderSide(color: AppColors.surfaceVariant, width: 1),
+                  top: BorderSide(color: c.surfaceVariant, width: 1),
                 ),
               ),
               child: Row(
@@ -215,9 +203,8 @@ class _CreateProjectBottomSheetState extends State<CreateProjectBottomSheet> {
                     onPressed: () => dismissTextInputRoute(context),
                     child: Text(
                       'CANCEL',
-                      style: AppTextStyles.labelSmUpper.copyWith(
-                        color: AppColors.outline,
-                      ),
+                      style:
+                          AppTextStyles.labelSmUpper.copyWith(color: c.outline),
                     ),
                   ),
                   const SizedBox(width: AppSpacing.s8),

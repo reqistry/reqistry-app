@@ -13,24 +13,25 @@ class PrivacyView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: c.background,
       appBar: AppBar(
-        backgroundColor: AppColors.surface,
+        backgroundColor: c.surface,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         title: Text(
           'PRIVACY POLICY',
           style: AppTextStyles.labelSmUpper.copyWith(
-            color: AppColors.onSurface,
+            color: c.onSurface,
           ),
         ),
         centerTitle: false,
-        bottom: const PreferredSize(
+        bottom: PreferredSize(
           preferredSize: Size.fromHeight(1),
           child: SizedBox(
             height: 1,
-            child: ColoredBox(color: AppColors.surfaceVariant),
+            child: ColoredBox(color: c.surfaceVariant),
           ),
         ),
       ),
@@ -55,16 +56,16 @@ class PrivacyView extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(
+                  Icon(
                     PhosphorIconsRegular.warningCircle,
                     size: 48,
-                    color: AppColors.danger,
+                    color: c.danger,
                   ),
                   const SizedBox(height: AppSpacing.s16),
                   Text(
                     'SOMETHING WENT WRONG',
                     style: AppTextStyles.labelSmUpper.copyWith(
-                      color: AppColors.onSurfaceVariant,
+                      color: c.onSurfaceVariant,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.s16),

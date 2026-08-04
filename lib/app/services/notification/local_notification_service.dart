@@ -74,9 +74,9 @@ class LocalNotificationService {
     if (notification == null) return;
 
     final androidDetails = AndroidNotificationDetails(
-      'core_api_channel',
-      'Core API Notifications',
-      channelDescription: 'Notifications from Core API',
+      'reqistry_channel',
+      'Reqistry Notifications',
+      channelDescription: 'Notifications from Reqistry',
       importance: Importance.high,
       priority: Priority.high,
       icon: '@mipmap/ic_launcher',
@@ -117,9 +117,9 @@ class LocalNotificationService {
     if (!_isInitialized) await init();
 
     final androidDetails = AndroidNotificationDetails(
-      'core_api_channel',
-      'Core API Notifications',
-      channelDescription: 'Notifications from Core API',
+      'reqistry_channel',
+      'Reqistry Notifications',
+      channelDescription: 'Notifications from Reqistry',
       importance: silent ? Importance.low : Importance.high,
       priority: silent ? Priority.low : Priority.high,
       icon: '@mipmap/ic_launcher',
@@ -151,9 +151,9 @@ class LocalNotificationService {
     if (!_isInitialized) await init();
 
     final androidDetails = AndroidNotificationDetails(
-      'core_api_scheduled',
-      'Core API Scheduled Notifications',
-      channelDescription: 'Scheduled notifications from Core API',
+      'reqistry_scheduled',
+      'Reqistry Scheduled Notifications',
+      channelDescription: 'Scheduled notifications from Reqistry',
       importance: Importance.high,
       priority: Priority.high,
     );

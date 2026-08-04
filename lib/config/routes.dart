@@ -165,8 +165,9 @@ class _ErrorPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: c.background,
       body: AppErrorState(
         title: 'Error',
         message: message,

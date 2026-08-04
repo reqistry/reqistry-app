@@ -19,12 +19,14 @@ import 'config/env.dart';
 import 'config/routes.dart';
 import 'app/services/main_init_service.dart/main_init.dart';
 import 'app/utils/snackbar_helper.dart';
+import 'app/utils/theme_provider.dart';
 import 'app/utils/themes.dart';
 import 'app/widgets/app_overlay_host.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await MainInit().init();
+  ThemeProvider.instance.init();
   ConnectivityService.instance.init();
   AppSnackBarHelper.setNavigatorKey(rootNavigatorKey);
 
@@ -71,21 +73,28 @@ class ApiScoutApp extends StatelessWidget {
           ),
         ),
       ],
-      child: MaterialApp.router(
-        debugShowCheckedModeBanner: false,
-        restorationScopeId: 'api_scout',
-        title: Env.appName,
-        theme: AppThemes.lightTheme,
-        routerConfig: AppRouter.router,
-        locale: DevicePreview.locale(context),
-        supportedLocales: DevicePreview.allLocales(context),
-        builder: (context, child) {
-          child = DevicePreview.appBuilder(
-            context,
-            child ?? const SizedBox.shrink(),
-          );
+      child: ValueListenableBuilder<ThemeMode>(
+        valueListenable: ThemeProvider.instance.themeNotifier,
+        builder: (context, themeMode, _) {
+          return MaterialApp.router(
+            debugShowCheckedModeBanner: false,
+            restorationScopeId: 'api_scout',
+            title: Env.appName,
+            theme: AppThemes.lightTheme,
+            darkTheme: AppThemes.darkTheme,
+            themeMode: themeMode,
+            routerConfig: AppRouter.router,
+            locale: DevicePreview.locale(context),
+            supportedLocales: DevicePreview.allLocales(context),
+            builder: (context, child) {
+              child = DevicePreview.appBuilder(
+                context,
+                child ?? const SizedBox.shrink(),
+              );
 
-          return AppOverlayHost(child: child);
+              return AppOverlayHost(child: child);
+            },
+          );
         },
       ),
     );

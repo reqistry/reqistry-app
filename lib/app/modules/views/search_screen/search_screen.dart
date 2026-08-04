@@ -80,24 +80,25 @@ class _SearchBodyState extends State<_SearchBody> {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: c.background,
       appBar: AppBar(
         title: Text(
           'SEARCH',
           style:
-              AppTextStyles.headlineSm.copyWith(color: AppColors.onBackground),
+              AppTextStyles.headlineSm.copyWith(color: c.onSurface),
         ),
         elevation: 0,
         centerTitle: false,
-        backgroundColor: AppColors.surface,
+        backgroundColor: c.surface,
         leading: IconButton(
           icon: const Icon(PhosphorIconsRegular.arrowLeft),
           onPressed: () => Navigator.of(context).pop(),
         ),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
-          child: Container(height: 1, color: AppColors.surfaceVariant),
+          child: Container(height: 1, color: c.surfaceVariant),
         ),
       ),
       body: SafeArea(
@@ -147,32 +148,33 @@ class _ResultsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
     return Column(
       children: [
         Container(
           padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.s16, vertical: AppSpacing.s12),
-          decoration: const BoxDecoration(
-            color: AppColors.surfaceContainer,
+          decoration: BoxDecoration(
+            color: c.surfaceContainer,
             border: Border(
-                bottom: BorderSide(color: AppColors.surfaceVariant, width: 1)),
+                bottom: BorderSide(color: c.surfaceVariant, width: 1)),
           ),
           child: Row(
             children: [
               Text('${state.totalResults} results',
                   style: AppTextStyles.bodyMd
-                      .copyWith(color: AppColors.onSurface)),
+                      .copyWith(color: c.onSurface)),
               const Spacer(),
               PopupMenuButton<String>(
                 icon: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(PhosphorIconsRegular.sortAscending,
-                        size: 18, color: AppColors.primary),
+                    Icon(PhosphorIconsRegular.sortAscending,
+                        size: 18, color: c.primary),
                     const SizedBox(width: AppSpacing.s4),
                     Text('SORT',
                         style: AppTextStyles.labelSmUpper
-                            .copyWith(color: AppColors.primary, fontSize: 11)),
+                            .copyWith(color: c.primary, fontSize: 11)),
                   ],
                 ),
                 onSelected: (value) {
@@ -229,10 +231,10 @@ class _ResultsList extends StatelessWidget {
                                   style: AppTextStyles.labelSmUpper
                                       .copyWith(fontSize: 11)),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.surface,
-                                foregroundColor: AppColors.onSurface,
-                                side: const BorderSide(
-                                    color: AppColors.surfaceVariant),
+                                backgroundColor: c.surface,
+                                foregroundColor: c.onSurface,
+                                side: BorderSide(
+                                    color: c.surfaceVariant),
                                 shape: const RoundedRectangleBorder(
                                     borderRadius: BorderRadius.zero),
                                 elevation: 0,

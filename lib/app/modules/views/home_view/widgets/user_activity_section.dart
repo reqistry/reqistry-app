@@ -12,6 +12,7 @@ class UserActivitySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
     return BlocBuilder<UserActivityCubit, UserActivityState>(
       builder: (context, state) {
         return Column(
@@ -22,7 +23,7 @@ class UserActivitySection extends StatelessWidget {
               child: Text(
                 'YOUR STATS',
                 style: AppTextStyles.labelSmUpper.copyWith(
-                  color: AppColors.onSurface,
+                  color: c.onSurface,
                 ),
               ),
             ),
@@ -63,7 +64,7 @@ class UserActivitySection extends StatelessWidget {
                 child: Text(
                   'Member for ${state.daysSinceCreation} days',
                   style: AppTextStyles.bodyMd.copyWith(
-                    color: AppColors.onSurfaceVariant,
+                    color: c.onSurfaceVariant,
                   ),
                 ),
               ),
@@ -88,11 +89,12 @@ class _StatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
     return Container(
       padding: const EdgeInsets.all(AppSpacing.s16),
       decoration: BoxDecoration(
-        color: AppColors.surface,
-        border: Border.all(color: AppColors.surfaceVariant, width: 1),
+        color: c.surface,
+        border: Border.all(color: c.surfaceVariant, width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -100,7 +102,7 @@ class _StatCard extends StatelessWidget {
           Text(
             label,
             style: AppTextStyles.labelSmUpper.copyWith(
-              color: AppColors.onSurfaceVariant,
+              color: c.onSurfaceVariant,
               fontSize: 10,
             ),
           ),
@@ -108,7 +110,7 @@ class _StatCard extends StatelessWidget {
           Text(
             '$count',
             style: AppTextStyles.headlineLg.copyWith(
-              color: AppColors.onBackground,
+              color: c.onBackground,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -116,7 +118,7 @@ class _StatCard extends StatelessWidget {
           Text(
             objectLabel,
             style: AppTextStyles.labelSmUpper.copyWith(
-              color: AppColors.onSurfaceVariant,
+              color: c.onSurfaceVariant,
               fontSize: 10,
             ),
           ),

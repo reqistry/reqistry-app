@@ -22,18 +22,22 @@ class SearchApisScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
+
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: c.background,
       appBar: AppBar(
         title: Text('DISCOVER', style: AppTextStyles.headlineSm),
         elevation: 0,
         centerTitle: false,
-        backgroundColor: AppColors.surface,
+        backgroundColor: c.surface,
         scrolledUnderElevation: 0,
-        bottom: const PreferredSize(
-          preferredSize: Size.fromHeight(1),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
           child: SizedBox(
-              height: 1, child: ColoredBox(color: AppColors.surfaceVariant)),
+            height: 1,
+            child: ColoredBox(color: c.surfaceVariant),
+          ),
         ),
       ),
       body: BlocBuilder<HomeCategoriesCubit, HomeCategoriesState>(
@@ -83,7 +87,7 @@ class SearchApisScreen extends StatelessWidget {
   }
 }
 
-class _BrowseByCategory extends StatelessWidget {
+class _BrowseByCategory extends StatefulWidget {
   final List<Category> categories;
   final Future<void> Function() onRefresh;
 
@@ -93,7 +97,32 @@ class _BrowseByCategory extends StatelessWidget {
   });
 
   @override
+  State<_BrowseByCategory> createState() => _BrowseByCategoryState();
+}
+
+class _BrowseByCategoryState extends State<_BrowseByCategory> {
+  final _controller = TextEditingController();
+  String _query = '';
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  List<Category> get _filtered {
+    if (_query.isEmpty) return widget.categories;
+    final q = _query.toLowerCase();
+    return widget.categories
+        .where((c) => c.name.toLowerCase().contains(q))
+        .toList();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
+    final filtered = _filtered;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -104,36 +133,100 @@ class _BrowseByCategory extends StatelessWidget {
           ),
           child: Text(
             'BROWSE BY CATEGORY',
-            style: AppTextStyles.labelSmUpper.copyWith(
-              color: AppColors.onSurface,
+            style: AppTextStyles.labelSmUpper.copyWith(color: c.onSurface),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s16),
+          child: TextField(
+            controller: _controller,
+            onChanged: (v) => setState(() => _query = v),
+            textInputAction: TextInputAction.search,
+            decoration: InputDecoration(
+              hintText: 'Filter categories...',
+              hintStyle: AppTextStyles.bodyMd.copyWith(
+                color: c.outline,
+                decoration: TextDecoration.none,
+              ),
+              prefixIcon: Icon(PhosphorIconsRegular.magnifyingGlass,
+                  color: c.outline, size: 18),
+              suffixIcon: _query.isNotEmpty
+                  ? GestureDetector(
+                      onTap: () {
+                        _controller.clear();
+                        setState(() => _query = '');
+                      },
+                      child: Icon(PhosphorIconsRegular.x,
+                          color: c.outline, size: 16),
+                    )
+                  : null,
+              filled: true,
+              fillColor: c.surfaceContainerHigh,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.s12,
+                vertical: AppSpacing.s10,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.zero,
+                borderSide: BorderSide(color: c.surfaceVariant),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.zero,
+                borderSide: BorderSide(color: c.surfaceVariant),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.zero,
+                borderSide: BorderSide(color: c.primary),
+              ),
+            ),
+            style: AppTextStyles.bodyMd.copyWith(
+              color: c.onSurface,
+              decoration: TextDecoration.none,
             ),
           ),
         ),
+        const SizedBox(height: AppSpacing.s8),
         Expanded(
           child: RefreshIndicator(
-            onRefresh: onRefresh,
-            child: GridView.builder(
-              physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.all(AppSpacing.s16),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 1.0,
-                crossAxisSpacing: AppSpacing.s8,
-                mainAxisSpacing: AppSpacing.s8,
-              ),
-              itemCount: categories.length,
-              itemBuilder: (context, index) {
-                final category = categories[index];
+            onRefresh: widget.onRefresh,
+            child: filtered.isEmpty
+                ? ListView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 64),
+                        child: AppEmptyState(
+                          title: 'No match',
+                          message:
+                              'No categories match "$_query". Try a different search.',
+                          icon: PhosphorIconsRegular.magnifyingGlass,
+                        ),
+                      ),
+                    ],
+                  )
+                : GridView.builder(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: const EdgeInsets.all(AppSpacing.s16),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 1.0,
+                      crossAxisSpacing: AppSpacing.s8,
+                      mainAxisSpacing: AppSpacing.s8,
+                    ),
+                    itemCount: filtered.length,
+                    itemBuilder: (context, index) {
+                      final category = filtered[index];
 
-                return GestureDetector(
-                  onTap: () => context.push(
-                    AppRoutes.categoryApis,
-                    extra: category,
+                      return GestureDetector(
+                        onTap: () => context.push(
+                          AppRoutes.categoryApis,
+                          extra: category,
+                        ),
+                        child: _CategoryCard(category: category),
+                      );
+                    },
                   ),
-                  child: _CategoryCard(category: category),
-                );
-              },
-            ),
           ),
         ),
       ],
@@ -148,11 +241,12 @@ class _CategoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
     final imageUrl = category.imageUrl;
 
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: AppColors.surfaceVariant, width: 1),
+        border: Border.all(color: c.surfaceVariant, width: 1),
       ),
       clipBehavior: Clip.antiAlias,
       child: Stack(
@@ -209,13 +303,11 @@ class _CategoryCard extends StatelessWidget {
                   horizontal: AppSpacing.s6,
                   vertical: AppSpacing.s2,
                 ),
-                decoration: const BoxDecoration(
-                  color: AppColors.primary,
-                ),
+                decoration: BoxDecoration(color: c.primary),
                 child: Text(
                   'TRENDING',
                   style: AppTextStyles.labelSmUpper.copyWith(
-                    color: AppColors.onPrimary,
+                    color: c.onPrimary,
                     fontSize: 9,
                   ),
                 ),

@@ -98,6 +98,7 @@ class _ApiPreviewSectionState extends State<_ApiPreviewSection> {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -110,14 +111,14 @@ class _ApiPreviewSectionState extends State<_ApiPreviewSection> {
                 Text(
                   widget.title,
                   style: AppTextStyles.labelSmUpper.copyWith(
-                    color: AppColors.onSurface,
+                    color: c.onSurface,
                   ),
                 ),
                 const Spacer(),
-                const Icon(
+                Icon(
                   PhosphorIconsRegular.arrowRight,
                   size: 18,
-                  color: AppColors.onSurfaceVariant,
+                  color: c.onSurfaceVariant,
                 ),
               ],
             ),
@@ -182,32 +183,32 @@ class _ApiPreviewSectionState extends State<_ApiPreviewSection> {
                     child: Container(
                       padding: const EdgeInsets.all(AppSpacing.s12),
                       decoration: BoxDecoration(
-                        color: AppColors.surface,
+                        color: c.surface,
                         border: Border.all(
-                          color: AppColors.surfaceVariant,
+                          color: c.surfaceVariant,
                           width: 1,
                         ),
                       ),
                       child: Row(
                         children: [
-                          const Icon(
+                          Icon(
                             PhosphorIconsRegular.article,
                             size: 20,
-                            color: AppColors.onSurfaceVariant,
+                            color: c.onSurfaceVariant,
                           ),
                           const SizedBox(width: AppSpacing.s12),
                           Text(
                             'VIEW ALL',
                             style: AppTextStyles.labelSmUpper.copyWith(
-                              color: AppColors.onSurface,
+                              color: c.onSurface,
                               fontSize: 11,
                             ),
                           ),
                           const Spacer(),
-                          const Icon(
+                          Icon(
                             PhosphorIconsRegular.arrowRight,
                             size: 16,
-                            color: AppColors.onSurfaceVariant,
+                            color: c.onSurfaceVariant,
                           ),
                         ],
                       ),

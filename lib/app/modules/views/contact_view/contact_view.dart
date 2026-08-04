@@ -11,10 +11,11 @@ class ContactView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: c.background,
       appBar: AppBar(
-        backgroundColor: AppColors.surface,
+        backgroundColor: c.surface,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         title: Text(
@@ -26,7 +27,7 @@ class ContactView extends StatelessWidget {
           preferredSize: const Size.fromHeight(1),
           child: Container(
             height: 1,
-            color: AppColors.surfaceVariant,
+            color: c.surfaceVariant,
           ),
         ),
       ),
@@ -43,7 +44,7 @@ class ContactView extends StatelessWidget {
           ),
           Container(
             height: 1,
-            color: AppColors.surfaceVariant,
+            color: c.surfaceVariant,
           ),
           _ContactTile(
             label: 'EMAIL',
@@ -107,22 +108,23 @@ class _ContactTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
     return ListTile(
-      leading: Icon(icon, color: AppColors.primary),
+      leading: Icon(icon, color: c.primary),
       title: Text(
         label,
         style: AppTextStyles.labelSmUpper.copyWith(
-          color: AppColors.onSurface,
+          color: c.onSurface,
         ),
       ),
       subtitle: Text(
         value,
         style: AppTextStyles.bodyMd.copyWith(
-          color: AppColors.onSurfaceVariant,
+          color: c.onSurfaceVariant,
         ),
       ),
       trailing:
-          const Icon(PhosphorIconsRegular.caretRight, color: AppColors.outline),
+          Icon(PhosphorIconsRegular.caretRight, color: c.outline),
       onTap: onTap,
     );
   }

@@ -37,38 +37,41 @@ class AppBusyIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
+
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.s12,
         vertical: AppSpacing.s8,
       ),
       decoration: BoxDecoration(
-        color: AppColors.surface,
-        border: Border.all(color: AppColors.primary),
+        color: c.surface,
+        border: Border.all(color: c.primary),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const SizedBox(
+          SizedBox(
             width: 14,
             height: 14,
             child: CircularProgressIndicator(
               strokeWidth: 2,
-              color: AppColors.primary,
+              color: c.primary,
             ),
           ),
           const SizedBox(width: AppSpacing.s8),
-          const Icon(
+          Icon(
             PhosphorIconsRegular.arrowsClockwise,
             size: 14,
-            color: AppColors.primary,
+            color: c.primary,
           ),
           const SizedBox(width: AppSpacing.s6),
           Text(
             'SYNCING',
             style: AppTextStyles.labelSmUpper.copyWith(
-              color: AppColors.primary,
+              color: c.primary,
               fontSize: 10,
+              decoration: TextDecoration.none,
             ),
           ),
         ],

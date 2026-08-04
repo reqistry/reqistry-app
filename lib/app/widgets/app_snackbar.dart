@@ -103,27 +103,27 @@ class _AppSnackbarState extends State<AppSnackbar>
     });
   }
 
-  Color get _bgColor {
+  Color _bgColor(AppColorScheme c) {
     switch (widget.type) {
       case AppSnackbarType.success:
-        return AppColors.successBg;
+        return c.successBg;
       case AppSnackbarType.error:
-        return AppColors.dangerBg;
+        return c.dangerBg;
       case AppSnackbarType.inform:
       case AppSnackbarType.info:
-        return AppColors.infoBg;
+        return c.infoBg;
     }
   }
 
-  Color get _iconColor {
+  Color _iconColor(AppColorScheme c) {
     switch (widget.type) {
       case AppSnackbarType.success:
-        return AppColors.success;
+        return c.success;
       case AppSnackbarType.error:
-        return AppColors.danger;
+        return c.danger;
       case AppSnackbarType.inform:
       case AppSnackbarType.info:
-        return AppColors.info;
+        return c.info;
     }
   }
 
@@ -141,6 +141,9 @@ class _AppSnackbarState extends State<AppSnackbar>
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
+    final iconColor = _iconColor(c);
+
     return SlideTransition(
       position: _slideAnimation,
       child: FadeTransition(
@@ -158,8 +161,8 @@ class _AppSnackbarState extends State<AppSnackbar>
               maxWidth: MediaQuery.of(context).size.width - 32,
             ),
             decoration: BoxDecoration(
-              color: AppColors.surface,
-              border: Border.all(color: _iconColor, width: 1),
+              color: c.surface,
+              border: Border.all(color: iconColor, width: 1),
               boxShadow: AppShadows.modal,
             ),
             clipBehavior: Clip.hardEdge,
@@ -178,8 +181,8 @@ class _AppSnackbarState extends State<AppSnackbar>
                         width: 24,
                         height: 24,
                         alignment: Alignment.center,
-                        color: _bgColor,
-                        child: Icon(_icon, color: _iconColor, size: 16),
+                        color: _bgColor(c),
+                        child: Icon(_icon, color: iconColor, size: 16),
                       ),
                       const SizedBox(width: AppSpacing.s12),
                       Expanded(
@@ -193,7 +196,8 @@ class _AppSnackbarState extends State<AppSnackbar>
                               overflow: TextOverflow.ellipsis,
                               style: AppTextStyles.bodyMd.copyWith(
                                 fontWeight: FontWeight.w700,
-                                color: AppColors.onSurface,
+                                color: c.onSurface,
+                                decoration: TextDecoration.none,
                               ),
                             ),
                             const SizedBox(height: AppSpacing.s2),
@@ -202,7 +206,8 @@ class _AppSnackbarState extends State<AppSnackbar>
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: AppTextStyles.bodyMd.copyWith(
-                                color: AppColors.onSurfaceVariant,
+                                color: c.onSurfaceVariant,
+                                decoration: TextDecoration.none,
                               ),
                             ),
                           ],
@@ -222,8 +227,9 @@ class _AppSnackbarState extends State<AppSnackbar>
                             child: Text(
                               widget.actionLabel!,
                               style: AppTextStyles.labelSmUpper.copyWith(
-                                color: _iconColor,
+                                color: iconColor,
                                 fontWeight: FontWeight.w700,
+                                decoration: TextDecoration.none,
                               ),
                             ),
                           ),
@@ -237,7 +243,7 @@ class _AppSnackbarState extends State<AppSnackbar>
                           child: Icon(
                             PhosphorIconsRegular.x,
                             size: 16,
-                            color: AppColors.outline,
+                            color: c.outline,
                           ),
                         ),
                       ),
@@ -251,8 +257,8 @@ class _AppSnackbarState extends State<AppSnackbar>
                       return LinearProgressIndicator(
                         value: 1 - _progressController.value,
                         minHeight: 3,
-                        backgroundColor: AppColors.surfaceContainer,
-                        valueColor: AlwaysStoppedAnimation<Color>(_iconColor),
+                        backgroundColor: c.surfaceContainer,
+                        valueColor: AlwaysStoppedAnimation<Color>(iconColor),
                       );
                     },
                   ),

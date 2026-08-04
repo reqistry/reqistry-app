@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -61,9 +62,10 @@ class _LoadingScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: AppColors.background,
-      body: Center(child: CircularProgressIndicator()),
+    final c = AppColors.of(Theme.of(context).brightness);
+    return Scaffold(
+      backgroundColor: c.background,
+      body: const Center(child: CircularProgressIndicator()),
     );
   }
 }
@@ -73,8 +75,9 @@ class _OnboardingScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: c.background,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -84,7 +87,7 @@ class _OnboardingScaffold extends StatelessWidget {
             ),
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 460),
-              child: const _Onboarding(),
+              child: _Onboarding(),
             ),
           ),
         ),
@@ -101,9 +104,9 @@ class _OnboardingScaffold extends StatelessWidget {
           child: ElevatedButton(
             onPressed: () => context.read<AuthCubit>().continueAsGuest(),
             child: Text(
-              "Let's Go",
+              'Explore APIs',
               style: AppTextStyles.labelSmUpper.copyWith(
-                color: AppColors.onPrimary,
+                color: c.onPrimary,
               ),
             ),
           ),
@@ -114,7 +117,7 @@ class _OnboardingScaffold extends StatelessWidget {
 }
 
 class _Onboarding extends StatelessWidget {
-  const _Onboarding();
+  _Onboarding();
 
   @override
   Widget build(BuildContext context) {
@@ -122,14 +125,25 @@ class _Onboarding extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Center(
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(18),
-            child: Image.asset(
-              'assets/playstore-icon.png',
-              width: 72,
-              height: 72,
-              fit: BoxFit.cover,
-            ),
+          child: Builder(
+            builder: (context) {
+              final c = AppColors.of(Theme.of(context).brightness);
+              final isDark = Theme.of(context).brightness == Brightness.dark;
+              return Container(
+                width: 72,
+                height: 72,
+                decoration: BoxDecoration(
+                  color: isDark ? c.primary : c.surfaceContainerHigh,
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                alignment: Alignment.center,
+                child: SvgPicture.asset(
+                  'assets/reqistry.svg',
+                  width: 44,
+                  height: 44,
+                ),
+              );
+            },
           ),
         ),
         const SizedBox(height: AppSpacing.s16),
@@ -140,29 +154,31 @@ class _Onboarding extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.s8),
         Text(
-          'Find, save, and test public APIs without setting up an account.',
+          'Find the right API. Give your agents the right tools.',
           style: AppTextStyles.bodyMd.copyWith(
-            color: AppColors.onSurfaceVariant,
+            color: AppColors.of(Theme.of(context).brightness).onSurfaceVariant,
           ),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: AppSpacing.s32),
         const _OnboardingStep(
           icon: PhosphorIconsFill.compass,
-          title: 'Explore the catalog',
-          text: 'Browse categories and discover useful APIs fast.',
+          title: 'Discover',
+          text:
+              'Browse a trusted catalog of 1,400+ APIs organized by category.',
         ),
         const SizedBox(height: AppSpacing.s16),
         const _OnboardingStep(
           icon: PhosphorIconsRegular.bookmarkSimple,
-          title: 'Save what matters',
-          text: 'Bookmark APIs and organize them into projects.',
+          title: 'Evaluate',
+          text: 'Check health, auth, pricing, and docs before you build.',
         ),
         const SizedBox(height: AppSpacing.s16),
         const _OnboardingStep(
           icon: PhosphorIconsRegular.globe,
-          title: 'Test endpoints',
-          text: 'Check docs, auth type, status, and links before you build.',
+          title: 'Connect',
+          text:
+              'Bookmark APIs and organize them into projects for your next build.',
         ),
       ],
     );
@@ -189,10 +205,13 @@ class _OnboardingStep extends StatelessWidget {
           height: AppSpacing.s48,
           width: AppSpacing.s48,
           decoration: BoxDecoration(
-            color: AppColors.surface,
-            border: Border.all(color: AppColors.outlineVariant),
+            color: AppColors.of(Theme.of(context).brightness).surface,
+            border: Border.all(
+                color:
+                    AppColors.of(Theme.of(context).brightness).outlineVariant),
           ),
-          child: Icon(icon, color: AppColors.primary),
+          child: Icon(icon,
+              color: AppColors.of(Theme.of(context).brightness).primary),
         ),
         const SizedBox(width: AppSpacing.s16),
         Expanded(
@@ -204,7 +223,8 @@ class _OnboardingStep extends StatelessWidget {
               Text(
                 text,
                 style: AppTextStyles.bodyMd.copyWith(
-                  color: AppColors.onSurfaceVariant,
+                  color: AppColors.of(Theme.of(context).brightness)
+                      .onSurfaceVariant,
                 ),
               ),
             ],

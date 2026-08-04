@@ -14,6 +14,7 @@ class ApiIdentityHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
     return _Section(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -25,7 +26,7 @@ class ApiIdentityHeader extends StatelessWidget {
               width: 64,
               height: 64,
               decoration: BoxDecoration(
-                border: Border.all(color: AppColors.surfaceVariant),
+                border: Border.all(color: c.surfaceVariant),
               ),
               child: ClipRect(
                 child: AppCachedImage(
@@ -55,8 +56,8 @@ class ApiIdentityHeader extends StatelessWidget {
                     PricingBadge(pricing: detail.access.pricingLabel),
                     ApiChip(
                       label: detail.access.authLabel.toUpperCase(),
-                      bg: AppColors.surfaceContainerHigh,
-                      fg: AppColors.onSurface,
+                      bg: c.surfaceContainerHigh,
+                      fg: c.onSurface,
                     ),
                   ],
                 ),
@@ -85,6 +86,7 @@ class ApiHealthSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
     final presentation = _healthPresentation(health.status);
     final facts = <String>[
       if (health.checkedAt != null)
@@ -106,7 +108,7 @@ class ApiHealthSection extends StatelessWidget {
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: c.surface,
           border: Border(
             left: BorderSide(color: presentation.color, width: 3),
           ),
@@ -121,7 +123,7 @@ class ApiHealthSection extends StatelessWidget {
             Text(
               'PLATFORM-OBSERVED HEALTH',
               style: AppTextStyles.labelSm.copyWith(
-                color: AppColors.onSurfaceVariant,
+                color: c.onSurfaceVariant,
                 letterSpacing: 0,
               ),
             ),
@@ -154,7 +156,7 @@ class ApiHealthSection extends StatelessWidget {
                     label: const Text('Refresh'),
                     style: TextButton.styleFrom(
                       minimumSize: const Size(48, 48),
-                      foregroundColor: AppColors.onSurface,
+                      foregroundColor: c.onSurface,
                     ),
                   ),
               ],
@@ -164,7 +166,7 @@ class ApiHealthSection extends StatelessWidget {
               const SizedBox(height: AppSpacing.s8),
               Text(error!,
                   style: AppTextStyles.bodyMd
-                      .copyWith(color: AppColors.dangerText)),
+                      .copyWith(color: c.dangerText)),
             ],
           ],
         ),
@@ -239,13 +241,14 @@ class ApiEndpointSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const label = 'BASE URL';
+    final c = AppColors.of(Theme.of(context).brightness);
     return _Section(
       title: label,
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
-          color: AppColors.surfaceContainerLow,
-          border: Border.all(color: AppColors.surfaceVariant),
+          color: c.surfaceContainerLow,
+          border: Border.all(color: c.surfaceVariant),
         ),
         padding: const EdgeInsets.only(
           left: AppSpacing.s12,
@@ -295,6 +298,7 @@ class ApiAboutSection extends StatelessWidget {
       ('Status page', detail.links.statusPageUrl),
       ('Terms', detail.links.termsUrl),
     ].where((item) => item.$2 != null).toList();
+    final c = AppColors.of(Theme.of(context).brightness);
     return _Section(
       title: 'ABOUT',
       child: Column(
@@ -306,7 +310,7 @@ class ApiAboutSection extends StatelessWidget {
             Text(
               'Website information · metadata',
               style: AppTextStyles.labelSm.copyWith(
-                color: AppColors.onSurfaceVariant,
+                color: c.onSurfaceVariant,
               ),
             ),
             const SizedBox(height: AppSpacing.s4),
@@ -316,12 +320,15 @@ class ApiAboutSection extends StatelessWidget {
             const SizedBox(height: AppSpacing.s16),
             const Divider(height: 1),
             for (final link in links)
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                minTileHeight: 48,
-                title: Text(link.$1, style: AppTextStyles.bodyMd),
-                trailing: const Icon(PhosphorIconsRegular.caretRight, size: 18),
-                onTap: () => onOpen(link.$2!),
+              Material(
+                color: c.surface,
+                child: ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  minTileHeight: 48,
+                  title: Text(link.$1, style: AppTextStyles.bodyMd),
+                  trailing: const Icon(PhosphorIconsRegular.caretRight, size: 18),
+                  onTap: () => onOpen(link.$2!),
+                ),
               ),
           ],
         ],
@@ -370,6 +377,7 @@ class ApiVerificationSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
     return _Section(
       title: 'DATA CONFIDENCE',
       child: Column(
@@ -391,7 +399,7 @@ class ApiVerificationSection extends StatelessWidget {
                     value,
                     textAlign: TextAlign.right,
                     style: AppTextStyles.bodyMd.copyWith(
-                      color: AppColors.onSurfaceVariant,
+                      color: c.onSurfaceVariant,
                     ),
                   ),
                 ),
@@ -425,6 +433,7 @@ class ApiAlternativesSection extends StatelessWidget {
     if (!isLoading && alternatives.isEmpty && error == null) {
       return const SizedBox.shrink();
     }
+    final c = AppColors.of(Theme.of(context).brightness);
     return _Section(
       title: 'SIMILAR APIs',
       child: Column(
@@ -438,43 +447,46 @@ class ApiAlternativesSection extends StatelessWidget {
             Text(error!, style: AppTextStyles.bodyMd)
           else
             for (final alternative in alternatives)
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                minTileHeight: 72,
-                leading: Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: AppColors.surfaceVariant),
-                  ),
-                  child: ClipRect(
-                    child: AppCachedImage(
-                      imageUrl: alternative.imageUrl,
-                      fallback: CategoryImagePlaceholder(
-                        name: alternative.name,
-                        size: 40,
+              Material(
+                color: c.surface,
+                child: ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  minTileHeight: 72,
+                  leading: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: c.surfaceVariant),
+                    ),
+                    child: ClipRect(
+                      child: AppCachedImage(
+                        imageUrl: alternative.imageUrl,
+                        fallback: CategoryImagePlaceholder(
+                          name: alternative.name,
+                          size: 40,
+                        ),
                       ),
                     ),
                   ),
+                  title: Text(
+                    alternative.name,
+                    style: AppTextStyles.bodyMd
+                        .copyWith(fontWeight: FontWeight.w700),
+                  ),
+                  subtitle: Text(
+                    '${alternative.pricing} · ${alternative.authentication}',
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  trailing: IconButton(
+                    onPressed: () => onSave(alternative),
+                    tooltip: 'Save ${alternative.name}',
+                    constraints:
+                        const BoxConstraints.tightFor(width: 48, height: 48),
+                    icon: const Icon(PhosphorIconsRegular.bookmarkSimple),
+                  ),
+                  onTap: () => onOpen(alternative),
                 ),
-                title: Text(
-                  alternative.name,
-                  style: AppTextStyles.bodyMd
-                      .copyWith(fontWeight: FontWeight.w700),
-                ),
-                subtitle: Text(
-                  '${alternative.pricing} · ${alternative.authentication}',
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                trailing: IconButton(
-                  onPressed: () => onSave(alternative),
-                  tooltip: 'Save ${alternative.name}',
-                  constraints:
-                      const BoxConstraints.tightFor(width: 48, height: 48),
-                  icon: const Icon(PhosphorIconsRegular.bookmarkSimple),
-                ),
-                onTap: () => onOpen(alternative),
               ),
         ],
       ),
@@ -490,8 +502,9 @@ class _Section extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
     return Container(
-      color: AppColors.surface,
+      color: c.surface,
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.pagePaddingH,
         vertical: AppSpacing.s20,

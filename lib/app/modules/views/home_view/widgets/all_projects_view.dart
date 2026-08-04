@@ -8,7 +8,7 @@ import 'package:api_scout/app/data/models/project.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
-import 'package:api_scout/app/utils/text_input_route.dart';
+import 'package:api_scout/app/widgets/app_dialog.dart';
 import 'package:api_scout/config/app_routes.dart';
 import 'package:api_scout/shared/widgets/app_empty_state.dart';
 import 'package:api_scout/shared/widgets/app_loading.dart';
@@ -20,36 +20,32 @@ class AllProjectsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
+
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: c.background,
       appBar: AppBar(
         title: Text(
           'ALL PROJECTS',
-          style: AppTextStyles.headlineSm.copyWith(
-            color: AppColors.onBackground,
-          ),
+          style: AppTextStyles.headlineSm.copyWith(color: c.onBackground),
         ),
         elevation: 0,
         centerTitle: false,
-        backgroundColor: AppColors.surface,
+        backgroundColor: c.surface,
         leading: IconButton(
           icon: const Icon(PhosphorIconsRegular.arrowLeft),
           onPressed: () => Navigator.of(context).pop(),
         ),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
-          child: Container(
-            height: 1,
-            color: AppColors.surfaceVariant,
-          ),
+          child: Container(height: 1, color: c.surfaceVariant),
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => CreateProjectBottomSheet.show(context),
-        backgroundColor: AppColors.primary,
+        backgroundColor: c.primary,
         elevation: 0,
-        child:
-            const Icon(PhosphorIconsRegular.plus, color: AppColors.onPrimary),
+        child: Icon(PhosphorIconsRegular.plus, color: c.onPrimary),
       ),
       body: BlocBuilder<ProjectsCubit, ProjectsState>(
         builder: (context, state) {
@@ -73,7 +69,7 @@ class AllProjectsView extends StatelessWidget {
             itemCount: state.projects.length,
             separatorBuilder: (_, __) => Container(
               height: 1,
-              color: AppColors.surfaceVariant,
+              color: c.surfaceVariant,
             ),
             itemBuilder: (context, index) {
               final project = state.projects[index];
@@ -93,8 +89,10 @@ class _ProjectListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
+
     return Material(
-      color: AppColors.surface,
+      color: c.surface,
       child: InkWell(
         onTap: () => context.push(AppRoutes.projectApis, extra: project),
         child: Padding(
@@ -106,13 +104,12 @@ class _ProjectListTile extends StatelessWidget {
             children: [
               Icon(
                 IconData(
-                  // ignore: non_const_argument_for_const_parameter
                   project.iconCodePoint,
                   fontFamily: 'PhosphorRegular',
                   fontPackage: 'phosphoricons_flutter',
                 ),
                 size: 24,
-                color: AppColors.primary,
+                color: c.primary,
               ),
               const SizedBox(width: AppSpacing.s12),
               Expanded(
@@ -122,7 +119,7 @@ class _ProjectListTile extends StatelessWidget {
                     Text(
                       project.title,
                       style: AppTextStyles.bodyMd.copyWith(
-                        color: AppColors.onSurface,
+                        color: c.onSurface,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -130,7 +127,7 @@ class _ProjectListTile extends StatelessWidget {
                     Text(
                       '${project.apiCount} ${project.apiCount == 1 ? 'API' : 'APIs'}',
                       style: AppTextStyles.labelSmUpper.copyWith(
-                        color: AppColors.onSurfaceVariant,
+                        color: c.onSurfaceVariant,
                         fontSize: 10,
                       ),
                     ),
@@ -138,9 +135,9 @@ class _ProjectListTile extends StatelessWidget {
                 ),
               ),
               PopupMenuButton<String>(
-                icon: const Icon(
+                icon: Icon(
                   PhosphorIconsRegular.dotsThreeVertical,
-                  color: AppColors.onSurfaceVariant,
+                  color: c.onSurfaceVariant,
                 ),
                 onSelected: (value) {
                   if (value == 'rename') {
@@ -154,10 +151,10 @@ class _ProjectListTile extends StatelessWidget {
                   PopupMenuItem(value: 'delete', child: Text('Delete')),
                 ],
               ),
-              const Icon(
+              Icon(
                 PhosphorIconsRegular.caretRight,
                 size: 20,
-                color: AppColors.onSurfaceVariant,
+                color: c.onSurfaceVariant,
               ),
             ],
           ),
@@ -167,55 +164,27 @@ class _ProjectListTile extends StatelessWidget {
   }
 
   Future<void> _rename(BuildContext context) async {
-    final controller = TextEditingController(text: project.title);
-    final title = await showDialog<String>(
+    final title = await AppDialog.showInput(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Rename project'),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          decoration: const InputDecoration(labelText: 'Project name'),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => dismissTextInputRoute(context),
-            child: const Text('CANCEL'),
-          ),
-          FilledButton(
-            onPressed: () =>
-                dismissTextInputRoute(context, controller.text.trim()),
-            child: const Text('SAVE'),
-          ),
-        ],
-      ),
+      title: 'RENAME PROJECT',
+      hintText: 'Project name',
+      initialValue: project.title,
+      confirmLabel: 'SAVE',
     );
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.dispose();
-    });
     if (title == null || title.isEmpty || !context.mounted) return;
     await context.read<ProjectsCubit>().updateProject(project.id, title: title);
   }
 
   Future<void> _delete(BuildContext context) async {
-    final confirmed = await showDialog<bool>(
+    final confirmed = await AppDialog.showConfirm(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete project?'),
-        content: Text('Delete "${project.title}" and its saved API links?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('CANCEL'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('DELETE'),
-          ),
-        ],
-      ),
+      title: 'DELETE PROJECT',
+      message: 'Delete "${project.title}" and its saved API links?',
+      confirmLabel: 'DELETE',
+      cancelLabel: 'CANCEL',
+      isDestructive: true,
     );
-    if (confirmed != true || !context.mounted) return;
+    if (!confirmed || !context.mounted) return;
     await context.read<ProjectsCubit>().deleteProject(project.id);
   }
 }

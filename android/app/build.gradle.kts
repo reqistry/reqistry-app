@@ -49,7 +49,7 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
-        manifestPlaceholders["appName"] = envProperties.getProperty("APP_NAME", "API Scout")
+        manifestPlaceholders["appName"] = envProperties.getProperty("APP_NAME", "Reqistry")
     }
 
     signingConfigs {
