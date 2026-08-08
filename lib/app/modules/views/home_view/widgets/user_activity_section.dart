@@ -6,6 +6,7 @@ import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
 import 'package:api_scout/shared/widgets/app_loading.dart';
+import 'package:api_scout/shared/widgets/ui/stat_widgets.dart';
 
 class UserActivitySection extends StatelessWidget {
   const UserActivitySection({super.key});
@@ -39,19 +40,18 @@ class UserActivitySection extends StatelessWidget {
                 child: Row(
                   children: [
                     Expanded(
-                      child: _StatCard(
+                      child: StatCard(
                         label: 'You saved',
-                        count: state.totalBookmarks,
-                        objectLabel: state.totalBookmarks == 1 ? 'API' : 'APIs',
+                        value: '${state.totalBookmarks}',
+                        sublabel: state.totalBookmarks == 1 ? 'API' : 'APIs',
                       ),
                     ),
                     const SizedBox(width: AppSpacing.s12),
                     Expanded(
-                      child: _StatCard(
+                      child: StatCard(
                         label: 'You have',
-                        count: state.totalProjects,
-                        objectLabel:
-                            state.totalProjects == 1 ? 'Project' : 'Projects',
+                        value: '${state.totalProjects}',
+                        sublabel: state.totalProjects == 1 ? 'Project' : 'Projects',
                       ),
                     ),
                   ],
@@ -72,58 +72,6 @@ class UserActivitySection extends StatelessWidget {
           ],
         );
       },
-    );
-  }
-}
-
-class _StatCard extends StatelessWidget {
-  final String label;
-  final int count;
-  final String objectLabel;
-
-  const _StatCard({
-    required this.label,
-    required this.count,
-    required this.objectLabel,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final c = AppColors.of(Theme.of(context).brightness);
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.s16),
-      decoration: BoxDecoration(
-        color: c.surface,
-        border: Border.all(color: c.surfaceVariant, width: 1),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: AppTextStyles.labelSmUpper.copyWith(
-              color: c.onSurfaceVariant,
-              fontSize: 10,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.s8),
-          Text(
-            '$count',
-            style: AppTextStyles.headlineLg.copyWith(
-              color: c.onBackground,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.s2),
-          Text(
-            objectLabel,
-            style: AppTextStyles.labelSmUpper.copyWith(
-              color: c.onSurfaceVariant,
-              fontSize: 10,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

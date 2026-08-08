@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:api_scout/app/data/models/api_detail.dart';
 import 'package:api_scout/app/modules/views/api_detail_view/widgets/detail_section.dart';
 import 'package:api_scout/app/modules/views/api_detail_view/widgets/fact_row.dart';
-import 'package:api_scout/app/modules/views/api_detail_view/widgets/api_health_section.dart';
 
 class ApiQuickFacts extends StatelessWidget {
   const ApiQuickFacts({super.key, required this.detail});

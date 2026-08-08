@@ -3,11 +3,10 @@ import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:api_scout/app/blocs/projects/projects_cubit.dart';
 import 'package:api_scout/app/blocs/projects/projects_state.dart';
-import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
-import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
 import 'package:api_scout/shared/widgets/app_empty_state.dart';
 import 'package:api_scout/shared/widgets/app_loading.dart';
+import 'package:api_scout/shared/widgets/ui/section_header_link.dart';
 
 import 'all_projects_view.dart';
 import 'create_project_bottom_sheet.dart';
@@ -18,43 +17,20 @@ class ContinueWorkSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = AppColors.of(Theme.of(context).brightness);
     return BlocBuilder<ProjectsCubit, ProjectsState>(
       builder: (context, state) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'CONTINUE YOUR WORK',
-                    style: AppTextStyles.labelSmUpper.copyWith(
-                      color: c.onSurface,
-                    ),
+            SectionHeaderLink(
+              title: 'CONTINUE YOUR WORK',
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const AllProjectsView(),
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => const AllProjectsView(),
-                        ),
-                      );
-                    },
-                    child: Row(
-                      children: [
-                        Icon(
-                          PhosphorIconsRegular.arrowRight,
-                          size: 18,
-                          color: c.onSurfaceVariant,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+                );
+              },
             ),
             const SizedBox(height: AppSpacing.s12),
             if (state.isLoading)

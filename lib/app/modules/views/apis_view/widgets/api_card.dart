@@ -9,7 +9,7 @@ import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
 import 'package:api_scout/app/widgets/app_snackbar.dart';
 import 'package:api_scout/shared/widgets/api/status_dot.dart';
-import 'package:api_scout/shared/widgets/api/api_badges.dart';
+import 'package:api_scout/shared/widgets/api/api_badge_row.dart';
 import 'package:api_scout/shared/widgets/app_cached_image.dart';
 
 import '../../../../data/models/category_apis.dart';
@@ -155,30 +155,7 @@ class _ApiCardState extends State<ApiCard> {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(
-                left: AppSpacing.s12,
-                right: AppSpacing.s12,
-                bottom: AppSpacing.s12,
-              ),
-              child: Row(
-                children: [
-                  PricingBadge(pricing: widget.api.pricing),
-                  const SizedBox(width: AppSpacing.s6),
-                  TypeBadge(type: widget.api.apiType),
-                  const SizedBox(width: AppSpacing.s6),
-                  HttpsBadge(isHttps: widget.api.supportsHttps),
-                  const Spacer(),
-                  Text(
-                    widget.api.responseTimeFormatted,
-                    style: AppTextStyles.labelSmUpper.copyWith(
-                      color: c.onSurfaceVariant,
-                      fontSize: 9,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            ApiBadgeRow(api: widget.api),
           ],
         ),
       ),

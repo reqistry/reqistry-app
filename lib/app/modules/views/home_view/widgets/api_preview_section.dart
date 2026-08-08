@@ -12,6 +12,7 @@ import 'package:api_scout/shared/widgets/app_empty_state.dart';
 import 'package:api_scout/shared/widgets/app_error_state.dart';
 import 'package:api_scout/shared/widgets/app_loading.dart';
 import 'package:api_scout/app/modules/views/home_view/widgets/latest_api_card.dart';
+import 'package:api_scout/shared/widgets/ui/section_header_link.dart';
 
 class ApiPreviewSection extends StatefulWidget {
   final String title;
@@ -58,27 +59,9 @@ class _ApiPreviewSectionState extends State<ApiPreviewSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        GestureDetector(
+        SectionHeaderLink(
+          title: widget.title,
           onTap: () => context.push(widget.route),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s16),
-            child: Row(
-              children: [
-                Text(
-                  widget.title,
-                  style: AppTextStyles.labelSmUpper.copyWith(
-                    color: c.onSurface,
-                  ),
-                ),
-                const Spacer(),
-                Icon(
-                  PhosphorIconsRegular.arrowRight,
-                  size: 18,
-                  color: c.onSurfaceVariant,
-                ),
-              ],
-            ),
-          ),
         ),
         const SizedBox(height: AppSpacing.s12),
         FutureBuilder<List<ApiItem>>(

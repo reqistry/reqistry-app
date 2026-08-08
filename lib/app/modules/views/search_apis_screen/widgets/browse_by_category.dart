@@ -7,6 +7,7 @@ import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/shared/widgets/app_empty_state.dart';
+import 'package:api_scout/shared/widgets/ui/app_input_decoration.dart';
 import 'package:api_scout/app/modules/views/search_apis_screen/widgets/discover_category_card.dart';
 
 class BrowseByCategory extends StatefulWidget {
@@ -65,12 +66,9 @@ class _BrowseByCategoryState extends State<BrowseByCategory> {
             controller: _controller,
             onChanged: (v) => setState(() => _query = v),
             textInputAction: TextInputAction.search,
-            decoration: InputDecoration(
+            decoration: AppInputDecoration.search(
+              c: c,
               hintText: 'Filter categories...',
-              hintStyle: AppTextStyles.bodyMd.copyWith(
-                color: c.outline,
-                decoration: TextDecoration.none,
-              ),
               prefixIcon: Icon(PhosphorIconsRegular.magnifyingGlass,
                   color: c.outline, size: 18),
               suffixIcon: _query.isNotEmpty
@@ -83,24 +81,6 @@ class _BrowseByCategoryState extends State<BrowseByCategory> {
                           color: c.outline, size: 16),
                     )
                   : null,
-              filled: true,
-              fillColor: c.surfaceContainerHigh,
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.s12,
-                vertical: AppSpacing.s10,
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.zero,
-                borderSide: BorderSide(color: c.surfaceVariant),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.zero,
-                borderSide: BorderSide(color: c.surfaceVariant),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.zero,
-                borderSide: BorderSide(color: c.primary),
-              ),
             ),
             style: AppTextStyles.bodyMd.copyWith(
               color: c.onSurface,

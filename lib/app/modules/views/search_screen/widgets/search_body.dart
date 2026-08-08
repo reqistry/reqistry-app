@@ -4,11 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:api_scout/app/blocs/search/search_bloc.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
-import 'package:api_scout/shared/widgets/app_empty_state.dart';
-import 'package:api_scout/shared/widgets/app_error_state.dart';
-import 'package:api_scout/shared/widgets/app_loading.dart';
 import 'package:api_scout/app/modules/views/search_screen/widgets/search_header.dart';
 import 'package:api_scout/app/modules/views/search_screen/widgets/search_results_list.dart';
+import 'package:api_scout/shared/widgets/ui/async_state_handler.dart';
 
 class SearchBody extends StatefulWidget {
   final TextEditingController searchController;
@@ -75,28 +73,21 @@ class _SearchBodyState extends State<SearchBody> {
             Expanded(
               child: BlocBuilder<SearchBloc, SearchState>(
                 builder: (context, state) {
-                  if (state.isSearching && state.searchResults.isEmpty) {
-                    return const AppLoading(message: 'Searching APIs');
-                  }
-                  if (state.errorMessage.isNotEmpty &&
-                      state.searchResults.isEmpty) {
-                    return AppErrorState(
-                      title: 'Search error',
-                      message: state.errorMessage,
-                      onRetry: () =>
-                          context.read<SearchBloc>().add(SearchPerformed()),
-                    );
-                  }
-                  if (state.searchResults.isEmpty) {
-                    return const AppEmptyState(
-                      title: 'No matches found',
-                      message:
-                          'Try a different keyword or loosen your filters to discover more APIs.',
-                      icon: PhosphorIconsRegular.magnifyingGlass,
-                    );
-                  }
-                  return SearchResultsList(
-                      state: state, scrollController: _scrollController);
+                  return AsyncStateHandler(
+                    isLoading: state.isSearching && state.searchResults.isEmpty,
+                    errorMessage: state.errorMessage.isNotEmpty && state.searchResults.isEmpty ? state.errorMessage : null,
+                    isEmpty: state.searchResults.isEmpty,
+                    loadingMessage: 'Searching APIs',
+                    errorTitle: 'Search error',
+                    emptyTitle: 'No matches found',
+                    emptyMessage: 'Try a different keyword or loosen your filters to discover more APIs.',
+                    emptyIcon: PhosphorIconsRegular.magnifyingGlass,
+                    onRetry: () => context.read<SearchBloc>().add(SearchPerformed()),
+                    child: SearchResultsList(
+                      state: state,
+                      scrollController: _scrollController,
+                    ),
+                  );
                 },
               ),
             ),

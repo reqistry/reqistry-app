@@ -6,6 +6,7 @@ import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
 import 'package:api_scout/app/utils/text_input_route.dart';
+import 'package:api_scout/shared/widgets/ui/bottom_sheet_scaffold.dart';
 
 class CreateProjectBottomSheet extends StatefulWidget {
   const CreateProjectBottomSheet({super.key});
@@ -82,137 +83,76 @@ class _CreateProjectBottomSheetState extends State<CreateProjectBottomSheet> {
   Widget build(BuildContext context) {
     final c = AppColors.of(Theme.of(context).brightness);
 
-    return Padding(
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom,
-      ),
-      child: Container(
-        constraints: BoxConstraints(
-          maxHeight: MediaQuery.of(context).size.height * 0.75,
-        ),
-        decoration: BoxDecoration(
-          color: c.surface,
-          border: Border(
-            top: BorderSide(color: c.primary, width: 1),
-          ),
-        ),
+    return BottomSheetScaffold(
+      title: 'CREATE PROJECT',
+      submitLabel: 'CREATE',
+      onSubmit: _submit,
+      content: SingleChildScrollView(
+        padding: const EdgeInsets.all(AppSpacing.s20),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(AppSpacing.s20),
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(color: c.surfaceVariant, width: 1),
+            TextField(
+              controller: _titleController,
+              autofocus: true,
+              style: AppTextStyles.bodyMd,
+              decoration: InputDecoration(
+                labelText: 'Title',
+                labelStyle: AppTextStyles.labelSmUpper.copyWith(
+                  color: _submitted && _titleController.text.isEmpty
+                      ? c.danger
+                      : c.onSurfaceVariant,
                 ),
-              ),
-              child: Text(
-                'CREATE PROJECT',
-                style: AppTextStyles.labelSmUpper.copyWith(color: c.onSurface),
+                errorText: _submitted && _titleController.text.isEmpty
+                    ? 'Title is required'
+                    : null,
               ),
             ),
-            Flexible(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(AppSpacing.s20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    TextField(
-                      controller: _titleController,
-                      autofocus: true,
-                      style: AppTextStyles.bodyMd,
-                      decoration: InputDecoration(
-                        labelText: 'Title',
-                        labelStyle: AppTextStyles.labelSmUpper.copyWith(
-                          color: _submitted && _titleController.text.isEmpty
-                              ? c.danger
-                              : c.onSurfaceVariant,
-                        ),
-                        errorText: _submitted && _titleController.text.isEmpty
-                            ? 'Title is required'
-                            : null,
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.s20),
-                    Text(
-                      'ICON',
-                      style: AppTextStyles.labelSmUpper
-                          .copyWith(color: c.onSurfaceVariant),
-                    ),
-                    const SizedBox(height: AppSpacing.s12),
-                    SizedBox(
-                      height: 240,
-                      child: GridView.builder(
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 6,
-                          mainAxisSpacing: AppSpacing.s8,
-                          crossAxisSpacing: AppSpacing.s8,
-                        ),
-                        itemCount: _projectIconChoices.length,
-                        itemBuilder: (context, index) {
-                          final icon = _projectIconChoices[index];
-                          final isSelected = icon == _selectedIcon;
+            const SizedBox(height: AppSpacing.s20),
+            Text(
+              'ICON',
+              style: AppTextStyles.labelSmUpper
+                  .copyWith(color: c.onSurfaceVariant),
+            ),
+            const SizedBox(height: AppSpacing.s12),
+            SizedBox(
+              height: 240,
+              child: GridView.builder(
+                gridDelegate:
+                    const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 6,
+                  mainAxisSpacing: AppSpacing.s8,
+                  crossAxisSpacing: AppSpacing.s8,
+                ),
+                itemCount: _projectIconChoices.length,
+                itemBuilder: (context, index) {
+                  final icon = _projectIconChoices[index];
+                  final isSelected = icon == _selectedIcon;
 
-                          return GestureDetector(
-                            onTap: () => setState(() => _selectedIcon = icon),
-                            child: AnimatedContainer(
-                              duration: const Duration(milliseconds: 150),
-                              decoration: BoxDecoration(
-                                color: isSelected
-                                    ? c.primary
-                                    : c.surfaceContainerLow,
-                                border: Border.all(
-                                  color: isSelected
-                                      ? c.primary
-                                      : c.surfaceVariant,
-                                  width: isSelected ? 2 : 1,
-                                ),
-                              ),
-                              child: Icon(
-                                icon,
-                                size: 22,
-                                color:
-                                    isSelected ? c.onPrimary : c.onSurface,
-                              ),
-                            ),
-                          );
-                        },
+                  return GestureDetector(
+                    onTap: () => setState(() => _selectedIcon = icon),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 150),
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? c.primary
+                            : c.surfaceContainerLow,
+                        border: Border.all(
+                          color: isSelected
+                              ? c.primary
+                              : c.surfaceVariant,
+                          width: isSelected ? 2 : 1,
+                        ),
+                      ),
+                      child: Icon(
+                        icon,
+                        size: 22,
+                        color:
+                            isSelected ? c.onPrimary : c.onSurface,
                       ),
                     ),
-                  ],
-                ),
-              ),
-            ),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.s20,
-                vertical: AppSpacing.s12,
-              ),
-              decoration: BoxDecoration(
-                border: Border(
-                  top: BorderSide(color: c.surfaceVariant, width: 1),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () => dismissTextInputRoute(context),
-                    child: Text(
-                      'CANCEL',
-                      style:
-                          AppTextStyles.labelSmUpper.copyWith(color: c.outline),
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.s8),
-                  FilledButton(
-                    onPressed: _submit,
-                    child: const Text('CREATE'),
-                  ),
-                ],
+                  );
+                },
               ),
             ),
           ],

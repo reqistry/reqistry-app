@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:api_scout/app/blocs/category_apis/category_apis_cubit.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
-import 'package:api_scout/shared/widgets/app_empty_state.dart';
-import 'package:api_scout/shared/widgets/app_error_state.dart';
-import 'package:api_scout/shared/widgets/app_loading.dart';
 import 'package:api_scout/shared/widgets/app_cached_image.dart';
+import 'package:api_scout/shared/widgets/ui/stat_widgets.dart';
+import 'package:api_scout/shared/widgets/ui/async_state_handler.dart';
 import '../apis_view/widgets/api_card.dart';
 
 class CategoryApisView extends StatelessWidget {
@@ -36,45 +34,34 @@ class CategoryApisView extends StatelessWidget {
       ),
       body: BlocBuilder<CategoryApisCubit, CategoryApisState>(
         builder: (context, state) {
-          if (state.isLoading) {
-            return const AppLoading(message: 'Loading category APIs');
-          }
+          return AsyncStateHandler(
+            isLoading: state.isLoading,
+            errorMessage: state.errorMessage.isNotEmpty ? state.errorMessage : null,
+            isEmpty: state.apis.isEmpty,
+            loadingMessage: 'Loading category APIs',
+            errorTitle: 'Could not load category',
+            emptyTitle: 'No APIs available',
+            emptyMessage: 'This category is empty right now. Try another category in the Discover tab.',
+            onRetry: () => context.read<CategoryApisCubit>().retryFetch(),
+            child: RefreshIndicator(
+              onRefresh: () => context.read<CategoryApisCubit>().retryFetch(),
+              child: ListView.separated(
+                itemCount: state.apis.length + 1,
+                padding: const EdgeInsets.all(AppSpacing.pagePaddingH),
+                separatorBuilder: (_, __) =>
+                    const SizedBox(height: AppSpacing.itemGap),
+                itemBuilder: (context, index) {
+                  if (index == 0) {
+                    return _CategorySummary(state: state);
+                  }
 
-          if (state.errorMessage.isNotEmpty) {
-            return AppErrorState(
-              title: 'Could not load category',
-              message: state.errorMessage,
-              onRetry: () => context.read<CategoryApisCubit>().retryFetch(),
-            );
-          }
-
-          if (state.apis.isEmpty) {
-            return const AppEmptyState(
-              title: 'No APIs available',
-              message:
-                  'This category is empty right now. Try another category in the Discover tab.',
-              icon: PhosphorIconsRegular.bracketsCurly,
-            );
-          }
-
-          return RefreshIndicator(
-            onRefresh: () => context.read<CategoryApisCubit>().retryFetch(),
-            child: ListView.separated(
-              itemCount: state.apis.length + 1,
-              padding: const EdgeInsets.all(AppSpacing.pagePaddingH),
-              separatorBuilder: (_, __) =>
-                  const SizedBox(height: AppSpacing.itemGap),
-              itemBuilder: (context, index) {
-                if (index == 0) {
-                  return _CategorySummary(state: state);
-                }
-
-                final api = state.apis[index - 1];
-                return ApiCard(
-                  api: api,
-                  category: state.categoryTitle,
-                );
-              },
+                  final api = state.apis[index - 1];
+                  return ApiCard(
+                    api: api,
+                    category: state.categoryTitle,
+                  );
+                },
+              ),
             ),
           );
         },
@@ -199,66 +186,21 @@ class _CategorySummary extends StatelessWidget {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   children: [
-                    _StatTile(label: 'APIS', value: '${apis.length}'),
-                    _StatTile(label: 'ALIVE', value: '$aliveCount'),
-                    _StatTile(label: 'HTTPS', value: '$httpsCount'),
-                    _StatTile(label: 'NO AUTH', value: '$openAuthCount'),
-                    _StatTile(
+                    StatTile(label: 'APIS', value: '${apis.length}'),
+                    StatTile(label: 'ALIVE', value: '$aliveCount'),
+                    StatTile(label: 'HTTPS', value: '$httpsCount'),
+                    StatTile(label: 'NO AUTH', value: '$openAuthCount'),
+                    StatTile(
                       label: 'AVG RESPONSE',
                       value: avgResponse > 0 ? '${avgResponse}ms' : 'N/A',
                     ),
-                    _StatTile(
+                    StatTile(
                       label: 'CATALOG TOTAL',
                       value: '${meta?.apiCount ?? apis.length}',
                     ),
                   ],
                 ),
               ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _StatTile extends StatelessWidget {
-  final String label;
-  final String value;
-
-  const _StatTile({
-    required this.label,
-    required this.value,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final c = AppColors.of(Theme.of(context).brightness);
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.s8),
-      decoration: BoxDecoration(
-        color: c.background,
-        border: Border.all(color: c.surfaceVariant),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            label,
-            style: AppTextStyles.labelSmUpper.copyWith(
-              color: c.onSurfaceVariant,
-              fontSize: 9,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.s4),
-          Text(
-            value,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: AppTextStyles.bodyLg.copyWith(
-              color: c.onSurface,
-              fontWeight: FontWeight.w700,
             ),
           ),
         ],

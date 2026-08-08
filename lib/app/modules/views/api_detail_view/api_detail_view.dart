@@ -13,7 +13,6 @@ import 'package:api_scout/app/modules/views/api_detail_view/widgets/core_state_s
 import 'package:api_scout/app/modules/views/api_detail_view/widgets/detail_menu_item.dart';
 import 'package:api_scout/app/modules/views/api_detail_view/widgets/sheet_label.dart';
 import 'package:api_scout/app/modules/views/api_detail_view/widgets/project_selection_tile.dart';
-import 'package:api_scout/app/modules/views/api_detail_view/widgets/notice_banner.dart';
 import 'package:api_scout/app/modules/views/api_detail_view/widgets/report_issue_sheet.dart';
 import 'package:api_scout/app/modules/views/home_view/widgets/create_project_bottom_sheet.dart';
 import 'package:api_scout/app/services/analytics/api_detail_analytics.dart';
@@ -24,7 +23,6 @@ import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
 import 'package:api_scout/app/widgets/app_snackbar.dart';
 import 'package:api_scout/config/app_routes.dart';
 import 'package:api_scout/config/env.dart';
-import 'package:api_scout/shared/widgets/app_error_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
