@@ -19,6 +19,10 @@ import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
 import 'package:api_scout/app/utils/snackbar_helper.dart';
 import 'package:api_scout/config/app_routes.dart';
 import 'package:api_scout/config/env.dart';
+import 'package:api_scout/app/modules/views/settings_view/widgets/profile_panel.dart';
+import 'package:api_scout/app/modules/views/settings_view/widgets/stats_grid.dart';
+import 'package:api_scout/app/modules/views/settings_view/widgets/settings_section.dart';
+import 'package:api_scout/app/modules/views/settings_view/widgets/entry_tile.dart';
 
 class SettingsView extends StatefulWidget {
   const SettingsView({super.key});
@@ -100,7 +104,7 @@ class _SettingsViewState extends State<SettingsView> {
             BlocBuilder<AuthCubit, AuthState>(
               builder: (context, state) {
                 final cubit = context.read<AuthCubit>();
-                return _ProfilePanel(
+                return ProfilePanel(
                   name: _name(cubit),
                   email: cubit.userEmail,
                   accountType: cubit.isGuestUser ? 'Guest' : 'Email',
@@ -111,7 +115,7 @@ class _SettingsViewState extends State<SettingsView> {
             ),
             const SizedBox(height: AppSpacing.s12),
             BlocBuilder<UserActivityCubit, UserActivityState>(
-              builder: (context, state) => _StatsGrid(
+              builder: (context, state) => StatsGrid(
                 state: state,
                 onSavedTap: () => _switchTab(AppRoutes.tabIndexFavorites),
                 onProjectsTap: _openAllProjects,
@@ -119,20 +123,20 @@ class _SettingsViewState extends State<SettingsView> {
               ),
             ),
             const SizedBox(height: AppSpacing.s24),
-            _Section(
+            SettingsSection(
               title: 'MY',
               children: [
-                _EntryTile(
+                SettingsEntryTile(
                   icon: PhosphorIconsRegular.folder,
                   title: 'Projects',
                   onTap: _openAllProjects,
                 ),
-                _EntryTile(
+                SettingsEntryTile(
                   icon: PhosphorIconsRegular.bookmarkSimple,
                   title: 'Saved APIs',
                   onTap: () => _switchTab(AppRoutes.tabIndexFavorites),
                 ),
-                _EntryTile(
+                SettingsEntryTile(
                   icon: PhosphorIconsRegular.paperPlaneTilt,
                   title: 'Submit an API',
                   onTap: () => context.push(AppRoutes.submitApi),
@@ -140,15 +144,15 @@ class _SettingsViewState extends State<SettingsView> {
               ],
             ),
             const SizedBox(height: AppSpacing.s24),
-            _Section(
+            SettingsSection(
               title: 'MANAGE',
               children: [
-                _EntryTile(
+                SettingsEntryTile(
                   icon: PhosphorIconsRegular.gearSix,
                   title: 'App settings',
                   onTap: () => context.push(AppRoutes.appSettings),
                 ),
-                _EntryTile(
+                SettingsEntryTile(
                   icon: PhosphorIconsRegular.userCircle,
                   title: 'Account',
                   onTap: () => context.push(AppRoutes.accountSettings),
@@ -156,20 +160,20 @@ class _SettingsViewState extends State<SettingsView> {
               ],
             ),
             const SizedBox(height: AppSpacing.s24),
-            _Section(
+            SettingsSection(
               title: 'INFO',
               children: [
-                _EntryTile(
+                SettingsEntryTile(
                   icon: PhosphorIconsRegular.chatCircleText,
                   title: 'Contact',
                   onTap: () => context.push(AppRoutes.contact),
                 ),
-                _EntryTile(
+                SettingsEntryTile(
                   icon: PhosphorIconsRegular.shield,
                   title: 'Privacy and policy',
                   onTap: () => context.push(AppRoutes.privacy),
                 ),
-                _EntryTile(
+                SettingsEntryTile(
                   icon: PhosphorIconsRegular.info,
                   title: 'About app and developer',
                   onTap: _openDeveloperSite,
@@ -197,288 +201,6 @@ class _SettingsViewState extends State<SettingsView> {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _ProfilePanel extends StatelessWidget {
-  const _ProfilePanel({
-    required this.name,
-    required this.email,
-    required this.accountType,
-    required this.profile,
-    required this.onModify,
-  });
-
-  final String name;
-  final String email;
-  final String accountType;
-  final UserProfile? profile;
-  final VoidCallback onModify;
-
-  @override
-  Widget build(BuildContext context) {
-    final c = AppColors.of(Theme.of(context).brightness);
-
-    return Container(
-      decoration: BoxDecoration(
-        color: c.surface,
-        border: Border.fromBorderSide(BorderSide(color: c.outline)),
-      ),
-      padding: const EdgeInsets.all(AppSpacing.s16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 56,
-                height: 56,
-                color: c.surfaceContainerHigh,
-                alignment: Alignment.center,
-                child: Icon(PhosphorIconsFill.user, color: c.primary, size: 28),
-              ),
-              const SizedBox(width: AppSpacing.s12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      name,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: AppTextStyles.headlineSm,
-                    ),
-                    const SizedBox(height: AppSpacing.s4),
-                    Text(
-                      email,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: AppTextStyles.bodyMd.copyWith(
-                        color: c.onSurfaceVariant,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              TextButton.icon(
-                onPressed: onModify,
-                icon: const Icon(PhosphorIconsRegular.pencilSimple, size: 16),
-                label: const Text('MODIFY'),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.s16),
-          Wrap(
-            spacing: AppSpacing.s8,
-            runSpacing: AppSpacing.s8,
-            children: [
-              _MetaChip(label: accountType),
-              if (profile?.memberSince != null)
-                _MetaChip(label: 'Since ${_date(profile!.memberSince!)}'),
-              if (profile?.lastUsedAt != null)
-                _MetaChip(label: 'Used ${_date(profile!.lastUsedAt!)}'),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  static String _date(DateTime value) {
-    return '${value.year}-${value.month.toString().padLeft(2, '0')}-${value.day.toString().padLeft(2, '0')}';
-  }
-}
-
-class _StatsGrid extends StatelessWidget {
-  const _StatsGrid({
-    required this.state,
-    required this.onSavedTap,
-    required this.onProjectsTap,
-    required this.onProjectApisTap,
-  });
-
-  final UserActivityState state;
-  final VoidCallback onSavedTap;
-  final VoidCallback onProjectsTap;
-  final VoidCallback onProjectApisTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: _StatBox(
-            label: 'Saved',
-            value: state.totalBookmarks.toString(),
-            onTap: onSavedTap,
-          ),
-        ),
-        const SizedBox(width: AppSpacing.s8),
-        Expanded(
-          child: _StatBox(
-            label: 'Projects',
-            value: state.totalProjects.toString(),
-            onTap: onProjectsTap,
-          ),
-        ),
-        const SizedBox(width: AppSpacing.s8),
-        Expanded(
-          child: _StatBox(
-            label: 'Project APIs',
-            value: state.totalProjectItems.toString(),
-            onTap: onProjectApisTap,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _StatBox extends StatelessWidget {
-  const _StatBox({
-    required this.label,
-    required this.value,
-    required this.onTap,
-  });
-
-  final String label;
-  final String value;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final c = AppColors.of(Theme.of(context).brightness);
-
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: onTap,
-      child: Container(
-        height: 72,
-        decoration: BoxDecoration(
-          color: c.surface,
-          border: Border.fromBorderSide(BorderSide(color: c.outline)),
-        ),
-        padding: const EdgeInsets.all(AppSpacing.s10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              value,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: AppTextStyles.headlineSm,
-            ),
-            Text(
-              label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: AppTextStyles.labelSm.copyWith(
-                color: c.onSurfaceVariant,
-                letterSpacing: 0,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _Section extends StatelessWidget {
-  const _Section({required this.title, required this.children});
-
-  final String title;
-  final List<Widget> children;
-
-  @override
-  Widget build(BuildContext context) {
-    final c = AppColors.of(Theme.of(context).brightness);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(title, style: AppTextStyles.labelSmUpper),
-        const SizedBox(height: AppSpacing.s8),
-        DecoratedBox(
-          decoration: BoxDecoration(
-            color: c.surface,
-            border: Border.fromBorderSide(BorderSide(color: c.outline, width: 1)),
-          ),
-          child: Column(children: children),
-        ),
-      ],
-    );
-  }
-}
-
-class _EntryTile extends StatelessWidget {
-  const _EntryTile({
-    required this.icon,
-    required this.title,
-    required this.onTap,
-  });
-
-  final IconData icon;
-  final String title;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final c = AppColors.of(Theme.of(context).brightness);
-
-    return GestureDetector(
-      onTap: onTap,
-      behavior: HitTestBehavior.opaque,
-      child: Container(
-        height: 56,
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s14),
-        decoration: BoxDecoration(
-          border: Border(bottom: BorderSide(color: c.surfaceVariant)),
-        ),
-        child: Row(
-          children: [
-            Icon(icon, size: 20, color: c.primary),
-            const SizedBox(width: AppSpacing.s12),
-            Expanded(
-              child: Text(
-                title,
-                style: AppTextStyles.bodyMd.copyWith(fontWeight: FontWeight.w600),
-              ),
-            ),
-            Icon(
-              PhosphorIconsRegular.caretRight,
-              size: 18,
-              color: c.outline,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _MetaChip extends StatelessWidget {
-  const _MetaChip({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    final c = AppColors.of(Theme.of(context).brightness);
-
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.s8,
-        vertical: AppSpacing.s4,
-      ),
-      color: c.surfaceContainerHigh,
-      child: Text(
-        label.toUpperCase(),
-        style: AppTextStyles.labelSmUpper.copyWith(fontSize: 10),
       ),
     );
   }

@@ -9,6 +9,12 @@ import 'package:api_scout/app/data/models/bookmark_item.dart';
 import 'package:api_scout/app/data/models/project.dart';
 import 'package:api_scout/app/modules/views/api_detail_view/widgets/api_detail_actions.dart';
 import 'package:api_scout/app/modules/views/api_detail_view/widgets/api_detail_sections.dart';
+import 'package:api_scout/app/modules/views/api_detail_view/widgets/core_state_scaffold.dart';
+import 'package:api_scout/app/modules/views/api_detail_view/widgets/detail_menu_item.dart';
+import 'package:api_scout/app/modules/views/api_detail_view/widgets/sheet_label.dart';
+import 'package:api_scout/app/modules/views/api_detail_view/widgets/project_selection_tile.dart';
+import 'package:api_scout/app/modules/views/api_detail_view/widgets/notice_banner.dart';
+import 'package:api_scout/app/modules/views/api_detail_view/widgets/report_issue_sheet.dart';
 import 'package:api_scout/app/modules/views/home_view/widgets/create_project_bottom_sheet.dart';
 import 'package:api_scout/app/services/analytics/api_detail_analytics.dart';
 import 'package:api_scout/app/services/share/share_plus/share_plus.dart';
@@ -62,7 +68,7 @@ class _ApiDetailViewState extends State<ApiDetailView> {
         builder: (context, state) {
           final detail = state.detail;
           if (detail == null) {
-            return _CoreStateScaffold(
+            return CoreStateScaffold(
               isLoading: state.isLoadingCore,
               message: state.coreError,
               onRetry: context.read<ApiDetailCubit>().load,
@@ -130,14 +136,14 @@ class _ApiDetailViewState extends State<ApiDetailView> {
                   return [
                     const PopupMenuItem(
                       value: _OverflowAction.addToProject,
-                      child: _MenuItem(
+                      child: DetailMenuItem(
                         icon: PhosphorIconsRegular.folderPlus,
                         label: 'Add to project',
                       ),
                     ),
                     const PopupMenuItem(
                       value: _OverflowAction.share,
-                      child: _MenuItem(
+                      child: DetailMenuItem(
                         icon: PhosphorIconsRegular.shareNetwork,
                         label: 'Share',
                       ),
@@ -145,14 +151,14 @@ class _ApiDetailViewState extends State<ApiDetailView> {
                     if (detail.links.homepageUrl != null)
                       const PopupMenuItem(
                         value: _OverflowAction.homepage,
-                        child: _MenuItem(
+                        child: DetailMenuItem(
                           icon: PhosphorIconsRegular.house,
                           label: 'Open homepage',
                         ),
                       ),
                     const PopupMenuItem(
                       value: _OverflowAction.report,
-                      child: _MenuItem(
+                      child: DetailMenuItem(
                         icon: PhosphorIconsRegular.flag,
                         label: 'Report a problem',
                       ),
@@ -407,8 +413,8 @@ class _ApiDetailViewState extends State<ApiDetailView> {
                     Text('ADD TO PROJECT', style: AppTextStyles.labelSmUpper),
                     if (recent.isNotEmpty) ...[
                       const SizedBox(height: AppSpacing.s16),
-                      _SheetLabel('Recently used'),
-                      ...recent.map((project) => _ProjectTile(
+                      const SheetLabel('Recently used'),
+                      ...recent.map((project) => ProjectSelectionTile(
                           project: project,
                           isSaved: project.apiLinks
                               .contains(detail.links.baseUrl?.toString()),
@@ -417,8 +423,8 @@ class _ApiDetailViewState extends State<ApiDetailView> {
                     ],
                     if (all.isNotEmpty) ...[
                       const SizedBox(height: AppSpacing.s12),
-                      _SheetLabel('All projects'),
-                      ...all.map((project) => _ProjectTile(
+                      const SheetLabel('All projects'),
+                      ...all.map((project) => ProjectSelectionTile(
                           project: project,
                           isSaved: project.apiLinks
                               .contains(detail.links.baseUrl?.toString()),
@@ -467,7 +473,7 @@ class _ApiDetailViewState extends State<ApiDetailView> {
       context: context,
       isScrollControlled: true,
       showDragHandle: true,
-      builder: (_) => _ReportIssueSheet(
+      builder: (_) => ReportIssueSheet(
         onSubmit: (reason, note) =>
             context.read<ApiDetailCubit>().reportIssue(
                   reason: reason,
@@ -565,220 +571,6 @@ class _ApiDetailViewState extends State<ApiDetailView> {
       title: title,
       message: message,
       type: isError ? AppSnackbarType.error : AppSnackbarType.success,
-    );
-  }
-}
-
-class _CoreStateScaffold extends StatelessWidget {
-  const _CoreStateScaffold({
-    required this.isLoading,
-    required this.message,
-    required this.onRetry,
-  });
-
-  final bool isLoading;
-  final String? message;
-  final VoidCallback onRetry;
-
-  @override
-  Widget build(BuildContext context) {
-    final c = AppColors.of(Theme.of(context).brightness);
-    return Scaffold(
-      backgroundColor: c.background,
-      body: CustomScrollView(
-        slivers: [
-          const SliverAppBar(pinned: true),
-          SliverFillRemaining(
-            hasScrollBody: false,
-            child: isLoading
-                ? const Center(child: CircularProgressIndicator(strokeWidth: 2))
-                : AppErrorState(
-                    title: 'API unavailable',
-                    message: message ?? 'Failed to load this API',
-                    onRetry: onRetry,
-                  ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _MenuItem extends StatelessWidget {
-  const _MenuItem({required this.icon, required this.label});
-
-  final IconData icon;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(icon, size: 20),
-        const SizedBox(width: AppSpacing.s12),
-        Text(label),
-      ],
-    );
-  }
-}
-
-class _SheetLabel extends StatelessWidget {
-  const _SheetLabel(this.text);
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    final c = AppColors.of(Theme.of(context).brightness);
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppSpacing.s6),
-      child: Text(
-        text,
-        style: AppTextStyles.labelSm.copyWith(
-          color: c.onSurfaceVariant,
-        ),
-      ),
-    );
-  }
-}
-
-class _ProjectTile extends StatelessWidget {
-  const _ProjectTile({
-    required this.project,
-    required this.isSaved,
-    required this.onTap,
-  });
-
-  final Project project;
-  final bool isSaved;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) => ListTile(
-        contentPadding: EdgeInsets.zero,
-        minTileHeight: 48,
-        leading: Icon(
-          isSaved ? PhosphorIconsFill.checkCircle : PhosphorIconsRegular.circle,
-        ),
-        title: Text(project.title),
-        subtitle: Text(isSaved ? 'Already added' : '${project.apiCount} APIs'),
-        onTap: isSaved ? null : onTap,
-      );
-}
-
-class _Notice extends StatelessWidget {
-  const _Notice(this.text);
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    final c = AppColors.of(Theme.of(context).brightness);
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.s10),
-      decoration: BoxDecoration(
-        color: c.warningBg,
-        border: Border.all(color: c.warning),
-      ),
-      child: Text(
-        text,
-        style: AppTextStyles.bodyMd.copyWith(color: c.warningText),
-      ),
-    );
-  }
-}
-
-class _ReportIssueSheet extends StatefulWidget {
-  const _ReportIssueSheet({required this.onSubmit});
-
-  final Future<bool> Function(String reason, String note) onSubmit;
-
-  @override
-  State<_ReportIssueSheet> createState() => _ReportIssueSheetState();
-}
-
-class _ReportIssueSheetState extends State<_ReportIssueSheet> {
-  static const _reasons = [
-    'API is unavailable',
-    'Link is broken',
-    'Pricing is incorrect',
-    'Authentication is incorrect',
-    'Description is incorrect',
-    'API is discontinued',
-    'Other',
-  ];
-
-  final _noteController = TextEditingController();
-  String _selected = _reasons.first;
-  bool _submitting = false;
-
-  @override
-  void dispose() {
-    _noteController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _submit() async {
-    if (_submitting) return;
-    setState(() => _submitting = true);
-    final note = _noteController.text.trim();
-    final saved =
-        await widget.onSubmit(_selected, note.isEmpty ? '' : note);
-    if (!mounted) return;
-    Navigator.of(context).pop(saved);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        AppSpacing.s16,
-        0,
-        AppSpacing.s16,
-        MediaQuery.viewInsetsOf(context).bottom + AppSpacing.s16,
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('WHAT IS INCORRECT?', style: AppTextStyles.labelSmUpper),
-            const SizedBox(height: AppSpacing.s8),
-            const _Notice('Reports are sent to Reqistry for review.'),
-            RadioGroup<String>(
-              groupValue: _selected,
-              onChanged: (value) => setState(() => _selected = value!),
-              child: Column(
-                children: [
-                  for (final reason in _reasons)
-                    RadioListTile<String>(
-                      contentPadding: EdgeInsets.zero,
-                      title: Text(reason),
-                      value: reason,
-                    ),
-                ],
-              ),
-            ),
-            TextField(
-              controller: _noteController,
-              minLines: 2,
-              maxLines: 4,
-              decoration: const InputDecoration(
-                labelText: 'Optional note',
-              ),
-            ),
-            const SizedBox(height: AppSpacing.s12),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _submitting ? null : _submit,
-                child: const Text('Submit report'),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
