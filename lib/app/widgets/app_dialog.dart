@@ -3,6 +3,7 @@ import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_shadows.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
+import 'package:api_scout/app/widgets/app_dialog/widgets/destructive_button.dart';
 
 /// Unified dialog component used across the entire app.
 ///
@@ -74,7 +75,7 @@ class AppDialog extends StatelessWidget {
         ),
         const SizedBox(width: AppSpacing.s8),
         isDestructive
-            ? _DestructiveButton(
+            ? DestructiveButton(
                 label: confirmLabel,
                 onPressed: () => Navigator.of(context).pop(true),
               )
@@ -195,24 +196,3 @@ class AppDialog extends StatelessWidget {
   }
 }
 
-/// Red-outlined destructive action button, used in confirm dialogs.
-class _DestructiveButton extends StatelessWidget {
-  final String label;
-  final VoidCallback onPressed;
-
-  const _DestructiveButton({required this.label, required this.onPressed});
-
-  @override
-  Widget build(BuildContext context) {
-    final c = AppColors.of(Theme.of(context).brightness);
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: c.danger,
-        foregroundColor: c.onPrimary,
-        side: BorderSide(color: c.danger, width: 1),
-      ),
-      child: Text(label),
-    );
-  }
-}

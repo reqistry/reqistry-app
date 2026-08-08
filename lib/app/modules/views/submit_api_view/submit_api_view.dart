@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:api_scout/app/blocs/submit_api/submit_api_cubit.dart';
 import 'package:api_scout/app/blocs/submit_api/submit_api_state.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
+import 'package:api_scout/app/modules/views/submit_api_view/widgets/tip_card.dart';
 
 class SubmitApiView extends StatefulWidget {
   const SubmitApiView({super.key});
@@ -59,7 +59,7 @@ class _SubmitApiViewState extends State<SubmitApiView> {
               padding: const EdgeInsets.all(AppSpacing.pagePaddingH),
               child: Column(
                 children: [
-                  const _TipCard(),
+                  const TipCard(),
                   const SizedBox(height: AppSpacing.itemGap),
                   _buildTextField(
                     controller: _nameController,
@@ -173,38 +173,6 @@ class _SubmitApiViewState extends State<SubmitApiView> {
         ),
       ),
       validator: validator,
-    );
-  }
-}
-
-class _TipCard extends StatelessWidget {
-  const _TipCard();
-
-  @override
-  Widget build(BuildContext context) {
-    final c = AppColors.of(Theme.of(context).brightness);
-
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: c.surface,
-        borderRadius: BorderRadius.zero,
-        border: Border.fromBorderSide(BorderSide(color: c.outline)),
-      ),
-      padding: const EdgeInsets.all(AppSpacing.cardPadding),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(PhosphorIconsRegular.info, color: c.primary),
-          const SizedBox(width: AppSpacing.itemGap),
-          Expanded(
-            child: Text(
-              'Submit an API for review. Provide the API name and URL.',
-              style: AppTextStyles.bodyMd,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

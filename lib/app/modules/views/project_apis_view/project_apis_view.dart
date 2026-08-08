@@ -4,9 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:api_scout/app/blocs/projects/projects_cubit.dart';
 import 'package:api_scout/app/blocs/main_shell/main_shell_cubit.dart';
-import 'package:api_scout/app/data/models/category_apis.dart';
 import 'package:api_scout/app/data/models/project.dart';
-import 'package:api_scout/app/data/models/project_detail.dart';
 import 'package:api_scout/app/modules/views/apis_view/widgets/api_card.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
@@ -16,6 +14,8 @@ import 'package:api_scout/config/app_routes.dart';
 import 'package:api_scout/shared/widgets/app_empty_state.dart';
 import 'package:api_scout/shared/widgets/app_error_state.dart';
 import 'package:api_scout/shared/widgets/app_loading.dart';
+import 'package:api_scout/app/modules/views/project_apis_view/widgets/project_header.dart';
+import 'package:api_scout/app/modules/views/project_apis_view/widgets/project_apis_data.dart';
 
 class ProjectApisView extends StatefulWidget {
   final Project project;
@@ -30,7 +30,7 @@ class ProjectApisView extends StatefulWidget {
 }
 
 class _ProjectApisViewState extends State<ProjectApisView> {
-  late Future<_ProjectApisData> _future;
+  late Future<ProjectApisData> _future;
 
   @override
   void initState() {
@@ -38,15 +38,15 @@ class _ProjectApisViewState extends State<ProjectApisView> {
     _future = _load();
   }
 
-  Future<_ProjectApisData> _load() async {
+  Future<ProjectApisData> _load() async {
     final cubit = context.read<ProjectsCubit>();
     final results = await Future.wait([
       cubit.getProject(widget.project.id),
       cubit.getProjectMetadata(widget.project.id),
     ]);
-    return _ProjectApisData(
-      detail: results[0] as ProjectDetail,
-      metadata: results[1] as ProjectMetadata,
+    return ProjectApisData(
+      detail: results[0] as dynamic,
+      metadata: results[1] as dynamic,
     );
   }
 
@@ -55,7 +55,7 @@ class _ProjectApisViewState extends State<ProjectApisView> {
     await _future;
   }
 
-  Future<void> _rename(ProjectDetail detail) async {
+  Future<void> _rename(dynamic detail) async {
     final title = await AppDialog.showInput(
       context: context,
       title: 'RENAME PROJECT',
@@ -68,7 +68,7 @@ class _ProjectApisViewState extends State<ProjectApisView> {
     if (mounted) setState(() => _future = _load());
   }
 
-  Future<void> _delete(ProjectDetail detail) async {
+  Future<void> _delete(dynamic detail) async {
     final confirmed = await AppDialog.showConfirm(
       context: context,
       title: 'DELETE PROJECT',
@@ -82,7 +82,7 @@ class _ProjectApisViewState extends State<ProjectApisView> {
     if (mounted) Navigator.pop(context);
   }
 
-  Future<void> _remove(ProjectDetail detail, ApiItem api) async {
+  Future<void> _remove(dynamic detail, dynamic api) async {
     await context
         .read<ProjectsCubit>()
         .removeApiFromProject(detail.id, api.link);
@@ -93,7 +93,7 @@ class _ProjectApisViewState extends State<ProjectApisView> {
   Widget build(BuildContext context) {
     final c = AppColors.of(Theme.of(context).brightness);
 
-    return FutureBuilder<_ProjectApisData>(
+    return FutureBuilder<ProjectApisData>(
       future: _future,
       builder: (context, snapshot) {
         final title = snapshot.data?.detail.title ?? widget.project.title;
@@ -128,7 +128,7 @@ class _ProjectApisViewState extends State<ProjectApisView> {
     );
   }
 
-  Widget _buildBody(AsyncSnapshot<_ProjectApisData> snapshot) {
+  Widget _buildBody(AsyncSnapshot<ProjectApisData> snapshot) {
     if (snapshot.connectionState == ConnectionState.waiting) {
       return const AppLoading(
           message: 'Loading project APIs', scrollable: true);
@@ -165,9 +165,9 @@ class _ProjectApisViewState extends State<ProjectApisView> {
       itemCount: apis.length + 1,
       itemBuilder: (context, index) {
         if (index == 0) {
-          return _ProjectHeader(
+          return ProjectHeader(
             detail: data.detail,
-            metadata: data.metadata,
+            totalApis: apis.length,
           );
         }
         final api = apis[index - 1];
@@ -189,101 +189,5 @@ class _ProjectApisViewState extends State<ProjectApisView> {
         );
       },
     );
-  }
-}
-
-class _ProjectHeader extends StatelessWidget {
-  final ProjectDetail detail;
-  final ProjectMetadata metadata;
-
-  const _ProjectHeader({
-    required this.detail,
-    required this.metadata,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final c = AppColors.of(Theme.of(context).brightness);
-
-    final iconData = IconData(
-      // ignore: non_const_argument_for_const_parameter
-      detail.iconCodePoint,
-      fontFamily: 'PhosphorRegular',
-      fontPackage: 'phosphoricons_flutter',
-    );
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: AppSpacing.s12),
-      padding: const EdgeInsets.all(AppSpacing.cardPadding),
-      decoration: BoxDecoration(
-        color: c.surface,
-        border: Border.all(color: c.surfaceVariant),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            iconData,
-            color: c.primary,
-            size: 30,
-          ),
-          const SizedBox(width: AppSpacing.s12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(detail.title, style: AppTextStyles.headlineSm),
-                const SizedBox(height: AppSpacing.s4),
-                Text(
-                  '${metadata.totalApis} saved APIs',
-                  style: AppTextStyles.bodyMd.copyWith(
-                    color: c.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ProjectApisData {
-  final ProjectDetail detail;
-  final ProjectMetadata metadata;
-
-  const _ProjectApisData({
-    required this.detail,
-    required this.metadata,
-  });
-
-  List<ApiItem> toApis() {
-    final previewByLink = {
-      for (final item in metadata.preview) item.link: item,
-    };
-    final links = detail.apiLinks.isNotEmpty
-        ? detail.apiLinks
-        : detail.items.map((item) => item.link).toList();
-
-    return links.map((link) {
-      final preview = previewByLink[link];
-      return ApiItem(
-        id: preview?.apiId ?? '',
-        name: preview?.name ?? Uri.tryParse(link)?.host ?? link,
-        description: link,
-        auth: 'Unknown',
-        https: link.toLowerCase().startsWith('https://') ? 'true' : 'false',
-        cors: 'Unknown',
-        link: link,
-        category: detail.title,
-        apiType: 'REST',
-        pricing: 'Unknown',
-        rateLimit: 'Unknown',
-        documentation: link,
-        isAlive: preview?.isAlive ?? false,
-        responseTime: 0,
-        lastChecked: '',
-      );
-    }).toList();
   }
 }
