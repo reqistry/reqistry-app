@@ -5,7 +5,7 @@ import '../../data/models/categories_response.dart';
 import '../../data/models/category_apis.dart';
 import '../../data/models/api.dart' as api_model;
 import '../../data/models/apis_search_response.dart';
-import '../../utils/singelton/categories_apis.dart';
+import '../../utils/singleton/categories_apis.dart';
 import '../auth/dio_client.dart';
 import 'failure.dart';
 
