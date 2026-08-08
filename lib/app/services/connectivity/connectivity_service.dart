@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:api_scout/app/widgets/app_snackbar.dart';
+import 'package:api_scout/app/utils/dio_connectivity_ext.dart';
 
 class ConnectivityService {
   static final ConnectivityService _instance = ConnectivityService._();
@@ -78,7 +79,7 @@ class ConnectivityService {
         message: 'Connection restored',
       );
     } catch (e) {
-      if (e is DioException && _isConnectivityError(e)) {
+      if (e is DioException && e.isConnectivityError) {
         registerFailedRequest(options, dio);
         notifyOffline();
       } else {
@@ -88,13 +89,6 @@ class ConnectivityService {
         );
       }
     }
-  }
-
-  bool _isConnectivityError(DioException e) {
-    return e.type == DioExceptionType.connectionError ||
-        e.type == DioExceptionType.connectionTimeout ||
-        e.type == DioExceptionType.sendTimeout ||
-        e.type == DioExceptionType.receiveTimeout;
   }
 
   void _onBackOnline() {

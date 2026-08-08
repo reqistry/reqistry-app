@@ -7,6 +7,7 @@ import 'package:api_scout/app/services/auth/dio_client.dart';
 import 'package:api_scout/app/services/connectivity/connectivity_service.dart';
 import 'package:api_scout/app/services/local_db/hive/privacy_cache_db.dart';
 import 'package:api_scout/app/utils/snackbar_helper.dart';
+import 'package:api_scout/app/utils/dio_connectivity_ext.dart';
 import 'package:api_scout/config/env.dart';
 
 part 'privacy_state.dart';
@@ -77,18 +78,11 @@ class PrivacyCubit extends Cubit<PrivacyState> {
     } catch (_) {
       emit(state.copyWith(
         isLoading: false,
-        errorMessage: error != null && _isConnectivityError(error)
+        errorMessage: error != null && error.isConnectivityError
             ? 'No internet connection'
             : 'Failed to load privacy content',
       ));
     }
-  }
-
-  bool _isConnectivityError(DioException e) {
-    return e.type == DioExceptionType.connectionError ||
-        e.type == DioExceptionType.connectionTimeout ||
-        e.type == DioExceptionType.sendTimeout ||
-        e.type == DioExceptionType.receiveTimeout;
   }
 
   void _onOnlineChanged() {

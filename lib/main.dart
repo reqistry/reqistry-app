@@ -45,9 +45,11 @@ Future<void> main() async {
   runApp(
     DevicePreview(
       enabled: kDebugMode,
-      builder: (_) => RequestsInspector(
-        child: const ApiScoutApp(),
-      ),
+      builder: (_) => kDebugMode
+          ? RequestsInspector(
+              child: const ApiScoutApp(),
+            )
+          : const ApiScoutApp(),
     ),
   );
 }

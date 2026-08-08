@@ -7,7 +7,6 @@ import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/shared/widgets/app_empty_state.dart';
-import 'package:api_scout/shared/widgets/ui/app_input_decoration.dart';
 import 'package:api_scout/app/modules/views/search_apis_screen/widgets/discover_category_card.dart';
 
 class BrowseByCategory extends StatefulWidget {
@@ -66,8 +65,7 @@ class _BrowseByCategoryState extends State<BrowseByCategory> {
             controller: _controller,
             onChanged: (v) => setState(() => _query = v),
             textInputAction: TextInputAction.search,
-            decoration: AppInputDecoration.search(
-              c: c,
+            decoration: InputDecoration(
               hintText: 'Filter categories...',
               prefixIcon: Icon(PhosphorIconsRegular.magnifyingGlass,
                   color: c.outline, size: 18),
@@ -81,10 +79,6 @@ class _BrowseByCategoryState extends State<BrowseByCategory> {
                           color: c.outline, size: 16),
                     )
                   : null,
-            ),
-            style: AppTextStyles.bodyMd.copyWith(
-              color: c.onSurface,
-              decoration: TextDecoration.none,
             ),
           ),
         ),

@@ -5,7 +5,6 @@ import '../../data/models/categories_response.dart';
 import '../../data/models/category_apis.dart';
 import '../../data/models/api.dart' as api_model;
 import '../../data/models/apis_search_response.dart';
-import '../../utils/singleton/categories_apis.dart';
 import '../auth/dio_client.dart';
 import 'failure.dart';
 
@@ -227,7 +226,6 @@ class RemoteService {
         throw Failure('Invalid Data', 'The API response data is invalid');
       }
 
-      CategoriesApisSingleton.all = apisDataResponse.data;
       return apisDataResponse;
     } on DioException catch (e) {
       throw _handleDioError(e, 'Failed to fetch APIs');

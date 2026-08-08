@@ -189,23 +189,7 @@ class FcmService {
 
   /// Handle notification tap - route to appropriate screen
   void _handleNotificationTap(Map<String, dynamic> data) {
-    final type = data['type'] as String?;
-
-    // Route based on notification type
-    switch (type) {
-      case 'bookmark_added':
-        // Navigate to bookmarks
-        break;
-      case 'api_updated':
-        // Navigate to API detail
-        break;
-      case 'new_api':
-        // Navigate to home/discover
-        break;
-      default:
-        // Navigate to home
-        break;
-    }
+    // TODO: route by notification type
   }
 
   /// Register FCM token with backend

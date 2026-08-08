@@ -6,62 +6,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:api_scout/app/services/notification/fcm_service.dart';
 import 'package:api_scout/app/services/notification/local_notification_service.dart';
 
-// Events
-abstract class NotificationEvent extends Equatable {
-  const NotificationEvent();
-
-  @override
-  List<Object?> get props => [];
-}
-
-class InitializeNotifications extends NotificationEvent {
-  const InitializeNotifications();
-}
-
-class RequestPermission extends NotificationEvent {
-  const RequestPermission();
-}
-
-class EnableNotifications extends NotificationEvent {
-  const EnableNotifications();
-}
-
-class DisableNotifications extends NotificationEvent {
-  const DisableNotifications();
-}
-
-class NotificationReceived extends NotificationEvent {
-  final RemoteMessage message;
-  const NotificationReceived(this.message);
-
-  @override
-  List<Object?> get props => [message];
-}
-
-class NotificationTapped extends NotificationEvent {
-  final Map<String, dynamic> data;
-  const NotificationTapped(this.data);
-
-  @override
-  List<Object?> get props => [data];
-}
-
-class MarkAsRead extends NotificationEvent {
-  final String notificationId;
-  const MarkAsRead(this.notificationId);
-
-  @override
-  List<Object?> get props => [notificationId];
-}
-
-class MarkAllAsRead extends NotificationEvent {
-  const MarkAllAsRead();
-}
-
-class ClearNotifications extends NotificationEvent {
-  const ClearNotifications();
-}
-
 // State
 abstract class NotificationState extends Equatable {
   const NotificationState();
@@ -128,22 +72,18 @@ class NotificationCubit extends Cubit<NotificationState> {
   }
 
   Future<void> _setupListeners() async {
-    // Listen for foreground messages
     _foregroundSubscription = _fcmService.notificationStream.listen((message) {
       _handleForegroundMessage(message);
     });
 
-    // Listen for permission changes
     _permissionSubscription = _fcmService.permissionStream.listen((settings) {
       _handlePermissionChange(settings);
     });
   }
 
   void _handleForegroundMessage(RemoteMessage message) {
-    // Show local notification when app is in foreground
     _localNotificationService.showForegroundNotification(message);
 
-    // Add to state
     if (state is NotificationEnabled) {
       final currentState = state as NotificationEnabled;
       final updatedNotifications = [
@@ -165,7 +105,6 @@ class NotificationCubit extends Cubit<NotificationState> {
     }
   }
 
-  /// Initialize notifications
   Future<void> initializeNotifications() async {
     try {
       emit(const NotificationLoading());
@@ -176,7 +115,6 @@ class NotificationCubit extends Cubit<NotificationState> {
     }
   }
 
-  /// Request permission
   Future<void> requestPermission() async {
     try {
       final settings = await _fcmService.requestPermission();
@@ -192,7 +130,6 @@ class NotificationCubit extends Cubit<NotificationState> {
     }
   }
 
-  /// Enable notifications
   Future<void> enableNotifications() async {
     try {
       emit(const NotificationLoading());
@@ -203,7 +140,6 @@ class NotificationCubit extends Cubit<NotificationState> {
     }
   }
 
-  /// Disable notifications
   Future<void> disableNotifications() async {
     try {
       await _fcmService.disable();
@@ -213,7 +149,6 @@ class NotificationCubit extends Cubit<NotificationState> {
     }
   }
 
-  /// Load notifications from cache
   Future<void> _loadNotifications() async {
     final notifications = _fcmService.getInAppNotifications();
     final unreadCount = _fcmService.unreadCount;
@@ -233,28 +168,23 @@ class NotificationCubit extends Cubit<NotificationState> {
 
   Future<void> refresh() => _loadNotifications();
 
-  /// Mark notification as read
   Future<void> markAsRead(String notificationId) async {
     await _fcmService.markAsRead(notificationId);
     await _loadNotifications();
   }
 
-  /// Mark all as read
   Future<void> markAllAsRead() async {
     await _fcmService.markAllAsRead();
     await _loadNotifications();
   }
 
-  /// Clear all notifications
   Future<void> clearAll() async {
     await _fcmService.clearAll();
     await _loadNotifications();
   }
 
-  /// Handle notification tap
   void handleNotificationTap(Map<String, dynamic> data) {
     // Route based on notification type
-    // This will be handled by the router
   }
 
   @override

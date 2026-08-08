@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:api_scout/app/data/models/category_apis.dart';
 import 'package:api_scout/app/data/models/category.dart';
+import 'package:api_scout/app/data/models/api_detail.dart' show slugifyApiName;
 import 'package:api_scout/app/services/fetch_api/remote_service.dart';
 import 'package:api_scout/app/services/fetch_api/failure.dart';
 
@@ -19,14 +20,14 @@ class CategoryApisCubit extends Cubit<CategoryApisState> {
   void _resolveArgument(Object arg) {
     if (arg is CategoryApis) {
       _categoryTitle = arg.title;
-      _categoryId = _slug(arg.title);
+      _categoryId = slugifyApiName(arg.title);
       emit(state.copyWith(
         category: arg,
         categoryTitle: _categoryTitle,
       ));
     } else if (arg is Category) {
       _categoryTitle = arg.name;
-      _categoryId = arg.id.isNotEmpty ? arg.id : _slug(arg.name);
+      _categoryId = arg.id.isNotEmpty ? arg.id : slugifyApiName(arg.name);
       emit(state.copyWith(
         categoryTitle: _categoryTitle,
         categoryMeta: arg,
@@ -34,7 +35,7 @@ class CategoryApisCubit extends Cubit<CategoryApisState> {
       ));
     } else if (arg is String) {
       _categoryTitle = arg;
-      _categoryId = _slug(arg);
+      _categoryId = slugifyApiName(arg);
       emit(state.copyWith(
         categoryTitle: _categoryTitle,
         category: CategoryApis(title: _categoryTitle, apis: const []),
@@ -97,10 +98,4 @@ class CategoryApisCubit extends Cubit<CategoryApisState> {
   Future<void> retryFetch() async {
     await fetchApisByCategory();
   }
-
-  String _slug(String value) => value
-      .trim()
-      .toLowerCase()
-      .replaceAll(RegExp(r'[^a-z0-9]+'), '-')
-      .replaceAll(RegExp(r'^-|-$'), '');
 }

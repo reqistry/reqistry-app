@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
-import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
 import 'package:api_scout/app/services/fetch_api/remote_service.dart';
 import 'package:api_scout/app/utils/snackbar_helper.dart';
 import 'package:api_scout/app/utils/text_input_route.dart';
 import 'package:api_scout/shared/widgets/ui/bottom_sheet_scaffold.dart';
-import 'package:api_scout/shared/widgets/ui/app_input_decoration.dart';
 
 class SubmitApiSheet extends StatefulWidget {
   const SubmitApiSheet({super.key});
@@ -55,7 +52,6 @@ class _SubmitApiSheetState extends State<SubmitApiSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final c = AppColors.of(Theme.of(context).brightness);
     return BottomSheetScaffold(
       title: 'SUBMIT AN API',
       submitLabel: 'SUBMIT',
@@ -71,9 +67,7 @@ class _SubmitApiSheetState extends State<SubmitApiSheet> {
               TextFormField(
                 controller: _nameController,
                 autofocus: true,
-                style: AppTextStyles.bodyMd,
-                decoration: AppInputDecoration.standard(
-                  c: c,
+                decoration: const InputDecoration(
                   hintText: 'API name',
                 ),
                 validator: (value) {
@@ -89,10 +83,8 @@ class _SubmitApiSheetState extends State<SubmitApiSheet> {
               const SizedBox(height: AppSpacing.s12),
               TextFormField(
                 controller: _linkController,
-                style: AppTextStyles.bodyMd,
                 keyboardType: TextInputType.url,
-                decoration: AppInputDecoration.standard(
-                  c: c,
+                decoration: const InputDecoration(
                   hintText: 'API LINK (HTTPS://...)',
                 ),
                 validator: (value) {
