@@ -18,11 +18,16 @@ class RemoteService {
   static Future<CategoriesResponse> getCategories() async {
     try {
       final response = await _dio.get('/categories');
+      if (response.data == null) {
+        throw Failure('Empty response', 'Server returned empty data');
+      }
       return CategoriesResponse.fromJson(response.data);
     } on DioException catch (e) {
       throw _handleDioError(e, 'Failed to fetch categories');
-    } catch (_) {
-      throw Failure('unknown error', 'Please try again later');
+    } on Failure {
+      rethrow;
+    } catch (e) {
+      throw Failure('Parse error', 'Failed to process categories data');
     }
   }
 
@@ -30,6 +35,7 @@ class RemoteService {
     try {
       final response = await _dio.get('/trendy-categories');
       final data = response.data;
+      if (data == null) return [];
       if (data is List) {
         return List<String>.from(data.map((x) => x.toString()));
       }
@@ -40,19 +46,29 @@ class RemoteService {
       return [];
     } on DioException catch (e) {
       throw _handleDioError(e, 'Failed to fetch trendy categories');
-    } catch (_) {
-      throw Failure('unknown error', 'Please try again later');
+    } on Failure {
+      rethrow;
+    } catch (e) {
+      throw Failure('Parse error', 'Failed to process trendy categories');
     }
   }
 
   static Future<CategoryDetail> getCategory(String categoryId) async {
+    if (categoryId.isEmpty) {
+      throw Failure('Invalid input', 'Category ID cannot be empty');
+    }
     try {
       final response = await _dio.get('/categories/$categoryId');
+      if (response.data == null) {
+        throw Failure('Empty response', 'Server returned empty data');
+      }
       return CategoryDetail.fromJson(response.data);
     } on DioException catch (e) {
       throw _handleDioError(e, 'Failed to fetch category');
-    } catch (_) {
-      throw Failure('unknown error', 'Please try again later');
+    } on Failure {
+      rethrow;
+    } catch (e) {
+      throw Failure('Parse error', 'Failed to process category data');
     }
   }
 
@@ -98,11 +114,16 @@ class RemoteService {
       }
 
       final response = await _dio.get('/search', queryParameters: queryParams);
+      if (response.data == null) {
+        throw Failure('Empty response', 'Server returned empty data');
+      }
       return SearchResponse.fromJson(response.data);
     } on DioException catch (e) {
       throw _handleDioError(e, 'Search failed');
-    } catch (_) {
-      throw Failure('unknown error', 'Please try again later');
+    } on Failure {
+      rethrow;
+    } catch (e) {
+      throw Failure('Parse error', 'Failed to process search results');
     }
   }
 
@@ -115,6 +136,7 @@ class RemoteService {
         queryParameters: {'limit': limit},
       );
       final data = response.data;
+      if (data == null) return [];
       final List<dynamic> apisData = data is List ? data : data['data'] ?? [];
 
       return apisData
@@ -123,8 +145,10 @@ class RemoteService {
           .toList();
     } on DioException catch (e) {
       throw _handleDioError(e, 'Recommendations failed');
-    } catch (_) {
-      throw Failure('unknown error', 'Please try again later');
+    } on Failure {
+      rethrow;
+    } catch (e) {
+      throw Failure('Parse error', 'Failed to process recommendations');
     }
   }
 
@@ -137,6 +161,7 @@ class RemoteService {
         queryParameters: {'limit': limit},
       );
       final data = response.data;
+      if (data == null) return [];
       final List<dynamic> items = data is List ? data : data['data'] ?? [];
       return items
           .whereType<Map<String, dynamic>>()
@@ -145,8 +170,10 @@ class RemoteService {
           .toList();
     } on DioException catch (e) {
       throw _handleDioError(e, 'Recommendations failed');
-    } catch (_) {
-      throw Failure('unknown error', 'Please try again later');
+    } on Failure {
+      rethrow;
+    } catch (e) {
+      throw Failure('Parse error', 'Failed to process recommendations');
     }
   }
 
@@ -154,19 +181,30 @@ class RemoteService {
     required String name,
     required String link,
   }) async {
+    if (name.trim().isEmpty) {
+      throw Failure('Invalid input', 'API name cannot be empty');
+    }
+    if (link.trim().isEmpty) {
+      throw Failure('Invalid input', 'API link cannot be empty');
+    }
     try {
       final response = await _dio.post(
         '/submit',
-        data: {'name': name, 'link': link},
+        data: {'name': name.trim(), 'link': link.trim()},
         options: Options(
           extra: const {RequestErrorNotifierInterceptor.silentKey: true},
         ),
       );
+      if (response.data == null) {
+        throw Failure('Empty response', 'Server returned empty data');
+      }
       return response.data as Map<String, dynamic>;
     } on DioException catch (e) {
       throw _handleDioError(e, 'API submission failed');
-    } catch (_) {
-      throw Failure('unknown error', 'Please try again later');
+    } on Failure {
+      rethrow;
+    } catch (e) {
+      throw Failure('Parse error', 'Failed to process submission response');
     }
   }
 
@@ -176,6 +214,10 @@ class RemoteService {
         apiUrl ?? '/APIs.json',
         queryParameters: {},
       );
+
+      if (response.data == null) {
+        throw Failure('Empty response', 'Server returned empty data');
+      }
 
       final apisDataResponse = response.data is Map<String, dynamic>
           ? APIsDataResponse.fromJson(response.data)
@@ -189,9 +231,10 @@ class RemoteService {
       return apisDataResponse;
     } on DioException catch (e) {
       throw _handleDioError(e, 'Failed to fetch APIs');
+    } on Failure {
+      rethrow;
     } catch (e) {
-      if (e is Failure) rethrow;
-      throw Failure('unknown error', 'Please try again later');
+      throw Failure('Parse error', 'Failed to process APIs data');
     }
   }
 
@@ -200,11 +243,17 @@ class RemoteService {
     int page = 1,
     int limit = 100,
   }) async {
+    if (categoryId.isEmpty) {
+      throw Failure('Invalid input', 'Category ID cannot be empty');
+    }
     try {
       final response = await _dio.get(
         '/categories/$categoryId/apis',
         queryParameters: {'page': page, 'limit': limit},
       );
+      if (response.data == null) {
+        throw Failure('Empty response', 'Server returned empty data');
+      }
       final data = response.data as Map<String, dynamic>;
       final items = (data['data'] as List? ?? [])
           .whereType<Map<String, dynamic>>()
@@ -213,8 +262,10 @@ class RemoteService {
       return CategoryApis(title: categoryId, apis: items);
     } on DioException catch (e) {
       throw _handleDioError(e, 'Failed to fetch category APIs');
-    } catch (_) {
-      throw Failure('unknown error', 'Please try again later');
+    } on Failure {
+      rethrow;
+    } catch (e) {
+      throw Failure('Parse error', 'Failed to process category APIs');
     }
   }
 
@@ -227,12 +278,15 @@ class RemoteService {
         queryParameters: {'limit': limit},
       );
       final data = response.data;
+      if (data == null) return [];
       final List<dynamic> items = data is List ? data : data['data'] ?? [];
       return items.cast<Map<String, dynamic>>();
     } on DioException catch (e) {
       throw _handleDioError(e, 'Failed to fetch recently added');
-    } catch (_) {
-      throw Failure('unknown error', 'Please try again later');
+    } on Failure {
+      rethrow;
+    } catch (e) {
+      throw Failure('Parse error', 'Failed to process recently added data');
     }
   }
 
