@@ -13,6 +13,7 @@ import 'package:api_scout/app/modules/views/account_settings_view/widgets/link_a
 import 'package:api_scout/app/modules/views/account_settings_view/widgets/account_info_section.dart';
 import 'package:api_scout/app/modules/views/account_settings_view/widgets/account_actions.dart';
 import 'package:api_scout/app/modules/views/account_settings_view/widgets/link_email_dialog.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 
 class AccountSettingsView extends StatelessWidget {
   const AccountSettingsView({super.key});
@@ -24,7 +25,7 @@ class AccountSettingsView extends StatelessWidget {
     return Scaffold(
       backgroundColor: c.background,
       appBar: AppBar(
-        title: Text('ACCOUNT', style: AppTextStyles.headlineSm),
+        title: Text(AppLocalizations.of(context)!.tabAccount, style: AppTextStyles.headlineSm),
         backgroundColor: c.surface,
         centerTitle: false,
         elevation: 0,
@@ -57,11 +58,11 @@ class AccountSettingsView extends StatelessWidget {
                   isGuest: isGuest,
                 ),
                 const SizedBox(height: AppSpacing.sectionGap),
-                Text('PROFILE', style: AppTextStyles.labelSmUpper),
+                Text(AppLocalizations.of(context)!.tabProfile, style: AppTextStyles.labelSmUpper),
                 const SizedBox(height: AppSpacing.itemGap),
                 EditProfileTile(
                   userName: userName,
-                  onSave: (name) => cubit.updateUserProfile(name),
+                  onSave: (name) => cubit.updateUserProfile(name, l10n: AppLocalizations.of(context)!),
                 ),
                 const SizedBox(height: AppSpacing.s24),
                 if (isGuest)
@@ -76,13 +77,13 @@ class AccountSettingsView extends StatelessWidget {
                 AccountActions(
                   isGuest: isGuest,
                   onDeleteAccount: () async {
-                    await cubit.deleteAccount();
+                    await cubit.deleteAccount(l10n: AppLocalizations.of(context)!);
                     if (context.mounted) {
                       context.go(AppRoutes.auth);
                     }
                   },
                   onSignOut: () async {
-                    await cubit.signOut();
+                    await cubit.signOut(l10n: AppLocalizations.of(context)!);
                     if (context.mounted) {
                       context.go(AppRoutes.auth);
                     }

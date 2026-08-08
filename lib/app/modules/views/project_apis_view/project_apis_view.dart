@@ -13,6 +13,7 @@ import 'package:api_scout/app/widgets/app_dialog.dart';
 import 'package:api_scout/config/app_routes.dart';
 import 'package:api_scout/shared/widgets/app_empty_state.dart';
 import 'package:api_scout/shared/widgets/app_error_state.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:api_scout/shared/widgets/app_loading.dart';
 import 'package:api_scout/app/modules/views/project_apis_view/widgets/project_header.dart';
 import 'package:api_scout/app/modules/views/project_apis_view/widgets/project_apis_data.dart';
@@ -58,34 +59,34 @@ class _ProjectApisViewState extends State<ProjectApisView> {
   Future<void> _rename(dynamic detail) async {
     final title = await AppDialog.showInput(
       context: context,
-      title: 'RENAME PROJECT',
-      hintText: 'Project name',
+      title: AppLocalizations.of(context)!.dialogRenameProjectTitle,
+      hintText: AppLocalizations.of(context)!.formProjectName,
       initialValue: detail.title,
-      confirmLabel: 'SAVE',
+      confirmLabel: AppLocalizations.of(context)!.actionSave,
     );
     if (title == null || title.isEmpty || !mounted) return;
-    await context.read<ProjectsCubit>().updateProject(detail.id, title: title);
+    await context.read<ProjectsCubit>().updateProject(detail.id, title: title, l10n: AppLocalizations.of(context)!);
     if (mounted) setState(() => _future = _load());
   }
 
   Future<void> _delete(dynamic detail) async {
     final confirmed = await AppDialog.showConfirm(
       context: context,
-      title: 'DELETE PROJECT',
-      message: 'Delete "${detail.title}" and its saved API links?',
-      confirmLabel: 'DELETE',
-      cancelLabel: 'CANCEL',
+      title: AppLocalizations.of(context)!.dialogDeleteProjectTitle,
+      message: AppLocalizations.of(context)!.dialogDeleteProjectMessage(detail.title),
+      confirmLabel: AppLocalizations.of(context)!.actionDelete,
+      cancelLabel: AppLocalizations.of(context)!.actionCancel,
       isDestructive: true,
     );
     if (!confirmed || !mounted) return;
-    await context.read<ProjectsCubit>().deleteProject(detail.id);
+    await context.read<ProjectsCubit>().deleteProject(detail.id, l10n: AppLocalizations.of(context)!);
     if (mounted) Navigator.pop(context);
   }
 
   Future<void> _remove(dynamic detail, dynamic api) async {
     await context
         .read<ProjectsCubit>()
-        .removeApiFromProject(detail.id, api.link);
+        .removeApiFromProject(detail.id, api.link, l10n: AppLocalizations.of(context)!);
     if (mounted) setState(() => _future = _load());
   }
 
@@ -109,12 +110,12 @@ class _ProjectApisViewState extends State<ProjectApisView> {
                 IconButton(
                   onPressed: () => _rename(snapshot.data!.detail),
                   icon: const Icon(PhosphorIconsRegular.pencilSimple),
-                  tooltip: 'Rename project',
+                  tooltip: AppLocalizations.of(context)!.tooltipRenameProject,
                 ),
                 IconButton(
                   onPressed: () => _delete(snapshot.data!.detail),
                   icon: const Icon(PhosphorIconsRegular.trashSimple),
-                  tooltip: 'Delete project',
+                  tooltip: AppLocalizations.of(context)!.tooltipDeleteProject,
                 ),
               ],
             ],
@@ -130,12 +131,12 @@ class _ProjectApisViewState extends State<ProjectApisView> {
 
   Widget _buildBody(AsyncSnapshot<ProjectApisData> snapshot) {
     if (snapshot.connectionState == ConnectionState.waiting) {
-      return const AppLoading(
-          message: 'Loading project APIs', scrollable: true);
+      return AppLoading(
+          message: AppLocalizations.of(context)!.stateLoadingProjectApis, scrollable: true);
     }
     if (snapshot.hasError) {
       return AppErrorState(
-        title: 'Could not load project',
+        title: AppLocalizations.of(context)!.stateCouldNotLoadProject,
         message: snapshot.error.toString(),
         onRetry: () => setState(() => _future = _load()),
         scrollable: true,
@@ -143,14 +144,13 @@ class _ProjectApisViewState extends State<ProjectApisView> {
     }
 
     final data = snapshot.data!;
-    final apis = data.toApis();
+    final apis = data.toApis(l10n: AppLocalizations.of(context)!);
     if (apis.isEmpty) {
       return AppEmptyState(
-        title: 'No APIs in this project',
-        message:
-            'Browse the Discover tab and add the APIs you want to keep here.',
+        title: AppLocalizations.of(context)!.stateNoApisInProject,
+        message: AppLocalizations.of(context)!.stateNoApisInProjectMessage,
         icon: PhosphorIconsRegular.folderOpen,
-        actionLabel: 'Browse APIs',
+        actionLabel: AppLocalizations.of(context)!.actionBrowseApis,
         onAction: () {
           context.read<MainShellCubit>().selectTab(AppRoutes.tabIndexSearch);
           context.go(AppRoutes.home);

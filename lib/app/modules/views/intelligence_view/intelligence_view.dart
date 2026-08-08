@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
@@ -13,40 +14,27 @@ import 'widgets/highlight_row.dart';
 class IntelligenceView extends StatelessWidget {
   const IntelligenceView({super.key});
 
-  static const List<Feature> _features = [
-    Feature(
-      icon: PhosphorIconsRegular.scales,
-      label: 'Compare APIs side by side',
-    ),
-    Feature(
-      icon: PhosphorIconsRegular.robot,
-      label: 'Agent readiness scoring',
-    ),
-    Feature(
-      icon: PhosphorIconsRegular.sealCheck,
-      label: 'Evidence-backed recommendations',
-    ),
-    Feature(
-      icon: PhosphorIconsRegular.puzzlePiece,
-      label: 'MCP tool discovery',
-    ),
-  ];
-
-  static const List<Highlight> _highlights = [
-    Highlight('Side-by-side API comparison'),
-    Highlight('Contextual trust and agent scores'),
-    Highlight('Evidence-backed recommendations'),
-    Highlight('MCP server and tool discovery'),
-    Highlight('Natural-language requirement matching'),
-  ];
-
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(Theme.of(context).brightness);
+    final l10n = AppLocalizations.of(context)!;
+    final features = [
+      Feature(icon: PhosphorIconsRegular.scales, label: l10n.intelligenceCompareApis),
+      Feature(icon: PhosphorIconsRegular.robot, label: l10n.intelligenceAgentReadiness),
+      Feature(icon: PhosphorIconsRegular.sealCheck, label: l10n.intelligenceEvidenceBacked),
+      Feature(icon: PhosphorIconsRegular.puzzlePiece, label: l10n.intelligenceMcpToolDiscovery),
+    ];
+    final highlights = [
+      Highlight(l10n.intelligenceSideBySideComparison),
+      Highlight(l10n.intelligenceContextualScores),
+      Highlight(l10n.intelligenceEvidenceBackedRecommendations),
+      Highlight(l10n.intelligenceMcpServerToolDiscovery),
+      Highlight(l10n.intelligenceNaturalLanguageMatching),
+    ];
     return Scaffold(
       backgroundColor: c.background,
       appBar: AppBar(
-        title: Text('INTELLIGENCE', style: AppTextStyles.headlineSm),
+        title: Text(l10n.tabIntelligence, style: AppTextStyles.headlineSm),
         centerTitle: false,
         backgroundColor: c.surface,
         elevation: 0,
@@ -92,7 +80,7 @@ class IntelligenceView extends StatelessWidget {
                       ),
                       color: c.infoBg,
                       child: Text(
-                        'COMING SOON',
+                        l10n.stateComingSoon,
                         style: AppTextStyles.labelSmUpper.copyWith(
                           fontSize: 10,
                           color: c.infoText,
@@ -103,12 +91,12 @@ class IntelligenceView extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSpacing.s20),
                 Text(
-                  'REQISTRY INTELLIGENCE',
+                  l10n.sectionRegistryIntelligence,
                   style: AppTextStyles.labelSmUpper,
                 ),
                 const SizedBox(height: AppSpacing.s6),
                 Text(
-                  'AI-powered API decisions, coming soon.',
+                  l10n.intelligenceAiPoweredDecisions,
                   style: AppTextStyles.bodyMd.copyWith(
                     color: c.onSurfaceVariant,
                   ),
@@ -116,19 +104,19 @@ class IntelligenceView extends StatelessWidget {
                 const SizedBox(height: AppSpacing.s24),
                 Column(
                   children: [
-                    for (var i = 0; i < _features.length; i += 2) ...[
+                    for (var i = 0; i < features.length; i += 2) ...[
                       if (i > 0) const SizedBox(height: AppSpacing.s8),
                       IntrinsicHeight(
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             Expanded(
-                              child: FeatureBadge(feature: _features[i]),
+                              child: FeatureBadge(feature: features[i]),
                             ),
                             const SizedBox(width: AppSpacing.s8),
                             Expanded(
-                              child: i + 1 < _features.length
-                                  ? FeatureBadge(feature: _features[i + 1])
+                              child: i + 1 < features.length
+                                  ? FeatureBadge(feature: features[i + 1])
                                   : const SizedBox(),
                             ),
                           ],
@@ -145,13 +133,13 @@ class IntelligenceView extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSpacing.s16),
                 Text(
-                  'UPCOMING',
+                  l10n.sectionUpcoming,
                   style: AppTextStyles.labelSmUpper.copyWith(fontSize: 10),
                 ),
                 const SizedBox(height: AppSpacing.s10),
-                for (final h in _highlights) ...[
+                for (final h in highlights) ...[
                   HighlightRow(label: h.label),
-                  if (h != _highlights.last)
+                  if (h != highlights.last)
                     const SizedBox(height: AppSpacing.s10),
                 ],
               ],

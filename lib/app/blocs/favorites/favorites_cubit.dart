@@ -4,6 +4,7 @@ import 'package:api_scout/app/blocs/favorites/favorites_state.dart';
 import 'package:api_scout/app/data/models/bookmark_item.dart';
 import 'package:api_scout/app/services/auth/dio_client.dart';
 import 'package:api_scout/app/utils/snackbar_helper.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:dio/dio.dart';
 
 class FavoritesCubit extends Cubit<FavoritesState> {
@@ -40,6 +41,7 @@ class FavoritesCubit extends Cubit<FavoritesState> {
     required String apiId,
     String? apiName,
     BookmarkApi? optimisticApi,
+    required AppLocalizations l10n,
   }) async {
     final previous = state.bookmarks;
     final temporaryId = 'optimistic-$apiId';
@@ -57,8 +59,8 @@ class FavoritesCubit extends Cubit<FavoritesState> {
     if (apiId.trim().isEmpty) {
       emit(state.copyWith(bookmarks: previous));
       AppSnackBarHelper.show(
-        title: 'Error',
-        message: 'This API cannot be bookmarked yet.',
+        title: l10n.snackbarBookmarkErrorTitle,
+        message: l10n.snackbarBookmarkErrorMessage,
         isError: true,
       );
       return false;
@@ -85,22 +87,22 @@ class FavoritesCubit extends Cubit<FavoritesState> {
       }
       _notifyChanged();
       AppSnackBarHelper.show(
-        title: 'Bookmarked',
-        message: '$apiName added to bookmarks',
+        title: l10n.snackbarBookmarkedTitle,
+        message: l10n.snackbarAddedToBookmarks(apiName ?? ''),
       );
       return true;
     } catch (e) {
       emit(state.copyWith(bookmarks: previous));
       AppSnackBarHelper.show(
-        title: 'Error',
-        message: 'Failed to bookmark API',
+        title: l10n.snackbarBookmarkErrorTitle,
+        message: l10n.snackbarFailedToBookmark,
         isError: true,
       );
       return false;
     }
   }
 
-  Future<bool> removeBookmark(String bookmarkId) async {
+  Future<bool> removeBookmark(String bookmarkId, {required AppLocalizations l10n}) async {
     final previous = state.bookmarks;
     emit(state.copyWith(
       bookmarks: state.bookmarks.where((b) => b.id != bookmarkId).toList(),
@@ -115,15 +117,15 @@ class FavoritesCubit extends Cubit<FavoritesState> {
           );
       _notifyChanged();
       AppSnackBarHelper.show(
-        title: 'Removed',
-        message: 'Bookmark removed',
+        title: l10n.snackbarRemovedTitle,
+        message: l10n.snackbarBookmarkRemoved,
       );
       return true;
     } catch (e) {
       emit(state.copyWith(bookmarks: previous));
       AppSnackBarHelper.show(
-        title: 'Error',
-        message: 'Failed to remove bookmark',
+        title: l10n.snackbarBookmarkErrorTitle,
+        message: l10n.snackbarFailedToRemoveBookmark,
         isError: true,
       );
       return false;

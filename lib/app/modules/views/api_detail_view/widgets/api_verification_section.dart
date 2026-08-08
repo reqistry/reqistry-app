@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:api_scout/app/data/models/api_detail.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
@@ -15,12 +16,12 @@ class ApiVerificationSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = AppColors.of(Theme.of(context).brightness);
     return DetailSection(
-      title: 'DATA CONFIDENCE',
+      title: AppLocalizations.of(context)!.sectionDataConfidence,
       child: Column(
         children: items.map((item) {
           final value = item.verifiedAt == null
               ? item.source
-              : '${item.source} · ${relativeTime(item.verifiedAt!)}';
+              : '${item.source} · ${relativeTime(item.verifiedAt!, AppLocalizations.of(context)!)}';
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: AppSpacing.s8),
             child: Row(

@@ -5,15 +5,18 @@ import 'package:api_scout/app/data/models/category.dart';
 import 'package:api_scout/app/data/models/api_detail.dart' show slugifyApiName;
 import 'package:api_scout/app/services/fetch_api/remote_service.dart';
 import 'package:api_scout/app/services/fetch_api/failure.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 
 part 'category_apis_state.dart';
 
 class CategoryApisCubit extends Cubit<CategoryApisState> {
   late String _categoryTitle;
   late String _categoryId;
+  AppLocalizations? _l10n;
 
-  CategoryApisCubit({required Object argument})
+  CategoryApisCubit({required Object argument, AppLocalizations? l10n})
       : super(const CategoryApisState()) {
+    _l10n = l10n;
     _resolveArgument(argument);
   }
 
@@ -42,7 +45,7 @@ class CategoryApisCubit extends Cubit<CategoryApisState> {
       ));
     } else {
       emit(state.copyWith(
-        errorMessage: 'Invalid navigation argument: ${arg.runtimeType}',
+        errorMessage: _l10n?.categoryApisInvalidArgument(arg.runtimeType.toString()) ?? 'Invalid navigation argument: ${arg.runtimeType}',
       ));
       return;
     }
@@ -50,12 +53,13 @@ class CategoryApisCubit extends Cubit<CategoryApisState> {
     fetchApisByCategory();
   }
 
-  Future<void> fetchApisByCategory() async {
+  Future<void> fetchApisByCategory({AppLocalizations? l10n}) async {
+    final loc = l10n ?? _l10n;
     try {
       emit(state.copyWith(isLoading: true, errorMessage: ''));
       Category? meta = state.categoryMeta;
       try {
-        final detail = await RemoteService.getCategory(_categoryId);
+        final detail = await RemoteService.getCategory(_categoryId, l10n: loc);
         meta = Category(
           id: detail.id,
           name: detail.name,
@@ -69,7 +73,7 @@ class CategoryApisCubit extends Cubit<CategoryApisState> {
       } catch (_) {}
 
       final match =
-          await RemoteService.getCategoryApis(categoryId: _categoryId);
+          await RemoteService.getCategoryApis(categoryId: _categoryId, l10n: loc);
 
       if (match.apis.isEmpty) {
         throw Failure('Not found', 'No APIs found for this category');
@@ -90,12 +94,12 @@ class CategoryApisCubit extends Cubit<CategoryApisState> {
     } catch (e) {
       emit(state.copyWith(
         isLoading: false,
-        errorMessage: 'An unexpected error occurred',
+        errorMessage: loc?.categoryApisUnexpectedError ?? 'An unexpected error occurred',
       ));
     }
   }
 
-  Future<void> retryFetch() async {
-    await fetchApisByCategory();
+  Future<void> retryFetch({AppLocalizations? l10n}) async {
+    await fetchApisByCategory(l10n: l10n);
   }
 }

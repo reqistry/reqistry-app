@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../app/utils/design_system/app_colors.dart';
 import '../../../app/utils/design_system/app_spacing.dart';
 import '../../../app/utils/design_system/app_text_styles.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 
 class StatusDot extends StatelessWidget {
   final bool isAlive;
@@ -24,7 +25,7 @@ class StatusDot extends StatelessWidget {
         ),
         const SizedBox(width: AppSpacing.s4),
         Text(
-          isAlive ? 'ALIVE' : 'DOWN',
+          isAlive ? AppLocalizations.of(context)!.apiDetailAlive : AppLocalizations.of(context)!.apiDetailDown,
           style: AppTextStyles.labelSmUpper.copyWith(
             color: isAlive ? c.successText : c.dangerText,
             fontSize: 9,

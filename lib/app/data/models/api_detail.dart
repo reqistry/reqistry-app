@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 
 import 'api.dart' as legacy;
 
@@ -453,7 +454,7 @@ class ApiDetail extends Equatable {
     );
   }
 
-  factory ApiDetail.fromApi(legacy.Api api, {String? routeSlug}) {
+  factory ApiDetail.fromApi(legacy.Api api, {String? routeSlug, AppLocalizations? l10n}) {
     final slug = routeSlug?.trim().isNotEmpty == true
         ? routeSlug!
         : api.slug.isNotEmpty
@@ -477,18 +478,20 @@ class ApiDetail extends Equatable {
       slug: slug,
       name: api.name,
       shortDescription: api.description.isEmpty
-          ? 'No reviewed description is available.'
+          ? (l10n?.apiDetailNoDescription ?? 'No reviewed description is available.')
           : api.description,
       category: ApiCategory(
         id: categorySlug,
-        name: api.categoryId.isEmpty ? 'Unknown' : api.categoryId,
+        name: api.categoryId.isEmpty
+            ? (l10n?.apiDetailUnknownValue ?? 'Unknown')
+            : api.categoryId,
         slug: categorySlug,
       ),
       access: ApiAccess(
         authType: auth,
-        authLabel: authTypeLabel(auth, api.auth),
+        authLabel: authTypeLabel(auth, api.auth, l10n: l10n),
         pricingType: pricing,
-        pricingLabel: pricingTypeLabel(pricing, api.pricing),
+        pricingLabel: pricingTypeLabel(pricing, api.pricing, l10n: l10n),
         rateLimit: _knownValue(api.rateLimit),
       ),
       links: ApiLinks(
@@ -507,25 +510,27 @@ class ApiDetail extends Equatable {
         statusCode: api.statusCode,
         responseTimeMs: api.responseTimeMs,
         checkedAt: checkedAt,
-        method: 'Automated backend check',
+        method: l10n?.apiDetailAutomatedBackendCheck ?? 'Automated backend check',
       ),
       verification: [
         FieldVerification(
-          label: 'Health',
-          source: checkedAt == null ? 'Not verified' : 'Automated check',
+          label: l10n?.apiDetailHealth ?? 'Health',
+          source: checkedAt == null
+              ? (l10n?.apiDetailNotVerified ?? 'Not verified')
+              : (l10n?.apiDetailAutomatedCheck ?? 'Automated check'),
           verifiedAt: checkedAt,
         ),
-        const FieldVerification(
-          label: 'Pricing',
-          source: 'Imported',
+        FieldVerification(
+          label: l10n?.apiDetailPricing ?? 'Pricing',
+          source: l10n?.apiDetailImported ?? 'Imported',
         ),
-        const FieldVerification(
-          label: 'Authentication',
-          source: 'Imported',
+        FieldVerification(
+          label: l10n?.apiDetailAuthentication ?? 'Authentication',
+          source: l10n?.apiDetailImported ?? 'Imported',
         ),
-        const FieldVerification(
-          label: 'CORS',
-          source: 'Imported',
+        FieldVerification(
+          label: l10n?.apiDetailCors ?? 'CORS',
+          source: l10n?.apiDetailImported ?? 'Imported',
         ),
       ],
       warnings: buildWarnings(
@@ -534,6 +539,7 @@ class ApiDetail extends Equatable {
         cors: cors,
         documentationUrl: _uri(api.documentationUrl),
         healthStatus: status,
+        l10n: l10n,
       ),
       updatedAt: DateTime.now(),
     );
@@ -664,18 +670,19 @@ List<ApiWarning> buildWarnings({
   required CorsSupport cors,
   required Uri? documentationUrl,
   required ApiHealthStatus healthStatus,
+  AppLocalizations? l10n,
 }) {
   return [
     if (authType != ApiAuthType.none && authType != ApiAuthType.unknown)
-      ApiWarning('${authTypeLabel(authType, '')} required'),
+      ApiWarning(l10n?.apiDetailWarningAuthRequired(authTypeLabel(authType, '', l10n: l10n)) ?? '${authTypeLabel(authType, '')} required'),
     if (pricingType == ApiPricingType.paid)
-      const ApiWarning('Paid access reported'),
+      ApiWarning(l10n?.apiDetailWarningPaidAccess ?? 'Paid access reported'),
     if (documentationUrl == null)
-      const ApiWarning('Documentation URL is not available'),
+      ApiWarning(l10n?.apiDetailWarningNoDocs ?? 'Documentation URL is not available'),
     if (cors == CorsSupport.unknown)
-      const ApiWarning('CORS support is not verified'),
+      ApiWarning(l10n?.apiDetailWarningCorsNotVerified ?? 'CORS support is not verified'),
     if (healthStatus == ApiHealthStatus.unknown)
-      const ApiWarning('No recent platform health result is available'),
+      ApiWarning(l10n?.apiDetailWarningNoHealthResult ?? 'No recent platform health result is available'),
   ];
 }
 
@@ -691,12 +698,12 @@ ApiAuthType parseAuthType(String? value) {
   return ApiAuthType.unknown;
 }
 
-String authTypeLabel(ApiAuthType type, String raw) => switch (type) {
-      ApiAuthType.none => 'No authentication',
+String authTypeLabel(ApiAuthType type, String raw, {AppLocalizations? l10n}) => switch (type) {
+      ApiAuthType.none => l10n?.apiDetailNoAuthentication ?? 'No authentication',
       ApiAuthType.apiKey => 'API key',
       ApiAuthType.oauth2 => 'OAuth 2.0',
-      ApiAuthType.basic => 'Basic authentication',
-      ApiAuthType.unknown => _knownValue(raw) ?? 'Unknown',
+      ApiAuthType.basic => l10n?.apiDetailBasicAuthentication ?? 'Basic authentication',
+      ApiAuthType.unknown => _knownValue(raw) ?? (l10n?.apiDetailUnknownValue ?? 'Unknown'),
     };
 
 ApiPricingType parsePricingType(String? value) {
@@ -711,11 +718,11 @@ ApiPricingType parsePricingType(String? value) {
   return ApiPricingType.unknown;
 }
 
-String pricingTypeLabel(ApiPricingType type, String? raw) => switch (type) {
-      ApiPricingType.free => 'Free',
-      ApiPricingType.freemium => 'Free tier',
-      ApiPricingType.paid => 'Paid',
-      ApiPricingType.unknown => _knownValue(raw) ?? 'Unknown',
+String pricingTypeLabel(ApiPricingType type, String? raw, {AppLocalizations? l10n}) => switch (type) {
+      ApiPricingType.free => l10n?.apiDetailFree ?? 'Free',
+      ApiPricingType.freemium => l10n?.apiDetailFreeTier ?? 'Free tier',
+      ApiPricingType.paid => l10n?.apiDetailPaid ?? 'Paid',
+      ApiPricingType.unknown => _knownValue(raw) ?? (l10n?.apiDetailUnknownValue ?? 'Unknown'),
     };
 
 CorsSupport parseCorsSupport(String? value, {bool? supported}) {
@@ -766,16 +773,16 @@ String fieldLabel(String value) {
       .join(' ');
 }
 
-String verificationSourceLabel(String? value) {
+String verificationSourceLabel(String? value, {AppLocalizations? l10n}) {
   final normalized = value?.trim().toLowerCase() ?? '';
   return switch (normalized) {
-    'provider' => 'Provider',
-    'automated_check' => 'Automated check',
-    'core_api_review' => 'Reqistry review',
-    'community_report' => 'Community report',
-    'imported' => 'Imported',
-    'not verified' => 'Not verified',
-    _ => 'Unknown',
+    'provider' => l10n?.apiDetailSourceProvider ?? 'Provider',
+    'automated_check' => l10n?.apiDetailAutomatedCheck ?? 'Automated check',
+    'core_api_review' => l10n?.apiDetailSourceRegistryReview ?? 'Reqistry review',
+    'community_report' => l10n?.apiDetailSourceCommunityReport ?? 'Community report',
+    'imported' => l10n?.apiDetailImported ?? 'Imported',
+    'not verified' => l10n?.apiDetailNotVerified ?? 'Not verified',
+    _ => l10n?.apiDetailUnknownValue ?? 'Unknown',
   };
 }
 

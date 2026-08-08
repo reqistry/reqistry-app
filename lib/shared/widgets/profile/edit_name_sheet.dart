@@ -5,6 +5,7 @@ import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
 import 'package:api_scout/app/utils/snackbar_helper.dart';
 import 'package:api_scout/app/utils/text_input_route.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 
 class EditNameSheet extends StatefulWidget {
   const EditNameSheet({
@@ -42,15 +43,15 @@ class _EditNameSheetState extends State<EditNameSheet> {
     final name = _controller.text.trim();
     if (name.isEmpty) {
       AppSnackBarHelper.error(
-        title: 'Name required',
-        message: 'Enter a name to update your profile.',
+        title: AppLocalizations.of(context)!.snackbarNameRequiredTitle,
+        message: AppLocalizations.of(context)!.snackbarNameRequiredMessage,
       );
       return;
     }
     if (name.length > 100) {
       AppSnackBarHelper.error(
-        title: 'Name too long',
-        message: 'Use 100 characters or less.',
+        title: AppLocalizations.of(context)!.snackbarNameTooLongTitle,
+        message: AppLocalizations.of(context)!.snackbarNameTooLongMessage,
       );
       return;
     }
@@ -85,7 +86,7 @@ class _EditNameSheetState extends State<EditNameSheet> {
               autofocus: true,
               textInputAction: TextInputAction.done,
               style: AppTextStyles.bodyMd,
-              decoration: const InputDecoration(hintText: 'Your name'),
+              decoration: InputDecoration(hintText: AppLocalizations.of(context)!.formYourName),
               onSubmitted: (_) => _save(),
             ),
             const SizedBox(height: AppSpacing.s16),
@@ -94,12 +95,12 @@ class _EditNameSheetState extends State<EditNameSheet> {
               children: [
                 TextButton(
                   onPressed: () => dismissTextInputRoute(context),
-                  child: const Text('CANCEL'),
+                  child: Text(AppLocalizations.of(context)!.actionCancel),
                 ),
                 const SizedBox(width: AppSpacing.s8),
                 FilledButton(
                   onPressed: _save,
-                  child: const Text('SAVE'),
+                  child: Text(AppLocalizations.of(context)!.actionSave),
                 ),
               ],
             ),

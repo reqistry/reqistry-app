@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 
 class BottomSheetScaffold extends StatelessWidget {
   final String title;
@@ -70,7 +71,7 @@ class BottomSheetScaffold extends StatelessWidget {
                   TextButton(
                     onPressed: () => Navigator.of(context).pop(),
                     child: Text(
-                      'CANCEL',
+                      AppLocalizations.of(context)!.actionCancel,
                       style: AppTextStyles.labelSmUpper.copyWith(color: c.outline),
                     ),
                   ),

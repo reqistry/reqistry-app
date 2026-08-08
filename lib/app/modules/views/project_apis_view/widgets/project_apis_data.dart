@@ -1,5 +1,6 @@
 import 'package:api_scout/app/data/models/category_apis.dart';
 import 'package:api_scout/app/data/models/project_detail.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 
 class ProjectApisData {
   final ProjectDetail detail;
@@ -10,7 +11,7 @@ class ProjectApisData {
     required this.metadata,
   });
 
-  List<ApiItem> toApis() {
+  List<ApiItem> toApis({AppLocalizations? l10n}) {
     final previewByLink = {
       for (final item in metadata.preview) item.link: item,
     };
@@ -24,14 +25,14 @@ class ProjectApisData {
         id: preview?.apiId ?? '',
         name: preview?.name ?? Uri.tryParse(link)?.host ?? link,
         description: link,
-        auth: 'Unknown',
+        auth: l10n?.apiDetailUnknownValue ?? 'Unknown',
         https: link.toLowerCase().startsWith('https://') ? 'true' : 'false',
-        cors: 'Unknown',
+        cors: l10n?.apiDetailUnknownValue ?? 'Unknown',
         link: link,
         category: detail.title,
         apiType: 'REST',
-        pricing: 'Unknown',
-        rateLimit: 'Unknown',
+        pricing: l10n?.apiDetailUnknownValue ?? 'Unknown',
+        rateLimit: l10n?.apiDetailUnknownValue ?? 'Unknown',
         documentation: link,
         isAlive: preview?.isAlive ?? false,
         responseTime: 0,

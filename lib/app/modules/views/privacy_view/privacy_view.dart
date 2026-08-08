@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:api_scout/app/blocs/privacy/privacy_cubit.dart';
@@ -21,7 +22,7 @@ class PrivacyView extends StatelessWidget {
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         title: Text(
-          'PRIVACY POLICY',
+          AppLocalizations.of(context)!.settingsPrivacyPolicy,
           style: AppTextStyles.labelSmUpper.copyWith(
             color: c.onSurface,
           ),
@@ -63,7 +64,7 @@ class PrivacyView extends StatelessWidget {
                   ),
                   const SizedBox(height: AppSpacing.s16),
                   Text(
-                    'SOMETHING WENT WRONG',
+                    AppLocalizations.of(context)!.settingsSomethingWentWrong,
                     style: AppTextStyles.labelSmUpper.copyWith(
                       color: c.onSurfaceVariant,
                     ),
@@ -71,9 +72,9 @@ class PrivacyView extends StatelessWidget {
                   const SizedBox(height: AppSpacing.s16),
                   FilledButton(
                     onPressed: () {
-                      context.read<PrivacyCubit>().loadPrivacyContent();
+                      context.read<PrivacyCubit>().loadPrivacyContent(l10n: AppLocalizations.of(context)!);
                     },
-                    child: const Text('RETRY'),
+                    child: Text(AppLocalizations.of(context)!.actionRetry),
                   ),
                 ],
               ),

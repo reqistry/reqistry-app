@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:api_scout/app/blocs/auth/auth_cubit.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
@@ -38,9 +39,9 @@ class OnboardingScaffold extends StatelessWidget {
         child: SizedBox(
           height: 52,
           child: ElevatedButton(
-            onPressed: () => context.read<AuthCubit>().continueAsGuest(),
+            onPressed: () => context.read<AuthCubit>().continueAsGuest(l10n: AppLocalizations.of(context)!),
             child: Text(
-              'Explore APIs',
+              AppLocalizations.of(context)!.onboardingExploreApis,
               style: AppTextStyles.labelSmUpper.copyWith(
                 color: c.onPrimary,
               ),

@@ -3,21 +3,22 @@ import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 
 class AppErrorState extends StatelessWidget {
-  final String title;
-  final String message;
+  final String? title;
+  final String? message;
   final VoidCallback? onRetry;
-  final String actionLabel;
+  final String? actionLabel;
   final bool compact;
   final bool scrollable;
 
   const AppErrorState({
     super.key,
-    this.title = 'Error',
-    this.message = 'Something went wrong',
+    this.title,
+    this.message,
     this.onRetry,
-    this.actionLabel = 'RETRY',
+    this.actionLabel,
     this.compact = false,
     this.scrollable = false,
   });
@@ -25,6 +26,10 @@ class AppErrorState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(Theme.of(context).brightness);
+    final l10n = AppLocalizations.of(context)!;
+    final displayTitle = title ?? l10n.stateError;
+    final displayMessage = message ?? l10n.stateSomethingWentWrong;
+    final displayActionLabel = actionLabel ?? l10n.actionRetry;
 
     final child = Center(
       child: SingleChildScrollView(
@@ -44,13 +49,13 @@ class AppErrorState extends StatelessWidget {
                   size: compact ? 32 : 48, color: c.danger),
               const SizedBox(height: AppSpacing.s16),
               Text(
-                title.toUpperCase(),
+                displayTitle.toUpperCase(),
                 style: AppTextStyles.headlineSm.copyWith(color: c.danger),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: AppSpacing.s8),
               Text(
-                message,
+                displayMessage,
                 style: AppTextStyles.bodyMd.copyWith(color: c.onSurfaceVariant),
                 textAlign: TextAlign.center,
             ),
@@ -70,7 +75,7 @@ class AppErrorState extends StatelessWidget {
                   side: BorderSide(color: c.primary),
                 ),
                 child: Text(
-                  actionLabel,
+                  displayActionLabel,
                   style: AppTextStyles.labelSmUpper.copyWith(color: c.primary),
                 ),
               ),

@@ -4,13 +4,14 @@ import 'package:api_scout/app/data/models/project.dart';
 import 'package:api_scout/app/data/models/project_detail.dart';
 import 'package:api_scout/app/services/auth/dio_client.dart';
 import 'package:api_scout/app/utils/snackbar_helper.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:dio/dio.dart';
 import 'projects_state.dart';
 
 class ProjectsCubit extends Cubit<ProjectsState> {
   ProjectsCubit() : super(const ProjectsState());
 
-  Future<void> loadProjects() async {
+  Future<void> loadProjects({required AppLocalizations l10n}) async {
     try {
       emit(state.copyWith(isLoading: true, errorMessage: ''));
       final response = await DioClient().dio.get('/v1/folders');
@@ -23,17 +24,17 @@ class ProjectsCubit extends Cubit<ProjectsState> {
     } catch (e) {
       emit(state.copyWith(
         isLoading: false,
-        errorMessage: 'Failed to load projects',
+        errorMessage: l10n.snackbarFailedToLoadProjects,
       ));
       AppSnackBarHelper.show(
-        title: 'Error',
-        message: 'Failed to load projects',
+        title: l10n.stateError,
+        message: l10n.snackbarFailedToLoadProjects,
         isError: true,
       );
     }
   }
 
-  Future<void> createProject(String title, {IconData? icon}) async {
+  Future<void> createProject(String title, {IconData? icon, required AppLocalizations l10n}) async {
     try {
       final response = await DioClient().dio.post('/v1/folders',
           data: {
@@ -46,13 +47,13 @@ class ProjectsCubit extends Cubit<ProjectsState> {
       final newProject = Project.fromJson(response.data);
       emit(state.copyWith(projects: [...state.projects, newProject]));
       AppSnackBarHelper.show(
-        title: 'Created',
-        message: 'Project "$title" created',
+        title: l10n.snackbarProjectCreatedTitle,
+        message: l10n.snackbarProjectCreatedMessage(title),
       );
     } catch (e) {
       AppSnackBarHelper.show(
-        title: 'Error',
-        message: 'Failed to create project',
+        title: l10n.stateError,
+        message: l10n.snackbarFailedToCreateProject,
         isError: true,
       );
     }
@@ -62,6 +63,7 @@ class ProjectsCubit extends Cubit<ProjectsState> {
     String id, {
     String? title,
     IconData? icon,
+    required AppLocalizations l10n,
   }) async {
     try {
       final response = await DioClient().dio.put('/v1/folders/$id',
@@ -85,18 +87,18 @@ class ProjectsCubit extends Cubit<ProjectsState> {
       }).toList();
       emit(state.copyWith(projects: updated));
       AppSnackBarHelper.success(
-        title: 'Updated',
-        message: 'Project updated',
+        title: l10n.snackbarUpdatedTitle,
+        message: l10n.snackbarProjectUpdated,
       );
     } catch (_) {
       AppSnackBarHelper.error(
-        title: 'Error',
-        message: 'Failed to update project',
+        title: l10n.stateError,
+        message: l10n.snackbarFailedToUpdateProject,
       );
     }
   }
 
-  Future<void> deleteProject(String id) async {
+  Future<void> deleteProject(String id, {required AppLocalizations l10n}) async {
     try {
       await DioClient().dio.delete('/v1/folders/$id',
           options: Options(
@@ -105,13 +107,13 @@ class ProjectsCubit extends Cubit<ProjectsState> {
       final updated = state.projects.where((p) => p.id != id).toList();
       emit(state.copyWith(projects: updated));
       AppSnackBarHelper.show(
-        title: 'Deleted',
-        message: 'Project deleted',
+        title: l10n.snackbarDeletedTitle,
+        message: l10n.snackbarProjectDeleted,
       );
     } catch (e) {
       AppSnackBarHelper.show(
-        title: 'Error',
-        message: 'Failed to delete project',
+        title: l10n.stateError,
+        message: l10n.snackbarFailedToDeleteProject,
         isError: true,
       );
     }
@@ -121,6 +123,7 @@ class ProjectsCubit extends Cubit<ProjectsState> {
     String projectId, {
     required String apiId,
     required String apiLink,
+    required AppLocalizations l10n,
   }) async {
     final previous = state.projects;
     Project? project;
@@ -133,8 +136,8 @@ class ProjectsCubit extends Cubit<ProjectsState> {
     if (project == null) return false;
     if (apiId.trim().isEmpty) {
       AppSnackBarHelper.show(
-        title: 'Error',
-        message: 'This API cannot be added to a project yet.',
+        title: l10n.stateError,
+        message: l10n.snackbarCannotAddToProject,
         isError: true,
       );
       return false;
@@ -161,22 +164,22 @@ class ProjectsCubit extends Cubit<ProjectsState> {
             }),
           );
       AppSnackBarHelper.success(
-        title: 'Added',
-        message: 'Added to ${project.title}',
+        title: l10n.snackbarAddedTitle,
+        message: l10n.snackbarAddedToProject(project.title),
       );
       return true;
     } catch (e) {
       emit(state.copyWith(projects: previous));
       AppSnackBarHelper.show(
-        title: 'Error',
-        message: 'Could not add this API to ${project.title}',
+        title: l10n.stateError,
+        message: l10n.snackbarCouldNotAddToProject(project.title),
         isError: true,
       );
       return false;
     }
   }
 
-  Future<void> removeApiFromProject(String projectId, String apiLink) async {
+  Future<void> removeApiFromProject(String projectId, String apiLink, {required AppLocalizations l10n}) async {
     try {
       final encodedLink = Uri.encodeComponent(apiLink);
       await DioClient().dio.delete(
@@ -185,15 +188,15 @@ class ProjectsCubit extends Cubit<ProjectsState> {
               extra: const {RequestErrorNotifierInterceptor.silentKey: true},
             ),
           );
-      await loadProjects();
+      await loadProjects(l10n: l10n);
       AppSnackBarHelper.success(
-        title: 'Removed',
-        message: 'API removed from project',
+        title: l10n.snackbarRemovedTitle,
+        message: l10n.snackbarApiRemovedFromProject,
       );
     } catch (e) {
       AppSnackBarHelper.show(
-        title: 'Error',
-        message: 'Failed to remove API from project',
+        title: l10n.stateError,
+        message: l10n.snackbarFailedToRemoveFromProject,
         isError: true,
       );
     }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
@@ -17,7 +18,8 @@ class ApiEndpointSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const label = 'BASE URL';
+    final l10n = AppLocalizations.of(context)!;
+    final label = l10n.apiDetailBaseUrl;
     final c = AppColors.of(Theme.of(context).brightness);
     return DetailSection(
       title: label,
@@ -45,7 +47,7 @@ class ApiEndpointSection extends StatelessWidget {
             ),
             IconButton(
               onPressed: onCopy,
-              tooltip: 'Copy $label',
+              tooltip: l10n.apiDetailCopyBaseUrl,
               constraints: const BoxConstraints.tightFor(width: 48, height: 48),
               icon: const Icon(PhosphorIconsRegular.copy),
             ),

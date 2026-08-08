@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -26,7 +27,7 @@ class AllProjectsView extends StatelessWidget {
       backgroundColor: c.background,
       appBar: AppBar(
         title: Text(
-          'ALL PROJECTS',
+          AppLocalizations.of(context)!.sectionAllProjectsView,
           style: AppTextStyles.headlineSm.copyWith(color: c.onBackground),
         ),
         elevation: 0,
@@ -50,16 +51,16 @@ class AllProjectsView extends StatelessWidget {
       body: BlocBuilder<ProjectsCubit, ProjectsState>(
         builder: (context, state) {
           if (state.isLoading) {
-            return const AppLoading(message: 'Loading projects');
+            return AppLoading(message: AppLocalizations.of(context)!.stateLoadingProjects);
           }
 
           if (state.isEmpty) {
             return AppEmptyState(
-              title: 'No projects yet',
+              title: AppLocalizations.of(context)!.stateNoProjectsYet,
               message:
-                  'Create a project, then add APIs you discover to keep them organized.',
+                  AppLocalizations.of(context)!.emptyCreateProjectMessage,
               icon: PhosphorIconsRegular.folderOpen,
-              actionLabel: 'Create project',
+              actionLabel: AppLocalizations.of(context)!.actionCreateProject,
               onAction: () => CreateProjectBottomSheet.show(context),
             );
           }
@@ -125,7 +126,7 @@ class _ProjectListTile extends StatelessWidget {
                     ),
                     const SizedBox(height: AppSpacing.s2),
                     Text(
-                      '${project.apiCount} ${project.apiCount == 1 ? 'API' : 'APIs'}',
+                      '${project.apiCount} ${project.apiCount == 1 ? AppLocalizations.of(context)!.miscApi : AppLocalizations.of(context)!.miscApis}',
                       style: AppTextStyles.labelSmUpper.copyWith(
                         color: c.onSurfaceVariant,
                         fontSize: 10,
@@ -146,9 +147,9 @@ class _ProjectListTile extends StatelessWidget {
                     _delete(context);
                   }
                 },
-                itemBuilder: (context) => const [
-                  PopupMenuItem(value: 'rename', child: Text('Rename')),
-                  PopupMenuItem(value: 'delete', child: Text('Delete')),
+                itemBuilder: (context) => [
+                  PopupMenuItem(value: 'rename', child: Text(AppLocalizations.of(context)!.actionRename)),
+                  PopupMenuItem(value: 'delete', child: Text(AppLocalizations.of(context)!.actionDeleteProject)),
                 ],
               ),
               Icon(
@@ -166,25 +167,25 @@ class _ProjectListTile extends StatelessWidget {
   Future<void> _rename(BuildContext context) async {
     final title = await AppDialog.showInput(
       context: context,
-      title: 'RENAME PROJECT',
-      hintText: 'Project name',
+      title: AppLocalizations.of(context)!.dialogRenameProjectTitle,
+      hintText: AppLocalizations.of(context)!.formProjectName,
       initialValue: project.title,
-      confirmLabel: 'SAVE',
+      confirmLabel: AppLocalizations.of(context)!.actionSave,
     );
     if (title == null || title.isEmpty || !context.mounted) return;
-    await context.read<ProjectsCubit>().updateProject(project.id, title: title);
+    await context.read<ProjectsCubit>().updateProject(project.id, title: title, l10n: AppLocalizations.of(context)!);
   }
 
   Future<void> _delete(BuildContext context) async {
     final confirmed = await AppDialog.showConfirm(
       context: context,
-      title: 'DELETE PROJECT',
-      message: 'Delete "${project.title}" and its saved API links?',
-      confirmLabel: 'DELETE',
-      cancelLabel: 'CANCEL',
+      title: AppLocalizations.of(context)!.dialogDeleteProjectTitle,
+      message: AppLocalizations.of(context)!.dialogDeleteProjectMessage(project.title),
+      confirmLabel: AppLocalizations.of(context)!.actionDelete,
+      cancelLabel: AppLocalizations.of(context)!.actionCancel,
       isDestructive: true,
     );
     if (!confirmed || !context.mounted) return;
-    await context.read<ProjectsCubit>().deleteProject(project.id);
+    await context.read<ProjectsCubit>().deleteProject(project.id, l10n: AppLocalizations.of(context)!);
   }
 }

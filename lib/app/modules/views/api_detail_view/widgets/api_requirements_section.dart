@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:api_scout/app/data/models/api_detail.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
@@ -14,7 +15,7 @@ class ApiRequirementsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     if (warnings.isEmpty) return const SizedBox.shrink();
     return DetailSection(
-      title: 'REQUIREMENTS & LIMITATIONS',
+      title: AppLocalizations.of(context)!.sectionRequirementsAndLimitations,
       child: Column(
         children: warnings.map((warning) {
           return Padding(

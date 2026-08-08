@@ -4,6 +4,7 @@ import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
 import 'package:api_scout/app/blocs/auth/auth_state.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:api_scout/app/modules/views/settings_view/widgets/meta_chip.dart';
 
 class ProfilePanel extends StatelessWidget {
@@ -71,7 +72,7 @@ class ProfilePanel extends StatelessWidget {
               TextButton.icon(
                 onPressed: onModify,
                 icon: const Icon(PhosphorIconsRegular.pencilSimple, size: 16),
-                label: const Text('MODIFY'),
+                label: Text(AppLocalizations.of(context)!.actionModify),
               ),
             ],
           ),
@@ -82,9 +83,9 @@ class ProfilePanel extends StatelessWidget {
             children: [
               MetaChip(label: accountType),
               if (profile?.memberSince != null)
-                MetaChip(label: 'Since ${_date(profile!.memberSince!)}'),
+                MetaChip(label: AppLocalizations.of(context)!.settingsMemberSincePrefix(_date(profile!.memberSince!))),
               if (profile?.lastUsedAt != null)
-                MetaChip(label: 'Used ${_date(profile!.lastUsedAt!)}'),
+                MetaChip(label: AppLocalizations.of(context)!.settingsLastUsedPrefix(_date(profile!.lastUsedAt!))),
             ],
           ),
         ],

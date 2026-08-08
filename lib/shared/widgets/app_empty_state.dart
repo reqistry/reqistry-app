@@ -3,10 +3,11 @@ import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 
 class AppEmptyState extends StatelessWidget {
-  final String title;
-  final String message;
+  final String? title;
+  final String? message;
   final IconData? icon;
   final String? actionLabel;
   final VoidCallback? onAction;
@@ -15,8 +16,8 @@ class AppEmptyState extends StatelessWidget {
 
   const AppEmptyState({
     super.key,
-    this.title = 'Nothing here yet',
-    this.message = 'Check back later or pull to refresh.',
+    this.title,
+    this.message,
     this.icon,
     this.actionLabel,
     this.onAction,
@@ -26,6 +27,9 @@ class AppEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final effectiveTitle = title ?? l10n.stateNothingHereYet;
+    final effectiveMessage = message ?? l10n.stateCheckBackLater;
     final c = AppColors.of(Theme.of(context).brightness);
 
     final child = Center(
@@ -49,13 +53,13 @@ class AppEmptyState extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.s16),
               Text(
-                title.toUpperCase(),
+                effectiveTitle.toUpperCase(),
                 style: AppTextStyles.headlineSm.copyWith(color: c.onSurface),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: AppSpacing.s8),
               Text(
-                message,
+                effectiveMessage,
                 style: AppTextStyles.bodyMd.copyWith(
                   color: c.onSurfaceVariant,
                 ),

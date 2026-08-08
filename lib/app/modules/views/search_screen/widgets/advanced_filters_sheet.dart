@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:api_scout/app/blocs/search/search_bloc.dart';
@@ -42,7 +43,7 @@ class AdvancedFiltersSheet extends StatelessWidget {
                         Icon(PhosphorIconsRegular.slidersHorizontal,
                             color: c.primary),
                         const SizedBox(width: AppSpacing.s12),
-                        Text('Advanced Filters',
+                        Text(AppLocalizations.of(context)!.filterAdvancedFilters,
                             style: AppTextStyles.headlineSm
                                 .copyWith(color: c.onSurface)),
                         const Spacer(),
@@ -53,7 +54,7 @@ class AdvancedFiltersSheet extends StatelessWidget {
                                 .add(SearchFiltersReset());
                             Navigator.pop(context);
                           },
-                          child: Text('RESET ALL',
+                          child: Text(AppLocalizations.of(context)!.actionResetAll,
                               style: AppTextStyles.labelSmUpper.copyWith(
                                   color: c.primary, fontSize: 11)),
                         ),
@@ -99,7 +100,7 @@ class AdvancedFiltersSheet extends StatelessWidget {
                         },
                         icon: const Icon(PhosphorIconsRegular.magnifyingGlass,
                             size: 18),
-                        label: Text('APPLY FILTERS & SEARCH',
+                        label: Text(AppLocalizations.of(context)!.actionApplyFiltersAndSearch,
                             style: AppTextStyles.labelSmUpper
                                 .copyWith(fontSize: 11)),
                         style: ElevatedButton.styleFrom(
@@ -124,7 +125,7 @@ class AdvancedFiltersSheet extends StatelessWidget {
 
   Widget _buildCategoriesFilter(BuildContext context, SearchState state) {
     return FilterSection(
-      title: 'CATEGORIES',
+      title: AppLocalizations.of(context)!.filterCategories,
       icon: PhosphorIconsRegular.squaresFour,
       child: state.isLoadingCategories
           ? Center(
@@ -150,15 +151,21 @@ class AdvancedFiltersSheet extends StatelessWidget {
 
   Widget _buildPricingFilter(BuildContext context, SearchState state) {
     return FilterSection(
-      title: 'PRICING',
+      title: AppLocalizations.of(context)!.filterPricing,
       icon: PhosphorIconsRegular.currencyDollar,
       child: Wrap(
         spacing: AppSpacing.chipGap,
         runSpacing: AppSpacing.chipGap,
         children: ['free', 'freemium', 'paid'].map((pricing) {
           final isSelected = state.pricing.contains(pricing);
+          final l10n = AppLocalizations.of(context)!;
+          final label = pricing == 'free'
+              ? l10n.miscFree
+              : pricing == 'freemium'
+                  ? l10n.miscFreemium
+                  : l10n.miscPaid;
           return DesignChip(
-            label: pricing.toUpperCase(),
+            label: label,
             selected: isSelected,
             onTap: () => context.read<SearchBloc>().add(SearchFilterToggled(
                 filterType: FilterType.pricing, value: pricing)),
@@ -170,7 +177,7 @@ class AdvancedFiltersSheet extends StatelessWidget {
 
   Widget _buildAuthFilter(BuildContext context, SearchState state) {
     return FilterSection(
-      title: 'AUTHENTICATION',
+      title: AppLocalizations.of(context)!.filterAuthentication,
       icon: PhosphorIconsRegular.key,
       child: Wrap(
         spacing: AppSpacing.chipGap,
@@ -178,7 +185,7 @@ class AdvancedFiltersSheet extends StatelessWidget {
         children: ['none', 'apiKey', 'OAuth', 'Bearer'].map((auth) {
           final isSelected = state.auth.contains(auth);
           return DesignChip(
-            label: auth == 'none' ? 'NO AUTH' : auth.toUpperCase(),
+            label: auth == 'none' ? AppLocalizations.of(context)!.filterNoAuth : auth.toUpperCase(),
             selected: isSelected,
             onTap: () => context.read<SearchBloc>().add(
                 SearchFilterToggled(filterType: FilterType.auth, value: auth)),
@@ -190,7 +197,7 @@ class AdvancedFiltersSheet extends StatelessWidget {
 
   Widget _buildApiTypeFilter(BuildContext context, SearchState state) {
     return FilterSection(
-      title: 'API TYPE',
+      title: AppLocalizations.of(context)!.filterApiType,
       icon: PhosphorIconsRegular.bracketsCurly,
       child: Wrap(
         spacing: AppSpacing.chipGap,
@@ -210,13 +217,13 @@ class AdvancedFiltersSheet extends StatelessWidget {
 
   Widget _buildHttpsFilter(BuildContext context, SearchState state) {
     return FilterSection(
-      title: 'HTTPS SUPPORT',
+      title: AppLocalizations.of(context)!.filterHttpsSupport,
       icon: PhosphorIconsRegular.lock,
       child: Row(
         children: [
           Expanded(
             child: DesignChip(
-              label: 'HTTPS ONLY',
+              label: AppLocalizations.of(context)!.filterHttpsOnly,
               selected: state.https == true,
               onTap: () => context.read<SearchBloc>().add(SearchFilterToggled(
                   filterType: FilterType.https,
@@ -226,7 +233,7 @@ class AdvancedFiltersSheet extends StatelessWidget {
           const SizedBox(width: AppSpacing.s8),
           Expanded(
             child: DesignChip(
-              label: 'HTTP ONLY',
+              label: AppLocalizations.of(context)!.filterHttpOnly,
               selected: state.https == false,
               onTap: () => context.read<SearchBloc>().add(SearchFilterToggled(
                   filterType: FilterType.https,
@@ -240,7 +247,7 @@ class AdvancedFiltersSheet extends StatelessWidget {
 
   Widget _buildCorsFilter(BuildContext context, SearchState state) {
     return FilterSection(
-      title: 'CORS SUPPORT',
+      title: AppLocalizations.of(context)!.filterCorsSupport,
       icon: PhosphorIconsRegular.globeHemisphereWest,
       child: Wrap(
         spacing: AppSpacing.chipGap,
@@ -249,10 +256,10 @@ class AdvancedFiltersSheet extends StatelessWidget {
           final isSelected = state.cors == cors;
           return DesignChip(
             label: cors == 'yes'
-                ? 'ENABLED'
+                ? AppLocalizations.of(context)!.filterEnabled
                 : cors == 'no'
-                    ? 'DISABLED'
-                    : 'UNKNOWN',
+                    ? AppLocalizations.of(context)!.filterDisabled
+                    : AppLocalizations.of(context)!.filterUnknown,
             selected: isSelected,
             onTap: () => context.read<SearchBloc>().add(SearchFilterToggled(
                 filterType: FilterType.cors,
@@ -265,13 +272,13 @@ class AdvancedFiltersSheet extends StatelessWidget {
 
   Widget _buildStatusFilter(BuildContext context, SearchState state) {
     return FilterSection(
-      title: 'API STATUS',
+      title: AppLocalizations.of(context)!.filterApiStatus,
       icon: PhosphorIconsRegular.power,
       child: Row(
         children: [
           Expanded(
             child: DesignChip(
-              label: 'WORKING ONLY',
+              label: AppLocalizations.of(context)!.filterWorkingOnly,
               selected: state.alive == true,
               onTap: () => context.read<SearchBloc>().add(SearchFilterToggled(
                   filterType: FilterType.alive,
@@ -281,7 +288,7 @@ class AdvancedFiltersSheet extends StatelessWidget {
           const SizedBox(width: AppSpacing.s8),
           Expanded(
             child: DesignChip(
-              label: 'DOWN ONLY',
+              label: AppLocalizations.of(context)!.filterDownOnly,
               selected: state.alive == false,
               onTap: () => context.read<SearchBloc>().add(SearchFilterToggled(
                   filterType: FilterType.alive,
@@ -295,7 +302,7 @@ class AdvancedFiltersSheet extends StatelessWidget {
 
   Widget _buildResponseTimeFilter(BuildContext context, SearchState state) {
     return FilterSection(
-      title: 'MAX RESPONSE TIME',
+      title: AppLocalizations.of(context)!.filterMaxResponseTime,
       icon: PhosphorIconsRegular.speedometer,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -310,7 +317,7 @@ class AdvancedFiltersSheet extends StatelessWidget {
                   divisions: 49,
                   label: state.maxResponseTime != null
                       ? '${state.maxResponseTime}ms'
-                      : 'No limit',
+                      : AppLocalizations.of(context)!.noLimit,
                   activeColor: AppColors.of(Theme.of(context).brightness).primary,
                   inactiveColor: AppColors.of(Theme.of(context).brightness).surfaceVariant,
                   onChanged: (value) => context.read<SearchBloc>().add(
@@ -324,7 +331,7 @@ class AdvancedFiltersSheet extends StatelessWidget {
                   child: Text(
                       state.maxResponseTime != null
                           ? '${state.maxResponseTime}ms'
-                          : 'No limit',
+                          : AppLocalizations.of(context)!.noLimit,
                       textAlign: TextAlign.right,
                       style: AppTextStyles.bodyMd
                           .copyWith(color: AppColors.of(Theme.of(context).brightness).onSurface))),
@@ -335,7 +342,7 @@ class AdvancedFiltersSheet extends StatelessWidget {
               onPressed: () => context.read<SearchBloc>().add(
                   SearchFilterToggled(
                       filterType: FilterType.maxResponseTime, value: 'null')),
-              child: Text('REMOVE LIMIT',
+              child: Text(AppLocalizations.of(context)!.actionRemoveLimit,
                   style: AppTextStyles.labelSmUpper
                       .copyWith(color: AppColors.of(Theme.of(context).brightness).primary, fontSize: 10)),
             ),

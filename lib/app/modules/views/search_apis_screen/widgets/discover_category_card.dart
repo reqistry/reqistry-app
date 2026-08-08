@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
@@ -77,7 +78,7 @@ class DiscoverCategoryCard extends StatelessWidget {
                 ),
                 decoration: BoxDecoration(color: c.primary),
                 child: Text(
-                  'TRENDING',
+                  AppLocalizations.of(context)!.stateTrending,
                   style: AppTextStyles.labelSmUpper.copyWith(
                     color: c.onPrimary,
                     fontSize: 9,

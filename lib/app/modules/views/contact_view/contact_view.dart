@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
 import 'package:api_scout/app/widgets/app_snackbar.dart';
@@ -19,7 +20,7 @@ class ContactView extends StatelessWidget {
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         title: Text(
-          'CONTACT',
+          AppLocalizations.of(context)!.settingsContactTitle,
           style: AppTextStyles.labelSmUpper,
         ),
         centerTitle: false,
@@ -34,7 +35,7 @@ class ContactView extends StatelessWidget {
       body: ListView(
         children: [
           _ContactTile(
-            label: 'WEBSITE',
+            label: AppLocalizations.of(context)!.settingsWebsite,
             value: Uri.parse(Env.developerWebsiteUrl).host,
             icon: PhosphorIconsRegular.globeHemisphereWest,
             onTap: () => _launchUrl(
@@ -47,7 +48,7 @@ class ContactView extends StatelessWidget {
             color: c.surfaceVariant,
           ),
           _ContactTile(
-            label: 'EMAIL',
+            label: AppLocalizations.of(context)!.settingsEmail,
             value: Env.contactEmail,
             icon: PhosphorIconsRegular.envelopeSimple,
             onTap: () => _launchUrl(
@@ -67,16 +68,16 @@ class ContactView extends StatelessWidget {
       if (launched && context.mounted) {
         AppSnackbarManager.showSnackbar(
           context: context,
-          title: 'Opened',
+          title: AppLocalizations.of(context)!.snackbarOpenedTitle,
           message:
-              uri.scheme == 'mailto' ? 'Email app opened' : 'Website opened',
+              uri.scheme == 'mailto' ? AppLocalizations.of(context)!.snackbarEmailAppOpened : AppLocalizations.of(context)!.snackbarWebsiteOpened,
           type: AppSnackbarType.success,
         );
       } else if (context.mounted) {
         AppSnackbarManager.showSnackbar(
           context: context,
-          title: 'Unavailable',
-          message: 'Could not open ${uri.toString()}',
+          title: AppLocalizations.of(context)!.snackbarUnavailableTitle,
+          message: AppLocalizations.of(context)!.snackbarCouldNotOpenUrl(uri.toString()),
           type: AppSnackbarType.error,
         );
       }
@@ -84,8 +85,8 @@ class ContactView extends StatelessWidget {
       if (context.mounted) {
         AppSnackbarManager.showSnackbar(
           context: context,
-          title: 'Unavailable',
-          message: 'Could not open ${uri.toString()}',
+          title: AppLocalizations.of(context)!.snackbarUnavailableTitle,
+          message: AppLocalizations.of(context)!.snackbarCouldNotOpenUrl(uri.toString()),
           type: AppSnackbarType.error,
         );
       }

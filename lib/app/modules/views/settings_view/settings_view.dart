@@ -18,6 +18,7 @@ import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
 import 'package:api_scout/app/utils/snackbar_helper.dart';
 import 'package:api_scout/config/app_routes.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:api_scout/config/env.dart';
 import 'package:api_scout/app/modules/views/settings_view/widgets/profile_panel.dart';
 import 'package:api_scout/app/modules/views/settings_view/widgets/stats_grid.dart';
@@ -39,7 +40,7 @@ class _SettingsViewState extends State<SettingsView> {
       context.read<AuthCubit>().refreshProfile(),
       context.read<UserActivityCubit>().loadStats(),
       context.read<FavoritesCubit>().loadBookmarks(),
-      context.read<ProjectsCubit>().loadProjects(),
+      context.read<ProjectsCubit>().loadProjects(l10n: AppLocalizations.of(context)!),
     ]);
   }
 
@@ -62,10 +63,11 @@ class _SettingsViewState extends State<SettingsView> {
   Future<void> _openDeveloperSite() async {
     final uri = Uri.parse(Env.developerWebsiteUrl);
     final opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
-    if (!opened) {
+    if (!opened && mounted) {
+      final l10n = AppLocalizations.of(context)!;
       AppSnackBarHelper.error(
-        title: 'Unavailable',
-        message: 'Could not open developer website.',
+        title: l10n.snackbarUnavailableTitle,
+        message: l10n.snackbarCouldNotLoadDeveloperWebsite,
       );
     }
   }
@@ -77,7 +79,7 @@ class _SettingsViewState extends State<SettingsView> {
     return Scaffold(
       backgroundColor: c.background,
       appBar: AppBar(
-        title: Text('YOU', style: AppTextStyles.headlineSm),
+        title: Text(AppLocalizations.of(context)!.tabYou, style: AppTextStyles.headlineSm),
         centerTitle: false,
         backgroundColor: c.surface,
         elevation: 0,
@@ -107,7 +109,7 @@ class _SettingsViewState extends State<SettingsView> {
                 return ProfilePanel(
                   name: _name(cubit),
                   email: cubit.userEmail,
-                  accountType: cubit.isGuestUser ? 'Guest' : 'Email',
+                  accountType: cubit.isGuestUser ? AppLocalizations.of(context)!.settingsGuestAccountType : AppLocalizations.of(context)!.settingsEmailAccountType,
                   profile: cubit.currentUserProfile,
                   onModify: () => context.push(AppRoutes.accountSettings),
                 );
@@ -124,58 +126,58 @@ class _SettingsViewState extends State<SettingsView> {
             ),
             const SizedBox(height: AppSpacing.s24),
             SettingsSection(
-              title: 'MY',
+              title: AppLocalizations.of(context)!.sectionMy,
               children: [
                 SettingsEntryTile(
                   icon: PhosphorIconsRegular.folder,
-                  title: 'Projects',
+                  title: AppLocalizations.of(context)!.settingsProjects,
                   onTap: _openAllProjects,
                 ),
                 SettingsEntryTile(
                   icon: PhosphorIconsRegular.bookmarkSimple,
-                  title: 'Saved APIs',
+                  title: AppLocalizations.of(context)!.settingsSavedApis,
                   onTap: () => _switchTab(AppRoutes.tabIndexFavorites),
                 ),
                 SettingsEntryTile(
                   icon: PhosphorIconsRegular.paperPlaneTilt,
-                  title: 'Submit an API',
+                  title: AppLocalizations.of(context)!.settingsSubmitAnApi,
                   onTap: () => context.push(AppRoutes.submitApi),
                 ),
               ],
             ),
             const SizedBox(height: AppSpacing.s24),
             SettingsSection(
-              title: 'MANAGE',
+              title: AppLocalizations.of(context)!.sectionManage,
               children: [
                 SettingsEntryTile(
                   icon: PhosphorIconsRegular.gearSix,
-                  title: 'App settings',
+                  title: AppLocalizations.of(context)!.settingsAppSettings,
                   onTap: () => context.push(AppRoutes.appSettings),
                 ),
                 SettingsEntryTile(
                   icon: PhosphorIconsRegular.userCircle,
-                  title: 'Account',
+                  title: AppLocalizations.of(context)!.settingsAccount,
                   onTap: () => context.push(AppRoutes.accountSettings),
                 ),
               ],
             ),
             const SizedBox(height: AppSpacing.s24),
             SettingsSection(
-              title: 'INFO',
+              title: AppLocalizations.of(context)!.sectionInfo,
               children: [
                 SettingsEntryTile(
                   icon: PhosphorIconsRegular.chatCircleText,
-                  title: 'Contact',
+                  title: AppLocalizations.of(context)!.settingsContact,
                   onTap: () => context.push(AppRoutes.contact),
                 ),
                 SettingsEntryTile(
                   icon: PhosphorIconsRegular.shield,
-                  title: 'Privacy and policy',
+                  title: AppLocalizations.of(context)!.settingsPrivacyAndPolicy,
                   onTap: () => context.push(AppRoutes.privacy),
                 ),
                 SettingsEntryTile(
                   icon: PhosphorIconsRegular.info,
-                  title: 'About app and developer',
+                  title: AppLocalizations.of(context)!.settingsAboutAppAndDeveloper,
                   onTap: _openDeveloperSite,
                 ),
               ],

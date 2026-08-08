@@ -6,6 +6,7 @@ import 'package:api_scout/app/services/fetch_api/failure.dart';
 import 'package:api_scout/app/services/fetch_api/remote_service.dart';
 import 'package:api_scout/app/services/in_app_review/in_app_review.dart';
 import 'package:api_scout/app/services/local_db/hive/locals_box.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 
 part 'home_categories_state.dart';
 
@@ -21,10 +22,10 @@ class HomeCategoriesCubit extends Cubit<HomeCategoriesState> {
   bool get isFirstTimeOpenedTheAppAfterUpdate =>
       _locals.getWithKey("isFirstTimeOpenedTheAppAfterUpdate") ?? true;
 
-  Future<void> fetchCategories() async {
+  Future<void> fetchCategories({AppLocalizations? l10n}) async {
     try {
       emit(state.copyWith(isLoading: true, errorMessage: ''));
-      final response = await RemoteService.getCategories();
+      final response = await RemoteService.getCategories(l10n: l10n);
       final categoryList = response.toCategories();
       final sortedCategories = _sortByTrendy(categoryList);
       _allCategories = sortedCategories;
@@ -42,7 +43,7 @@ class HomeCategoriesCubit extends Cubit<HomeCategoriesState> {
     } catch (e) {
       emit(state.copyWith(
         isLoading: false,
-        errorMessage: 'An unexpected error occurred: $e',
+        errorMessage: l10n?.unexpectedErrorOccurred(e.toString()) ?? 'An unexpected error occurred: $e',
       ));
     }
   }
@@ -77,8 +78,8 @@ class HomeCategoriesCubit extends Cubit<HomeCategoriesState> {
     return sorted;
   }
 
-  Future<void> retryFetch() async {
-    await fetchCategories();
+  Future<void> retryFetch({AppLocalizations? l10n}) async {
+    await fetchCategories(l10n: l10n);
   }
 
   void onReady() {

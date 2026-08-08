@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:api_scout/app/data/models/project.dart';
@@ -54,7 +55,7 @@ class ProjectCard extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.s4),
             Text(
-              '${project.apiCount} ${project.apiCount == 1 ? 'API' : 'APIs'}',
+              '${project.apiCount} ${project.apiCount == 1 ? AppLocalizations.of(context)!.miscApi : AppLocalizations.of(context)!.miscApis}',
               style: AppTextStyles.labelSmUpper.copyWith(
                 color: c.onSurfaceVariant,
                 fontSize: 10,
@@ -107,7 +108,7 @@ class AddProjectCard extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.s8),
             Text(
-              'NEW',
+              AppLocalizations.of(context)!.stateNew,
               style: AppTextStyles.labelSmUpper.copyWith(
                 color: c.onSurfaceVariant,
                 fontSize: 10,

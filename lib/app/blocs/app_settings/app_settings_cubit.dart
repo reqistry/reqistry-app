@@ -7,6 +7,7 @@ import 'package:api_scout/app/services/share/share_plus/share_plus.dart';
 import 'package:api_scout/app/utils/snackbar_helper.dart';
 import 'package:api_scout/config/app_routes.dart';
 import 'package:api_scout/config/env.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 
 part 'app_settings_state.dart';
 
@@ -19,7 +20,7 @@ class AppSettingsCubit extends Cubit<AppSettingsState> {
               AppRoutes.tabIndexHome,
         ));
 
-  Future<void> exportBookmarks() async {
+  Future<void> exportBookmarks({AppLocalizations? l10n}) async {
     try {
       final dio = DioClient().dio;
       final response =
@@ -27,8 +28,8 @@ class AppSettingsCubit extends Cubit<AppSettingsState> {
       final bookmarks = (response.data['bookmarks'] as List?) ?? [];
       if (bookmarks.isEmpty) {
         AppSnackBarHelper.show(
-          title: 'No bookmarks',
-          message: 'You have no bookmarks to export.',
+          title: l10n?.snackbarNoBookmarksTitle ?? 'No bookmarks',
+          message: l10n?.snackbarNoBookmarksMessage ?? 'You have no bookmarks to export.',
         );
         return;
       }
@@ -49,39 +50,39 @@ class AppSettingsCubit extends Cubit<AppSettingsState> {
       await ShareService.instance.shareText(buffer.toString());
     } catch (_) {
       AppSnackBarHelper.show(
-        title: 'Export failed',
-        message: 'Could not export bookmarks.',
+        title: l10n?.snackbarExportFailedTitle ?? 'Export failed',
+        message: l10n?.snackbarExportFailedMessage ?? 'Could not export bookmarks.',
         isError: true,
       );
     }
   }
 
-  Future<bool> clearLocalData() async {
+  Future<bool> clearLocalData({AppLocalizations? l10n}) async {
     try {
       await LocalDatabase.instance.clearAllLocalData();
       DioClient().setAccessToken(null);
       AppSnackBarHelper.success(
-        title: 'Local data cleared',
-        message: '${Env.appName} will start fresh.',
+        title: l10n?.snackbarLocalDataClearedTitle ?? 'Local data cleared',
+        message: l10n?.snackbarLocalDataClearedMessage(Env.appName) ?? '${Env.appName} will start fresh.',
       );
       return true;
     } catch (_) {
       AppSnackBarHelper.error(
-        title: 'Clear failed',
-        message: 'Unable to clear local data right now.',
+        title: l10n?.snackbarClearFailedTitle ?? 'Clear failed',
+        message: l10n?.snackbarClearFailedMessage ?? 'Unable to clear local data right now.',
       );
       return false;
     }
   }
 
-  Future<void> setInitialTab(int index) async {
+  Future<void> setInitialTab(int index, {AppLocalizations? l10n}) async {
     await LocalsDB.instance.putWithKey(initialTabKey, index);
     emit(state.copyWith(initialTabIndex: index));
     AppSnackBarHelper.success(
-      title: 'Startup updated',
+      title: l10n?.snackbarStartupUpdatedTitle ?? 'Startup updated',
       message: index == AppRoutes.tabIndexSearch
-          ? '${Env.appName} will open on Discover.'
-          : '${Env.appName} will open on Home.',
+          ? l10n?.snackbarStartupUpdatedDiscoverMessage(Env.appName) ?? '${Env.appName} will open on Discover.'
+          : l10n?.snackbarStartupUpdatedHomeMessage(Env.appName) ?? '${Env.appName} will open on Home.',
     );
   }
 }

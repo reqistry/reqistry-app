@@ -7,13 +7,14 @@ import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
 import 'package:api_scout/shared/widgets/app_empty_state.dart';
 import 'package:api_scout/shared/widgets/app_error_state.dart';
 import 'package:api_scout/shared/widgets/app_loading.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:api_scout/app/modules/views/search_apis_screen/widgets/browse_by_category.dart';
 
 class SearchApisScreen extends StatelessWidget {
   const SearchApisScreen({super.key});
 
   Future<void> _refresh(BuildContext context) {
-    return context.read<HomeCategoriesCubit>().retryFetch();
+    return context.read<HomeCategoriesCubit>().retryFetch(l10n: AppLocalizations.of(context)!);
   }
 
   @override
@@ -23,7 +24,7 @@ class SearchApisScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: c.background,
       appBar: AppBar(
-        title: Text('DISCOVER', style: AppTextStyles.headlineSm),
+        title: Text(AppLocalizations.of(context)!.tabDiscover, style: AppTextStyles.headlineSm),
         elevation: 0,
         centerTitle: false,
         backgroundColor: c.surface,
@@ -41,8 +42,8 @@ class SearchApisScreen extends StatelessWidget {
           if (state.isLoading) {
             return RefreshIndicator(
               onRefresh: () => _refresh(context),
-              child: const AppLoading(
-                message: 'Loading categories',
+              child: AppLoading(
+                message: AppLocalizations.of(context)!.stateLoadingCategories,
                 scrollable: true,
               ),
             );
@@ -52,9 +53,9 @@ class SearchApisScreen extends StatelessWidget {
             return RefreshIndicator(
               onRefresh: () => _refresh(context),
               child: AppErrorState(
-                title: 'Could not load categories',
+                title: AppLocalizations.of(context)!.stateCouldNotLoadCategories,
                 message: state.errorMessage,
-                onRetry: () => context.read<HomeCategoriesCubit>().retryFetch(),
+                onRetry: () => context.read<HomeCategoriesCubit>().retryFetch(l10n: AppLocalizations.of(context)!),
                 scrollable: true,
               ),
             );
@@ -63,10 +64,9 @@ class SearchApisScreen extends StatelessWidget {
           if (state.categories.isEmpty) {
             return RefreshIndicator(
               onRefresh: () => _refresh(context),
-              child: const AppEmptyState(
-                title: 'Nothing to browse yet',
-                message:
-                    'The Discover catalog is loading. Pull to refresh and try again.',
+              child: AppEmptyState(
+                title: AppLocalizations.of(context)!.stateNothingToBrowseYet,
+                message: AppLocalizations.of(context)!.discoverCatalogLoadingMessage,
                 icon: PhosphorIconsRegular.squaresFour,
                 scrollable: true,
               ),

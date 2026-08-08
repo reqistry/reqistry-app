@@ -5,6 +5,7 @@ import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
 import 'package:api_scout/config/app_routes.dart';
 import 'package:api_scout/app/modules/views/app_settings_view/widgets/tab_choice.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 
 class InitialTabRow extends StatelessWidget {
   const InitialTabRow({
@@ -36,7 +37,7 @@ class InitialTabRow extends StatelessWidget {
               const SizedBox(width: AppSpacing.s12),
               Expanded(
                 child: Text(
-                  'Initial open tab',
+                  AppLocalizations.of(context)!.settingsInitialTab,
                   style: AppTextStyles.bodyMd
                       .copyWith(fontWeight: FontWeight.w600),
                 ),
@@ -48,7 +49,7 @@ class InitialTabRow extends StatelessWidget {
             children: [
               Expanded(
                 child: TabChoice(
-                  label: 'Home',
+                  label: AppLocalizations.of(context)!.initialTabHome,
                   selected: value == AppRoutes.tabIndexHome,
                   onTap: () => onChanged(AppRoutes.tabIndexHome),
                 ),
@@ -56,7 +57,7 @@ class InitialTabRow extends StatelessWidget {
               const SizedBox(width: AppSpacing.s8),
               Expanded(
                 child: TabChoice(
-                  label: 'Explore',
+                  label: AppLocalizations.of(context)!.initialTabExplore,
                   selected: value == AppRoutes.tabIndexSearch,
                   onTap: () => onChanged(AppRoutes.tabIndexSearch),
                 ),

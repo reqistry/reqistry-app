@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:api_scout/app/blocs/search/search_bloc.dart';
@@ -50,7 +51,7 @@ class _SearchBodyState extends State<SearchBody> {
       backgroundColor: c.background,
       appBar: AppBar(
         title: Text(
-          'SEARCH',
+          AppLocalizations.of(context)!.tabSearch,
           style:
               AppTextStyles.headlineSm.copyWith(color: c.onSurface),
         ),
@@ -77,10 +78,10 @@ class _SearchBodyState extends State<SearchBody> {
                     isLoading: state.isSearching && state.searchResults.isEmpty,
                     errorMessage: state.errorMessage.isNotEmpty && state.searchResults.isEmpty ? state.errorMessage : null,
                     isEmpty: state.searchResults.isEmpty,
-                    loadingMessage: 'Searching APIs',
-                    errorTitle: 'Search error',
-                    emptyTitle: 'No matches found',
-                    emptyMessage: 'Try a different keyword or loosen your filters to discover more APIs.',
+                    loadingMessage: AppLocalizations.of(context)!.stateSearchingApis,
+                    errorTitle: AppLocalizations.of(context)!.snackbarSearchErrorTitle,
+                    emptyTitle: AppLocalizations.of(context)!.stateNoMatchFound,
+                    emptyMessage: AppLocalizations.of(context)!.stateTryDifferentKeyword,
                     emptyIcon: PhosphorIconsRegular.magnifyingGlass,
                     onRetry: () => context.read<SearchBloc>().add(SearchPerformed()),
                     child: SearchResultsList(

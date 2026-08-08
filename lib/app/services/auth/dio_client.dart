@@ -4,6 +4,8 @@ import 'package:api_scout/app/services/connectivity/connectivity_service.dart';
 import 'package:api_scout/app/utils/snackbar_helper.dart';
 import 'package:api_scout/app/widgets/app_busy_overlay.dart';
 import 'package:api_scout/config/env.dart';
+import 'package:api_scout/config/routes.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:flutter/foundation.dart';
 import 'package:requests_inspector/requests_inspector.dart';
 import 'auth_token_service.dart';
@@ -153,7 +155,7 @@ class ConnectivityInterceptor extends Interceptor {
       handler.reject(
         DioException.connectionError(
           requestOptions: options,
-          reason: 'No internet connection',
+          reason: rootNavigatorKey.currentContext != null ? (AppLocalizations.of(rootNavigatorKey.currentContext!)?.snackbarNoInternetMessage ?? 'No internet connection') : 'No internet connection',
         ),
       );
       return;
@@ -196,16 +198,18 @@ class RequestErrorNotifierInterceptor extends Interceptor {
               err.type == DioExceptionType.receiveTimeout;
 
       if (!isConnectivityError && err.type != DioExceptionType.cancel) {
-        final message = _friendlyMessage(err);
+        final context = rootNavigatorKey.currentContext;
+        final l10n = context != null ? AppLocalizations.of(context) : null;
+        final message = _friendlyMessage(err, l10n);
         if (message != null) {
-          AppSnackBarHelper.error(title: 'REQUEST FAILED', message: message);
+          AppSnackBarHelper.error(title: l10n?.snackbarRequestFailedTitle ?? 'REQUEST FAILED', message: message);
         }
       }
     }
     handler.next(err);
   }
 
-  String? _friendlyMessage(DioException err) {
+  String? _friendlyMessage(DioException err, AppLocalizations? l10n) {
     final data = err.response?.data;
     if (data is Map) {
       final error = data['error'];
@@ -218,18 +222,18 @@ class RequestErrorNotifierInterceptor extends Interceptor {
       case DioExceptionType.cancel:
         return null;
       case DioExceptionType.badCertificate:
-        return 'The connection could not be verified securely.';
+        return l10n?.errorBadCertificate ?? 'The connection could not be verified securely.';
       case DioExceptionType.badResponse:
         final status = err.response?.statusCode ?? 0;
         if (status == 429) {
-          return 'Too many requests. Please wait a moment and try again.';
+          return l10n?.errorTooManyRequests ?? 'Too many requests. Please wait a moment and try again.';
         }
         if (status >= 500) {
-          return 'The server is having trouble. Please try again later.';
+          return l10n?.errorServerError ?? 'The server is having trouble. Please try again later.';
         }
-        return 'Something went wrong. Please try again.';
+        return l10n?.errorSomethingWentWrong ?? 'Something went wrong. Please try again.';
       default:
-        return 'Something went wrong. Please try again.';
+        return l10n?.errorSomethingWentWrong ?? 'Something went wrong. Please try again.';
     }
   }
 }

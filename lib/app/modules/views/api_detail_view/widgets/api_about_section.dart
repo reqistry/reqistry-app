@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:api_scout/app/data/models/api_detail.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
@@ -18,16 +19,17 @@ class ApiAboutSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final links = <(String, Uri?)>[
-      ('Documentation', detail.links.documentationUrl),
-      ('API reference', detail.links.openApiUrl),
-      ('Homepage', detail.links.homepageUrl),
-      ('Status page', detail.links.statusPageUrl),
-      ('Terms', detail.links.termsUrl),
+      (l10n.apiDetailDocumentation, detail.links.documentationUrl),
+      (l10n.apiDetailApiReference, detail.links.openApiUrl),
+      (l10n.apiDetailHomepage, detail.links.homepageUrl),
+      (l10n.apiDetailStatusPage, detail.links.statusPageUrl),
+      (l10n.apiDetailTerms, detail.links.termsUrl),
     ].where((item) => item.$2 != null).toList();
     final c = AppColors.of(Theme.of(context).brightness);
     return DetailSection(
-      title: 'ABOUT',
+      title: l10n.sectionAbout,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -35,7 +37,7 @@ class ApiAboutSection extends StatelessWidget {
           if (detail.fullDescription != null) ...[
             const SizedBox(height: AppSpacing.s16),
             Text(
-              'Website information · metadata',
+              l10n.apiDetailWebsiteInformation,
               style: AppTextStyles.labelSm.copyWith(
                 color: c.onSurfaceVariant,
               ),

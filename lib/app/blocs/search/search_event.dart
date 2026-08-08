@@ -43,25 +43,29 @@ class SearchQuickFilterApplied extends SearchEvent {
 
 class SearchPerformed extends SearchEvent {
   final bool reset;
+  final AppLocalizations? l10n;
 
-  const SearchPerformed({this.reset = true});
+  const SearchPerformed({this.reset = true, this.l10n});
 
   @override
   List<Object?> get props => [reset];
 }
 
 class SearchLoadMore extends SearchEvent {
-  const SearchLoadMore();
+  final AppLocalizations? l10n;
+  const SearchLoadMore({this.l10n});
 }
 
 class SearchCategoriesLoaded extends SearchEvent {
-  const SearchCategoriesLoaded();
+  final AppLocalizations? l10n;
+  const SearchCategoriesLoaded({this.l10n});
 }
 
 class SearchTokenSaved extends SearchEvent {
   final String token;
+  final AppLocalizations l10n;
 
-  const SearchTokenSaved({required this.token});
+  const SearchTokenSaved({required this.token, required this.l10n});
 
   @override
   List<Object?> get props => [token];

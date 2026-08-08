@@ -3,6 +3,7 @@ import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 
 class TipCard extends StatelessWidget {
   const TipCard({super.key});
@@ -26,7 +27,7 @@ class TipCard extends StatelessWidget {
           const SizedBox(width: AppSpacing.itemGap),
           Expanded(
             child: Text(
-              'Submit an API for review. Provide the API name and URL.',
+              AppLocalizations.of(context)!.submitApiTipMessage,
               style: AppTextStyles.bodyMd,
             ),
           ),

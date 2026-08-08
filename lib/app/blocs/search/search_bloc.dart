@@ -7,6 +7,7 @@ import 'package:api_scout/app/data/models/category_apis.dart';
 import 'package:api_scout/app/services/fetch_api/remote_service.dart';
 import 'package:api_scout/app/services/local_db/hive/locals_box.dart';
 import 'package:api_scout/app/utils/snackbar_helper.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 
 part 'search_event.dart';
 part 'search_state.dart';
@@ -219,6 +220,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         sortOrder: requestParams['sortOrder'] as String? ?? 'asc',
         page: requestParams['page'] as int? ?? state.currentPage,
         limit: requestParams['limit'] as int? ?? limit,
+        l10n: event.l10n,
       );
 
       if (response.success) {
@@ -252,11 +254,13 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         isSearching: false,
         errorMessage: e.toString(),
       ));
-      AppSnackBarHelper.show(
-        title: 'Search Error',
-        message: e.toString(),
-        isError: true,
-      );
+      if (event.l10n != null) {
+        AppSnackBarHelper.show(
+          title: event.l10n!.snackbarSearchErrorTitle,
+          message: e.toString(),
+          isError: true,
+        );
+      }
     }
   }
 
@@ -268,7 +272,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     emit(state.copyWith(isLoadingMore: true, currentPage: s.currentPage + 1));
 
     try {
-      await _onSearch(SearchPerformed(reset: false), emit);
+      await _onSearch(SearchPerformed(reset: false, l10n: event.l10n), emit);
     } catch (e) {
       emit(state.copyWith(currentPage: s.currentPage));
     } finally {
@@ -280,7 +284,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       SearchCategoriesLoaded event, Emitter<SearchState> emit) async {
     emit(state.copyWith(isLoadingCategories: true));
     try {
-      final response = await RemoteService.getCategories();
+      final response = await RemoteService.getCategories(l10n: event.l10n);
       final categories = response.toCategories();
       emit(state.copyWith(
         isLoadingCategories: false,
@@ -296,11 +300,11 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     try {
       await LocalsDB.instance.putWithKey('searchToken', event.token);
       emit(state.copyWith(searchToken: event.token));
-      AppSnackBarHelper.show(title: 'Saved', message: 'Search token saved');
+      AppSnackBarHelper.show(title: event.l10n.snackbarSavedTitle, message: event.l10n.snackbarSearchTokenSaved);
     } catch (e) {
       AppSnackBarHelper.show(
-        title: 'Save Error',
-        message: 'Could not save token',
+        title: event.l10n.snackbarSaveErrorTitle,
+        message: event.l10n.snackbarCouldNotSaveToken,
         isError: true,
       );
     }

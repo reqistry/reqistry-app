@@ -11,6 +11,7 @@ import 'package:api_scout/app/widgets/app_snackbar.dart';
 import 'package:api_scout/shared/widgets/api/status_dot.dart';
 import 'package:api_scout/shared/widgets/api/api_badge_row.dart';
 import 'package:api_scout/shared/widgets/app_cached_image.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 
 import '../../../../data/models/category_apis.dart';
 import '../../../../data/models/api_detail.dart';
@@ -69,21 +70,21 @@ class _ApiCardState extends State<ApiCard> {
     if (_isFavorited) {
       final bookmarkId = favoritesCubit.getBookmarkId(widget.api.link);
       if (bookmarkId != null) {
-        favoritesCubit.removeBookmark(bookmarkId);
+        favoritesCubit.removeBookmark(bookmarkId, l10n: AppLocalizations.of(context)!);
         if (mounted) setState(() {});
       }
     } else {
       if (widget.api.id.isEmpty) {
         AppSnackbarManager.showSnackbar(
           context: context,
-          title: 'Bookmark unavailable',
-          message: 'This API is missing a backend ID.',
+          title: AppLocalizations.of(context)!.snackbarBookmarkUnavailable,
+          message: AppLocalizations.of(context)!.snackbarBookmarkUnavailableMessage,
           type: AppSnackbarType.error,
         );
         return;
       }
       favoritesCubit.addBookmark(
-          apiId: widget.api.id, apiName: widget.api.name);
+          apiId: widget.api.id, apiName: widget.api.name, l10n: AppLocalizations.of(context)!);
       if (mounted) setState(() {});
     }
   }

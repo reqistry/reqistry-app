@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
 import 'package:api_scout/app/modules/views/api_detail_view/widgets/notice_banner.dart';
@@ -13,19 +14,26 @@ class ReportIssueSheet extends StatefulWidget {
 }
 
 class _ReportIssueSheetState extends State<ReportIssueSheet> {
-  static const _reasons = [
-    'API is unavailable',
-    'Link is broken',
-    'Pricing is incorrect',
-    'Authentication is incorrect',
-    'Description is incorrect',
-    'API is discontinued',
-    'Other',
-  ];
-
   final _noteController = TextEditingController();
-  String _selected = _reasons.first;
+  late String _selected;
   bool _submitting = false;
+  late List<String> _reasons;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final l10n = AppLocalizations.of(context)!;
+    _reasons = [
+      l10n.reportApiUnavailable,
+      l10n.reportLinkBroken,
+      l10n.reportPricingIncorrect,
+      l10n.reportAuthenticationIncorrect,
+      l10n.reportDescriptionIncorrect,
+      l10n.reportApiDiscontinued,
+      l10n.reportOther,
+    ];
+    _selected = _reasons.first;
+  }
 
   @override
   void dispose() {
@@ -45,6 +53,7 @@ class _ReportIssueSheetState extends State<ReportIssueSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: EdgeInsets.fromLTRB(
         AppSpacing.s16,
@@ -57,9 +66,9 @@ class _ReportIssueSheetState extends State<ReportIssueSheet> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('WHAT IS INCORRECT?', style: AppTextStyles.labelSmUpper),
+            Text(l10n.formWhatIsIncorrect, style: AppTextStyles.labelSmUpper),
             const SizedBox(height: AppSpacing.s8),
-            const NoticeBanner('Reports are sent to Reqistry for review.'),
+            NoticeBanner(l10n.formReportNoticeBanner),
             RadioGroup<String>(
               groupValue: _selected,
               onChanged: (value) => setState(() => _selected = value!),
@@ -78,8 +87,8 @@ class _ReportIssueSheetState extends State<ReportIssueSheet> {
               controller: _noteController,
               minLines: 2,
               maxLines: 4,
-              decoration: const InputDecoration(
-                labelText: 'Optional note',
+              decoration: InputDecoration(
+                labelText: l10n.formOptionalNote,
               ),
             ),
             const SizedBox(height: AppSpacing.s12),
@@ -87,7 +96,7 @@ class _ReportIssueSheetState extends State<ReportIssueSheet> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: _submitting ? null : _submit,
-                child: const Text('Submit report'),
+                child: Text(l10n.actionSubmitReport),
               ),
             ),
           ],

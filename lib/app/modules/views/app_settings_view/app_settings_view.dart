@@ -16,6 +16,7 @@ import 'package:api_scout/shared/widgets/ui/action_card.dart';
 import 'package:api_scout/app/modules/views/app_settings_view/widgets/theme_row.dart';
 import 'package:api_scout/app/modules/views/app_settings_view/widgets/toggle_row.dart';
 import 'package:api_scout/app/modules/views/app_settings_view/widgets/initial_tab_row.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 
 class AppSettingsView extends StatefulWidget {
   const AppSettingsView({super.key});
@@ -40,7 +41,7 @@ class _AppSettingsViewState extends State<AppSettingsView> {
     return Scaffold(
       backgroundColor: c.background,
       appBar: AppBar(
-        title: Text('APP SETTINGS', style: AppTextStyles.headlineSm),
+        title: Text(AppLocalizations.of(context)!.tabAppSettings, style: AppTextStyles.headlineSm),
         backgroundColor: c.surface,
         centerTitle: false,
         elevation: 0,
@@ -56,7 +57,7 @@ class _AppSettingsViewState extends State<AppSettingsView> {
       body: ListView(
         padding: const EdgeInsets.all(AppSpacing.pagePaddingH),
         children: [
-          const SectionHeader(label: 'PREFERENCES'),
+          SectionHeader(label: AppLocalizations.of(context)!.sectionPreferences),
 
           // ── Theme ──────────────────────────────────────────────
           const ThemeRow(),
@@ -68,12 +69,12 @@ class _AppSettingsViewState extends State<AppSettingsView> {
               final enabled = state is NotificationEnabled;
               return ToggleRow(
                 icon: PhosphorIconsRegular.bellSimple,
-                title: 'Notifications',
+                title: AppLocalizations.of(context)!.settingsNotifications,
                 subtitle: state is NotificationLoading
-                    ? 'Updating notification status.'
+                    ? AppLocalizations.of(context)!.settingsNotificationUpdating
                     : enabled
-                        ? 'Enabled. Push token is registered.'
-                        : 'Disabled. Push token is revoked.',
+                        ? AppLocalizations.of(context)!.settingsNotificationEnabled
+                        : AppLocalizations.of(context)!.settingsNotificationDisabled,
                 value: enabled,
                 onChanged: state is NotificationLoading
                     ? null
@@ -94,27 +95,25 @@ class _AppSettingsViewState extends State<AppSettingsView> {
             builder: (context, state) => InitialTabRow(
               value: state.initialTabIndex,
               onChanged: (index) =>
-                  context.read<AppSettingsCubit>().setInitialTab(index),
+                  context.read<AppSettingsCubit>().setInitialTab(index, l10n: AppLocalizations.of(context)),
             ),
           ),
           const SizedBox(height: AppSpacing.sectionGap),
-          const SectionHeader(label: 'DATA MANAGEMENT'),
+          SectionHeader(label: AppLocalizations.of(context)!.sectionDataManagement),
           ActionCard(
             icon: PhosphorIconsRegular.export,
-            title: 'Export favorites',
-            subtitle:
-                'Export a list of your favorite APIs (name, description, link).',
-            onTap: () => context.read<AppSettingsCubit>().exportBookmarks(),
+            title: AppLocalizations.of(context)!.settingsExportFavorites,
+            subtitle: AppLocalizations.of(context)!.settingsExportFavoritesSubtitle,
+            onTap: () => context.read<AppSettingsCubit>().exportBookmarks(l10n: AppLocalizations.of(context)),
           ),
           ActionCard(
             icon: PhosphorIconsRegular.broom,
-            title: 'Clear local data',
-            subtitle: 'Remove local cache, settings, tokens, and saved state.',
+            title: AppLocalizations.of(context)!.settingsClearLocalData,
+            subtitle: AppLocalizations.of(context)!.settingsClearLocalDataSubtitle,
             danger: true,
             onTap: () => _confirm(context,
-                title: 'Clear local data',
-                message:
-                    'This will clear local app data and return ${Env.appName} to a fresh start.',
+                title: AppLocalizations.of(context)!.dialogClearLocalDataTitle,
+                message: AppLocalizations.of(context)!.dialogClearLocalDataConfirmMessage(Env.appName),
                 onConfirm: () => _clearLocalData(context)),
           ),
         ],
@@ -130,14 +129,14 @@ class _AppSettingsViewState extends State<AppSettingsView> {
       context: context,
       title: title.toUpperCase(),
       message: message,
-      confirmLabel: 'CONTINUE',
-      cancelLabel: 'CANCEL',
+      confirmLabel: AppLocalizations.of(context)!.actionContinue,
+      cancelLabel: AppLocalizations.of(context)!.actionCancel,
     );
     if (result) await onConfirm();
   }
 
   Future<void> _clearLocalData(BuildContext context) async {
-    final cleared = await context.read<AppSettingsCubit>().clearLocalData();
+    final cleared = await context.read<AppSettingsCubit>().clearLocalData(l10n: AppLocalizations.of(context));
     if (!cleared || !context.mounted) return;
     await context.read<AuthCubit>().clearLocalSession();
     if (context.mounted) context.go(AppRoutes.auth    );

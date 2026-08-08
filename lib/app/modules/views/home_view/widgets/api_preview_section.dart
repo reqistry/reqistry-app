@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:api_scout/app/data/models/api_detail.dart';
@@ -69,14 +70,14 @@ class _ApiPreviewSectionState extends State<ApiPreviewSection> {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return AppLoading(
-                message: 'Loading ${widget.title.toLowerCase()}',
+                message: AppLocalizations.of(context)!.stateLoadingTitle(widget.title.toLowerCase()),
                 compact: true,
               );
             }
 
             if (snapshot.hasError) {
               return AppErrorState(
-                title: 'Could not load APIs',
+                title: AppLocalizations.of(context)!.stateCouldNotLoadApis,
                 message: snapshot.error.toString(),
                 compact: true,
               );
@@ -137,7 +138,7 @@ class _ApiPreviewSectionState extends State<ApiPreviewSection> {
                           ),
                           const SizedBox(width: AppSpacing.s12),
                           Text(
-                            'VIEW ALL',
+                            AppLocalizations.of(context)!.actionViewAll,
                             style: AppTextStyles.labelSmUpper.copyWith(
                               color: c.onSurface,
                               fontSize: 11,

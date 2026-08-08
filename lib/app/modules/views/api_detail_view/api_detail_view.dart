@@ -26,6 +26,7 @@ import 'package:api_scout/config/env.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -51,9 +52,10 @@ class _ApiDetailViewState extends State<ApiDetailView> {
           previous.transientMessage != current.transientMessage &&
           current.transientMessage != null,
       listener: (context, state) {
+        final l10n = AppLocalizations.of(context)!;
         AppSnackbarManager.showSnackbar(
           context: context,
-          title: 'Health data updated',
+          title: l10n.snackbarHealthDataUpdated,
           message: state.transientMessage!,
           type: AppSnackbarType.info,
         );
@@ -84,7 +86,7 @@ class _ApiDetailViewState extends State<ApiDetailView> {
     return Scaffold(
       backgroundColor: c.background,
       body: RefreshIndicator(
-        onRefresh: () => context.read<ApiDetailCubit>().refresh(),
+        onRefresh: () => context.read<ApiDetailCubit>().refresh(l10n: AppLocalizations.of(context)),
         child: CustomScrollView(
           key: PageStorageKey('api-detail-${widget.slug}'),
           restorationId: 'api-detail-${widget.slug}',
@@ -109,6 +111,7 @@ class _ApiDetailViewState extends State<ApiDetailView> {
               BlocBuilder<FavoritesCubit, FavoritesState>(
                 builder: (context, _) {
                   final detail = _detail(context);
+                  final l10n = AppLocalizations.of(context)!;
                   final isBookmarked = context
                       .read<FavoritesCubit>()
                       .isFavorited(detail.links.baseUrl?.toString() ?? '');
@@ -116,7 +119,7 @@ class _ApiDetailViewState extends State<ApiDetailView> {
                     constraints:
                         const BoxConstraints.tightFor(width: 48, height: 48),
                     onPressed: () => _toggleBookmark(detail, isBookmarked),
-                    tooltip: isBookmarked ? 'Remove bookmark' : 'Bookmark API',
+                    tooltip: isBookmarked ? l10n.apiDetailRemoveBookmark : l10n.apiDetailBookmarkApi,
                     icon: Icon(
                       isBookmarked
                           ? PhosphorIconsFill.bookmarkSimple
@@ -126,39 +129,40 @@ class _ApiDetailViewState extends State<ApiDetailView> {
                 },
               ),
               PopupMenuButton<_OverflowAction>(
-                tooltip: 'More actions',
+                tooltip: AppLocalizations.of(context)!.apiDetailMoreActions,
                 constraints: const BoxConstraints(minWidth: 220),
                 onSelected: (action) => _handleOverflow(action),
                 itemBuilder: (_) {
                   final detail = _detail(context);
+                  final l10n = AppLocalizations.of(context)!;
                   return [
-                    const PopupMenuItem(
+                    PopupMenuItem(
                       value: _OverflowAction.addToProject,
                       child: DetailMenuItem(
                         icon: PhosphorIconsRegular.folderPlus,
-                        label: 'Add to project',
+                        label: l10n.actionAddToProject,
                       ),
                     ),
-                    const PopupMenuItem(
+                    PopupMenuItem(
                       value: _OverflowAction.share,
                       child: DetailMenuItem(
                         icon: PhosphorIconsRegular.shareNetwork,
-                        label: 'Share',
+                        label: l10n.actionShare,
                       ),
                     ),
                     if (detail.links.homepageUrl != null)
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: _OverflowAction.homepage,
                         child: DetailMenuItem(
                           icon: PhosphorIconsRegular.house,
-                          label: 'Open homepage',
+                          label: l10n.actionOpenHomepage,
                         ),
                       ),
-                    const PopupMenuItem(
+                    PopupMenuItem(
                       value: _OverflowAction.report,
                       child: DetailMenuItem(
                         icon: PhosphorIconsRegular.flag,
-                        label: 'Report a problem',
+                        label: l10n.actionReportAProblem,
                       ),
                     ),
                   ];
@@ -249,6 +253,7 @@ class _ApiDetailViewState extends State<ApiDetailView> {
       bottomNavigationBar: BlocBuilder<ProjectsCubit, ProjectsState>(
         builder: (context, projectsState) {
           final detail = _detail(context);
+          final l10n = AppLocalizations.of(context)!;
           final baseUrl = detail.links.baseUrl?.toString();
           Project? savedProject;
           for (final project in projectsState.projects) {
@@ -261,11 +266,11 @@ class _ApiDetailViewState extends State<ApiDetailView> {
               detail.links.documentationUrl ?? detail.links.homepageUrl;
           return ApiDetailActions(
             projectLabel: savedProject == null
-                ? 'Add to project'
-                : 'Saved in ${savedProject.title}',
+                ? l10n.actionAddToProject
+                : l10n.apiDetailSavedInProject(savedProject.title),
             destinationLabel: detail.links.documentationUrl != null
-                ? 'Open docs'
-                : 'Open website',
+                ? l10n.actionOpenDocs
+                : l10n.actionOpenWebsite,
             onAddToProject: () => _showAddToProjectSheet(detail),
             onOpenDestination: destination == null
                 ? null
@@ -295,18 +300,21 @@ class _ApiDetailViewState extends State<ApiDetailView> {
     final link = detail.links.baseUrl?.toString() ?? '';
     if (isBookmarked) {
       final id = cubit.getBookmarkId(link);
-      if (id != null) await cubit.removeBookmark(id);
+      if (id != null) await cubit.removeBookmark(id, l10n: AppLocalizations.of(context)!);
       return;
     }
     if (detail.id.isEmpty) {
       _message(
-          'Bookmark unavailable', 'This API is missing a backend ID.', true);
+          AppLocalizations.of(context)!.snackbarBookmarkUnavailable,
+          AppLocalizations.of(context)!.snackbarBookmarkUnavailableMessage,
+          true);
       return;
     }
     final saved = await cubit.addBookmark(
       apiId: detail.id,
       apiName: detail.name,
-      optimisticApi: _bookmarkApi(detail),
+      optimisticApi: _bookmarkApi(detail, AppLocalizations.of(context)!),
+      l10n: AppLocalizations.of(context)!,
     );
     if (saved) _track('api_detail_bookmarked', detail);
   }
@@ -316,7 +324,7 @@ class _ApiDetailViewState extends State<ApiDetailView> {
     if (url == null) return;
     await Clipboard.setData(ClipboardData(text: url.toString()));
     if (!mounted) return;
-    _message('Base URL copied', url.toString(), false);
+    _message(AppLocalizations.of(context)!.snackbarBaseUrlCopied, url.toString(), false);
     _track('api_detail_endpoint_copied', detail);
   }
 
@@ -336,7 +344,7 @@ class _ApiDetailViewState extends State<ApiDetailView> {
       await ShareService.instance.shareText(text.toString().trim());
       _track('api_detail_shared', detail);
     } catch (_) {
-      if (mounted) _message('Share failed', 'Please try again.', true);
+      if (mounted) _message(AppLocalizations.of(context)!.snackbarShareFailedTitle, AppLocalizations.of(context)!.snackbarShareFailedMessage, true);
     }
   }
 
@@ -344,7 +352,7 @@ class _ApiDetailViewState extends State<ApiDetailView> {
     final detail = _detail(context);
     final opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
     if (!opened && mounted) {
-      _message('Could not open link', uri.toString(), true);
+      _message(AppLocalizations.of(context)!.snackbarCouldNotOpenLink, uri.toString(), true);
       return;
     }
     if (docs) _track('api_detail_docs_opened', detail);
@@ -370,7 +378,7 @@ class _ApiDetailViewState extends State<ApiDetailView> {
   }
 
   Future<void> _refreshHealth(ApiDetail detail) async {
-    await context.read<ApiDetailCubit>().refreshHealth();
+    await context.read<ApiDetailCubit>().refreshHealth(l10n: AppLocalizations.of(context));
     if (mounted) _track('api_detail_health_refreshed', detail);
   }
 
@@ -408,10 +416,10 @@ class _ApiDetailViewState extends State<ApiDetailView> {
                     AppSpacing.s16,
                   ),
                   children: [
-                    Text('ADD TO PROJECT', style: AppTextStyles.labelSmUpper),
+                    Text(AppLocalizations.of(context)!.sectionAddToProject, style: AppTextStyles.labelSmUpper),
                     if (recent.isNotEmpty) ...[
                       const SizedBox(height: AppSpacing.s16),
-                      const SheetLabel('Recently used'),
+                      SheetLabel(AppLocalizations.of(context)!.sectionRecentlyUsed),
                       ...recent.map((project) => ProjectSelectionTile(
                           project: project,
                           isSaved: project.apiLinks
@@ -421,7 +429,7 @@ class _ApiDetailViewState extends State<ApiDetailView> {
                     ],
                     if (all.isNotEmpty) ...[
                       const SizedBox(height: AppSpacing.s12),
-                      const SheetLabel('All projects'),
+                      SheetLabel(AppLocalizations.of(context)!.sectionAllProjects),
                       ...all.map((project) => ProjectSelectionTile(
                           project: project,
                           isSaved: project.apiLinks
@@ -434,7 +442,7 @@ class _ApiDetailViewState extends State<ApiDetailView> {
                       contentPadding: EdgeInsets.zero,
                       minTileHeight: 48,
                       leading: const Icon(PhosphorIconsRegular.plus),
-                      title: const Text('Create project'),
+                      title: Text(AppLocalizations.of(context)!.actionCreateProject),
                       onTap: () {
                         Navigator.pop(sheetContext);
                         CreateProjectBottomSheet.show(rootContext);
@@ -462,6 +470,7 @@ class _ApiDetailViewState extends State<ApiDetailView> {
           project.id,
           apiId: detail.id,
           apiLink: link,
+          l10n: AppLocalizations.of(context)!,
         );
     if (added) _track('api_detail_added_to_project', detail);
   }
@@ -481,8 +490,8 @@ class _ApiDetailViewState extends State<ApiDetailView> {
     );
     if (result != true || !mounted) return;
     _message(
-      'Report submitted',
-      'Thanks. Reqistry will review this information.',
+      AppLocalizations.of(context)!.snackbarReportSubmittedTitle,
+      AppLocalizations.of(context)!.snackbarReportSubmittedMessage,
       false,
     );
     _track('api_detail_issue_reported', detail);
@@ -508,8 +517,8 @@ class _ApiDetailViewState extends State<ApiDetailView> {
   Future<void> _saveAlternative(ApiAlternative alternative) async {
     if (alternative.id.isEmpty) {
       _message(
-        'Save unavailable',
-        'This alternative has no backend ID.',
+        AppLocalizations.of(context)!.snackbarSaveUnavailable,
+        AppLocalizations.of(context)!.snackbarSaveUnavailableMessage,
         true,
       );
       return;
@@ -527,10 +536,11 @@ class _ApiDetailViewState extends State<ApiDetailView> {
             authTypeName: alternative.authentication,
             httpsSupport: alternative.link.startsWith('https://'),
           ),
+          l10n: AppLocalizations.of(context)!,
         );
   }
 
-  BookmarkApi _bookmarkApi(ApiDetail detail) => BookmarkApi(
+  BookmarkApi _bookmarkApi(ApiDetail detail, AppLocalizations l10n) => BookmarkApi(
         id: detail.id,
         slug: detail.slug,
         name: detail.name,
@@ -538,10 +548,10 @@ class _ApiDetailViewState extends State<ApiDetailView> {
         link: detail.links.baseUrl?.toString() ?? '',
         documentationUrl: detail.links.documentationUrl?.toString(),
         httpsSupport: detail.capabilities.https == true,
-        corsStatus: corsLabel(detail.capabilities.cors),
+        corsStatus: _corsLabelL10n(detail.capabilities.cors, l10n),
         categoryName: detail.category.name,
         authTypeName: detail.access.authLabel,
-        apiTypeName: protocolLabel(detail.capabilities.protocol),
+        apiTypeName: _protocolLabelL10n(detail.capabilities.protocol, l10n),
         pricingTypeName: detail.access.pricingLabel,
         currentHealth: HealthStatus(
           isAlive: detail.health.status == ApiHealthStatus.operational,
@@ -572,3 +582,17 @@ class _ApiDetailViewState extends State<ApiDetailView> {
     );
   }
 }
+
+String _corsLabelL10n(CorsSupport value, AppLocalizations l10n) => switch (value) {
+      CorsSupport.supported => l10n.apiDetailSupported,
+      CorsSupport.unsupported => l10n.apiDetailNotSupported,
+      CorsSupport.unknown => l10n.apiDetailUnknownValue,
+    };
+
+String _protocolLabelL10n(ApiProtocol value, AppLocalizations l10n) => switch (value) {
+      ApiProtocol.rest => l10n.apiDetailRest,
+      ApiProtocol.graphql => l10n.apiDetailGraphql,
+      ApiProtocol.soap => l10n.apiDetailSoap,
+      ApiProtocol.websocket => l10n.apiDetailWebsocket,
+      ApiProtocol.unknown => l10n.apiDetailUnknownValue,
+    };

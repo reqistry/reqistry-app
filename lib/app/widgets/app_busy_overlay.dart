@@ -6,6 +6,7 @@ import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 
 class AppBusyOverlay {
   AppBusyOverlay._();
@@ -67,7 +68,7 @@ class AppBusyIndicator extends StatelessWidget {
           ),
           const SizedBox(width: AppSpacing.s6),
           Text(
-            'SYNCING',
+            AppLocalizations.of(context)!.stateSyncing,
             style: AppTextStyles.labelSmUpper.copyWith(
               color: c.primary,
               fontSize: 10,

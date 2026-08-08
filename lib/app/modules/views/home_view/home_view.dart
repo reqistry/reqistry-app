@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:api_scout/app/blocs/auth/auth_cubit.dart';
@@ -63,10 +64,10 @@ class _HomeViewState extends State<HomeView> {
   Future<void> _refresh() async {
     await Future.wait([
       context.read<AuthCubit>().refreshProfile(),
-      context.read<HomeCategoriesCubit>().retryFetch(),
+      context.read<HomeCategoriesCubit>().retryFetch(l10n: AppLocalizations.of(context)!),
       context.read<UserActivityCubit>().loadStats(),
       context.read<FavoritesCubit>().loadBookmarks(),
-      context.read<ProjectsCubit>().loadProjects(),
+      context.read<ProjectsCubit>().loadProjects(l10n: AppLocalizations.of(context)!),
     ]);
     if (mounted) {
       setState(() => _refreshTick++);
@@ -88,10 +89,10 @@ class _HomeViewState extends State<HomeView> {
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (_) => EditNameSheet(
-        title: 'SET NAME',
+        builder: (_) => EditNameSheet(
+          title: AppLocalizations.of(context)!.dialogSetNameTitle,
         initialName: _profileName(authCubit.state),
-        onSave: authCubit.updateUserProfile,
+        onSave: (name) => authCubit.updateUserProfile(name, l10n: AppLocalizations.of(context)!),
       ),
     );
   }
@@ -125,7 +126,7 @@ class _HomeViewState extends State<HomeView> {
                       width: 28,
                       height: 28,
                       child: IconButton(
-                        tooltip: 'Edit name',
+                        tooltip: AppLocalizations.of(context)!.tooltipEditName,
                         padding: EdgeInsets.zero,
                         iconSize: 16,
                         onPressed: _showEditNameSheet,
@@ -163,7 +164,7 @@ class _HomeViewState extends State<HomeView> {
                 elevation: 0,
               ),
               child: Text(
-                'KNOW AN API?',
+                AppLocalizations.of(context)!.actionKnowAnApi,
                 style: AppTextStyles.labelSmUpper.copyWith(
                   fontSize: 10,
                 ),

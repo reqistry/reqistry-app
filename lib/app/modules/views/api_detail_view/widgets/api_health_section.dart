@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:api_scout/app/data/models/api_detail.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
@@ -21,11 +22,12 @@ class ApiHealthSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final c = AppColors.of(Theme.of(context).brightness);
-    final presentation = _healthPresentation(health.status);
+    final presentation = _healthPresentation(health.status, l10n);
     final facts = <String>[
       if (health.checkedAt != null)
-        'Checked ${relativeTime(health.checkedAt!)}',
+        l10n.apiDetailCheckedAgo(relativeTime(health.checkedAt!, l10n)),
       if (health.responseTimeMs != null) '${health.responseTimeMs} ms',
       if (health.statusCode != null) 'HTTP ${health.statusCode}',
       if (health.uptime30d != null)
@@ -34,12 +36,12 @@ class ApiHealthSection extends StatelessWidget {
         '${health.observationCount} observations',
     ];
     final detailText = facts.isEmpty
-        ? 'No recent health result is available'
+        ? l10n.stateNoRecentHealthResult
         : facts.join(' · ');
 
     return Semantics(
       container: true,
-      label: 'Platform-observed health. ${presentation.label}. $detailText',
+      label: '${l10n.apiDetailPlatformObservedHealthLabel} ${presentation.label}. $detailText',
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
@@ -56,7 +58,7 @@ class ApiHealthSection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'PLATFORM-OBSERVED HEALTH',
+              l10n.apiDetailPlatformObservedHealth,
               style: AppTextStyles.labelSm.copyWith(
                 color: c.onSurfaceVariant,
                 letterSpacing: 0,
@@ -88,7 +90,7 @@ class ApiHealthSection extends StatelessWidget {
                   TextButton.icon(
                     onPressed: onRefresh,
                     icon: const Icon(PhosphorIconsRegular.arrowsClockwise),
-                    label: const Text('Refresh'),
+                    label: Text(l10n.actionRefresh),
                     style: TextButton.styleFrom(
                       minimumSize: const Size(48, 48),
                       foregroundColor: c.onSurface,
@@ -118,44 +120,44 @@ class _HealthPresentation {
   const _HealthPresentation(this.label, this.icon, this.color);
 }
 
-_HealthPresentation _healthPresentation(ApiHealthStatus status) =>
+_HealthPresentation _healthPresentation(ApiHealthStatus status, AppLocalizations l10n) =>
     switch (status) {
-      ApiHealthStatus.operational => const _HealthPresentation(
-          'Operational',
+      ApiHealthStatus.operational => _HealthPresentation(
+          l10n.apiDetailOperational,
           PhosphorIconsFill.checkCircle,
           AppColors.successText,
         ),
-      ApiHealthStatus.authenticationRequired => const _HealthPresentation(
-          'Reachable - authentication required',
+      ApiHealthStatus.authenticationRequired => _HealthPresentation(
+          l10n.apiDetailReachableAuthRequired,
           PhosphorIconsFill.shieldWarning,
           AppColors.warningText,
         ),
-      ApiHealthStatus.rateLimited => const _HealthPresentation(
-          'Reachable - rate limited',
+      ApiHealthStatus.rateLimited => _HealthPresentation(
+          l10n.apiDetailReachableRateLimited,
           PhosphorIconsFill.warning,
           AppColors.warningText,
         ),
-      ApiHealthStatus.degraded => const _HealthPresentation(
-          'Slow response',
+      ApiHealthStatus.degraded => _HealthPresentation(
+          l10n.apiDetailSlowResponse,
           PhosphorIconsFill.gauge,
           AppColors.warningText,
         ),
-      ApiHealthStatus.unavailable => const _HealthPresentation(
-          'Currently unavailable',
+      ApiHealthStatus.unavailable => _HealthPresentation(
+          l10n.apiDetailCurrentlyUnavailable,
           PhosphorIconsFill.xSquare,
           AppColors.dangerText,
         ),
-      ApiHealthStatus.unknown => const _HealthPresentation(
-          'Status not verified',
+      ApiHealthStatus.unknown => _HealthPresentation(
+          l10n.apiDetailStatusNotVerified,
           PhosphorIconsRegular.circle,
           AppColors.onSurfaceVariant,
         ),
     };
 
-String relativeTime(DateTime value) {
+String relativeTime(DateTime value, AppLocalizations l10n) {
   final difference = DateTime.now().difference(value).abs();
-  if (difference.inMinutes < 1) return 'just now';
-  if (difference.inMinutes < 60) return '${difference.inMinutes} min ago';
-  if (difference.inHours < 24) return '${difference.inHours} hr ago';
-  return '${difference.inDays} days ago';
+  if (difference.inMinutes < 1) return l10n.timeJustNow;
+  if (difference.inMinutes < 60) return l10n.timeMinutesAgo(difference.inMinutes);
+  if (difference.inHours < 24) return l10n.timeHoursAgo(difference.inHours);
+  return l10n.timeDaysAgo(difference.inDays);
 }

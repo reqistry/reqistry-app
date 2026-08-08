@@ -4,6 +4,7 @@ import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 
 class UserProfileCard extends StatelessWidget {
   final String userName;
@@ -65,7 +66,7 @@ class UserProfileCard extends StatelessWidget {
                     borderRadius: BorderRadius.zero,
                   ),
                   child: Text(
-                    isGuest ? 'GUEST' : 'REGISTERED',
+                    isGuest ? AppLocalizations.of(context)!.settingsGuest : AppLocalizations.of(context)!.settingsRegisteredBadge,
                     style: AppTextStyles.labelSmUpper.copyWith(
                       color: c.primary,
                     ),

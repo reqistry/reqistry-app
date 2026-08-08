@@ -6,6 +6,7 @@ import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
 import 'package:api_scout/shared/widgets/api/api_badges.dart';
 import 'package:api_scout/shared/widgets/app_cached_image.dart';
 import 'package:api_scout/app/modules/views/api_detail_view/widgets/detail_section.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 
 class ApiIdentityHeader extends StatelessWidget {
   const ApiIdentityHeader({super.key, required this.detail});
@@ -21,7 +22,7 @@ class ApiIdentityHeader extends StatelessWidget {
         children: [
           Semantics(
             image: true,
-            label: '${detail.name} logo',
+            label: AppLocalizations.of(context)!.semanticsApiLogo(detail.name),
             child: Container(
               width: 64,
               height: 64,

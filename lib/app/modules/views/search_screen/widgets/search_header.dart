@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:api_scout/app/blocs/search/search_bloc.dart';
@@ -30,7 +31,7 @@ class SearchHeader extends StatelessWidget {
               decoration: TextDecoration.none,
             ),
             decoration: InputDecoration(
-              hintText: 'Search APIs (e.g., weather, payment...)',
+              hintText: AppLocalizations.of(context)!.formSearchHint,
               hintStyle: AppTextStyles.bodyMd.copyWith(
                 color: c.onSurfaceVariant,
                 decoration: TextDecoration.none,
@@ -81,7 +82,7 @@ class SearchHeader extends StatelessWidget {
                       const SizedBox(width: AppSpacing.s12),
                       Expanded(
                         child: Text(
-                          'FILTERS',
+                          AppLocalizations.of(context)!.sectionFilters,
                           style: AppTextStyles.headlineSm
                               .copyWith(color: c.onSurface),
                         ),

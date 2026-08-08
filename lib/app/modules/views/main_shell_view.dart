@@ -13,6 +13,7 @@ import 'search_apis_screen.dart';
 import 'search_screen/search_screen.dart';
 import 'settings_view/settings_view.dart';
 import 'favorites_view/favorites_view.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'intelligence_view/intelligence_view.dart';
 import 'main_shell_view/widgets/nav_item.dart';
 
@@ -43,7 +44,7 @@ class _MainShellViewState extends State<MainShellView> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       context.read<FavoritesCubit>().loadBookmarks();
-      context.read<ProjectsCubit>().loadProjects();
+      context.read<ProjectsCubit>().loadProjects(l10n: AppLocalizations.of(context)!);
       context.read<UserActivityCubit>().refresh();
     });
   }
@@ -117,35 +118,35 @@ class _MainShellViewState extends State<MainShellView> {
                   NavItem(
                     icon: PhosphorIconsRegular.house,
                     selectedIcon: PhosphorIconsFill.house,
-                    label: 'Home',
+                    label: AppLocalizations.of(context)!.navHome,
                     selected: state.selectedTabIndex == 0,
                     onTap: () => _onNavTap(0),
                   ),
                   NavItem(
                     icon: PhosphorIconsRegular.compass,
                     selectedIcon: PhosphorIconsFill.compass,
-                    label: 'Explore',
+                    label: AppLocalizations.of(context)!.navExplore,
                     selected: state.selectedTabIndex == 1,
                     onTap: () => _onNavTap(1),
                   ),
                   NavItem(
                     icon: PhosphorIconsRegular.brain,
                     selectedIcon: PhosphorIconsFill.brain,
-                    label: 'Intelligence',
+                    label: AppLocalizations.of(context)!.navIntelligence,
                     selected: state.selectedTabIndex == 2,
                     onTap: () => _onNavTap(2),
                   ),
                   NavItem(
                     icon: PhosphorIconsRegular.bookmarkSimple,
                     selectedIcon: PhosphorIconsFill.bookmarkSimple,
-                    label: 'Saved',
+                    label: AppLocalizations.of(context)!.navSaved,
                     selected: state.selectedTabIndex == 3,
                     onTap: () => _onNavTap(3),
                   ),
                   NavItem(
                     icon: PhosphorIconsRegular.user,
                     selectedIcon: PhosphorIconsFill.user,
-                    label: 'You',
+                    label: AppLocalizations.of(context)!.navYou,
                     selected: state.selectedTabIndex == 4,
                     onTap: () => _onNavTap(4),
                   ),

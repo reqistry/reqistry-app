@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/shared/widgets/api/api_chip.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 
 class PricingBadge extends StatelessWidget {
   final String pricing;
@@ -10,7 +11,7 @@ class PricingBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = AppColors.of(Theme.of(context).brightness);
     final normalized = pricing.toLowerCase();
-    final label = normalized.isEmpty ? 'UNKNOWN' : pricing.toUpperCase();
+    final label = normalized.isEmpty ? AppLocalizations.of(context)!.miscUnknownPricing : pricing.toUpperCase();
 
     Color bg;
     Color fg;

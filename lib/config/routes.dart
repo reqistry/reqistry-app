@@ -24,6 +24,7 @@ import 'package:api_scout/app/modules/views/account_settings_view/account_settin
 import 'package:api_scout/app/modules/views/app_settings_view/app_settings_view.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/shared/widgets/app_error_state.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 
 import 'app_routes.dart';
 
@@ -84,7 +85,7 @@ class AppRouter {
         builder: (context, state) {
           final api = state.extra is Api ? state.extra as Api : null;
           if (api == null) {
-            return const _ErrorPage(message: 'API data not found');
+            return const _ErrorPage(messageKey: 'errorApiDataNotFound');
           }
           final slug =
               api.slug.isNotEmpty ? api.slug : slugifyApiName(api.name);
@@ -98,8 +99,9 @@ class AppRouter {
         path: AppRoutes.categoryApis,
         builder: (context, state) {
           final extra = state.extra;
+          final l10n = AppLocalizations.of(context);
           return BlocProvider(
-            create: (_) => CategoryApisCubit(argument: extra ?? ''),
+            create: (_) => CategoryApisCubit(argument: extra ?? '', l10n: l10n),
             child: CategoryApisView(argument: extra ?? ''),
           );
         },
@@ -109,7 +111,7 @@ class AppRouter {
         builder: (context, state) {
           final extra = state.extra;
           if (extra is! Project) {
-            return const _ErrorPage(message: 'Project data not found');
+            return const _ErrorPage(messageKey: 'errorProjectDataNotFound');
           }
           return ProjectApisView(project: extra);
         },
@@ -160,19 +162,23 @@ class AppRouter {
 }
 
 class _ErrorPage extends StatelessWidget {
-  final String message;
-  const _ErrorPage({required this.message});
+  final String messageKey;
+  const _ErrorPage({required this.messageKey});
 
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(Theme.of(context).brightness);
+    final l10n = AppLocalizations.of(context)!;
+    final message = messageKey == 'errorApiDataNotFound'
+        ? l10n.errorApiDataNotFound
+        : l10n.errorProjectDataNotFound;
     return Scaffold(
       backgroundColor: c.background,
       body: AppErrorState(
-        title: 'Error',
+        title: l10n.stateError,
         message: message,
         onRetry: () => context.go(AppRoutes.home),
-        actionLabel: 'GO HOME',
+        actionLabel: l10n.actionGoHome,
       ),
     );
   }

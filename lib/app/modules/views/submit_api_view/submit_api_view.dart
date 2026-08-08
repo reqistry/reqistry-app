@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:api_scout/app/blocs/submit_api/submit_api_cubit.dart';
 import 'package:api_scout/app/blocs/submit_api/submit_api_state.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
@@ -39,7 +40,7 @@ class _SubmitApiViewState extends State<SubmitApiView> {
       child: Scaffold(
         backgroundColor: c.background,
         appBar: AppBar(
-          title: Text('SUBMIT API', style: AppTextStyles.headlineSm),
+          title: Text(AppLocalizations.of(context)!.tabSubmitApi, style: AppTextStyles.headlineSm),
           backgroundColor: c.surface,
           centerTitle: false,
           elevation: 0,
@@ -63,13 +64,13 @@ class _SubmitApiViewState extends State<SubmitApiView> {
                   const SizedBox(height: AppSpacing.itemGap),
                   _buildTextField(
                     controller: _nameController,
-                    label: 'API NAME',
+                    label: AppLocalizations.of(context)!.formApiName,
                     validator: _validateName,
                   ),
                   const SizedBox(height: AppSpacing.itemGap),
                   _buildTextField(
                     controller: _linkController,
-                    label: 'API LINK (HTTPS://...)',
+                    label: AppLocalizations.of(context)!.formApiLink,
                     keyboardType: TextInputType.url,
                     validator: _validateRequiredUrl,
                   ),
@@ -99,7 +100,7 @@ class _SubmitApiViewState extends State<SubmitApiView> {
                                   ),
                                 )
                               : Text(
-                                  'SUBMIT',
+                                  AppLocalizations.of(context)!.actionSubmit,
                                   style: AppTextStyles.labelSmUpper.copyWith(
                                     color: c.onPrimary,
                                   ),
@@ -124,29 +125,30 @@ class _SubmitApiViewState extends State<SubmitApiView> {
     await context.read<SubmitApiCubit>().submit(
           name: _nameController.text.trim(),
           link: _linkController.text.trim(),
+          l10n: AppLocalizations.of(context)!,
         );
   }
 
   String? _validateName(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return 'This field is required';
+      return AppLocalizations.of(context)!.formFieldRequired;
     }
     if (value.trim().length < 3) {
-      return 'Name must be at least 3 characters';
+      return AppLocalizations.of(context)!.formNameTooShort;
     }
     return null;
   }
 
   String? _validateRequiredUrl(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return 'This field is required';
+      return AppLocalizations.of(context)!.formFieldRequired;
     }
     final parsed = Uri.tryParse(value.trim());
     final isValid = parsed != null && parsed.hasScheme && parsed.hasAuthority;
     if (!isValid ||
         !(parsed.scheme.toLowerCase() == 'https' ||
             parsed.scheme.toLowerCase() == 'http')) {
-      return 'Enter a valid http(s) URL';
+      return AppLocalizations.of(context)!.formInvalidUrl;
     }
     return null;
   }

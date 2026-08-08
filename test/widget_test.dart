@@ -1,6 +1,7 @@
 import 'package:api_scout/app/data/models/api.dart' as legacy;
 import 'package:api_scout/app/data/models/api_detail.dart';
 import 'package:api_scout/app/modules/views/api_detail_view/widgets/api_detail_sections.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -22,6 +23,8 @@ void main() {
 
     await tester.pumpWidget(
       MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         home: MediaQuery(
           data: const MediaQueryData(textScaler: TextScaler.linear(2)),
           child: Scaffold(

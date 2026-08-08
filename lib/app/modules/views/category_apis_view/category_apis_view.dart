@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:api_scout/app/blocs/category_apis/category_apis_cubit.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
@@ -23,7 +24,7 @@ class CategoryApisView extends StatelessWidget {
         title: BlocBuilder<CategoryApisCubit, CategoryApisState>(
           builder: (context, state) {
             return Text(
-              state.categoryTitle.isNotEmpty ? state.categoryTitle : 'Category',
+              state.categoryTitle.isNotEmpty ? state.categoryTitle : AppLocalizations.of(context)!.stateCategory,
               style: AppTextStyles.headlineSm,
             );
           },
@@ -38,13 +39,13 @@ class CategoryApisView extends StatelessWidget {
             isLoading: state.isLoading,
             errorMessage: state.errorMessage.isNotEmpty ? state.errorMessage : null,
             isEmpty: state.apis.isEmpty,
-            loadingMessage: 'Loading category APIs',
-            errorTitle: 'Could not load category',
-            emptyTitle: 'No APIs available',
-            emptyMessage: 'This category is empty right now. Try another category in the Discover tab.',
-            onRetry: () => context.read<CategoryApisCubit>().retryFetch(),
+            loadingMessage: AppLocalizations.of(context)!.stateLoadingCategoryApis,
+            errorTitle: AppLocalizations.of(context)!.stateCouldNotLoadCategory,
+            emptyTitle: AppLocalizations.of(context)!.stateNoApisAvailable,
+            emptyMessage: AppLocalizations.of(context)!.stateCategoryEmptyMessage,
+            onRetry: () => context.read<CategoryApisCubit>().retryFetch(l10n: AppLocalizations.of(context)),
             child: RefreshIndicator(
-              onRefresh: () => context.read<CategoryApisCubit>().retryFetch(),
+              onRefresh: () => context.read<CategoryApisCubit>().retryFetch(l10n: AppLocalizations.of(context)),
               child: ListView.separated(
                 itemCount: state.apis.length + 1,
                 padding: const EdgeInsets.all(AppSpacing.pagePaddingH),
@@ -133,7 +134,7 @@ class _CategorySummary extends StatelessWidget {
                         ),
                         color: c.primary,
                         child: Text(
-                          'TRENDING',
+                          AppLocalizations.of(context)!.stateTrending,
                           style: AppTextStyles.labelSmUpper.copyWith(
                             color: c.onPrimary,
                             fontSize: 9,
@@ -186,16 +187,16 @@ class _CategorySummary extends StatelessWidget {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   children: [
-                    StatTile(label: 'APIS', value: '${apis.length}'),
-                    StatTile(label: 'ALIVE', value: '$aliveCount'),
-                    StatTile(label: 'HTTPS', value: '$httpsCount'),
-                    StatTile(label: 'NO AUTH', value: '$openAuthCount'),
+                    StatTile(label: AppLocalizations.of(context)!.categoryApis, value: '${apis.length}'),
+                    StatTile(label: AppLocalizations.of(context)!.categoryAlive, value: '$aliveCount'),
+                    StatTile(label: AppLocalizations.of(context)!.categoryHttps, value: '$httpsCount'),
+                    StatTile(label: AppLocalizations.of(context)!.categoryNoAuth, value: '$openAuthCount'),
                     StatTile(
-                      label: 'AVG RESPONSE',
-                      value: avgResponse > 0 ? '${avgResponse}ms' : 'N/A',
+                      label: AppLocalizations.of(context)!.categoryAvgResponse,
+                      value: avgResponse > 0 ? '${avgResponse}ms' : AppLocalizations.of(context)!.miscNA,
                     ),
                     StatTile(
-                      label: 'CATALOG TOTAL',
+                      label: AppLocalizations.of(context)!.categoryCatalogTotal,
                       value: '${meta?.apiCount ?? apis.length}',
                     ),
                   ],

@@ -3,6 +3,7 @@ import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 
 class LinkAccountSection extends StatelessWidget {
   final VoidCallback onLinkEmail;
@@ -18,10 +19,10 @@ class LinkAccountSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('LINK YOUR ACCOUNT', style: AppTextStyles.labelSmUpper),
+        Text(AppLocalizations.of(context)!.sectionLinkYourAccount, style: AppTextStyles.labelSmUpper),
         const SizedBox(height: AppSpacing.chipGap),
         Text(
-          'Save your favorites and notes by linking to an account',
+          AppLocalizations.of(context)!.settingsLinkAccountDescription,
           style: AppTextStyles.bodyMd.copyWith(
             color: c.onSurfaceVariant,
           ),
@@ -40,8 +41,8 @@ class LinkAccountSection extends StatelessWidget {
                 backgroundColor: c.surfaceVariant,
                 child: Icon(PhosphorIconsRegular.envelope, color: c.primary),
               ),
-              title: const Text('Link with Email & Password'),
-              subtitle: const Text('Create a permanent account'),
+              title: Text(AppLocalizations.of(context)!.settingsLinkWithEmail),
+              subtitle: Text(AppLocalizations.of(context)!.settingsCreatePermanentAccount),
               trailing:
                   const Icon(PhosphorIconsRegular.caretRight, size: 16),
               onTap: onLinkEmail,

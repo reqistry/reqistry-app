@@ -5,6 +5,7 @@ import 'package:api_scout/app/data/models/api_detail.dart';
 import 'package:api_scout/app/services/api_detail/api_detail_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 
 part 'api_detail_state.dart';
 
@@ -42,7 +43,7 @@ class ApiDetailCubit extends Cubit<ApiDetailState> {
     );
   }
 
-  Future<void> load({bool forceRefresh = false}) async {
+  Future<void> load({bool forceRefresh = false, AppLocalizations? l10n}) async {
     if (state.detail == null) {
       emit(state.copyWith(isLoadingCore: true, clearCoreError: true));
     } else {
@@ -63,7 +64,9 @@ class ApiDetailCubit extends Cubit<ApiDetailState> {
         clearCoreError: true,
       ));
       if (!detail.health.isFresh) {
-        unawaited(forceRefresh ? refreshHealth() : _refreshStaleHealth(detail));
+        unawaited(forceRefresh
+            ? refreshHealth(l10n: l10n)
+            : _refreshStaleHealth(detail, l10n: l10n));
       }
       unawaited(loadAlternatives(forceRefresh: forceRefresh));
     } catch (error) {
@@ -72,17 +75,17 @@ class ApiDetailCubit extends Cubit<ApiDetailState> {
         isLoadingCore: false,
         isRefreshingCore: false,
         coreError: state.detail == null
-            ? 'This API could not be loaded.'
-            : 'Fresh API information is temporarily unavailable.',
+            ? (l10n?.apiDetailCouldNotBeLoaded ?? 'This API could not be loaded.')
+            : (l10n?.apiDetailFreshInfoUnavailable ?? 'Fresh API information is temporarily unavailable.'),
       ));
     }
   }
 
-  Future<void> refresh() async {
-    await load(forceRefresh: true);
+  Future<void> refresh({AppLocalizations? l10n}) async {
+    await load(forceRefresh: true, l10n: l10n);
   }
 
-  Future<void> loadAlternatives({bool forceRefresh = false}) async {
+  Future<void> loadAlternatives({bool forceRefresh = false, AppLocalizations? l10n}) async {
     final detail = state.detail;
     if (detail == null || state.isLoadingAlternatives) return;
     if (!forceRefresh && detail.areAlternativesFresh) return;
@@ -106,12 +109,12 @@ class ApiDetailCubit extends Cubit<ApiDetailState> {
       if (isClosed) return;
       emit(state.copyWith(
         isLoadingAlternatives: false,
-        alternativesError: 'Similar APIs are unavailable.',
+        alternativesError: l10n?.apiDetailSimilarApisUnavailable ?? 'Similar APIs are unavailable.',
       ));
     }
   }
 
-  Future<void> refreshHealth() async {
+  Future<void> refreshHealth({AppLocalizations? l10n}) async {
     final detail = state.detail;
     if (detail == null || state.isRefreshingHealth) return;
     emit(state.copyWith(
@@ -126,18 +129,18 @@ class ApiDetailCubit extends Cubit<ApiDetailState> {
       emit(state.copyWith(
         detail: current.copyWith(health: health),
         isRefreshingHealth: false,
-        transientMessage: 'Latest platform health result loaded.',
+        transientMessage: l10n?.apiDetailHealthLoaded ?? 'Latest platform health result loaded.',
       ));
     } catch (_) {
       if (isClosed) return;
       emit(state.copyWith(
         isRefreshingHealth: false,
-        healthError: 'Health could not be refreshed.',
+        healthError: l10n?.apiDetailHealthRefreshFailed ?? 'Health could not be refreshed.',
       ));
     }
   }
 
-  Future<void> _refreshStaleHealth(ApiDetail detail) async {
+  Future<void> _refreshStaleHealth(ApiDetail detail, {AppLocalizations? l10n}) async {
     if (state.isRefreshingHealth) return;
     emit(state.copyWith(isRefreshingHealth: true, clearHealthError: true));
     try {
@@ -152,7 +155,7 @@ class ApiDetailCubit extends Cubit<ApiDetailState> {
       if (!isClosed) {
         emit(state.copyWith(
           isRefreshingHealth: false,
-          healthError: 'Health could not be refreshed.',
+          healthError: l10n?.apiDetailHealthRefreshFailed ?? 'Health could not be refreshed.',
         ));
       }
     }

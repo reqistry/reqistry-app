@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:api_scout/app/blocs/search/search_bloc.dart';
@@ -29,7 +30,7 @@ class SearchResultsList extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Text('${state.totalResults} results',
+              Text(AppLocalizations.of(context)!.resultsCount(state.totalResults),
                   style: AppTextStyles.bodyMd
                       .copyWith(color: c.onSurface)),
               const Spacer(),
@@ -40,7 +41,7 @@ class SearchResultsList extends StatelessWidget {
                     Icon(PhosphorIconsRegular.sortAscending,
                         size: 18, color: c.primary),
                     const SizedBox(width: AppSpacing.s4),
-                    Text('SORT',
+                    Text(AppLocalizations.of(context)!.actionSort,
                         style: AppTextStyles.labelSmUpper
                             .copyWith(color: c.primary, fontSize: 11)),
                   ],
@@ -52,16 +53,16 @@ class SearchResultsList extends StatelessWidget {
                   context.read<SearchBloc>().add(SearchPerformed());
                 },
                 itemBuilder: (context) => [
-                  const PopupMenuItem(
-                      value: 'name_asc', child: Text('Name (A-Z)')),
-                  const PopupMenuItem(
-                      value: 'name_desc', child: Text('Name (Z-A)')),
-                  const PopupMenuItem(
-                      value: 'responseTime_asc', child: Text('Fastest First')),
-                  const PopupMenuItem(
-                      value: 'responseTime_desc', child: Text('Slowest First')),
-                  const PopupMenuItem(
-                      value: 'category_asc', child: Text('Category (A-Z)')),
+                  PopupMenuItem(
+                      value: 'name_asc', child: Text(AppLocalizations.of(context)!.sortNameAsc)),
+                  PopupMenuItem(
+                      value: 'name_desc', child: Text(AppLocalizations.of(context)!.sortNameDesc)),
+                  PopupMenuItem(
+                      value: 'responseTime_asc', child: Text(AppLocalizations.of(context)!.sortFastestFirst)),
+                  PopupMenuItem(
+                      value: 'responseTime_desc', child: Text(AppLocalizations.of(context)!.sortSlowestFirst)),
+                  PopupMenuItem(
+                      value: 'category_asc', child: Text(AppLocalizations.of(context)!.sortCategoryAsc)),
                 ],
               ),
             ],
@@ -83,8 +84,8 @@ class SearchResultsList extends StatelessWidget {
                     padding: const EdgeInsets.all(AppSpacing.s16),
                     child: Center(
                       child: state.isLoadingMore
-                          ? const AppLoading(
-                              message: 'Loading more',
+                            ? AppLoading(
+                              message: AppLocalizations.of(context)!.stateLoadingMore,
                               compact: true,
                               size: 24,
                             )
@@ -95,7 +96,7 @@ class SearchResultsList extends StatelessWidget {
                               icon: const Icon(
                                   PhosphorIconsRegular.arrowsClockwise,
                                   size: 18),
-                              label: Text('LOAD MORE',
+                              label: Text(AppLocalizations.of(context)!.actionLoadMore,
                                   style: AppTextStyles.labelSmUpper
                                       .copyWith(fontSize: 11)),
                               style: ElevatedButton.styleFrom(
@@ -113,7 +114,7 @@ class SearchResultsList extends StatelessWidget {
                 }
                 final api = state.searchResults[index];
                 final category =
-                    state.category.isNotEmpty ? state.category.first : 'Search';
+                    state.category.isNotEmpty ? state.category.first : AppLocalizations.of(context)!.apiDetailSearchFallback;
                 return ApiCard(api: api, category: category);
               },
             ),

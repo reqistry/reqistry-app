@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/services/fetch_api/remote_service.dart';
 import 'package:api_scout/app/utils/snackbar_helper.dart';
@@ -34,18 +35,18 @@ class _SubmitApiSheetState extends State<SubmitApiSheet> {
 
     setState(() => _isLoading = true);
     try {
-      await RemoteService.submitApi(name: name, link: link);
+      await RemoteService.submitApi(name: name, link: link, l10n: AppLocalizations.of(context)!);
       if (!mounted) return;
       dismissTextInputRoute(context);
       AppSnackBarHelper.success(
-        title: 'Submitted',
-        message: 'Thanks! We\'ll review "$name" soon.',
+        title: AppLocalizations.of(context)!.snackbarSubmittedTitle,
+        message: AppLocalizations.of(context)!.snackbarSubmittedMessage(name),
       );
     } catch (_) {
       if (mounted) setState(() => _isLoading = false);
       AppSnackBarHelper.error(
-        title: 'Submission failed',
-        message: 'Unable to submit right now. Please try again.',
+        title: AppLocalizations.of(context)!.snackbarSubmissionFailedTitle,
+        message: AppLocalizations.of(context)!.snackbarSubmissionFailedMessage,
       );
     }
   }
@@ -53,8 +54,8 @@ class _SubmitApiSheetState extends State<SubmitApiSheet> {
   @override
   Widget build(BuildContext context) {
     return BottomSheetScaffold(
-      title: 'SUBMIT AN API',
-      submitLabel: 'SUBMIT',
+      title: AppLocalizations.of(context)!.dialogSubmitAnApiTitle,
+      submitLabel: AppLocalizations.of(context)!.actionSubmit,
       isSubmitLoading: _isLoading,
       onSubmit: _submit,
       content: Padding(
@@ -67,15 +68,15 @@ class _SubmitApiSheetState extends State<SubmitApiSheet> {
               TextFormField(
                 controller: _nameController,
                 autofocus: true,
-                decoration: const InputDecoration(
-                  hintText: 'API name',
+                decoration: InputDecoration(
+                  hintText: AppLocalizations.of(context)!.formApiName,
                 ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'This field is required';
+                    return AppLocalizations.of(context)!.formFieldRequired;
                   }
                   if (value.trim().length < 3) {
-                    return 'Name must be at least 3 characters';
+                    return AppLocalizations.of(context)!.formNameTooShort;
                   }
                   return null;
                 },
@@ -84,12 +85,12 @@ class _SubmitApiSheetState extends State<SubmitApiSheet> {
               TextFormField(
                 controller: _linkController,
                 keyboardType: TextInputType.url,
-                decoration: const InputDecoration(
-                  hintText: 'API LINK (HTTPS://...)',
+                decoration: InputDecoration(
+                  hintText: AppLocalizations.of(context)!.formApiLink,
                 ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'This field is required';
+                    return AppLocalizations.of(context)!.formFieldRequired;
                   }
                   final parsed = Uri.tryParse(value.trim());
                   if (parsed == null ||
@@ -97,7 +98,7 @@ class _SubmitApiSheetState extends State<SubmitApiSheet> {
                       !parsed.hasAuthority ||
                       !(parsed.scheme.toLowerCase() == 'https' ||
                           parsed.scheme.toLowerCase() == 'http')) {
-                    return 'Enter a valid http(s) URL';
+                    return AppLocalizations.of(context)!.formInvalidUrl;
                   }
                   return null;
                 },

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:api_scout/app/services/fetch_api/remote_service.dart';
 import 'package:api_scout/config/app_routes.dart';
 import 'package:api_scout/app/modules/views/home_view/widgets/api_preview_section.dart';
@@ -14,12 +15,12 @@ class RecommendedApisSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ApiPreviewSection(
-      title: 'RECOMMENDED FOR YOU',
+      title: AppLocalizations.of(context)!.sectionRecommendedForYou,
       route: AppRoutes.recommendedApis,
-      emptyTitle: 'No recommendations yet',
-      emptyMessage: 'Recommendations will appear as you use the catalog.',
+      emptyTitle: AppLocalizations.of(context)!.stateNoRecommendationsYet,
+      emptyMessage: AppLocalizations.of(context)!.stateRecommendationsWillAppear,
       refreshTick: refreshTick,
-      fetch: () => RemoteService.getRecommendedApiItems(limit: 3),
+      fetch: () => RemoteService.getRecommendedApiItems(limit: 3, l10n: AppLocalizations.of(context)!),
     );
   }
 }
@@ -35,12 +36,12 @@ class LatestApisSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ApiPreviewSection(
-      title: 'LATEST ADDED',
+      title: AppLocalizations.of(context)!.sectionLatestAdded,
       route: AppRoutes.latestApis,
-      emptyTitle: 'No recent APIs',
-      emptyMessage: 'New catalog additions will appear here.',
+      emptyTitle: AppLocalizations.of(context)!.stateNoRecentApis,
+      emptyMessage: AppLocalizations.of(context)!.stateNewCatalogAdditions,
       refreshTick: refreshTick,
-      fetch: () => RemoteService.getRecentlyAddedApis(limit: 3),
+      fetch: () => RemoteService.getRecentlyAddedApis(limit: 3, l10n: AppLocalizations.of(context)!),
     );
   }
 }

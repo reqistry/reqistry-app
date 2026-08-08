@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
@@ -12,6 +13,7 @@ class Onboarding extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -45,31 +47,29 @@ class Onboarding extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.s8),
         Text(
-          'Find the right API. Give your agents the right tools.',
+          l10n.onboardingSubtitle,
           style: AppTextStyles.bodyMd.copyWith(
             color: AppColors.of(Theme.of(context).brightness).onSurfaceVariant,
           ),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: AppSpacing.s32),
-        const OnboardingStep(
+        OnboardingStep(
           icon: PhosphorIconsFill.compass,
-          title: 'Discover',
-          text:
-              'Browse a trusted catalog of 1,400+ APIs organized by category.',
+          title: l10n.onboardingDiscoverTitle,
+          text: l10n.onboardingDiscoverText,
         ),
         const SizedBox(height: AppSpacing.s16),
-        const OnboardingStep(
+        OnboardingStep(
           icon: PhosphorIconsRegular.bookmarkSimple,
-          title: 'Evaluate',
-          text: 'Check health, auth, pricing, and docs before you build.',
+          title: l10n.onboardingEvaluateTitle,
+          text: l10n.onboardingEvaluateText,
         ),
         const SizedBox(height: AppSpacing.s16),
-        const OnboardingStep(
+        OnboardingStep(
           icon: PhosphorIconsRegular.globe,
-          title: 'Connect',
-          text:
-              'Bookmark APIs and organize them into projects for your next build.',
+          title: l10n.onboardingConnectTitle,
+          text: l10n.onboardingConnectText,
         ),
       ],
     );

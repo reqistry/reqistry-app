@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:api_scout/app/blocs/favorites/favorites_cubit.dart';
 import 'package:api_scout/app/blocs/favorites/favorites_state.dart';
@@ -24,7 +25,7 @@ class FavoritesView extends StatelessWidget {
     return Scaffold(
       backgroundColor: c.background,
       appBar: AppBar(
-        title: Text('BOOKMARKS', style: AppTextStyles.headlineSm),
+        title: Text(AppLocalizations.of(context)!.tabBookmarks, style: AppTextStyles.headlineSm),
         backgroundColor: c.surface,
         elevation: 0,
         centerTitle: false,
@@ -40,8 +41,8 @@ class FavoritesView extends StatelessWidget {
         child: BlocBuilder<FavoritesCubit, FavoritesState>(
           builder: (context, state) {
             if (state.isLoading) {
-              return const AppLoading(
-                message: 'Loading bookmarks',
+              return AppLoading(
+                message: AppLocalizations.of(context)!.stateLoadingBookmarks,
                 scrollable: true,
               );
             }
@@ -57,7 +58,7 @@ class FavoritesView extends StatelessWidget {
                 return ApiCard(
                   api: bookmark.api.toApiItem(),
                   category: bookmark.api.categoryName.isEmpty
-                      ? 'Bookmarks'
+                      ? AppLocalizations.of(context)!.tabBookmarks
                       : bookmark.api.categoryName,
                 );
               },
@@ -75,8 +76,8 @@ class _EmptyFavorites extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppEmptyState(
-      title: 'No bookmarks yet',
-      message: 'Tap the bookmark icon on any API in the Discover tab to save it here.',
+      title: AppLocalizations.of(context)!.stateNoBookmarksYet,
+      message: AppLocalizations.of(context)!.stateBookmarksEmptyMessage,
       icon: PhosphorIconsRegular.bookmarkSimple,
       scrollable: true,
     );

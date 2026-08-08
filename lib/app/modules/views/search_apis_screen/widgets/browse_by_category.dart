@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:api_scout/app/data/models/category.dart';
@@ -55,7 +56,7 @@ class _BrowseByCategoryState extends State<BrowseByCategory> {
             vertical: AppSpacing.s8,
           ),
           child: Text(
-            'BROWSE BY CATEGORY',
+            AppLocalizations.of(context)!.sectionBrowseByCategory,
             style: AppTextStyles.labelSmUpper.copyWith(color: c.onSurface),
           ),
         ),
@@ -66,7 +67,7 @@ class _BrowseByCategoryState extends State<BrowseByCategory> {
             onChanged: (v) => setState(() => _query = v),
             textInputAction: TextInputAction.search,
             decoration: InputDecoration(
-              hintText: 'Filter categories...',
+              hintText: AppLocalizations.of(context)!.formFilterCategoriesHint,
               prefixIcon: Icon(PhosphorIconsRegular.magnifyingGlass,
                   color: c.outline, size: 18),
               suffixIcon: _query.isNotEmpty
@@ -93,9 +94,9 @@ class _BrowseByCategoryState extends State<BrowseByCategory> {
                       Padding(
                         padding: const EdgeInsets.only(top: 64),
                         child: AppEmptyState(
-                          title: 'No match',
+                          title: AppLocalizations.of(context)!.stateNoMatch,
                           message:
-                              'No categories match "$_query". Try a different search.',
+                              AppLocalizations.of(context)!.stateNoCategoriesMatch(_query),
                           icon: PhosphorIconsRegular.magnifyingGlass,
                         ),
                       ),

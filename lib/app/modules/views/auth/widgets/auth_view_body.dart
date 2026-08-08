@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:api_scout/app/blocs/auth/auth_cubit.dart';
 import 'package:api_scout/app/blocs/auth/auth_state.dart';
 import 'package:api_scout/config/app_routes.dart';
@@ -18,7 +19,7 @@ class AuthViewBody extends StatelessWidget {
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is AuthError) {
-          AppSnackBarHelper.error(title: 'ERROR', message: state.message);
+          AppSnackBarHelper.error(title: AppLocalizations.of(context)!.snackbarErrorTitle, message: state.message);
         }
         if (state is Authenticated) {
           final destination = returnTo;

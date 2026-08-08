@@ -4,6 +4,7 @@ import 'package:api_scout/app/utils/design_system/app_shadows.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
 import 'package:api_scout/app/widgets/app_dialog/widgets/destructive_button.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 
 /// Unified dialog component used across the entire app.
 ///
@@ -53,11 +54,12 @@ class AppDialog extends StatelessWidget {
     required BuildContext context,
     required String title,
     required String message,
-    String confirmLabel = 'CONFIRM',
-    String cancelLabel = 'CANCEL',
+    String? confirmLabel,
+    String? cancelLabel,
     bool isDestructive = false,
   }) async {
     final c = AppColors.of(Theme.of(context).brightness);
+    final l10n = AppLocalizations.of(context)!;
     final result = await show<bool>(
       context: context,
       title: title,
@@ -69,19 +71,19 @@ class AppDialog extends StatelessWidget {
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
           child: Text(
-            cancelLabel,
+            cancelLabel ?? l10n.actionCancel,
             style: AppTextStyles.labelSmUpper.copyWith(color: c.outline),
           ),
         ),
         const SizedBox(width: AppSpacing.s8),
         isDestructive
             ? DestructiveButton(
-                label: confirmLabel,
+                label: confirmLabel ?? l10n.actionConfirm,
                 onPressed: () => Navigator.of(context).pop(true),
               )
             : ElevatedButton(
                 onPressed: () => Navigator.of(context).pop(true),
-                child: Text(confirmLabel),
+                child: Text(confirmLabel ?? l10n.actionConfirm),
               ),
       ],
     );
@@ -95,12 +97,13 @@ class AppDialog extends StatelessWidget {
     required String title,
     String? hintText,
     String? initialValue,
-    String confirmLabel = 'SAVE',
-    String cancelLabel = 'CANCEL',
+    String? confirmLabel,
+    String? cancelLabel,
     TextInputType keyboardType = TextInputType.text,
     bool obscureText = false,
   }) async {
     final controller = TextEditingController(text: initialValue);
+    final l10n = AppLocalizations.of(context)!;
     final result = await show<String>(
       context: context,
       title: title,
@@ -115,7 +118,7 @@ class AppDialog extends StatelessWidget {
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
           child: Text(
-            cancelLabel,
+            cancelLabel ?? l10n.actionCancel,
             style: AppTextStyles.labelSmUpper.copyWith(
               color: AppColors.of(Theme.of(context).brightness).outline,
             ),
@@ -125,7 +128,7 @@ class AppDialog extends StatelessWidget {
         ElevatedButton(
           onPressed: () =>
               Navigator.of(context).pop(controller.text.trim()),
-          child: Text(confirmLabel),
+          child: Text(confirmLabel ?? l10n.actionSave),
         ),
       ],
     );

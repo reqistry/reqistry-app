@@ -6,6 +6,7 @@ import 'package:api_scout/app/services/auth/auth_token_service.dart';
 import 'package:api_scout/app/services/auth/dio_client.dart';
 import 'package:api_scout/app/services/notification/fcm_service.dart';
 import 'package:api_scout/app/utils/snackbar_helper.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 
 class AuthCubit extends Cubit<AuthState> {
   /// Nomenclature used for the app's guest display name before the user sets
@@ -120,18 +121,19 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> signInOrRegister({
     required String email,
     required String password,
+    required AppLocalizations l10n,
   }) async {
     if (email.isEmpty || password.isEmpty) {
-      _showError('Please enter email and password');
+      _showError(l10n.snackbarFillAllFields, l10n);
       return;
     }
 
     try {
       emit(AuthLoading());
       if (_isRegisterMode) {
-        await _linkEmail(email: email, password: password);
+        await _linkEmail(email: email, password: password, l10n: l10n);
       } else {
-        await _loginEmail(email: email, password: password);
+        await _loginEmail(email: email, password: password, l10n: l10n);
       }
     } on DioException catch (e) {
       final msg = _parseError(e);
@@ -144,21 +146,21 @@ class AuthCubit extends Cubit<AuthState> {
     } catch (e) {
       final current = currentUserProfile;
       emit(AuthError(
-        message: 'Something went wrong, try again',
+        message: l10n.snackbarSomethingWentWrong,
         isRegisterMode: _isRegisterMode,
         profile: current,
       ));
     }
   }
 
-  Future<void> continueAsGuest() async {
+  Future<void> continueAsGuest({required AppLocalizations l10n}) async {
     try {
       emit(AuthLoading());
       await _autoLogin();
-      _showSuccess('Continuing as guest');
+      _showSuccess(l10n.snackbarContinuingAsGuest, l10n);
     } catch (e) {
       emit(AuthError(
-        message: 'Unable to continue as guest',
+        message: l10n.snackbarUnableToContinueAsGuest,
         isRegisterMode: _isRegisterMode,
       ));
     }
@@ -167,6 +169,7 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> _loginEmail({
     required String email,
     required String password,
+    required AppLocalizations l10n,
   }) async {
     final response = await _unauthDio.post(
       '/v1/auth/login-email',
@@ -188,13 +191,14 @@ class AuthCubit extends Cubit<AuthState> {
     // Enable FCM after successful authentication
     await _enableFcm();
 
-    _showSuccess('Signed in');
+    _showSuccess(l10n.snackbarSignedIn, l10n);
   }
 
   Future<void> _linkEmail({
     required String email,
     required String password,
     String? name,
+    required AppLocalizations l10n,
   }) async {
     final response = await _dio.post(
       '/v1/auth/link-email',
@@ -220,10 +224,10 @@ class AuthCubit extends Cubit<AuthState> {
     }
 
     await _fetchProfile();
-    _showSuccess('Account linked successfully');
+    _showSuccess(l10n.snackbarAccountLinkedSuccessfully, l10n);
   }
 
-  Future<void> signOut() async {
+  Future<void> signOut({required AppLocalizations l10n}) async {
     try {
       // Disable FCM before signing out
       await _disableFcm();
@@ -244,11 +248,11 @@ class AuthCubit extends Cubit<AuthState> {
       DioClient().setAccessToken(null);
       emit(const Unauthenticated());
     } catch (e) {
-      _showError('Sign out failed');
+      _showError(l10n.snackbarSignOutFailed, l10n);
     }
   }
 
-  Future<void> deleteAccount() async {
+  Future<void> deleteAccount({required AppLocalizations l10n}) async {
     try {
       // Disable FCM before deleting account
       await _disableFcm();
@@ -261,7 +265,7 @@ class AuthCubit extends Cubit<AuthState> {
         ),
       );
       if (response.data['success'] != true) {
-        _showError('Failed to delete account');
+        _showError(l10n.snackbarFailedToDeleteAccount, l10n);
         return;
       }
 
@@ -269,9 +273,9 @@ class AuthCubit extends Cubit<AuthState> {
       await _tokenService.clearTokens();
       DioClient().setAccessToken(null);
       emit(const Unauthenticated());
-      _showSuccess('Account deleted');
+      _showSuccess(l10n.snackbarAccountDeleted, l10n);
     } catch (e) {
-      _showError('Failed to delete account');
+      _showError(l10n.snackbarFailedToDeleteAccount, l10n);
     }
   }
 
@@ -282,7 +286,7 @@ class AuthCubit extends Cubit<AuthState> {
     emit(const Unauthenticated());
   }
 
-  Future<void> updateUserProfile(String displayName) async {
+  Future<void> updateUserProfile(String displayName, {required AppLocalizations l10n}) async {
     try {
       final s = state;
       if (s is Authenticated) {
@@ -298,10 +302,10 @@ class AuthCubit extends Cubit<AuthState> {
           name: displayName,
         );
         emit(Authenticated(profile: updatedUser));
-        _showSuccess('Profile updated');
+        _showSuccess(l10n.snackbarProfileUpdated, l10n);
       }
     } catch (e) {
-      _showError('Failed to update profile');
+      _showError(l10n.snackbarFailedToUpdateProfile, l10n);
     }
   }
 
@@ -309,8 +313,9 @@ class AuthCubit extends Cubit<AuthState> {
     required String email,
     required String password,
     String? displayName,
+    required AppLocalizations l10n,
   }) async {
-    await _linkEmail(email: email, password: password, name: displayName);
+    await _linkEmail(email: email, password: password, name: displayName, l10n: l10n);
   }
 
   Future<void> _fetchProfile() async {
@@ -361,17 +366,17 @@ class AuthCubit extends Cubit<AuthState> {
     return e.message ?? 'Network error';
   }
 
-  void _showError(String message) {
+  void _showError(String message, AppLocalizations l10n) {
     AppSnackBarHelper.show(
-      title: 'Authentication',
+      title: l10n.snackbarAuthenticationTitle,
       message: message,
       isError: true,
     );
   }
 
-  void _showSuccess(String message) {
+  void _showSuccess(String message, AppLocalizations l10n) {
     AppSnackBarHelper.show(
-      title: 'Authentication',
+      title: l10n.snackbarAuthenticationTitle,
       message: message,
     );
   }

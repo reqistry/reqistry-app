@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:api_scout/app/blocs/projects/projects_cubit.dart';
@@ -23,7 +24,7 @@ class ContinueWorkSection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SectionHeaderLink(
-              title: 'CONTINUE YOUR WORK',
+              title: AppLocalizations.of(context)!.sectionContinueYourWork,
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
@@ -34,8 +35,8 @@ class ContinueWorkSection extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.s12),
             if (state.isLoading)
-              const AppLoading(
-                message: 'Loading projects',
+              AppLoading(
+                message: AppLocalizations.of(context)!.stateLoadingProjects,
                 compact: true,
               )
             else if (state.isEmpty)
@@ -63,10 +64,10 @@ class _EmptyState extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s16),
       child: GestureDetector(
         onTap: onCreateTap,
-        child: const AppEmptyState(
-          title: 'Create your first project',
+        child: AppEmptyState(
+          title: AppLocalizations.of(context)!.stateCreateYourFirstProject,
           message:
-              'Organize APIs you discover into projects to keep them handy.',
+              AppLocalizations.of(context)!.stateOrganizeApisMessage,
           icon: PhosphorIconsRegular.folderPlus,
           compact: true,
         ),

@@ -9,6 +9,7 @@ import 'package:api_scout/app/services/local_db/hive/privacy_cache_db.dart';
 import 'package:api_scout/app/utils/snackbar_helper.dart';
 import 'package:api_scout/app/utils/dio_connectivity_ext.dart';
 import 'package:api_scout/config/env.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 
 part 'privacy_state.dart';
 
@@ -17,7 +18,7 @@ class PrivacyCubit extends Cubit<PrivacyState> {
     ConnectivityService.instance.isOnline.addListener(_onOnlineChanged);
   }
 
-  Future<void> loadPrivacyContent({bool forceRefresh = false}) async {
+  Future<void> loadPrivacyContent({bool forceRefresh = false, AppLocalizations? l10n}) async {
     if (!forceRefresh) {
       final cached = PrivacyCacheDB.instance.content;
       if (cached != null && cached.isNotEmpty) {
@@ -29,10 +30,10 @@ class PrivacyCubit extends Cubit<PrivacyState> {
       emit(state.copyWith(isLoading: true, errorMessage: ''));
     }
 
-    await _fetchRemoteContent();
+    await _fetchRemoteContent(l10n: l10n);
   }
 
-  Future<void> _fetchRemoteContent() async {
+  Future<void> _fetchRemoteContent({AppLocalizations? l10n}) async {
     try {
       final response = await DioClient().unauthDio.get(
             Env.privacyMdUrl,
@@ -54,16 +55,16 @@ class PrivacyCubit extends Cubit<PrivacyState> {
       }
     } on DioException catch (e) {
       if (state.content.isEmpty) {
-        await _loadBundledFallback(e);
+        await _loadBundledFallback(l10n: l10n, error: e);
       }
     } catch (_) {
       if (state.content.isEmpty) {
-        await _loadBundledFallback();
+        await _loadBundledFallback(l10n: l10n);
       }
     }
   }
 
-  Future<void> _loadBundledFallback([DioException? error]) async {
+  Future<void> _loadBundledFallback({DioException? error, AppLocalizations? l10n}) async {
     try {
       final content =
           await rootBundle.loadString('assets/md_content/privacy.md');
@@ -79,8 +80,8 @@ class PrivacyCubit extends Cubit<PrivacyState> {
       emit(state.copyWith(
         isLoading: false,
         errorMessage: error != null && error.isConnectivityError
-            ? 'No internet connection'
-            : 'Failed to load privacy content',
+            ? (l10n?.privacyNoInternetConnection ?? 'No internet connection')
+            : (l10n?.privacyFailedToLoadContent ?? 'Failed to load privacy content'),
       ));
     }
   }
@@ -91,7 +92,7 @@ class PrivacyCubit extends Cubit<PrivacyState> {
     }
   }
 
-  Future<void> navigateToPrivacyPage() async {
+  Future<void> navigateToPrivacyPage({AppLocalizations? l10n}) async {
     try {
       final uri = Uri.parse(Env.privacyPolicyUrl);
       if (await canLaunchUrl(uri)) {
@@ -101,8 +102,8 @@ class PrivacyCubit extends Cubit<PrivacyState> {
       }
     } catch (e) {
       AppSnackBarHelper.show(
-        title: 'Error',
-        message: 'Unable to open privacy policy',
+        title: l10n?.stateError ?? 'Error',
+        message: l10n?.snackbarUnableToOpenPrivacy ?? 'Unable to open privacy policy',
         isError: true,
       );
       emit(state.copyWith(shouldNavigateToPage: true));

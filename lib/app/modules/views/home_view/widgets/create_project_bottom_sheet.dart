@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:api_scout/app/blocs/projects/projects_cubit.dart';
@@ -75,7 +76,7 @@ class _CreateProjectBottomSheetState extends State<CreateProjectBottomSheet> {
     final title = _titleController.text.trim();
     if (title.isEmpty) return;
 
-    context.read<ProjectsCubit>().createProject(title, icon: _selectedIcon);
+    context.read<ProjectsCubit>().createProject(title, icon: _selectedIcon, l10n: AppLocalizations.of(context)!);
     dismissTextInputRoute(context);
   }
 
@@ -84,8 +85,8 @@ class _CreateProjectBottomSheetState extends State<CreateProjectBottomSheet> {
     final c = AppColors.of(Theme.of(context).brightness);
 
     return BottomSheetScaffold(
-      title: 'CREATE PROJECT',
-      submitLabel: 'CREATE',
+      title: AppLocalizations.of(context)!.dialogCreateProjectTitle,
+      submitLabel: AppLocalizations.of(context)!.actionCreate,
       onSubmit: _submit,
       content: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.s20),
@@ -97,20 +98,20 @@ class _CreateProjectBottomSheetState extends State<CreateProjectBottomSheet> {
               autofocus: true,
               style: AppTextStyles.bodyMd,
               decoration: InputDecoration(
-                labelText: 'Title',
+                labelText: AppLocalizations.of(context)!.formTitle,
                 labelStyle: AppTextStyles.labelSmUpper.copyWith(
                   color: _submitted && _titleController.text.isEmpty
                       ? c.danger
                       : c.onSurfaceVariant,
                 ),
                 errorText: _submitted && _titleController.text.isEmpty
-                    ? 'Title is required'
+                    ? AppLocalizations.of(context)!.formTitleRequired
                     : null,
               ),
             ),
             const SizedBox(height: AppSpacing.s20),
             Text(
-              'ICON',
+              AppLocalizations.of(context)!.formIcon,
               style: AppTextStyles.labelSmUpper
                   .copyWith(color: c.onSurfaceVariant),
             ),

@@ -3,6 +3,7 @@ import 'package:api_scout/app/data/models/project_detail.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 
 class ProjectHeader extends StatelessWidget {
   final ProjectDetail detail;
@@ -46,7 +47,7 @@ class ProjectHeader extends StatelessWidget {
                 Text(detail.title, style: AppTextStyles.headlineSm),
                 const SizedBox(height: AppSpacing.s4),
                 Text(
-                  '$totalApis saved APIs',
+                  AppLocalizations.of(context)!.projectSavedApisCount(totalApis),
                   style: AppTextStyles.bodyMd.copyWith(
                     color: c.onSurfaceVariant,
                   ),

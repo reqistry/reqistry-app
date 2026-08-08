@@ -9,6 +9,7 @@ import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
 import 'package:api_scout/shared/widgets/app_empty_state.dart';
 import 'package:api_scout/shared/widgets/app_error_state.dart';
 import 'package:api_scout/shared/widgets/app_loading.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 
 enum ApiCollectionKind { latest, recommended }
 
@@ -27,9 +28,9 @@ class ApiCollectionView extends StatefulWidget {
 class _ApiCollectionViewState extends State<ApiCollectionView> {
   late Future<List<ApiItem>> _future;
 
-  String get _title => widget.kind == ApiCollectionKind.latest
-      ? 'LATEST ADDED'
-      : 'RECOMMENDED FOR YOU';
+  String _title(BuildContext context) => widget.kind == ApiCollectionKind.latest
+      ? AppLocalizations.of(context)!.sectionLatestAdded
+      : AppLocalizations.of(context)!.sectionRecommendedForYou;
 
   @override
   void initState() {
@@ -37,14 +38,15 @@ class _ApiCollectionViewState extends State<ApiCollectionView> {
     _future = _load();
   }
 
-  Future<List<ApiItem>> _load() {
+  Future<List<ApiItem>> _load({AppLocalizations? l10n}) {
     return widget.kind == ApiCollectionKind.latest
-        ? RemoteService.getRecentlyAddedApis(limit: 50)
-        : RemoteService.getRecommendedApiItems(limit: 50);
+        ? RemoteService.getRecentlyAddedApis(limit: 50, l10n: l10n)
+        : RemoteService.getRecommendedApiItems(limit: 50, l10n: l10n);
   }
 
   Future<void> _refresh() async {
-    setState(() => _future = _load());
+    final l10n = AppLocalizations.of(context)!;
+    setState(() => _future = _load(l10n: l10n));
     await _future;
   }
 
@@ -54,7 +56,7 @@ class _ApiCollectionViewState extends State<ApiCollectionView> {
     return Scaffold(
       backgroundColor: c.background,
       appBar: AppBar(
-        title: Text(_title, style: AppTextStyles.headlineSm),
+        title: Text(_title(context), style: AppTextStyles.headlineSm),
         backgroundColor: c.surface,
         elevation: 0,
         scrolledUnderElevation: 0,
@@ -65,21 +67,21 @@ class _ApiCollectionViewState extends State<ApiCollectionView> {
           future: _future,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return AppLoading(message: 'Loading $_title', scrollable: true);
+              return AppLoading(message: AppLocalizations.of(context)!.stateLoadingTitle(_title(context)), scrollable: true);
             }
             if (snapshot.hasError) {
               return AppErrorState(
-                title: 'Could not load APIs',
+                title: AppLocalizations.of(context)!.stateCouldNotLoadApis,
                 message: snapshot.error.toString(),
-                onRetry: () => setState(() => _future = _load()),
+                onRetry: () => setState(() => _future = _load(l10n: AppLocalizations.of(context)!)),
                 scrollable: true,
               );
             }
             final apis = snapshot.data ?? const <ApiItem>[];
             if (apis.isEmpty) {
-              return const AppEmptyState(
-                title: 'No APIs',
-                message: 'Pull to refresh and try again.',
+              return AppEmptyState(
+                title: AppLocalizations.of(context)!.stateNoApis,
+                message: AppLocalizations.of(context)!.statePullToRefresh,
                 icon: PhosphorIconsRegular.bracketsCurly,
                 scrollable: true,
               );
@@ -92,7 +94,7 @@ class _ApiCollectionViewState extends State<ApiCollectionView> {
                 final api = apis[index];
                 return ApiCard(
                   api: api,
-                  category: api.category.isNotEmpty ? api.category : _title,
+                  category: api.category.isNotEmpty ? api.category : _title(context),
                 );
               },
             );

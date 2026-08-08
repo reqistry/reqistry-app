@@ -4,6 +4,7 @@ import 'package:device_preview_plus/device_preview_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:requests_inspector/requests_inspector.dart';
 
 import 'app/blocs/auth/auth_cubit.dart';
@@ -87,12 +88,18 @@ class ApiScoutApp extends StatelessWidget {
             themeMode: themeMode,
             routerConfig: AppRouter.router,
             locale: DevicePreview.locale(context),
-            supportedLocales: DevicePreview.allLocales(context),
+            supportedLocales: AppLocalizations.supportedLocales,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
             builder: (context, child) {
               child = DevicePreview.appBuilder(
                 context,
                 child ?? const SizedBox.shrink(),
               );
+
+              final l10n = AppLocalizations.of(context);
+              if (l10n != null) {
+                ConnectivityService.instance.setLocalizations(l10n);
+              }
 
               return AppOverlayHost(child: child);
             },

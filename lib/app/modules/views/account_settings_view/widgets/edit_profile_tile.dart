@@ -3,6 +3,7 @@ import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 
 class EditProfileTile extends StatefulWidget {
   final String userName;
@@ -49,7 +50,7 @@ class _EditProfileTileState extends State<EditProfileTile> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'DISPLAY NAME',
+            AppLocalizations.of(context)!.formDisplayName,
             style: AppTextStyles.labelSmUpper.copyWith(
               color: c.onSurfaceVariant,
             ),
@@ -57,7 +58,7 @@ class _EditProfileTileState extends State<EditProfileTile> {
           const SizedBox(height: AppSpacing.chipGap),
           TextField(
             controller: _nameController,
-            decoration: const InputDecoration(hintText: 'Your name'),
+            decoration: InputDecoration(hintText: AppLocalizations.of(context)!.formYourName),
           ),
           const SizedBox(height: AppSpacing.s12),
           Align(
@@ -71,7 +72,7 @@ class _EditProfileTileState extends State<EditProfileTile> {
                   if (name.isNotEmpty) widget.onSave(name);
                 },
                 icon: const Icon(PhosphorIconsRegular.check, size: 18),
-                label: const Text('SAVE'),
+                label: Text(AppLocalizations.of(context)!.actionSave),
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size(112, 42),
                   padding: const EdgeInsets.symmetric(

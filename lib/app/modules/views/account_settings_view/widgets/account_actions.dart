@@ -3,6 +3,7 @@ import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/widgets/app_dialog.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 
 class AccountActions extends StatelessWidget {
   final bool isGuest;
@@ -26,13 +27,13 @@ class AccountActions extends StatelessWidget {
             width: double.infinity,
             child: OutlinedButton.icon(
               onPressed: () async {
+                final l10n = AppLocalizations.of(context)!;
                 final confirm = await AppDialog.showConfirm(
                   context: context,
-                  title: 'DELETE ACCOUNT',
-                  message:
-                      'This will permanently delete your account and all associated data including bookmarks, projects, and FCM tokens. This action is irreversible.',
-                  confirmLabel: 'DELETE',
-                  cancelLabel: 'CANCEL',
+                  title: l10n.dialogDeleteAccountTitle,
+                  message: l10n.dialogDeleteAccountMessage,
+                  confirmLabel: l10n.actionDelete,
+                  cancelLabel: l10n.actionCancel,
                   isDestructive: true,
                 );
                 if (confirm && context.mounted) {
@@ -40,7 +41,7 @@ class AccountActions extends StatelessWidget {
                 }
               },
               icon: const Icon(PhosphorIconsRegular.trash),
-              label: const Text('DELETE ACCOUNT'),
+              label: Text(AppLocalizations.of(context)!.actionDeleteAccount),
               style: OutlinedButton.styleFrom(
                 padding:
                     const EdgeInsets.symmetric(vertical: AppSpacing.s14),
@@ -58,19 +59,20 @@ class AccountActions extends StatelessWidget {
           width: double.infinity,
           child: OutlinedButton.icon(
             onPressed: () async {
+              final l10n = AppLocalizations.of(context)!;
               final confirm = await AppDialog.showConfirm(
                 context: context,
-                title: 'SIGN OUT',
-                message: 'Are you sure you want to sign out?',
-                confirmLabel: 'SIGN OUT',
-                cancelLabel: 'CANCEL',
+                title: l10n.dialogSignOutTitle,
+                message: l10n.dialogSignOutMessage,
+                confirmLabel: l10n.actionSignOut,
+                cancelLabel: l10n.actionCancel,
               );
               if (confirm && context.mounted) {
                 onSignOut();
               }
             },
             icon: const Icon(PhosphorIconsRegular.signOut),
-            label: const Text('SIGN OUT'),
+            label: Text(AppLocalizations.of(context)!.actionSignOut),
             style: OutlinedButton.styleFrom(
               padding:
                   const EdgeInsets.symmetric(vertical: AppSpacing.s14),

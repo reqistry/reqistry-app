@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/shared/widgets/app_error_state.dart';
 
@@ -27,8 +28,8 @@ class CoreStateScaffold extends StatelessWidget {
             child: isLoading
                 ? const Center(child: CircularProgressIndicator(strokeWidth: 2))
                 : AppErrorState(
-                    title: 'API unavailable',
-                    message: message ?? 'Failed to load this API',
+                    title: AppLocalizations.of(context)!.stateApiUnavailable,
+                    message: message ?? AppLocalizations.of(context)!.stateFailedToLoadApi,
                     onRetry: onRetry,
                   ),
           ),

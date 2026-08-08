@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:api_scout/app/data/models/api_detail.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
@@ -30,7 +31,7 @@ class ApiAlternativesSection extends StatelessWidget {
     }
     final c = AppColors.of(Theme.of(context).brightness);
     return DetailSection(
-      title: 'SIMILAR APIs',
+      title: AppLocalizations.of(context)!.sectionSimilarApis,
       child: Column(
         children: [
           if (isLoading && alternatives.isEmpty)
@@ -75,7 +76,7 @@ class ApiAlternativesSection extends StatelessWidget {
                   ),
                   trailing: IconButton(
                     onPressed: () => onSave(alternative),
-                    tooltip: 'Save ${alternative.name}',
+                    tooltip: AppLocalizations.of(context)!.apiDetailSaveAlternative(alternative.name),
                     constraints:
                         const BoxConstraints.tightFor(width: 48, height: 48),
                     icon: const Icon(PhosphorIconsRegular.bookmarkSimple),

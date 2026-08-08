@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:api_scout/app/blocs/user_activity/user_activity_state.dart';
 import 'package:api_scout/app/modules/views/settings_view/widgets/stat_box.dart';
 
@@ -23,7 +24,7 @@ class StatsGrid extends StatelessWidget {
       children: [
         Expanded(
           child: StatBox(
-            label: 'Saved',
+            label: AppLocalizations.of(context)!.settingsSavedStat,
             value: state.totalBookmarks.toString(),
             onTap: onSavedTap,
           ),
@@ -31,7 +32,7 @@ class StatsGrid extends StatelessWidget {
         const SizedBox(width: AppSpacing.s8),
         Expanded(
           child: StatBox(
-            label: 'Projects',
+            label: AppLocalizations.of(context)!.settingsProjectsStat,
             value: state.totalProjects.toString(),
             onTap: onProjectsTap,
           ),
@@ -39,7 +40,7 @@ class StatsGrid extends StatelessWidget {
         const SizedBox(width: AppSpacing.s8),
         Expanded(
           child: StatBox(
-            label: 'Project APIs',
+            label: AppLocalizations.of(context)!.settingsProjectApisStat,
             value: state.totalProjectItems.toString(),
             onTap: onProjectApisTap,
           ),

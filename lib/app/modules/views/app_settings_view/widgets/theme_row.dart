@@ -5,6 +5,7 @@ import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
 import 'package:api_scout/app/utils/theme_provider.dart';
 import 'package:api_scout/app/modules/views/app_settings_view/widgets/theme_choice.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 
 class ThemeRow extends StatelessWidget {
   const ThemeRow({super.key});
@@ -42,7 +43,7 @@ class ThemeRow extends StatelessWidget {
                   const SizedBox(width: AppSpacing.s12),
                   Expanded(
                     child: Text(
-                      'Appearance',
+                      AppLocalizations.of(context)!.settingsAppearance,
                       style: AppTextStyles.bodyMd
                           .copyWith(fontWeight: FontWeight.w600),
                     ),
@@ -54,7 +55,7 @@ class ThemeRow extends StatelessWidget {
                 children: [
                   Expanded(
                     child: ThemeChoice(
-                      label: 'System',
+                      label: AppLocalizations.of(context)!.themeSystem,
                       icon: PhosphorIconsRegular.monitor,
                       selected: themeMode == ThemeMode.system,
                       onTap: () => ThemeProvider.instance
@@ -64,7 +65,7 @@ class ThemeRow extends StatelessWidget {
                   const SizedBox(width: AppSpacing.s8),
                   Expanded(
                     child: ThemeChoice(
-                      label: 'Light',
+                      label: AppLocalizations.of(context)!.themeLight,
                       icon: PhosphorIconsRegular.sun,
                       selected: themeMode == ThemeMode.light,
                       onTap: () => ThemeProvider.instance
@@ -74,7 +75,7 @@ class ThemeRow extends StatelessWidget {
                   const SizedBox(width: AppSpacing.s8),
                   Expanded(
                     child: ThemeChoice(
-                      label: 'Dark',
+                      label: AppLocalizations.of(context)!.themeDark,
                       icon: PhosphorIconsRegular.moon,
                       selected: themeMode == ThemeMode.dark,
                       onTap: () => ThemeProvider.instance

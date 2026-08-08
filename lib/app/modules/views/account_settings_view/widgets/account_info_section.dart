@@ -3,6 +3,7 @@ import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:api_scout/shared/widgets/ui/info_row.dart';
 
 class AccountInfoSection extends StatelessWidget {
@@ -21,7 +22,7 @@ class AccountInfoSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('ACCOUNT INFORMATION', style: AppTextStyles.labelSmUpper),
+        Text(AppLocalizations.of(context)!.sectionAccountInformation, style: AppTextStyles.labelSmUpper),
         const SizedBox(height: AppSpacing.itemGap),
         Container(
           width: double.infinity,
@@ -34,14 +35,14 @@ class AccountInfoSection extends StatelessWidget {
           child: Column(
             children: [
               InfoRow(
-                label: 'Email',
+                label: AppLocalizations.of(context)!.settingsEmailLabel,
                 value: userEmail,
                 icon: PhosphorIconsRegular.envelopeSimple,
               ),
               const Divider(height: 16),
               InfoRow(
-                label: 'Account Type',
-                value: isGuest ? 'Anonymous' : 'Registered',
+                label: AppLocalizations.of(context)!.settingsAccountType,
+                value: isGuest ? AppLocalizations.of(context)!.settingsAnonymous : AppLocalizations.of(context)!.settingsRegistered,
                 icon: isGuest
                     ? PhosphorIconsRegular.userMinus
                     : PhosphorIconsRegular.sealCheck,

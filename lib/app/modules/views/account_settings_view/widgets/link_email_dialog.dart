@@ -6,6 +6,7 @@ import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
 import 'package:api_scout/app/widgets/app_dialog.dart';
 import 'package:api_scout/app/widgets/app_snackbar.dart';
+import 'package:api_scout/l10n/app_localizations.dart';
 
 class LinkEmailDialog extends StatefulWidget {
   const LinkEmailDialog({super.key});
@@ -25,7 +26,7 @@ class LinkEmailDialog extends StatefulWidget {
     try {
       await AppDialog.show(
         context: context,
-        title: 'LINK ACCOUNT',
+        title: AppLocalizations.of(context)!.dialogLinkAccountTitle,
         maxWidth: 400,
         content: _LinkEmailContent(
           emailController: emailController,
@@ -36,7 +37,7 @@ class LinkEmailDialog extends StatefulWidget {
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
             child: Text(
-              'CANCEL',
+              AppLocalizations.of(context)!.actionCancel,
               style:
                   AppTextStyles.labelSmUpper.copyWith(color: AppColors.of(Theme.of(context).brightness).outline),
             ),
@@ -49,8 +50,8 @@ class LinkEmailDialog extends StatefulWidget {
                 if (context.mounted) {
                   AppSnackbarManager.showSnackbar(
                     context: context,
-                    title: 'Error',
-                    message: 'Please fill in all fields',
+                    title: AppLocalizations.of(context)!.stateError,
+                    message: AppLocalizations.of(context)!.snackbarFillAllFields,
                     type: AppSnackbarType.error,
                   );
                 }
@@ -67,9 +68,10 @@ class LinkEmailDialog extends StatefulWidget {
                     email: email,
                     password: password,
                     displayName: name,
+                    l10n: AppLocalizations.of(context)!,
                   );
             },
-            child: const Text('LINK ACCOUNT'),
+            child: Text(AppLocalizations.of(context)!.actionLinkAccount),
           ),
         ],
       );
@@ -113,27 +115,27 @@ class _LinkEmailContent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Create a permanent account to save your data',
+            AppLocalizations.of(context)!.settingsLinkAccountCreateDescription,
             style: AppTextStyles.bodyMd.copyWith(color: c.onSurfaceVariant),
           ),
           const SizedBox(height: AppSpacing.sectionGap),
           TextField(
             controller: nameController,
-            decoration: const InputDecoration(
-              labelText: 'DISPLAY NAME',
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context)!.formDisplayName,
             ),
           ),
           const SizedBox(height: AppSpacing.itemGap),
           TextField(
             controller: emailController,
             keyboardType: TextInputType.emailAddress,
-            decoration: const InputDecoration(labelText: 'EMAIL'),
+            decoration: InputDecoration(labelText: AppLocalizations.of(context)!.formEmail),
           ),
           const SizedBox(height: AppSpacing.itemGap),
           TextField(
             controller: passwordController,
             obscureText: true,
-            decoration: const InputDecoration(labelText: 'PASSWORD'),
+            decoration: InputDecoration(labelText: AppLocalizations.of(context)!.formPassword),
           ),
         ],
       ),
