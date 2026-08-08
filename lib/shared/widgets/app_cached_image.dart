@@ -2,9 +2,10 @@ import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
+import 'package:api_scout/shared/widgets/image_loading.dart';
+import 'package:api_scout/shared/widgets/image_fallback.dart';
 
 /// Rate limiter that throttles concurrent image loads per domain.
 ///
@@ -143,24 +144,24 @@ class _AppCachedImageState extends State<AppCachedImage> {
   Widget build(BuildContext context) {
     final url = widget.imageUrl;
     if (url == null || url.isEmpty) {
-      return widget.fallback ?? const _ImageFallback();
+      return widget.fallback ?? const ImageFallback();
     }
 
     if (!_slotAcquired) {
-      return widget.placeholder ?? const _ImageLoading();
+      return widget.placeholder ?? const ImageLoading();
     }
 
     return CachedNetworkImage(
       imageUrl: url,
       fit: widget.fit,
-      placeholder: (_, __) => widget.placeholder ?? const _ImageLoading(),
+      placeholder: (_, __) => widget.placeholder ?? const ImageLoading(),
       errorWidget: (_, __, ___) {
         if (widget.isCategory) {
           debugPrint('Error loading category image: $url');
         }
 
         _releaseSlot();
-        return widget.fallback ?? const _ImageFallback();
+        return widget.fallback ?? const ImageFallback();
       },
       imageBuilder: (context, imageProvider) {
         _releaseSlot();
@@ -216,40 +217,6 @@ class CategoryImagePlaceholder extends StatelessWidget {
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _ImageLoading extends StatelessWidget {
-  const _ImageLoading();
-
-  @override
-  Widget build(BuildContext context) {
-    final c = AppColors.of(Theme.of(context).brightness);
-    return ColoredBox(
-      color: c.surfaceContainerHighest,
-      child: const Center(
-        child: SizedBox.square(
-          dimension: 18,
-          child: CircularProgressIndicator(strokeWidth: 2),
-        ),
-      ),
-    );
-  }
-}
-
-class _ImageFallback extends StatelessWidget {
-  const _ImageFallback();
-
-  @override
-  Widget build(BuildContext context) {
-    final c = AppColors.of(Theme.of(context).brightness);
-    return ColoredBox(
-      color: c.surfaceContainerHighest,
-      child: Icon(
-        PhosphorIconsRegular.imageBroken,
-        color: c.onSurfaceVariant,
       ),
     );
   }
