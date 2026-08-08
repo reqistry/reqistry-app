@@ -46,7 +46,7 @@ class LocalNotificationService {
     );
 
     await _plugin.initialize(
-      initSettings,
+      settings: initSettings,
       onDidReceiveNotificationResponse: _onNotificationTapped,
     );
 
@@ -98,10 +98,10 @@ class LocalNotificationService {
     );
 
     await _plugin.show(
-      message.hashCode,
-      notification.title,
-      notification.body,
-      details,
+      id: message.hashCode,
+      title: notification.title,
+      body: notification.body,
+      notificationDetails: details,
       payload: message.data.isNotEmpty ? message.data.toString() : null,
     );
   }
@@ -137,7 +137,7 @@ class LocalNotificationService {
       iOS: iosDetails,
     );
 
-    await _plugin.show(id, title, body, details, payload: payload);
+    await _plugin.show(id: id, title: title, body: body, notificationDetails: details, payload: payload);
   }
 
   /// Schedule a notification
@@ -166,21 +166,19 @@ class LocalNotificationService {
     );
 
     await _plugin.zonedSchedule(
-      id,
-      title,
-      body,
-      tz.TZDateTime.from(scheduledDate, tz.local),
-      details,
+      id: id,
+      title: title,
+      body: body,
+      scheduledDate: tz.TZDateTime.from(scheduledDate, tz.local),
+      notificationDetails: details,
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
       payload: payload,
     );
   }
 
   /// Cancel a notification
   Future<void> cancel(int id) async {
-    await _plugin.cancel(id);
+    await _plugin.cancel(id: id);
   }
 
   /// Cancel all notifications

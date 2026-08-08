@@ -254,6 +254,7 @@ class _CategoryCard extends StatelessWidget {
           Positioned.fill(
             child: AppCachedImage(
               imageUrl: imageUrl,
+              isCategory: true,
               fallback: CategoryImagePlaceholder(
                 title: category.name,
               ),
