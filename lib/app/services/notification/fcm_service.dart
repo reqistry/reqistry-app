@@ -93,7 +93,11 @@ class FcmService {
       });
 
       // Configure message handling
+      FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
       _configureMessageHandling();
+
+      // Fold notifications received while terminated into the in-app feed.
+      await _mergePendingNotifications();
 
       debugPrint(
           '[FCM] Initialized with token: ${_currentToken?.substring(0, 20)}...');
@@ -189,7 +193,37 @@ class FcmService {
 
   /// Handle notification tap - route to appropriate screen
   void _handleNotificationTap(Map<String, dynamic> data) {
-    // TODO: route by notification type
+    final callback = onNotificationTap;
+    if (callback != null) {
+      callback(data);
+    } else {
+      debugPrint('[FCM] Tap received but no handler registered: $data');
+    }
+  }
+
+  /// Set by the router at startup; receives notification data payloads on tap.
+  static void Function(Map<String, dynamic> data)? onNotificationTap;
+
+  /// Move terminated-state notifications into the in-app feed.
+  Future<void> _mergePendingNotifications() async {
+    if (_cacheBox == null) return;
+    final pending = List<Map<String, dynamic>>.from(
+      _cacheBox!.get('pending_notifications', defaultValue: []),
+    );
+    if (pending.isEmpty) return;
+
+    final notifications = List<Map<String, dynamic>>.from(
+      _cacheBox!.get('in_app_notifications', defaultValue: []),
+    );
+    final existingIds = notifications.map((n) => n['id']).toSet();
+    for (final item in pending) {
+      if (!existingIds.contains(item['id'])) {
+        notifications.insert(0, item);
+      }
+    }
+    notifications.removeRange(50, notifications.length);
+    await _cacheBox!.put('in_app_notifications', notifications);
+    await _cacheBox!.put('pending_notifications', []);
   }
 
   /// Register FCM token with backend
@@ -346,6 +380,17 @@ class FcmService {
       notifications[index]['read'] = true;
       await _cacheBox!.put('in_app_notifications', notifications);
     }
+  }
+
+  /// Remove a single notification from the feed
+  Future<void> removeNotification(String notificationId) async {
+    if (_cacheBox == null) return;
+
+    final notifications = List<Map<String, dynamic>>.from(
+      _cacheBox!.get('in_app_notifications', defaultValue: []),
+    );
+    notifications.removeWhere((n) => n['id'] == notificationId);
+    await _cacheBox!.put('in_app_notifications', notifications);
   }
 
   /// Mark all notifications as read

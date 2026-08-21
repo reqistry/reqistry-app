@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:api_scout/app/blocs/submit_api/submit_api_cubit.dart';
 import 'package:api_scout/app/blocs/submit_api/submit_api_state.dart';
+import 'package:api_scout/app/blocs/auth/auth_cubit.dart';
+import 'package:api_scout/app/modules/views/account_settings_view/widgets/link_email_dialog.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
@@ -28,6 +30,14 @@ class _SubmitApiViewState extends State<SubmitApiView> {
     super.dispose();
   }
 
+  /// Submitters can't be notified without an identity — offer email-link once.
+  Future<void> _maybePromptEmailLink() async {
+    if (!mounted) return;
+    final authCubit = context.read<AuthCubit>();
+    if (!authCubit.isGuestUser) return;
+    await LinkEmailDialog.show(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(Theme.of(context).brightness);
@@ -36,6 +46,7 @@ class _SubmitApiViewState extends State<SubmitApiView> {
       listenWhen: (prev, curr) => curr.submitted,
       listener: (context, state) {
         Navigator.of(context).pop();
+        _maybePromptEmailLink();
       },
       child: Scaffold(
         backgroundColor: c.background,

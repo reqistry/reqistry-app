@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:api_scout/app/blocs/auth/auth_cubit.dart';
 import 'package:api_scout/app/blocs/auth/auth_state.dart';
 import 'package:api_scout/app/blocs/favorites/favorites_cubit.dart';
 import 'package:api_scout/app/blocs/projects/projects_cubit.dart';
 import 'package:api_scout/app/blocs/home_categories/home_categories_cubit.dart';
 import 'package:api_scout/app/blocs/main_shell/main_shell_cubit.dart';
+import 'package:api_scout/app/blocs/notification/notification_cubit.dart';
 import 'package:api_scout/app/blocs/user_activity/user_activity_cubit.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
@@ -170,6 +172,48 @@ class _HomeViewState extends State<HomeView> {
                 ),
               ),
             ),
+          ),
+          BlocBuilder<NotificationCubit, NotificationState>(
+            builder: (context, state) {
+              final unread =
+                  state is NotificationEnabled ? state.unreadCount : 0;
+              return IconButton(
+                tooltip: 'Notifications',
+                icon: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    const Icon(PhosphorIconsRegular.bell),
+                    if (unread > 0)
+                      Positioned(
+                        right: -2,
+                        top: -2,
+                        child: Container(
+                          padding: const EdgeInsets.all(3),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.error,
+                            shape: BoxShape.circle,
+                          ),
+                          constraints: const BoxConstraints(
+                            minWidth: 14,
+                            minHeight: 14,
+                          ),
+                          child: Text(
+                            unread > 9 ? '9+' : '$unread',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 8,
+                              height: 1,
+                              color: c.onPrimary,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+                onPressed: () => context.push(AppRoutes.notifications),
+              );
+            },
           ),
           IconButton(
             icon: const Icon(PhosphorIconsRegular.gear),

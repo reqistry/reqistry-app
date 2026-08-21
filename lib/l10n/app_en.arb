@@ -1530,5 +1530,8 @@
   "@errorConnectionTimeout": { "description": "Connection timeout error title" },
 
   "errorCheckInternetConnection": "Check your internet connection",
-  "@errorCheckInternetConnection": { "description": "Check internet connection message" }
+  "@errorCheckInternetConnection": { "description": "Check internet connection message" },
+
+  "settingsLanguage": "Language",
+  "@settingsLanguage": { "description": "Language setting label" }
 }

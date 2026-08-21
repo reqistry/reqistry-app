@@ -14,6 +14,7 @@ abstract class AppRoutes {
   static const contact = '/contact';
   static const accountSettings = '/account-settings';
   static const appSettings = '/app-settings';
+  static const notifications = '/notifications';
 
   static String apiDetailPath(String slug) =>
       '/apis/${Uri.encodeComponent(slug)}';

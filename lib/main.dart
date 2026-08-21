@@ -15,7 +15,9 @@ import 'app/blocs/notification/notification_cubit.dart';
 import 'app/blocs/search/search_bloc.dart';
 import 'app/blocs/favorites/favorites_cubit.dart';
 import 'app/blocs/user_activity/user_activity_cubit.dart';
+import 'app/blocs/language/language_cubit.dart';
 import 'app/services/connectivity/connectivity_service.dart';
+import 'app/services/notification/fcm_service.dart';
 import 'config/env.dart';
 import 'config/routes.dart';
 import 'app/services/main_init_service.dart/main_init.dart';
@@ -30,6 +32,7 @@ Future<void> main() async {
   ThemeProvider.instance.init();
   ConnectivityService.instance.init();
   AppSnackBarHelper.setNavigatorKey(rootNavigatorKey);
+  FcmService.onNotificationTap = routeNotificationTap;
 
   FlutterError.onError = (details) {
     FlutterError.presentError(details);
@@ -62,6 +65,7 @@ class ApiScoutApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider(create: (_) => LanguageCubit()),
         BlocProvider(create: (_) => AuthCubit()),
         BlocProvider(create: (_) => MainShellCubit()),
         BlocProvider(create: (_) => HomeCategoriesCubit()),
@@ -76,32 +80,40 @@ class ApiScoutApp extends StatelessWidget {
           ),
         ),
       ],
-      child: ValueListenableBuilder<ThemeMode>(
-        valueListenable: ThemeProvider.instance.themeNotifier,
-        builder: (context, themeMode, _) {
-          return MaterialApp.router(
-            debugShowCheckedModeBanner: false,
-            restorationScopeId: 'api_scout',
-            title: Env.appName,
-            theme: AppThemes.lightTheme,
-            darkTheme: AppThemes.darkTheme,
-            themeMode: themeMode,
-            routerConfig: AppRouter.router,
-            locale: DevicePreview.locale(context),
-            supportedLocales: AppLocalizations.supportedLocales,
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            builder: (context, child) {
-              child = DevicePreview.appBuilder(
-                context,
-                child ?? const SizedBox.shrink(),
+      child: Builder(
+        builder: (context) {
+          return BlocBuilder<LanguageCubit, LanguageState>(
+            builder: (context, langState) {
+              return ValueListenableBuilder<ThemeMode>(
+                valueListenable: ThemeProvider.instance.themeNotifier,
+                builder: (context, themeMode, _) {
+                  return MaterialApp.router(
+                    debugShowCheckedModeBanner: false,
+                    restorationScopeId: 'api_scout',
+                    title: Env.appName,
+                    theme: AppThemes.lightTheme,
+                    darkTheme: AppThemes.darkTheme,
+                    themeMode: themeMode,
+                    routerConfig: AppRouter.router,
+                    locale: langState.locale,
+                    supportedLocales: AppLocalizations.supportedLocales,
+                    localizationsDelegates: AppLocalizations.localizationsDelegates,
+                    builder: (context, child) {
+                      child = DevicePreview.appBuilder(
+                        context,
+                        child ?? const SizedBox.shrink(),
+                      );
+
+                      final l10n = AppLocalizations.of(context);
+                      if (l10n != null) {
+                        ConnectivityService.instance.setLocalizations(l10n);
+                      }
+
+                      return AppOverlayHost(child: child);
+                    },
+                  );
+                },
               );
-
-              final l10n = AppLocalizations.of(context);
-              if (l10n != null) {
-                ConnectivityService.instance.setLocalizations(l10n);
-              }
-
-              return AppOverlayHost(child: child);
             },
           );
         },

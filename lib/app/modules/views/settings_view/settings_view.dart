@@ -12,6 +12,7 @@ import 'package:api_scout/app/blocs/projects/projects_cubit.dart';
 import 'package:api_scout/app/blocs/main_shell/main_shell_cubit.dart';
 import 'package:api_scout/app/blocs/user_activity/user_activity_cubit.dart';
 import 'package:api_scout/app/blocs/user_activity/user_activity_state.dart';
+import 'package:api_scout/app/blocs/language/language_cubit.dart';
 import 'package:api_scout/app/modules/views/home_view/widgets/all_projects_view.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
@@ -70,6 +71,62 @@ class _SettingsViewState extends State<SettingsView> {
         message: l10n.snackbarCouldNotLoadDeveloperWebsite,
       );
     }
+  }
+
+  void _showLanguagePicker(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final langCubit = context.read<LanguageCubit>();
+    final currentCode = langCubit.state.locale.languageCode;
+
+    final languages = <MapEntry<String, String>>[
+      const MapEntry('en', 'English'),
+      const MapEntry('es', 'Español'),
+    ];
+
+    showModalBottomSheet(
+      context: context,
+      builder: (ctx) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                child: Text(
+                  l10n.settingsLanguage,
+                  style: AppTextStyles.headlineSm,
+                ),
+              ),
+              ...languages.map((lang) {
+                final isSelected = lang.key == currentCode;
+                return ListTile(
+                  title: Text(lang.value),
+                  trailing: isSelected
+                      ? Icon(Icons.check, color: AppColors.of(Theme.of(context).brightness).primary)
+                      : null,
+                  onTap: () {
+                    langCubit.setLanguage(lang.key);
+                    Navigator.of(ctx).pop();
+                  },
+                );
+              }),
+              const SizedBox(height: 8),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildLanguageTile(BuildContext context) {
+    final langCode = context.watch<LanguageCubit>().state.locale.languageCode;
+    final languageName = langCode == 'es' ? 'Español' : 'English';
+
+    return SettingsEntryTile(
+      icon: PhosphorIconsRegular.globe,
+      title: '${AppLocalizations.of(context)!.settingsLanguage} · $languageName',
+      onTap: () => _showLanguagePicker(context),
+    );
   }
 
   @override
@@ -159,12 +216,21 @@ class _SettingsViewState extends State<SettingsView> {
                   title: AppLocalizations.of(context)!.settingsAccount,
                   onTap: () => context.push(AppRoutes.accountSettings),
                 ),
+                _buildLanguageTile(context),
               ],
             ),
             const SizedBox(height: AppSpacing.s24),
             SettingsSection(
               title: AppLocalizations.of(context)!.sectionInfo,
               children: [
+                SettingsEntryTile(
+                  icon: PhosphorIconsRegular.plugs,
+                  title: 'MCP',
+                  onTap: () => launchUrl(
+                    Uri.parse('https://reqistry.dev/#mcp'),
+                    mode: LaunchMode.externalApplication,
+                  ),
+                ),
                 SettingsEntryTile(
                   icon: PhosphorIconsRegular.chatCircleText,
                   title: AppLocalizations.of(context)!.settingsContact,

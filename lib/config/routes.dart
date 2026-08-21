@@ -7,6 +7,7 @@ import 'package:api_scout/app/blocs/api_detail/api_detail_cubit.dart';
 import 'package:api_scout/app/blocs/category_apis/category_apis_cubit.dart';
 import 'package:api_scout/app/blocs/submit_api/submit_api_cubit.dart';
 import 'package:api_scout/app/blocs/app_settings/app_settings_cubit.dart';
+import 'package:api_scout/app/blocs/notification/notification_cubit.dart';
 import 'package:api_scout/app/blocs/privacy/privacy_cubit.dart';
 import 'package:api_scout/app/data/models/api.dart';
 import 'package:api_scout/app/data/models/api_detail.dart';
@@ -22,6 +23,7 @@ import 'package:api_scout/app/modules/views/privacy_view/privacy_view.dart';
 import 'package:api_scout/app/modules/views/contact_view/contact_view.dart';
 import 'package:api_scout/app/modules/views/account_settings_view/account_settings_view.dart';
 import 'package:api_scout/app/modules/views/app_settings_view/app_settings_view.dart';
+import 'package:api_scout/app/modules/views/notifications_view/notifications_view.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/shared/widgets/app_error_state.dart';
 import 'package:api_scout/l10n/app_localizations.dart';
@@ -29,6 +31,28 @@ import 'package:api_scout/l10n/app_localizations.dart';
 import 'app_routes.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
+
+/// Route a notification data payload to the right screen.
+void routeNotificationTap(Map<String, dynamic> data) {
+  final type = data['type'] as String?;
+  final slug = data['apiSlug'] as String?;
+  switch (type) {
+    case 'api_health':
+    case 'new_api':
+    case 'price_change':
+    case 'trust_alert':
+      if (slug != null && slug.isNotEmpty) {
+        AppRouter.router.push(AppRoutes.apiDetailPath(slug));
+        return;
+      }
+      break;
+    case 'report_update':
+    case 'submission_update':
+    case 'weekly_digest':
+      break;
+  }
+  AppRouter.router.push(AppRoutes.notifications);
+}
 
 class AppRouter {
   AppRouter._();
@@ -155,6 +179,13 @@ class AppRouter {
         builder: (context, state) => BlocProvider(
           create: (_) => AppSettingsCubit(),
           child: const AppSettingsView(),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.notifications,
+        builder: (context, state) => BlocProvider(
+          create: (_) => NotificationCubit()..initializeNotifications(),
+          child: const NotificationsView(),
         ),
       ),
     ],

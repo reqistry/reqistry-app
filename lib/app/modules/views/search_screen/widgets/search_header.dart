@@ -52,7 +52,7 @@ class SearchHeader extends StatelessWidget {
             ),
             onSubmitted: (_) {
               final q = searchController.text.trim();
-              if (q.isNotEmpty) {
+              if (q.length >= 3) {
                 context.read<SearchBloc>().add(SearchQueryChanged(query: q));
                 context.read<SearchBloc>().add(SearchPerformed());
               }

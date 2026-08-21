@@ -5,6 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:api_scout/app/services/notification/fcm_service.dart';
 import 'package:api_scout/app/services/notification/local_notification_service.dart';
+import 'package:api_scout/config/routes.dart';
 
 // State
 abstract class NotificationState extends Equatable {
@@ -86,10 +87,17 @@ class NotificationCubit extends Cubit<NotificationState> {
 
     if (state is NotificationEnabled) {
       final currentState = state as NotificationEnabled;
-      final updatedNotifications = [
-        message.data,
-        ...currentState.notifications
-      ];
+      // Normalize to the same shape as the Hive feed cache.
+      final entry = {
+        'id': message.messageId ??
+            DateTime.now().millisecondsSinceEpoch.toString(),
+        'title': message.notification?.title ?? '',
+        'body': message.notification?.body ?? '',
+        'data': Map<String, dynamic>.from(message.data),
+        'timestamp': DateTime.now().millisecondsSinceEpoch,
+        'read': false,
+      };
+      final updatedNotifications = [entry, ...currentState.notifications];
       emit(NotificationEnabled(
         notifications: updatedNotifications,
         unreadCount: currentState.unreadCount + 1,
@@ -178,13 +186,18 @@ class NotificationCubit extends Cubit<NotificationState> {
     await _loadNotifications();
   }
 
+  Future<void> removeNotification(String notificationId) async {
+    await _fcmService.removeNotification(notificationId);
+    await _loadNotifications();
+  }
+
   Future<void> clearAll() async {
     await _fcmService.clearAll();
     await _loadNotifications();
   }
 
   void handleNotificationTap(Map<String, dynamic> data) {
-    // Route based on notification type
+    routeNotificationTap(data);
   }
 
   @override

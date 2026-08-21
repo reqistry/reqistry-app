@@ -1,0 +1,1521 @@
+{
+  "@@locale": "es",
+
+  "appTitle": "API Scout",
+  "@appTitle": { "description": "The application name" },
+
+  "appName": "Reqistry",
+  "@appName": { "description": "App display name" },
+
+  "appDescription": "API Scout - Descubre y explora APIs",
+  "@appDescription": { "description": "App description for sharing" },
+
+  "navHome": "Inicio",
+  "@navHome": { "description": "Bottom navigation tab label" },
+
+  "navExplore": "Explorar",
+  "@navExplore": { "description": "Bottom navigation tab label" },
+
+  "navIntelligence": "Inteligencia",
+  "@navIntelligence": { "description": "Bottom navigation tab label" },
+
+  "navSaved": "Guardados",
+  "@navSaved": { "description": "Bottom navigation tab label" },
+
+  "navYou": "Tú",
+  "@navYou": { "description": "Bottom navigation tab label" },
+
+  "tabDiscover": "DESCUBRIR",
+  "@tabDiscover": { "description": "Discover tab title in app bar" },
+
+  "tabSearch": "BUSCAR",
+  "@tabSearch": { "description": "Search tab title" },
+
+  "tabBookmarks": "FAVORITOS",
+  "@tabBookmarks": { "description": "Bookmarks/favorites tab title" },
+
+  "tabIntelligence": "INTELIGENCIA",
+  "@tabIntelligence": { "description": "Intelligence tab title" },
+
+  "tabAccount": "CUENTA",
+  "@tabAccount": { "description": "Account settings tab title" },
+
+  "tabAppSettings": "CONFIGURACIÓN",
+  "@tabAppSettings": { "description": "App settings tab title" },
+
+  "tabSubmitApi": "ENVIAR API",
+  "@tabSubmitApi": { "description": "Submit API tab title" },
+
+  "tabProfile": "PERFIL",
+  "@tabProfile": { "description": "Profile section header" },
+
+  "tabYou": "TÚ",
+  "@tabYou": { "description": "User profile tab title" },
+
+  "sectionPreferences": "PREFERENCIAS",
+  "@sectionPreferences": { "description": "App settings section header" },
+
+  "sectionDataManagement": "GESTIÓN DE DATOS",
+  "@sectionDataManagement": { "description": "Data management section header" },
+
+  "sectionMy": "MIS",
+  "@sectionMy": { "description": "My section header in settings" },
+
+  "sectionManage": "GESTIONAR",
+  "@sectionManage": { "description": "Manage section header" },
+
+  "sectionInfo": "INFO",
+  "@sectionInfo": { "description": "Info section header" },
+
+  "sectionAccountInformation": "INFORMACIÓN DE CUENTA",
+  "@sectionAccountInformation": { "description": "Account info section header" },
+
+  "sectionLinkYourAccount": "VINCULAR TU CUENTA",
+  "@sectionLinkYourAccount": { "description": "Link account section header" },
+
+  "sectionYourStats": "TUS ESTADÍSTICAS",
+  "@sectionYourStats": { "description": "User activity stats section" },
+
+  "sectionContinueYourWork": "CONTINÚA TU TRABAJO",
+  "@sectionContinueYourWork": { "description": "Continue work section" },
+
+  "sectionRecommendedForYou": "RECOMENDADOS PARA TI",
+  "@sectionRecommendedForYou": { "description": "Recommended APIs section" },
+
+  "sectionLatestAdded": "ÚLTIMOS AÑADIDOS",
+  "@sectionLatestAdded": { "description": "Latest added APIs section" },
+
+  "sectionQuickFacts": "DATOS RÁPIDOS",
+  "@sectionQuickFacts": { "description": "Quick facts section" },
+
+  "sectionAbout": "ACERCA DE",
+  "@sectionAbout": { "description": "About section" },
+
+  "sectionRequirementsAndLimitations": "REQUISITOS Y LIMITACIONES",
+  "@sectionRequirementsAndLimitations": { "description": "Requirements section" },
+
+  "sectionDataConfidence": "CONFIANZA DE DATOS",
+  "@sectionDataConfidence": { "description": "Data confidence section" },
+
+  "sectionSimilarApis": "APIS SIMILARES",
+  "@sectionSimilarApis": { "description": "Similar APIs section" },
+
+  "sectionBrowseByCategory": "EXPLORAR POR CATEGORÍA",
+  "@sectionBrowseByCategory": { "description": "Browse by category section" },
+
+  "sectionRegistryIntelligence": "INTELIGENCIA REQISTRY",
+  "@sectionRegistryIntelligence": { "description": "Registry intelligence header" },
+
+  "sectionUpcoming": "PRÓXIMAMENTE",
+  "@sectionUpcoming": { "description": "Upcoming features section" },
+
+  "sectionAddToProject": "AÑADIR AL PROYECTO",
+  "@sectionAddToProject": { "description": "Add to project section header" },
+
+  "sectionRecentlyUsed": "Usados recientemente",
+  "@sectionRecentlyUsed": { "description": "Recently used projects label" },
+
+  "sectionAllProjects": "Todos los proyectos",
+  "@sectionAllProjects": { "description": "All projects label" },
+
+  "sectionAllProjectsView": "TODOS LOS PROYECTOS",
+  "@sectionAllProjectsView": { "description": "All projects view title" },
+
+  "sectionFilters": "FILTROS",
+  "@sectionFilters": { "description": "Filters button label" },
+
+  "actionRetry": "REINTENTAR",
+  "@actionRetry": { "description": "Retry action button" },
+
+  "actionSave": "GUARDAR",
+  "@actionSave": { "description": "Save action button" },
+
+  "actionCancel": "CANCELAR",
+  "@actionCancel": { "description": "Cancel action button" },
+
+  "actionConfirm": "CONFIRMAR",
+  "@actionConfirm": { "description": "Confirm action button" },
+
+  "actionDelete": "ELIMINAR",
+  "@actionDelete": { "description": "Delete action button" },
+
+  "actionContinue": "CONTINUAR",
+  "@actionContinue": { "description": "Continue action button" },
+
+  "actionSubmit": "ENVIAR",
+  "@actionSubmit": { "description": "Submit action button" },
+
+  "actionCreate": "CREAR",
+  "@actionCreate": { "description": "Create action button" },
+
+  "actionModify": "MODIFICAR",
+  "@actionModify": { "description": "Modify action button" },
+
+  "actionSignOut": "CERRAR SESIÓN",
+  "@actionSignOut": { "description": "Sign out action button" },
+
+  "actionDeleteAccount": "ELIMINAR CUENTA",
+  "@actionDeleteAccount": { "description": "Delete account button" },
+
+  "actionApplyFiltersAndSearch": "APLICAR FILTROS Y BUSCAR",
+  "@actionApplyFiltersAndSearch": { "description": "Apply filters button" },
+
+  "actionResetAll": "RESTABLECER TODO",
+  "@actionResetAll": { "description": "Reset all filters button" },
+
+  "actionLoadMore": "CARGAR MÁS",
+  "@actionLoadMore": { "description": "Load more results button" },
+
+  "actionRemoveLimit": "ELIMINAR LÍMITE",
+  "@actionRemoveLimit": { "description": "Remove response time limit" },
+
+  "actionGoHome": "IR AL INICIO",
+  "@actionGoHome": { "description": "Go home button on error page" },
+
+  "actionRefresh": "Actualizar",
+  "@actionRefresh": { "description": "Refresh button" },
+
+  "actionViewAll": "VER TODO",
+  "@actionViewAll": { "description": "View all button" },
+
+  "actionAddToProject": "Añadir al proyecto",
+  "@actionAddToProject": { "description": "Add to project action" },
+
+  "actionShare": "Compartir",
+  "@actionShare": { "description": "Share action" },
+
+  "actionOpenHomepage": "Abrir página principal",
+  "@actionOpenHomepage": { "description": "Open homepage action" },
+
+  "actionReportAProblem": "Reportar un problema",
+  "@actionReportAProblem": { "description": "Report problem action" },
+
+  "actionSubmitReport": "Enviar reporte",
+  "@actionSubmitReport": { "description": "Submit report button" },
+
+  "actionSort": "ORDENAR",
+  "@actionSort": { "description": "Sort action label" },
+
+  "actionRename": "Renombrar",
+  "@actionRename": { "description": "Rename context menu item" },
+
+  "actionDeleteProject": "Eliminar",
+  "@actionDeleteProject": { "description": "Delete context menu item" },
+
+  "actionLinkAccount": "VINCULAR CUENTA",
+  "@actionLinkAccount": { "description": "Link account dialog button" },
+
+  "actionCreateProject": "Crear proyecto",
+  "@actionCreateProject": { "description": "Create project action" },
+
+  "actionOpenDocs": "Abrir documentación",
+  "@actionOpenDocs": { "description": "Open documentation button" },
+
+  "actionOpenWebsite": "Abrir sitio web",
+  "@actionOpenWebsite": { "description": "Open website button" },
+
+  "formSearchHint": "Buscar APIs (ej: clima, pagos...)",
+  "@formSearchHint": { "description": "Search input hint text" },
+
+  "formFilterCategoriesHint": "Filtrar categorías...",
+  "@formFilterCategoriesHint": { "description": "Category filter hint" },
+
+  "formYourName": "Tu nombre",
+  "@formYourName": { "description": "Name input hint text" },
+
+  "formDisplayName": "NOMBRE PARA MOSTRAR",
+  "@formDisplayName": { "description": "Display name label" },
+
+  "formEmail": "CORREO ELECTRÓNICO",
+  "@formEmail": { "description": "Email field label" },
+
+  "formPassword": "CONTRASEÑA",
+  "@formPassword": { "description": "Password field label" },
+
+  "formTitle": "Título",
+  "@formTitle": { "description": "Title field label" },
+
+  "formProjectName": "Nombre del proyecto",
+  "@formProjectName": { "description": "Project name hint" },
+
+  "formApiName": "NOMBRE DE LA API",
+  "@formApiName": { "description": "API name field label" },
+
+  "formApiLink": "ENLACE DE LA API (HTTPS://...)",
+  "@formApiLink": { "description": "API link field label" },
+
+  "formOptionalNote": "Nota opcional",
+  "@formOptionalNote": { "description": "Optional note label" },
+
+  "formWhatIsIncorrect": "¿QUÉ ESTÁ INCORRECTO?",
+  "@formWhatIsIncorrect": { "description": "Report issue question" },
+
+  "formIcon": "ICONO",
+  "@formIcon": { "description": "Icon field label" },
+
+  "formProjectTitleLabel": "Título",
+  "@formProjectTitleLabel": { "description": "Project title input label" },
+
+  "sortNameAsc": "Nombre (A-Z)",
+  "@sortNameAsc": { "description": "Sort option: name ascending" },
+
+  "sortNameDesc": "Nombre (Z-A)",
+  "@sortNameDesc": { "description": "Sort option: name descending" },
+
+  "sortFastestFirst": "Más rápido primero",
+  "@sortFastestFirst": { "description": "Sort option: fastest first" },
+
+  "sortSlowestFirst": "Más lento primero",
+  "@sortSlowestFirst": { "description": "Sort option: slowest first" },
+
+  "sortCategoryAsc": "Categoría (A-Z)",
+  "@sortCategoryAsc": { "description": "Sort option: category ascending" },
+
+  "filterAdvancedFilters": "Filtros avanzados",
+  "@filterAdvancedFilters": { "description": "Advanced filters sheet title" },
+
+  "filterCategories": "CATEGORÍAS",
+  "@filterCategories": { "description": "Categories filter section" },
+
+  "filterPricing": "PRECIO",
+  "@filterPricing": { "description": "Pricing filter section" },
+
+  "filterAuthentication": "AUTENTICACIÓN",
+  "@filterAuthentication": { "description": "Authentication filter section" },
+
+  "filterApiType": "TIPO DE API",
+  "@filterApiType": { "description": "API type filter section" },
+
+  "filterHttpsSupport": "SOPORTE HTTPS",
+  "@filterHttpsSupport": { "description": "HTTPS support filter" },
+
+  "filterCorsSupport": "SOPORTE CORS",
+  "@filterCorsSupport": { "description": "CORS support filter" },
+
+  "filterApiStatus": "ESTADO DE LA API",
+  "@filterApiStatus": { "description": "API status filter" },
+
+  "filterMaxResponseTime": "TIEMPO MÁXIMO DE RESPUESTA",
+  "@filterMaxResponseTime": { "description": "Max response time filter" },
+
+  "filterHttpsOnly": "SOLO HTTPS",
+  "@filterHttpsOnly": { "description": "HTTPS only filter option" },
+
+  "filterHttpOnly": "SOLO HTTP",
+  "@filterHttpOnly": { "description": "HTTP only filter option" },
+
+  "filterWorkingOnly": "SOLO FUNCIONANDO",
+  "@filterWorkingOnly": { "description": "Working only filter option" },
+
+  "filterDownOnly": "SOLO CAÍDAS",
+  "@filterDownOnly": { "description": "Down only filter option" },
+
+  "filterNoAuth": "SIN AUTENTICACIÓN",
+  "@filterNoAuth": { "description": "No auth filter option" },
+
+  "filterEnabled": "HABILITADO",
+  "@filterEnabled": { "description": "Enabled filter option" },
+
+  "filterDisabled": "DESHABILITADO",
+  "@filterDisabled": { "description": "Disabled filter option" },
+
+  "filterUnknown": "DESCONOCIDO",
+  "@filterUnknown": { "description": "Unknown filter option" },
+
+  "noLimit": "Sin límite",
+  "@noLimit": { "description": "No limit label for response time" },
+
+  "resultsCount": "{count} resultados",
+  "@resultsCount": {
+    "description": "Search results count",
+    "placeholders": { "count": { "type": "int" } }
+  },
+
+  "stateLoading": "Cargando...",
+  "@stateLoading": { "description": "Generic loading state" },
+
+  "stateSyncing": "SINCRONIZANDO",
+  "@stateSyncing": { "description": "Syncing overlay label" },
+
+  "stateLoadingCategories": "Cargando categorías",
+  "@stateLoadingCategories": { "description": "Loading categories message" },
+
+  "stateLoadingMore": "Cargando más",
+  "@stateLoadingMore": { "description": "Loading more results" },
+
+  "stateLoadingProjectApis": "Cargando APIs del proyecto",
+  "@stateLoadingProjectApis": { "description": "Loading project APIs" },
+
+  "stateLoadingProjects": "Cargando proyectos",
+  "@stateLoadingProjects": { "description": "Loading projects message" },
+
+  "stateLoadingStats": "Cargando estadísticas",
+  "@stateLoadingStats": { "description": "Loading stats message" },
+
+  "stateLoadingTitle": "Cargando {title}",
+  "@stateLoadingTitle": {
+    "description": "Loading with dynamic title",
+    "placeholders": { "title": { "type": "String" } }
+  },
+
+  "stateNothingHereYet": "Nada aquí todavía",
+  "@stateNothingHereYet": { "description": "Empty state title" },
+
+  "stateCheckBackLater": "Vuelve más tarde o desliza para actualizar.",
+  "@stateCheckBackLater": { "description": "Empty state message" },
+
+  "stateError": "Error",
+  "@stateError": { "description": "Generic error title" },
+
+  "stateSomethingWentWrong": "Algo salió mal",
+  "@stateSomethingWentWrong": { "description": "Generic error message" },
+
+  "stateCouldNotLoadCategories": "No se pudieron cargar las categorías",
+  "@stateCouldNotLoadCategories": { "description": "Category load error" },
+
+  "stateNothingToBrowseYet": "Nada que explorar todavía",
+  "@stateNothingToBrowseYet": { "description": "Empty browse state" },
+
+  "stateCouldNotLoadApis": "No se pudieron cargar las APIs",
+  "@stateCouldNotLoadApis": { "description": "API load error" },
+
+  "stateNoApis": "Sin APIs",
+  "@stateNoApis": { "description": "No APIs empty state" },
+
+  "statePullToRefresh": "Desliza para actualizar e intentar de nuevo.",
+  "@statePullToRefresh": { "description": "Pull to refresh message" },
+
+  "stateNoBookmarksYet": "Sin favoritos todavía",
+  "@stateNoBookmarksYet": { "description": "No bookmarks state" },
+
+  "stateNoProjectsYet": "Sin proyectos todavía",
+  "@stateNoProjectsYet": { "description": "No projects state" },
+
+  "stateNoApisInProject": "Sin APIs en este proyecto",
+  "@stateNoApisInProject": { "description": "No APIs in project" },
+
+  "stateCouldNotLoadProject": "No se pudo cargar el proyecto",
+  "@stateCouldNotLoadProject": { "description": "Project load error" },
+
+  "stateNoMatch": "Sin coincidencia",
+  "@stateNoMatch": { "description": "No search match" },
+
+  "stateNoMatchFound": "No se encontraron coincidencias",
+  "@stateNoMatchFound": { "description": "Search no results title" },
+
+  "stateTryDifferentKeyword": "Prueba con una palabra clave diferente o relaja los filtros para descubrir más APIs.",
+  "@stateTryDifferentKeyword": { "description": "Search no results suggestion" },
+
+  "stateSearchingApis": "Buscando APIs",
+  "@stateSearchingApis": { "description": "Searching APIs loading message" },
+
+  "stateNoCategoriesMatch": "Ninguna categoría coincide con \"{query}\". Prueba con otra búsqueda.",
+  "@stateNoCategoriesMatch": {
+    "description": "No categories match filter message",
+    "placeholders": { "query": { "type": "String" } }
+  },
+
+  "stateNoRecommendationsYet": "Sin recomendaciones todavía",
+  "@stateNoRecommendationsYet": { "description": "No recommendations" },
+
+  "stateRecommendationsWillAppear": "Las recomendaciones aparecerán a medida que uses el catálogo.",
+  "@stateRecommendationsWillAppear": { "description": "Recommendations empty message" },
+
+  "stateNoRecentApis": "Sin APIs recientes",
+  "@stateNoRecentApis": { "description": "No recent APIs" },
+
+  "stateNewCatalogAdditions": "Las nuevas adiciones al catálogo aparecerán aquí.",
+  "@stateNewCatalogAdditions": { "description": "New additions message" },
+
+  "stateUnavailable": "No disponible",
+  "@stateUnavailable": { "description": "Unavailable state" },
+
+  "stateComingSoon": "PRÓXIMAMENTE",
+  "@stateComingSoon": { "description": "Coming soon badge" },
+
+  "stateTrending": "TENDENCIA",
+  "@stateTrending": { "description": "Trending badge" },
+
+  "stateNew": "NUEVO",
+  "@stateNew": { "description": "New badge" },
+
+  "stateApiUnavailable": "API no disponible",
+  "@stateApiUnavailable": { "description": "API unavailable state" },
+
+  "stateFailedToLoadApi": "No se pudo cargar esta API",
+  "@stateFailedToLoadApi": { "description": "API load failure message" },
+
+  "stateNoRecentHealthResult": "No hay resultado de salud reciente disponible",
+  "@stateNoRecentHealthResult": { "description": "No health data message" },
+
+  "stateCreateYourFirstProject": "Crea tu primer proyecto",
+  "@stateCreateYourFirstProject": { "description": "Create first project prompt" },
+
+  "stateOrganizeApisMessage": "Organiza las APIs que descubres en proyectos para tenerlas a mano.",
+  "@stateOrganizeApisMessage": { "description": "Organize APIs prompt" },
+
+  "stateSearchFailed": "La búsqueda falló",
+  "@stateSearchFailed": { "description": "Search failure message" },
+
+  "stateRequestFailed": "La solicitud falló",
+  "@stateRequestFailed": { "description": "Request failure fallback" },
+
+  "stateNetworkError": "Error de red",
+  "@stateNetworkError": { "description": "Network error fallback" },
+
+  "dialogSignOutTitle": "CERRAR SESIÓN",
+  "@dialogSignOutTitle": { "description": "Sign out dialog title" },
+
+  "dialogSignOutMessage": "¿Estás seguro de que quieres cerrar sesión?",
+  "@dialogSignOutMessage": { "description": "Sign out confirmation message" },
+
+  "dialogDeleteAccountTitle": "ELIMINAR CUENTA",
+  "@dialogDeleteAccountTitle": { "description": "Delete account dialog title" },
+
+  "dialogDeleteAccountMessage": "Esto eliminará permanentemente tu cuenta y todos los datos asociados, incluyendo favoritos, proyectos y tokens FCM. Esta acción es irreversible.",
+  "@dialogDeleteAccountMessage": { "description": "Delete account confirmation message" },
+
+  "dialogRenameProjectTitle": "RENOMBRAR PROYECTO",
+  "@dialogRenameProjectTitle": { "description": "Rename project dialog title" },
+
+  "dialogDeleteProjectTitle": "ELIMINAR PROYECTO",
+  "@dialogDeleteProjectTitle": { "description": "Delete project dialog title" },
+
+  "dialogDeleteProjectMessage": "¿Eliminar \"{title}\" y sus enlaces de API guardados?",
+  "@dialogDeleteProjectMessage": {
+    "description": "Delete project confirmation",
+    "placeholders": { "title": { "type": "String" } }
+  },
+
+  "dialogCreateProjectTitle": "CREAR PROYECTO",
+  "@dialogCreateProjectTitle": { "description": "Create project dialog title" },
+
+  "dialogSubmitAnApiTitle": "ENVIAR UNA API",
+  "@dialogSubmitAnApiTitle": { "description": "Submit API dialog title" },
+
+  "dialogClearLocalDataTitle": "Borrar datos locales",
+  "@dialogClearLocalDataTitle": { "description": "Clear data dialog title" },
+
+  "dialogClearLocalDataMessage": "Eliminar la caché local, configuración, tokens y estado guardado.",
+  "@dialogClearLocalDataMessage": { "description": "Clear data confirmation" },
+
+  "dialogLinkAccountTitle": "VINCULAR CUENTA",
+  "@dialogLinkAccountTitle": { "description": "Link account dialog title" },
+
+  "dialogSetNameTitle": "ESTABLECER NOMBRE",
+  "@dialogSetNameTitle": { "description": "Set name dialog title" },
+
+  "snackbarNoInternetTitle": "SIN INTERNET",
+  "@snackbarNoInternetTitle": { "description": "No internet snackbar title" },
+
+  "snackbarNoInternetMessage": "Estás sin conexión. Revisa tu conexión e intenta de nuevo.",
+  "@snackbarNoInternetMessage": { "description": "No internet message" },
+
+  "snackbarBackOnlineTitle": "DE NUEVO EN LÍNEA",
+  "@snackbarBackOnlineTitle": { "description": "Back online snackbar title" },
+
+  "snackbarBackOnlineMessage": "Conexión restaurada",
+  "@snackbarBackOnlineMessage": { "description": "Back online message" },
+
+  "snackbarRequestFailedTitle": "SOLICITUD FALLIDA",
+  "@snackbarRequestFailedTitle": { "description": "Request failed title" },
+
+  "snackbarRequestFailedMessage": "No se pudo completar la solicitud. Por favor, intenta de nuevo.",
+  "@snackbarRequestFailedMessage": { "description": "Request failed message" },
+
+  "snackbarBookmarkedTitle": "Marcado",
+  "@snackbarBookmarkedTitle": { "description": "Bookmark success title" },
+
+  "snackbarBookmarkErrorTitle": "Error",
+  "@snackbarBookmarkErrorTitle": { "description": "Bookmark error title" },
+
+  "snackbarBookmarkErrorMessage": "Esta API no se puede marcar todavía.",
+  "@snackbarBookmarkErrorMessage": { "description": "Bookmark error message" },
+
+  "snackbarFailedToBookmark": "No se pudo marcar la API",
+  "@snackbarFailedToBookmark": { "description": "Bookmark failure message" },
+
+  "snackbarRemovedTitle": "Eliminado",
+  "@snackbarRemovedTitle": { "description": "Removed success title" },
+
+  "snackbarBookmarkRemoved": "Favorito eliminado",
+  "@snackbarBookmarkRemoved": { "description": "Bookmark removed message" },
+
+  "snackbarFailedToRemoveBookmark": "No se pudo eliminar el favorito",
+  "@snackbarFailedToRemoveBookmark": { "description": "Remove bookmark failure" },
+
+  "snackbarProjectCreatedTitle": "Creado",
+  "@snackbarProjectCreatedTitle": { "description": "Project created title" },
+
+  "snackbarProjectCreatedMessage": "Proyecto \"{title}\" creado",
+  "@snackbarProjectCreatedMessage": {
+    "description": "Project created message",
+    "placeholders": { "title": { "type": "String" } }
+  },
+
+  "snackbarFailedToCreateProject": "No se pudo crear el proyecto",
+  "@snackbarFailedToCreateProject": { "description": "Create project failure" },
+
+  "snackbarUpdatedTitle": "Actualizado",
+  "@snackbarUpdatedTitle": { "description": "Updated success title" },
+
+  "snackbarProjectUpdated": "Proyecto actualizado",
+  "@snackbarProjectUpdated": { "description": "Project updated message" },
+
+  "snackbarFailedToUpdateProject": "No se pudo actualizar el proyecto",
+  "@snackbarFailedToUpdateProject": { "description": "Update project failure" },
+
+  "snackbarDeletedTitle": "Eliminado",
+  "@snackbarDeletedTitle": { "description": "Deleted success title" },
+
+  "snackbarProjectDeleted": "Proyecto eliminado",
+  "@snackbarProjectDeleted": { "description": "Project deleted message" },
+
+  "snackbarFailedToDeleteProject": "No se pudo eliminar el proyecto",
+  "@snackbarFailedToDeleteProject": { "description": "Delete project failure" },
+
+  "snackbarAddedTitle": "Añadido",
+  "@snackbarAddedTitle": { "description": "Added success title" },
+
+  "snackbarAddedToProject": "Añadido a {title}",
+  "@snackbarAddedToProject": {
+    "description": "Added to project message",
+    "placeholders": { "title": { "type": "String" } }
+  },
+
+  "snackbarCouldNotAddToProject": "No se pudo añadir esta API a {title}",
+  "@snackbarCouldNotAddToProject": {
+    "description": "Add to project failure",
+    "placeholders": { "title": { "type": "String" } }
+  },
+
+  "snackbarApiRemovedFromProject": "API eliminada del proyecto",
+  "@snackbarApiRemovedFromProject": { "description": "API removed from project" },
+
+  "snackbarFailedToRemoveFromProject": "No se pudo eliminar la API del proyecto",
+  "@snackbarFailedToRemoveFromProject": { "description": "Remove from project failure" },
+
+  "snackbarCannotAddToProject": "Esta API no se puede añadir a un proyecto todavía.",
+  "@snackbarCannotAddToProject": { "description": "Cannot add to project" },
+
+  "snackbarSubmissionReceivedTitle": "Envío recibido",
+  "@snackbarSubmissionReceivedTitle": { "description": "Submission received title" },
+
+  "snackbarSubmissionReceivedMessage": "¡Gracias! Tu API fue enviada para revisión.",
+  "@snackbarSubmissionReceivedMessage": { "description": "Submission received message" },
+
+  "snackbarSubmissionFailedTitle": "Envío fallido",
+  "@snackbarSubmissionFailedTitle": { "description": "Submission failed title" },
+
+  "snackbarSubmissionFailedMessage": "No se pudo enviar ahora. Por favor, intenta de nuevo.",
+  "@snackbarSubmissionFailedMessage": { "description": "Submission failed message" },
+
+  "snackbarSearchErrorTitle": "Error de búsqueda",
+  "@snackbarSearchErrorTitle": { "description": "Search error title" },
+
+  "snackbarSavedTitle": "Guardado",
+  "@snackbarSavedTitle": { "description": "Saved success title" },
+
+  "snackbarSearchTokenSaved": "Token de búsqueda guardado",
+  "@snackbarSearchTokenSaved": { "description": "Search token saved message" },
+
+  "snackbarSaveErrorTitle": "Error al guardar",
+  "@snackbarSaveErrorTitle": { "description": "Save error title" },
+
+  "snackbarCouldNotSaveToken": "No se pudo guardar el token",
+  "@snackbarCouldNotSaveToken": { "description": "Save token failure" },
+
+  "snackbarNoBookmarksTitle": "Sin favoritos",
+  "@snackbarNoBookmarksTitle": { "description": "No bookmarks title" },
+
+  "snackbarNoBookmarksMessage": "No tienes favoritos para exportar.",
+  "@snackbarNoBookmarksMessage": { "description": "No bookmarks message" },
+
+  "snackbarExportFailedTitle": "Error de exportación",
+  "@snackbarExportFailedTitle": { "description": "Export failed title" },
+
+  "snackbarExportFailedMessage": "No se pudieron exportar los favoritos.",
+  "@snackbarExportFailedMessage": { "description": "Export failed message" },
+
+  "snackbarLocalDataClearedTitle": "Datos locales borrados",
+  "@snackbarLocalDataClearedTitle": { "description": "Data cleared title" },
+
+  "snackbarClearFailedTitle": "Error al borrar",
+  "@snackbarClearFailedTitle": { "description": "Clear failed title" },
+
+  "snackbarClearFailedMessage": "No se pueden borrar los datos locales ahora.",
+  "@snackbarClearFailedMessage": { "description": "Clear failed message" },
+
+  "snackbarStartupUpdatedTitle": "Inicio actualizado",
+  "@snackbarStartupUpdatedTitle": { "description": "Startup updated title" },
+
+  "snackbarSomethingWentWrong": "Algo salió mal, intenta de nuevo",
+  "@snackbarSomethingWentWrong": { "description": "Generic error message" },
+
+  "snackbarUnableToContinueAsGuest": "No se puede continuar como invitado",
+  "@snackbarUnableToContinueAsGuest": { "description": "Guest continue failure" },
+
+  "snackbarAuthenticationTitle": "Autenticación",
+  "@snackbarAuthenticationTitle": { "description": "Auth snackbar title" },
+
+  "snackbarHealthDataUpdated": "Datos de salud actualizados",
+  "@snackbarHealthDataUpdated": { "description": "Health data updated title" },
+
+  "snackbarBaseUrlCopied": "URL base copiada",
+  "@snackbarBaseUrlCopied": { "description": "URL copied message" },
+
+  "snackbarShareFailedTitle": "Error al compartir",
+  "@snackbarShareFailedTitle": { "description": "Share failed title" },
+
+  "snackbarShareFailedMessage": "Por favor, intenta de nuevo.",
+  "@snackbarShareFailedMessage": { "description": "Share failed message" },
+
+  "snackbarCouldNotOpenLink": "No se pudo abrir el enlace",
+  "@snackbarCouldNotOpenLink": { "description": "Open link failure" },
+
+  "snackbarReportSubmittedTitle": "Reporte enviado",
+  "@snackbarReportSubmittedTitle": { "description": "Report submitted title" },
+
+  "snackbarReportSubmittedMessage": "Gracias. Reqistry revisará esta información.",
+  "@snackbarReportSubmittedMessage": { "description": "Report submitted message" },
+
+  "snackbarBookmarkUnavailable": "Favorito no disponible",
+  "@snackbarBookmarkUnavailable": { "description": "Bookmark unavailable title" },
+
+  "snackbarBookmarkUnavailableMessage": "A esta API le falta un ID de backend.",
+  "@snackbarBookmarkUnavailableMessage": { "description": "Bookmark unavailable message" },
+
+  "snackbarSaveUnavailable": "Guardado no disponible",
+  "@snackbarSaveUnavailable": { "description": "Save unavailable title" },
+
+  "snackbarSaveUnavailableMessage": "Esta alternativa no tiene ID de backend.",
+  "@snackbarSaveUnavailableMessage": { "description": "Save unavailable message" },
+
+  "snackbarOpenedTitle": "Abierto",
+  "@snackbarOpenedTitle": { "description": "Opened snackbar title" },
+
+  "snackbarUnavailableTitle": "No disponible",
+  "@snackbarUnavailableTitle": { "description": "Unavailable snackbar title" },
+
+  "snackbarCouldNotOpenUrl": "No se pudo abrir {url}",
+  "@snackbarCouldNotOpenUrl": {
+    "description": "Could not open URL message",
+    "placeholders": { "url": { "type": "String" } }
+  },
+
+  "snackbarSubmittedTitle": "Enviado",
+  "@snackbarSubmittedTitle": { "description": "Submitted snackbar title" },
+
+  "snackbarSubmittedMessage": "¡Gracias! Revisaremos \"{name}\" pronto.",
+  "@snackbarSubmittedMessage": {
+    "description": "Submitted message",
+    "placeholders": { "name": { "type": "String" } }
+  },
+
+  "snackbarNameRequiredTitle": "Nombre requerido",
+  "@snackbarNameRequiredTitle": { "description": "Name required title" },
+
+  "snackbarNameRequiredMessage": "Ingresa un nombre para actualizar tu perfil.",
+  "@snackbarNameRequiredMessage": { "description": "Name required message" },
+
+  "snackbarNameTooLongTitle": "Nombre demasiado largo",
+  "@snackbarNameTooLongTitle": { "description": "Name too long title" },
+
+  "snackbarNameTooLongMessage": "Usa 100 caracteres o menos.",
+  "@snackbarNameTooLongMessage": { "description": "Name too long message" },
+
+  "snackbarUnableToOpenPrivacy": "No se pudo abrir la política de privacidad",
+  "@snackbarUnableToOpenPrivacy": { "description": "Privacy policy error" },
+
+  "snackbarErrorTitle": "ERROR",
+  "@snackbarErrorTitle": { "description": "Error snackbar title" },
+
+  "snackbarFillAllFields": "Por favor, completa todos los campos",
+  "@snackbarFillAllFields": { "description": "Fill all fields message" },
+
+  "snackbarCouldNotLoadDeveloperWebsite": "No se pudo abrir el sitio web del desarrollador.",
+  "@snackbarCouldNotLoadDeveloperWebsite": { "description": "Developer website error" },
+
+  "snackbarFailedToLoadProjects": "No se pudieron cargar los proyectos",
+  "@snackbarFailedToLoadProjects": { "description": "Load projects failure" },
+
+  "snackbarAddedToBookmarks": "{name} añadido a favoritos",
+  "@snackbarAddedToBookmarks": {
+    "description": "Added to bookmarks message",
+    "placeholders": { "name": { "type": "String" } }
+  },
+
+  "snackbarContinuingAsGuest": "Continuando como invitado",
+  "@snackbarContinuingAsGuest": { "description": "Guest continue success" },
+
+  "snackbarSignedIn": "Sesión iniciada",
+  "@snackbarSignedIn": { "description": "Sign in success" },
+
+  "snackbarAccountLinkedSuccessfully": "Cuenta vinculada exitosamente",
+  "@snackbarAccountLinkedSuccessfully": { "description": "Link account success" },
+
+  "snackbarSignOutFailed": "Error al cerrar sesión",
+  "@snackbarSignOutFailed": { "description": "Sign out failure" },
+
+  "snackbarFailedToDeleteAccount": "No se pudo eliminar la cuenta",
+  "@snackbarFailedToDeleteAccount": { "description": "Delete account failure" },
+
+  "snackbarAccountDeleted": "Cuenta eliminada",
+  "@snackbarAccountDeleted": { "description": "Delete account success" },
+
+  "snackbarProfileUpdated": "Perfil actualizado",
+  "@snackbarProfileUpdated": { "description": "Profile update success" },
+
+  "snackbarFailedToUpdateProfile": "No se pudo actualizar el perfil",
+  "@snackbarFailedToUpdateProfile": { "description": "Profile update failure" },
+
+  "apiDetailHttps": "HTTPS",
+  "@apiDetailHttps": { "description": "HTTPS capability label" },
+
+  "apiDetailHttp": "HTTP",
+  "@apiDetailHttp": { "description": "HTTP capability label" },
+
+  "apiDetailCors": "CORS",
+  "@apiDetailCors": { "description": "CORS capability label" },
+
+  "apiDetailAlive": "ACTIVA",
+  "@apiDetailAlive": { "description": "Alive status label" },
+
+  "apiDetailDown": "CAÍDA",
+  "@apiDetailDown": { "description": "Down status label" },
+
+  "apiDetailRest": "REST",
+  "@apiDetailRest": { "description": "REST protocol label" },
+
+  "apiDetailSoap": "SOAP",
+  "@apiDetailSoap": { "description": "SOAP protocol label" },
+
+  "apiDetailGraphql": "GraphQL",
+  "@apiDetailGraphql": { "description": "GraphQL protocol label" },
+
+  "apiDetailWebsocket": "WebSocket",
+  "@apiDetailWebsocket": { "description": "WebSocket protocol label" },
+
+  "apiDetailGrpc": "gRPC",
+  "@apiDetailGrpc": { "description": "gRPC protocol label" },
+
+  "apiDetailHealth": "Salud",
+  "@apiDetailHealth": { "description": "Health label" },
+
+  "apiDetailPricing": "Precio",
+  "@apiDetailPricing": { "description": "Pricing label" },
+
+  "apiDetailAuthentication": "Autenticación",
+  "@apiDetailAuthentication": { "description": "Authentication label" },
+
+  "apiDetailOperational": "Operativa",
+  "@apiDetailOperational": { "description": "Operational health status" },
+
+  "apiDetailReachableAuthRequired": "Alcanzable - autenticación requerida",
+  "@apiDetailReachableAuthRequired": { "description": "Reachable auth status" },
+
+  "apiDetailReachableRateLimited": "Alcanzable - límite de velocidad",
+  "@apiDetailReachableRateLimited": { "description": "Reachable rate limited" },
+
+  "apiDetailSlowResponse": "Respuesta lenta",
+  "@apiDetailSlowResponse": { "description": "Slow response status" },
+
+  "apiDetailCurrentlyUnavailable": "Actualmente no disponible",
+  "@apiDetailCurrentlyUnavailable": { "description": "Currently unavailable" },
+
+  "apiDetailStatusNotVerified": "Estado no verificado",
+  "@apiDetailStatusNotVerified": { "description": "Status not verified" },
+
+  "apiDetailCheckedAgo": "Verificado hace {time}",
+  "@apiDetailCheckedAgo": {
+    "description": "Health check timestamp",
+    "placeholders": { "time": { "type": "String" } }
+  },
+
+  "apiDetailWebsiteInformation": "Información del sitio web · metadatos",
+  "@apiDetailWebsiteInformation": { "description": "Website info subtitle" },
+
+  "apiDetailSavedInProject": "Guardado en {title}",
+  "@apiDetailSavedInProject": {
+    "description": "Saved in project label",
+    "placeholders": { "title": { "type": "String" } }
+  },
+
+  "apiDetailAlreadyAdded": "Ya añadido",
+  "@apiDetailAlreadyAdded": { "description": "Already added to project" },
+
+  "apiDetailApiCount": "{count} APIs",
+  "@apiDetailApiCount": {
+    "description": "API count label",
+    "placeholders": { "count": { "type": "int" } }
+  },
+
+  "apiDetailDocumentation": "Documentación",
+  "@apiDetailDocumentation": { "description": "Documentation link label" },
+
+  "apiDetailHomepage": "Página principal",
+  "@apiDetailHomepage": { "description": "Homepage link label" },
+
+  "apiDetailStatusPage": "Página de estado",
+  "@apiDetailStatusPage": { "description": "Status page link label" },
+
+  "apiDetailTerms": "Términos",
+  "@apiDetailTerms": { "description": "Terms link label" },
+
+  "apiDetailBookmarkApi": "Marcar API",
+  "@apiDetailBookmarkApi": { "description": "Bookmark API tooltip" },
+
+  "apiDetailRemoveBookmark": "Eliminar favorito",
+  "@apiDetailRemoveBookmark": { "description": "Remove bookmark tooltip" },
+
+  "apiDetailMoreActions": "Más acciones",
+  "@apiDetailMoreActions": { "description": "More actions tooltip" },
+
+  "apiDetailSaveAlternative": "Guardar {name}",
+  "@apiDetailSaveAlternative": {
+    "description": "Save alternative tooltip",
+    "placeholders": { "name": { "type": "String" } }
+  },
+
+  "categoryApis": "APIS",
+  "@categoryApis": { "description": "API count stat label" },
+
+  "categoryAlive": "ACTIVAS",
+  "@categoryAlive": { "description": "Alive count stat label" },
+
+  "categoryHttps": "HTTPS",
+  "@categoryHttps": { "description": "HTTPS count stat label" },
+
+  "categoryNoAuth": "SIN AUTH",
+  "@categoryNoAuth": { "description": "No auth count stat label" },
+
+  "categoryAvgResponse": "RESPUESTA PROM.",
+  "@categoryAvgResponse": { "description": "Avg response stat label" },
+
+  "categoryCatalogTotal": "TOTAL CATÁLOGO",
+  "@categoryCatalogTotal": { "description": "Catalog total stat label" },
+
+  "intelligenceCompareApis": "Comparar APIs lado a lado",
+  "@intelligenceCompareApis": { "description": "Intelligence feature" },
+
+  "intelligenceAgentReadiness": "Puntuación de preparación de agentes",
+  "@intelligenceAgentReadiness": { "description": "Intelligence feature" },
+
+  "intelligenceEvidenceBacked": "Recomendaciones basadas en evidencia",
+  "@intelligenceEvidenceBacked": { "description": "Intelligence feature" },
+
+  "intelligenceMcpToolDiscovery": "Descubrimiento de herramientas MCP",
+  "@intelligenceMcpToolDiscovery": { "description": "Intelligence feature" },
+
+  "intelligenceSideBySideComparison": "Comparación de APIs lado a lado",
+  "@intelligenceSideBySideComparison": { "description": "Intelligence highlight" },
+
+  "intelligenceContextualScores": "Puntuaciones de confianza y agentes contextuales",
+  "@intelligenceContextualScores": { "description": "Intelligence highlight" },
+
+  "intelligenceEvidenceBackedRecommendations": "Recomendaciones basadas en evidencia",
+  "@intelligenceEvidenceBackedRecommendations": { "description": "Intelligence highlight" },
+
+  "intelligenceMcpServerToolDiscovery": "Descubrimiento de servidor y herramientas MCP",
+  "@intelligenceMcpServerToolDiscovery": { "description": "Intelligence highlight" },
+
+  "intelligenceNaturalLanguageMatching": "Coincidencia de requisitos en lenguaje natural",
+  "@intelligenceNaturalLanguageMatching": { "description": "Intelligence highlight" },
+
+  "intelligenceAiPoweredDecisions": "Decisiones de API impulsadas por IA, próximamente.",
+  "@intelligenceAiPoweredDecisions": { "description": "Intelligence subtitle" },
+
+  "settingsProjects": "Proyectos",
+  "@settingsProjects": { "description": "Projects settings item" },
+
+  "settingsSavedApis": "APIs guardadas",
+  "@settingsSavedApis": { "description": "Saved APIs settings item" },
+
+  "settingsSubmitAnApi": "Enviar una API",
+  "@settingsSubmitAnApi": { "description": "Submit API settings item" },
+
+  "settingsAppSettings": "Configuración de la app",
+  "@settingsAppSettings": { "description": "App settings item" },
+
+  "settingsAccount": "Cuenta",
+  "@settingsAccount": { "description": "Account settings item" },
+
+  "settingsContact": "Contacto",
+  "@settingsContact": { "description": "Contact settings item" },
+
+  "settingsPrivacyAndPolicy": "Privacidad y política",
+  "@settingsPrivacyAndPolicy": { "description": "Privacy policy item" },
+
+  "settingsAboutAppAndDeveloper": "Acerca de la app y desarrollador",
+  "@settingsAboutAppAndDeveloper": { "description": "About app item" },
+
+  "settingsNotifications": "Notificaciones",
+  "@settingsNotifications": { "description": "Notifications toggle" },
+
+  "settingsExportFavorites": "Exportar favoritos",
+  "@settingsExportFavorites": { "description": "Export favorites action" },
+
+  "settingsClearLocalData": "Borrar datos locales",
+  "@settingsClearLocalData": { "description": "Clear local data action" },
+
+  "settingsClearLocalDataSubtitle": "Eliminar la caché local, configuración, tokens y estado guardado.",
+  "@settingsClearLocalDataSubtitle": { "description": "Clear data subtitle" },
+
+  "settingsSavedStat": "Guardados",
+  "@settingsSavedStat": { "description": "Saved stat label" },
+
+  "settingsProjectsStat": "Proyectos",
+  "@settingsProjectsStat": { "description": "Projects stat label" },
+
+  "settingsProjectApisStat": "APIs del proyecto",
+  "@settingsProjectApisStat": { "description": "Project APIs stat label" },
+
+  "settingsProfileSaved": "Has guardado",
+  "@settingsProfileSaved": { "description": "Profile saved label" },
+
+  "settingsProfileHave": "Tienes",
+  "@settingsProfileHave": { "description": "Profile have label" },
+
+  "settingsProfileMemberFor": "Miembro por {days} días",
+  "@settingsProfileMemberFor": {
+    "description": "Member duration",
+    "placeholders": { "days": { "type": "int" } }
+  },
+
+  "settingsProfileSince": "Desde {date}",
+  "@settingsProfileSince": {
+    "description": "Member since date",
+    "placeholders": { "date": { "type": "String" } }
+  },
+
+  "settingsProfileUsed": "Usado {date}",
+  "@settingsProfileUsed": {
+    "description": "Last used date",
+    "placeholders": { "date": { "type": "String" } }
+  },
+
+  "settingsWebsite": "SITIO WEB",
+  "@settingsWebsite": { "description": "Website label" },
+
+  "settingsEmail": "CORREO ELECTRÓNICO",
+  "@settingsEmail": { "description": "Email label" },
+
+  "settingsEmailLabel": "Correo electrónico",
+  "@settingsEmailLabel": { "description": "Email info label" },
+
+  "settingsAccountType": "Tipo de cuenta",
+  "@settingsAccountType": { "description": "Account type label" },
+
+  "settingsAnonymous": "Anónima",
+  "@settingsAnonymous": { "description": "Anonymous account type" },
+
+  "settingsRegistered": "Registrada",
+  "@settingsRegistered": { "description": "Registered account type" },
+
+  "settingsGuest": "INVITADO",
+  "@settingsGuest": { "description": "Guest badge" },
+
+  "settingsRegisteredBadge": "REGISTRADO",
+  "@settingsRegisteredBadge": { "description": "Registered badge" },
+
+  "settingsLinkWithEmail": "Vincular con correo y contraseña",
+  "@settingsLinkWithEmail": { "description": "Link with email option" },
+
+  "settingsCreatePermanentAccount": "Crear una cuenta permanente",
+  "@settingsCreatePermanentAccount": { "description": "Create account subtitle" },
+
+  "settingsLinkAccountDescription": "Guarda tus favoritos y notas vinculando una cuenta",
+  "@settingsLinkAccountDescription": { "description": "Link account description" },
+
+  "settingsLinkAccountCreateDescription": "Crea una cuenta permanente para guardar tus datos",
+  "@settingsLinkAccountCreateDescription": { "description": "Link account create description" },
+
+  "settingsPrivacyPolicy": "POLÍTICA DE PRIVACIDAD",
+  "@settingsPrivacyPolicy": { "description": "Privacy policy title" },
+
+  "settingsSomethingWentWrong": "ALGO SALIÓ MAL",
+  "@settingsSomethingWentWrong": { "description": "Something went wrong title" },
+
+  "settingsContactTitle": "CONTACTO",
+  "@settingsContactTitle": { "description": "Contact page title" },
+
+  "settingsAppearance": "Apariencia",
+  "@settingsAppearance": { "description": "Appearance theme section label" },
+
+  "settingsInitialTab": "Pestaña inicial al abrir",
+  "@settingsInitialTab": { "description": "Initial tab setting label" },
+
+  "settingsNotificationUpdating": "Actualizando estado de notificaciones.",
+  "@settingsNotificationUpdating": { "description": "Notification updating status" },
+
+  "settingsNotificationEnabled": "Habilitado. El token push está registrado.",
+  "@settingsNotificationEnabled": { "description": "Notifications enabled status" },
+
+  "settingsNotificationDisabled": "Deshabilitado. El token push está revocado.",
+  "@settingsNotificationDisabled": { "description": "Notifications disabled status" },
+
+  "settingsExportFavoritesSubtitle": "Exporta una lista de tus APIs favoritas (nombre, descripción, enlace).",
+  "@settingsExportFavoritesSubtitle": { "description": "Export favorites subtitle" },
+
+  "dialogClearLocalDataConfirmMessage": "Esto borrará los datos locales de la app y {appName} volverá a un estado inicial.",
+  "@dialogClearLocalDataConfirmMessage": {
+    "description": "Clear local data confirmation message",
+    "placeholders": { "appName": { "type": "String" } }
+  },
+
+  "themeSystem": "Sistema",
+  "@themeSystem": { "description": "System theme option" },
+
+  "themeLight": "Claro",
+  "@themeLight": { "description": "Light theme option" },
+
+  "themeDark": "Oscuro",
+  "@themeDark": { "description": "Dark theme option" },
+
+  "initialTabHome": "Inicio",
+  "@initialTabHome": { "description": "Initial tab home option" },
+
+  "initialTabExplore": "Explorar",
+  "@initialTabExplore": { "description": "Initial tab explore option" },
+
+  "reportApiUnavailable": "La API no está disponible",
+  "@reportApiUnavailable": { "description": "Report reason" },
+
+  "reportLinkBroken": "El enlace está roto",
+  "@reportLinkBroken": { "description": "Report reason" },
+
+  "reportPricingIncorrect": "El precio es incorrecto",
+  "@reportPricingIncorrect": { "description": "Report reason" },
+
+  "reportAuthenticationIncorrect": "La autenticación es incorrecta",
+  "@reportAuthenticationIncorrect": { "description": "Report reason" },
+
+  "reportDescriptionIncorrect": "La descripción es incorrecta",
+  "@reportDescriptionIncorrect": { "description": "Report reason" },
+
+  "reportApiDiscontinued": "La API está descontinuada",
+  "@reportApiDiscontinued": { "description": "Report reason" },
+
+  "privacyPolicyUrl": "URL de la política de privacidad",
+  "@privacyPolicyUrl": { "description": "Privacy policy URL label" },
+
+  "onboardingGetStarted": "Comenzar",
+  "@onboardingGetStarted": { "description": "Onboarding get started button" },
+
+  "onboardingContinueAsGuest": "Continuar como invitado",
+  "@onboardingContinueAsGuest": { "description": "Onboarding guest button" },
+
+  "onboardingNext": "Siguiente",
+  "@onboardingNext": { "description": "Onboarding next button" },
+
+  "onboardingSkip": "Omitir",
+  "@onboardingSkip": { "description": "Onboarding skip button" },
+
+  "onboardingSubtitle": "Encuentra la API correcta. Dale a tus agentes las herramientas adecuadas.",
+  "@onboardingSubtitle": { "description": "Onboarding subtitle text" },
+
+  "onboardingDiscoverTitle": "Descubrir",
+  "@onboardingDiscoverTitle": { "description": "Onboarding discover step title" },
+
+  "onboardingDiscoverText": "Explora un catálogo confiable de más de 1.400 APIs organizadas por categoría.",
+  "@onboardingDiscoverText": { "description": "Onboarding discover step description" },
+
+  "onboardingEvaluateTitle": "Evaluar",
+  "@onboardingEvaluateTitle": { "description": "Onboarding evaluate step title" },
+
+  "onboardingEvaluateText": "Revisa la salud, autenticación, precios y documentación antes de construir.",
+  "@onboardingEvaluateText": { "description": "Onboarding evaluate step description" },
+
+  "onboardingConnectTitle": "Conectar",
+  "@onboardingConnectTitle": { "description": "Onboarding connect step title" },
+
+  "onboardingConnectText": "Marca APIs y organízalas en proyectos para tu próxima construcción.",
+  "@onboardingConnectText": { "description": "Onboarding connect step description" },
+
+  "onboardingExploreApis": "Explorar APIs",
+  "@onboardingExploreApis": { "description": "Onboarding explore APIs button" },
+
+  "miscApi": "API",
+  "@miscApi": { "description": "Singular API label" },
+
+  "miscApis": "APIs",
+  "@miscApis": { "description": "Plural APIs label" },
+
+  "miscProject": "Proyecto",
+  "@miscProject": { "description": "Singular Project label" },
+
+  "miscProjects": "Proyectos",
+  "@miscProjects": { "description": "Plural Projects label" },
+
+  "miscMemberForDays": "Miembro por {days} días",
+  "@miscMemberForDays": {
+    "description": "Member duration",
+    "placeholders": { "days": { "type": "int" } }
+  },
+
+  "miscUnknownPricing": "DESCONOCIDO",
+  "@miscUnknownPricing": { "description": "Unknown pricing label" },
+
+  "miscFree": "GRATIS",
+  "@miscFree": { "description": "Free pricing label" },
+
+  "miscFreemium": "FREEMIUM",
+  "@miscFreemium": { "description": "Freemium pricing label" },
+
+  "miscPaid": "DE PAGO",
+  "@miscPaid": { "description": "Paid pricing label" },
+
+  "miscApiLinkCopied": "Enlace de la API copiado",
+  "@miscApiLinkCopied": { "description": "API link copied message" },
+
+  "miscPoweredByReqistry": "Impulsado por Reqistry",
+  "@miscPoweredByReqistry": { "description": "Powered by label" },
+
+  "tooltipEditName": "Editar nombre",
+  "@tooltipEditName": { "description": "Edit name tooltip" },
+
+  "actionKnowAnApi": "¿CONOCES UNA API?",
+  "@actionKnowAnApi": { "description": "Submit API button in home app bar" },
+
+  "formTitleRequired": "El título es obligatorio",
+  "@formTitleRequired": { "description": "Title field validation error" },
+
+  "formFieldRequired": "Este campo es obligatorio",
+  "@formFieldRequired": { "description": "Generic field validation error" },
+
+  "formNameTooShort": "El nombre debe tener al menos 3 caracteres",
+  "@formNameTooShort": { "description": "Name too short validation error" },
+
+  "formInvalidUrl": "Ingresa una URL http(s) válida",
+  "@formInvalidUrl": { "description": "Invalid URL validation error" },
+
+  "emptyCreateProjectMessage": "Crea un proyecto y luego añade las APIs que descubras para mantenerlas organizadas.",
+  "@emptyCreateProjectMessage": { "description": "Empty projects message in all projects view" },
+
+  "apiDetailPlatformObservedHealth": "SALUD OBSERVADA POR LA PLATAFORMA",
+  "@apiDetailPlatformObservedHealth": { "description": "Platform health section header" },
+
+  "apiDetailBaseUrl": "URL BASE",
+  "@apiDetailBaseUrl": { "description": "Base URL section label" },
+
+  "apiDetailCopyBaseUrl": "Copiar URL BASE",
+  "@apiDetailCopyBaseUrl": { "description": "Copy base URL tooltip" },
+
+  "apiDetailSupported": "Soportado",
+  "@apiDetailSupported": { "description": "Feature supported label" },
+
+  "apiDetailNotSupported": "No soportado",
+  "@apiDetailNotSupported": { "description": "Feature not supported label" },
+
+  "apiDetailUnknownValue": "Desconocido",
+  "@apiDetailUnknownValue": { "description": "Unknown value label" },
+
+  "apiDetailApiType": "Tipo de API",
+  "@apiDetailApiType": { "description": "API type label in quick facts" },
+
+  "apiDetailResponseFormat": "Formato de respuesta",
+  "@apiDetailResponseFormat": { "description": "Response format label in quick facts" },
+
+  "apiDetailCreditCardRequired": "Se requiere tarjeta de crédito",
+  "@apiDetailCreditCardRequired": { "description": "Credit card required label" },
+
+  "apiDetailCommercialUse": "Uso comercial",
+  "@apiDetailCommercialUse": { "description": "Commercial use label" },
+
+  "apiDetailOpenApiAvailable": "OpenAPI disponible",
+  "@apiDetailOpenApiAvailable": { "description": "OpenAPI available label" },
+
+  "apiDetailYes": "Sí",
+  "@apiDetailYes": { "description": "Yes label" },
+
+  "apiDetailNo": "No",
+  "@apiDetailNo": { "description": "No label" },
+
+  "formReportNoticeBanner": "Los reportes se envían a Reqistry para revisión.",
+  "@formReportNoticeBanner": { "description": "Report issue notice banner text" },
+
+  "reportOther": "Otro",
+  "@reportOther": { "description": "Report reason: other" },
+
+  "settingsGuestAccountType": "Invitado",
+  "@settingsGuestAccountType": { "description": "Guest account type value" },
+
+  "settingsEmailAccountType": "Correo electrónico",
+  "@settingsEmailAccountType": { "description": "Email account type value" },
+
+  "settingsMemberSincePrefix": "Desde {date}",
+  "@settingsMemberSincePrefix": {
+    "description": "Member since date prefix",
+    "placeholders": { "date": { "type": "String" } }
+  },
+
+  "settingsLastUsedPrefix": "Usado {date}",
+  "@settingsLastUsedPrefix": {
+    "description": "Last used date prefix",
+    "placeholders": { "date": { "type": "String" } }
+  },
+
+  "stateLoadingBookmarks": "Cargando favoritos",
+  "@stateLoadingBookmarks": { "description": "Loading bookmarks message" },
+
+  "stateBookmarksEmptyMessage": "Toca el icono de favorito en cualquier API en la pestaña Descubrir para guardarla aquí.",
+  "@stateBookmarksEmptyMessage": { "description": "Empty bookmarks message" },
+
+  "tooltipRenameProject": "Renombrar proyecto",
+  "@tooltipRenameProject": { "description": "Rename project tooltip" },
+
+  "tooltipDeleteProject": "Eliminar proyecto",
+  "@tooltipDeleteProject": { "description": "Delete project tooltip" },
+
+  "stateNoApisInProjectMessage": "Explora la pestaña Descubrir y añade las APIs que quieras guardar aquí.",
+  "@stateNoApisInProjectMessage": { "description": "No APIs in project message" },
+
+  "actionBrowseApis": "Explorar APIs",
+  "@actionBrowseApis": { "description": "Browse APIs button" },
+
+  "projectSavedApisCount": "{count} APIs guardadas",
+  "@projectSavedApisCount": {
+    "description": "Saved APIs count in project header",
+    "placeholders": { "count": { "type": "int" } }
+  },
+
+  "stateCategory": "Categoría",
+  "@stateCategory": { "description": "Category fallback title" },
+
+  "stateLoadingCategoryApis": "Cargando APIs de la categoría",
+  "@stateLoadingCategoryApis": { "description": "Loading category APIs message" },
+
+  "stateCouldNotLoadCategory": "No se pudo cargar la categoría",
+  "@stateCouldNotLoadCategory": { "description": "Category load error" },
+
+  "stateNoApisAvailable": "No hay APIs disponibles",
+  "@stateNoApisAvailable": { "description": "No APIs available empty state" },
+
+  "stateCategoryEmptyMessage": "Esta categoría está vacía ahora. Prueba otra categoría en la pestaña Descubrir.",
+  "@stateCategoryEmptyMessage": { "description": "Category empty message" },
+
+  "miscNA": "N/D",
+  "@miscNA": { "description": "Not available label" },
+
+  "snackbarEmailAppOpened": "App de correo abierta",
+  "@snackbarEmailAppOpened": { "description": "Email app opened message" },
+
+  "snackbarWebsiteOpened": "Sitio web abierto",
+  "@snackbarWebsiteOpened": { "description": "Website opened message" },
+
+  "timeJustNow": "ahora mismo",
+  "@timeJustNow": { "description": "Just now time label" },
+
+  "timeMinutesAgo": "hace {count} min",
+  "@timeMinutesAgo": {
+    "description": "Minutes ago time label",
+    "placeholders": { "count": { "type": "int" } }
+  },
+
+  "timeHoursAgo": "hace {count} hr",
+  "@timeHoursAgo": {
+    "description": "Hours ago time label",
+    "placeholders": { "count": { "type": "int" } }
+  },
+
+  "timeDaysAgo": "hace {count} días",
+  "@timeDaysAgo": {
+    "description": "Days ago time label",
+    "placeholders": { "count": { "type": "int" } }
+  },
+
+  "apiDetailApiReference": "Referencia de la API",
+  "@apiDetailApiReference": { "description": "API reference link label" },
+
+  "apiDetailSdks": "SDKs",
+  "@apiDetailSdks": { "description": "SDKs label in quick facts" },
+
+  "apiDetailRateLimit": "Límite de velocidad",
+  "@apiDetailRateLimit": { "description": "Rate limit label in quick facts" },
+
+  "semanticsApiLogo": "Logo de {name}",
+  "@semanticsApiLogo": {
+    "description": "API logo semantics label",
+    "placeholders": { "name": { "type": "String" } }
+  },
+
+  "errorBadCertificate": "No se pudo verificar la conexión de forma segura.",
+  "@errorBadCertificate": { "description": "Bad certificate error message" },
+
+  "errorTooManyRequests": "Demasiadas solicitudes. Por favor, espera un momento e intenta de nuevo.",
+  "@errorTooManyRequests": { "description": "Too many requests error message" },
+
+  "errorServerError": "El servidor está teniendo problemas. Por favor, intenta de nuevo más tarde.",
+  "@errorServerError": { "description": "Server error message" },
+
+  "errorSomethingWentWrong": "Algo salió mal. Por favor, intenta de nuevo.",
+  "@errorSomethingWentWrong": { "description": "Generic error message" },
+
+  "discoverCatalogLoadingMessage": "El catálogo de Descubrir está cargando. Desliza para actualizar e intenta de nuevo.",
+  "@discoverCatalogLoadingMessage": { "description": "Discover catalog loading message" },
+
+  "privacyNoInternetConnection": "Sin conexión a internet",
+  "@privacyNoInternetConnection": { "description": "Privacy page no internet error" },
+
+  "privacyFailedToLoadContent": "No se pudo cargar el contenido de privacidad",
+  "@privacyFailedToLoadContent": { "description": "Privacy content load failure" },
+
+  "unexpectedErrorOccurred": "Ocurrió un error inesperado: {error}",
+  "@unexpectedErrorOccurred": {
+    "description": "Unexpected error with details",
+    "placeholders": { "error": { "type": "String" } }
+  },
+
+  "errorApiDataNotFound": "Datos de la API no encontrados",
+  "@errorApiDataNotFound": { "description": "API data not found error" },
+
+  "errorProjectDataNotFound": "Datos del proyecto no encontrados",
+  "@errorProjectDataNotFound": { "description": "Project data not found error" },
+
+  "snackbarLocalDataClearedMessage": "{appName} empezará de nuevo.",
+  "@snackbarLocalDataClearedMessage": {
+    "description": "Local data cleared message",
+    "placeholders": { "appName": { "type": "String" } }
+  },
+
+  "snackbarStartupUpdatedDiscoverMessage": "{appName} se abrirá en Descubrir.",
+  "@snackbarStartupUpdatedDiscoverMessage": {
+    "description": "Startup updated discover message",
+    "placeholders": { "appName": { "type": "String" } }
+  },
+
+  "snackbarStartupUpdatedHomeMessage": "{appName} se abrirá en Inicio.",
+  "@snackbarStartupUpdatedHomeMessage": {
+    "description": "Startup updated home message",
+    "placeholders": { "appName": { "type": "String" } }
+  },
+
+  "apiDetailCouldNotBeLoaded": "No se pudo cargar esta API.",
+  "@apiDetailCouldNotBeLoaded": { "description": "API could not be loaded error" },
+
+  "apiDetailFreshInfoUnavailable": "La información fresca de la API no está disponible temporalmente.",
+  "@apiDetailFreshInfoUnavailable": { "description": "Fresh info unavailable error" },
+
+  "apiDetailSimilarApisUnavailable": "Las APIs similares no están disponibles.",
+  "@apiDetailSimilarApisUnavailable": { "description": "Similar APIs unavailable error" },
+
+  "apiDetailHealthLoaded": "Último resultado de salud de la plataforma cargado.",
+  "@apiDetailHealthLoaded": { "description": "Health loaded success message" },
+
+  "apiDetailHealthRefreshFailed": "No se pudo actualizar la salud.",
+  "@apiDetailHealthRefreshFailed": { "description": "Health refresh failure" },
+
+  "categoryApisInvalidArgument": "Argumento de navegación inválido: {type}",
+  "@categoryApisInvalidArgument": {
+    "description": "Invalid navigation argument error",
+    "placeholders": { "type": { "type": "String" } }
+  },
+
+  "categoryApisUnexpectedError": "Ocurrió un error inesperado",
+  "@categoryApisUnexpectedError": { "description": "Unexpected category error" },
+
+  "submitApiTipMessage": "Envía una API para revisión. Proporciona el nombre y la URL de la API.",
+  "@submitApiTipMessage": { "description": "Submit API tip card message" },
+
+  "apiDetailNoDescription": "No hay descripción revisada disponible.",
+  "@apiDetailNoDescription": { "description": "No reviewed description fallback" },
+
+  "apiDetailAutomatedBackendCheck": "Verificación automatizada del backend",
+  "@apiDetailAutomatedBackendCheck": { "description": "Automated backend check method label" },
+
+  "apiDetailNotVerified": "No verificado",
+  "@apiDetailNotVerified": { "description": "Not verified source label" },
+
+  "apiDetailAutomatedCheck": "Verificación automatizada",
+  "@apiDetailAutomatedCheck": { "description": "Automated check source label" },
+
+  "apiDetailImported": "Importado",
+  "@apiDetailImported": { "description": "Imported source label" },
+
+  "apiDetailNoAuthentication": "Sin autenticación",
+  "@apiDetailNoAuthentication": { "description": "No authentication label" },
+
+  "apiDetailBasicAuthentication": "Autenticación básica",
+  "@apiDetailBasicAuthentication": { "description": "Basic authentication label" },
+
+  "apiDetailFree": "Gratis",
+  "@apiDetailFree": { "description": "Free pricing label" },
+
+  "apiDetailFreeTier": "Nivel gratuito",
+  "@apiDetailFreeTier": { "description": "Free tier pricing label" },
+
+  "apiDetailPaid": "De pago",
+  "@apiDetailPaid": { "description": "Paid pricing label" },
+
+  "apiDetailSourceProvider": "Proveedor",
+  "@apiDetailSourceProvider": { "description": "Provider verification source" },
+
+  "apiDetailSourceRegistryReview": "Revisión de Reqistry",
+  "@apiDetailSourceRegistryReview": { "description": "Registry review verification source" },
+
+  "apiDetailSourceCommunityReport": "Reporte de la comunidad",
+  "@apiDetailSourceCommunityReport": { "description": "Community report verification source" },
+
+  "apiDetailWarningPaidAccess": "Acceso de pago reportado",
+  "@apiDetailWarningPaidAccess": { "description": "Paid access warning" },
+
+  "apiDetailWarningNoDocs": "La URL de documentación no está disponible",
+  "@apiDetailWarningNoDocs": { "description": "No docs warning" },
+
+  "apiDetailWarningCorsNotVerified": "El soporte CORS no está verificado",
+  "@apiDetailWarningCorsNotVerified": { "description": "CORS not verified warning" },
+
+  "apiDetailWarningNoHealthResult": "No hay resultado de salud reciente de la plataforma disponible",
+  "@apiDetailWarningNoHealthResult": { "description": "No health result warning" },
+
+  "apiDetailWarningAuthRequired": "{authType} requerido",
+  "@apiDetailWarningAuthRequired": {
+    "description": "Auth required warning",
+    "placeholders": { "authType": { "type": "String" } }
+  },
+
+  "apiDetailSearchFallback": "Buscar",
+  "@apiDetailSearchFallback": { "description": "Search category fallback" },
+
+  "apiDetailPlatformObservedHealthLabel": "Salud observada por la plataforma.",
+  "@apiDetailPlatformObservedHealthLabel": { "description": "Platform health semantics label" },
+
+  "errorEmptyResponse": "Respuesta vacía",
+  "@errorEmptyResponse": { "description": "Empty response error title" },
+
+  "errorServerReturnedEmptyData": "El servidor devolvió datos vacíos",
+  "@errorServerReturnedEmptyData": { "description": "Empty response error message" },
+
+  "errorParseError": "Error de análisis",
+  "@errorParseError": { "description": "Parse error title" },
+
+  "errorFailedToProcessData": "No se pudieron procesar los datos",
+  "@errorFailedToProcessData": { "description": "Generic parse error message" },
+
+  "errorInvalidInput": "Entrada inválida",
+  "@errorInvalidInput": { "description": "Invalid input error title" },
+
+  "errorCategoryIdEmpty": "El ID de la categoría no puede estar vacío",
+  "@errorCategoryIdEmpty": { "description": "Category ID empty error" },
+
+  "errorApiNameEmpty": "El nombre de la API no puede estar vacío",
+  "@errorApiNameEmpty": { "description": "API name empty error" },
+
+  "errorApiLinkEmpty": "El enlace de la API no puede estar vacío",
+  "@errorApiLinkEmpty": { "description": "API link empty error" },
+
+  "errorInvalidData": "Datos inválidos",
+  "@errorInvalidData": { "description": "Invalid data error title" },
+
+  "errorApiResponseInvalid": "Los datos de la respuesta de la API son inválidos",
+  "@errorApiResponseInvalid": { "description": "Invalid API response error" },
+
+  "errorConnectionTimeout": "Tiempo de conexión agotado",
+  "@errorConnectionTimeout": { "description": "Connection timeout error title" },
+
+  "errorCheckInternetConnection": "Revisa tu conexión a internet",
+  "@errorCheckInternetConnection": { "description": "Check internet connection message" },
+
+  "settingsLanguage": "Idioma",
+  "@settingsLanguage": { "description": "Language setting label" }
+}
