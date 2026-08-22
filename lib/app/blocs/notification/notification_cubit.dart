@@ -70,6 +70,11 @@ class NotificationCubit extends Cubit<NotificationState> {
   Future<void> _init() async {
     await _localNotificationService.init();
     await _setupListeners();
+    // Best-effort initial load so badges/feeds are correct on cold start.
+    // Fails silently when Hive/token aren't ready yet.
+    try {
+      await _loadNotifications();
+    } catch (_) {}
   }
 
   Future<void> _setupListeners() async {

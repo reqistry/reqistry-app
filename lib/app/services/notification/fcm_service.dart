@@ -48,6 +48,7 @@ class FcmService {
   String? _currentToken;
   FcmTokenState _state = FcmTokenState.initial;
   Box? _cacheBox;
+  bool _messageHandlersConfigured = false;
 
   // Stream controllers
   final _tokenStreamController = StreamController<String?>.broadcast();
@@ -85,16 +86,20 @@ class FcmService {
       _currentToken = await _messaging.getToken();
       _tokenStreamController.add(_currentToken);
 
-      // Listen for token refreshes
-      _messaging.onTokenRefresh.listen((newToken) {
-        _currentToken = newToken;
-        _tokenStreamController.add(newToken);
-        _updateTokenOnBackend(newToken);
-      });
+      // Configure listeners once — init() can be called from bootstrap and
+      // again from feature cubits; listeners must not stack.
+      if (!_messageHandlersConfigured) {
+        _messaging.onTokenRefresh.listen((newToken) {
+          _currentToken = newToken;
+          _tokenStreamController.add(newToken);
+          _updateTokenOnBackend(newToken);
+        });
 
-      // Configure message handling
-      FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-      _configureMessageHandling();
+        FirebaseMessaging.onBackgroundMessage(
+            firebaseMessagingBackgroundHandler);
+        _configureMessageHandling();
+        _messageHandlersConfigured = true;
+      }
 
       // Fold notifications received while terminated into the in-app feed.
       await _mergePendingNotifications();
