@@ -13,7 +13,8 @@ class SearchResultsList extends StatelessWidget {
   final SearchState state;
   final ScrollController scrollController;
 
-  const SearchResultsList({super.key, required this.state, required this.scrollController});
+  const SearchResultsList(
+      {super.key, required this.state, required this.scrollController});
 
   @override
   Widget build(BuildContext context) {
@@ -25,14 +26,15 @@ class SearchResultsList extends StatelessWidget {
               horizontal: AppSpacing.s16, vertical: AppSpacing.s12),
           decoration: BoxDecoration(
             color: c.surfaceContainer,
-            border: Border(
-                bottom: BorderSide(color: c.surfaceVariant, width: 1)),
+            border:
+                Border(bottom: BorderSide(color: c.surfaceVariant, width: 1)),
           ),
           child: Row(
             children: [
-              Text(AppLocalizations.of(context)!.resultsCount(state.totalResults),
-                  style: AppTextStyles.bodyMd
-                      .copyWith(color: c.onSurface)),
+              Text(
+                  AppLocalizations.of(context)!
+                      .resultsCount(state.totalResults),
+                  style: AppTextStyles.bodyMd.copyWith(color: c.onSurface)),
               const Spacer(),
               PopupMenuButton<String>(
                 icon: Row(
@@ -54,15 +56,23 @@ class SearchResultsList extends StatelessWidget {
                 },
                 itemBuilder: (context) => [
                   PopupMenuItem(
-                      value: 'name_asc', child: Text(AppLocalizations.of(context)!.sortNameAsc)),
+                      value: 'name_asc',
+                      child: Text(AppLocalizations.of(context)!.sortNameAsc)),
                   PopupMenuItem(
-                      value: 'name_desc', child: Text(AppLocalizations.of(context)!.sortNameDesc)),
+                      value: 'name_desc',
+                      child: Text(AppLocalizations.of(context)!.sortNameDesc)),
                   PopupMenuItem(
-                      value: 'responseTime_asc', child: Text(AppLocalizations.of(context)!.sortFastestFirst)),
+                      value: 'responseTime_asc',
+                      child:
+                          Text(AppLocalizations.of(context)!.sortFastestFirst)),
                   PopupMenuItem(
-                      value: 'responseTime_desc', child: Text(AppLocalizations.of(context)!.sortSlowestFirst)),
+                      value: 'responseTime_desc',
+                      child:
+                          Text(AppLocalizations.of(context)!.sortSlowestFirst)),
                   PopupMenuItem(
-                      value: 'category_asc', child: Text(AppLocalizations.of(context)!.sortCategoryAsc)),
+                      value: 'category_asc',
+                      child:
+                          Text(AppLocalizations.of(context)!.sortCategoryAsc)),
                 ],
               ),
             ],
@@ -84,8 +94,9 @@ class SearchResultsList extends StatelessWidget {
                     padding: const EdgeInsets.all(AppSpacing.s16),
                     child: Center(
                       child: state.isLoadingMore
-                            ? AppLoading(
-                              message: AppLocalizations.of(context)!.stateLoadingMore,
+                          ? AppLoading(
+                              message: AppLocalizations.of(context)!
+                                  .stateLoadingMore,
                               compact: true,
                               size: 24,
                             )
@@ -96,14 +107,14 @@ class SearchResultsList extends StatelessWidget {
                               icon: const Icon(
                                   PhosphorIconsRegular.arrowsClockwise,
                                   size: 18),
-                              label: Text(AppLocalizations.of(context)!.actionLoadMore,
+                              label: Text(
+                                  AppLocalizations.of(context)!.actionLoadMore,
                                   style: AppTextStyles.labelSmUpper
                                       .copyWith(fontSize: 11)),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: c.surface,
                                 foregroundColor: c.onSurface,
-                                side: BorderSide(
-                                    color: c.surfaceVariant),
+                                side: BorderSide(color: c.surfaceVariant),
                                 shape: const RoundedRectangleBorder(
                                     borderRadius: BorderRadius.zero),
                                 elevation: 0,
@@ -113,9 +124,14 @@ class SearchResultsList extends StatelessWidget {
                   );
                 }
                 final api = state.searchResults[index];
-                final category =
-                    state.category.isNotEmpty ? state.category.first : AppLocalizations.of(context)!.apiDetailSearchFallback;
-                return ApiCard(api: api, category: category);
+                final category = state.category.isNotEmpty
+                    ? state.category.first
+                    : AppLocalizations.of(context)!.apiDetailSearchFallback;
+                return ApiCard(
+                  api: api,
+                  category: category,
+                  sourceScreen: 'search',
+                );
               },
             ),
           ),

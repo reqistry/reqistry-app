@@ -22,11 +22,14 @@ class ApiCard extends StatefulWidget {
     super.key,
     required this.api,
     required this.category,
+    this.sourceScreen = 'browse',
   });
 
   final ApiItem api;
   final String category;
+  final String sourceScreen;
 
+  @override
   State<ApiCard> createState() => _ApiCardState();
 }
 
@@ -56,7 +59,7 @@ class _ApiCardState extends State<ApiCard> {
       lastCheckedAt: widget.api.lastCheckedDateTime,
     );
     context.push(
-      AppRoutes.apiDetailPath(newApiModel.slug),
+      AppRoutes.apiDetailPath(newApiModel.slug, source: widget.sourceScreen),
       extra: newApiModel,
     );
   }
@@ -70,7 +73,8 @@ class _ApiCardState extends State<ApiCard> {
     if (_isFavorited) {
       final bookmarkId = favoritesCubit.getBookmarkId(widget.api.link);
       if (bookmarkId != null) {
-        favoritesCubit.removeBookmark(bookmarkId, l10n: AppLocalizations.of(context)!);
+        favoritesCubit.removeBookmark(bookmarkId,
+            l10n: AppLocalizations.of(context)!);
         if (mounted) setState(() {});
       }
     } else {
@@ -78,13 +82,16 @@ class _ApiCardState extends State<ApiCard> {
         AppSnackbarManager.showSnackbar(
           context: context,
           title: AppLocalizations.of(context)!.snackbarBookmarkUnavailable,
-          message: AppLocalizations.of(context)!.snackbarBookmarkUnavailableMessage,
+          message:
+              AppLocalizations.of(context)!.snackbarBookmarkUnavailableMessage,
           type: AppSnackbarType.error,
         );
         return;
       }
       favoritesCubit.addBookmark(
-          apiId: widget.api.id, apiName: widget.api.name, l10n: AppLocalizations.of(context)!);
+          apiId: widget.api.id,
+          apiName: widget.api.name,
+          l10n: AppLocalizations.of(context)!);
       if (mounted) setState(() {});
     }
   }
@@ -148,9 +155,7 @@ class _ApiCardState extends State<ApiCard> {
                           ? PhosphorIconsFill.bookmarkSimple
                           : PhosphorIconsRegular.bookmarkSimple,
                       size: 20,
-                      color: _isFavorited
-                          ? c.primary
-                          : c.onSurfaceVariant,
+                      color: _isFavorited ? c.primary : c.onSurfaceVariant,
                     ),
                   ),
                 ],

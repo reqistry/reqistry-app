@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../blocs/main_shell/main_shell_cubit.dart';
 import '../../blocs/favorites/favorites_cubit.dart';
@@ -10,7 +11,6 @@ import '../../utils/design_system/app_colors.dart';
 import '../../utils/design_system/app_spacing.dart';
 import 'home_view/home_view.dart';
 import 'search_apis_screen.dart';
-import 'search_screen/search_screen.dart';
 import 'settings_view/settings_view.dart';
 import 'favorites_view/favorites_view.dart';
 import 'package:api_scout/l10n/app_localizations.dart';
@@ -90,13 +90,7 @@ class _MainShellViewState extends State<MainShellView> {
             ],
           ),
           floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => const SearchScreen(),
-                ),
-              );
-            },
+            onPressed: () => context.push('/search'),
             backgroundColor: c.primary,
             elevation: 0,
             child: Icon(PhosphorIconsRegular.magnifyingGlass,

@@ -34,9 +34,14 @@ import 'package:url_launcher/url_launcher.dart';
 enum _OverflowAction { addToProject, share, homepage, report }
 
 class ApiDetailView extends StatefulWidget {
-  const ApiDetailView({super.key, required this.slug});
+  const ApiDetailView({
+    super.key,
+    required this.slug,
+    this.sourceScreen = 'unknown',
+  });
 
   final String slug;
+  final String sourceScreen;
 
   @override
   State<ApiDetailView> createState() => _ApiDetailViewState();
@@ -86,168 +91,175 @@ class _ApiDetailViewState extends State<ApiDetailView> {
     return Scaffold(
       backgroundColor: c.background,
       body: RefreshIndicator(
-        onRefresh: () => context.read<ApiDetailCubit>().refresh(l10n: AppLocalizations.of(context)),
+        onRefresh: () => context
+            .read<ApiDetailCubit>()
+            .refresh(l10n: AppLocalizations.of(context)),
         child: CustomScrollView(
           key: PageStorageKey('api-detail-${widget.slug}'),
           restorationId: 'api-detail-${widget.slug}',
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
-          SliverAppBar(
-            pinned: true,
-            backgroundColor: c.surface,
-            surfaceTintColor: Colors.transparent,
-            titleSpacing: 0,
-            title: BlocBuilder<ApiDetailCubit, ApiDetailState>(
-              buildWhen: (previous, current) =>
-                  previous.detail?.name != current.detail?.name,
-              builder: (context, state) => Text(
-                state.detail?.name ?? initialDetail.name,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: AppTextStyles.headlineSm.copyWith(letterSpacing: 0),
+            SliverAppBar(
+              pinned: true,
+              backgroundColor: c.surface,
+              surfaceTintColor: Colors.transparent,
+              titleSpacing: 0,
+              title: BlocBuilder<ApiDetailCubit, ApiDetailState>(
+                buildWhen: (previous, current) =>
+                    previous.detail?.name != current.detail?.name,
+                builder: (context, state) => Text(
+                  state.detail?.name ?? initialDetail.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyles.headlineSm.copyWith(letterSpacing: 0),
+                ),
               ),
-            ),
-            actions: [
-              BlocBuilder<FavoritesCubit, FavoritesState>(
-                builder: (context, _) {
-                  final detail = _detail(context);
-                  final l10n = AppLocalizations.of(context)!;
-                  final isBookmarked = context
-                      .read<FavoritesCubit>()
-                      .isFavorited(detail.links.baseUrl?.toString() ?? '');
-                  return IconButton(
-                    constraints:
-                        const BoxConstraints.tightFor(width: 48, height: 48),
-                    onPressed: () => _toggleBookmark(detail, isBookmarked),
-                    tooltip: isBookmarked ? l10n.apiDetailRemoveBookmark : l10n.apiDetailBookmarkApi,
-                    icon: Icon(
-                      isBookmarked
-                          ? PhosphorIconsFill.bookmarkSimple
-                          : PhosphorIconsRegular.bookmarkSimple,
-                    ),
-                  );
-                },
-              ),
-              PopupMenuButton<_OverflowAction>(
-                tooltip: AppLocalizations.of(context)!.apiDetailMoreActions,
-                constraints: const BoxConstraints(minWidth: 220),
-                onSelected: (action) => _handleOverflow(action),
-                itemBuilder: (_) {
-                  final detail = _detail(context);
-                  final l10n = AppLocalizations.of(context)!;
-                  return [
-                    PopupMenuItem(
-                      value: _OverflowAction.addToProject,
-                      child: DetailMenuItem(
-                        icon: PhosphorIconsRegular.folderPlus,
-                        label: l10n.actionAddToProject,
+              actions: [
+                BlocBuilder<FavoritesCubit, FavoritesState>(
+                  builder: (context, _) {
+                    final detail = _detail(context);
+                    final l10n = AppLocalizations.of(context)!;
+                    final isBookmarked = context
+                        .read<FavoritesCubit>()
+                        .isFavorited(detail.links.baseUrl?.toString() ?? '');
+                    return IconButton(
+                      constraints:
+                          const BoxConstraints.tightFor(width: 48, height: 48),
+                      onPressed: () => _toggleBookmark(detail, isBookmarked),
+                      tooltip: isBookmarked
+                          ? l10n.apiDetailRemoveBookmark
+                          : l10n.apiDetailBookmarkApi,
+                      icon: Icon(
+                        isBookmarked
+                            ? PhosphorIconsFill.bookmarkSimple
+                            : PhosphorIconsRegular.bookmarkSimple,
                       ),
-                    ),
-                    PopupMenuItem(
-                      value: _OverflowAction.share,
-                      child: DetailMenuItem(
-                        icon: PhosphorIconsRegular.shareNetwork,
-                        label: l10n.actionShare,
-                      ),
-                    ),
-                    if (detail.links.homepageUrl != null)
+                    );
+                  },
+                ),
+                PopupMenuButton<_OverflowAction>(
+                  tooltip: AppLocalizations.of(context)!.apiDetailMoreActions,
+                  constraints: const BoxConstraints(minWidth: 220),
+                  onSelected: (action) => _handleOverflow(action),
+                  itemBuilder: (_) {
+                    final detail = _detail(context);
+                    final l10n = AppLocalizations.of(context)!;
+                    return [
                       PopupMenuItem(
-                        value: _OverflowAction.homepage,
+                        value: _OverflowAction.addToProject,
                         child: DetailMenuItem(
-                          icon: PhosphorIconsRegular.house,
-                          label: l10n.actionOpenHomepage,
+                          icon: PhosphorIconsRegular.folderPlus,
+                          label: l10n.actionAddToProject,
                         ),
                       ),
-                    PopupMenuItem(
-                      value: _OverflowAction.report,
-                      child: DetailMenuItem(
-                        icon: PhosphorIconsRegular.flag,
-                        label: l10n.actionReportAProblem,
+                      PopupMenuItem(
+                        value: _OverflowAction.share,
+                        child: DetailMenuItem(
+                          icon: PhosphorIconsRegular.shareNetwork,
+                          label: l10n.actionShare,
+                        ),
                       ),
-                    ),
-                  ];
-                },
-              ),
-            ],
-          ),
-          SliverList(
-            delegate: SliverChildListDelegate.fixed([
-              BlocBuilder<ApiDetailCubit, ApiDetailState>(
-                buildWhen: (previous, current) =>
-                    previous.detail?.name != current.detail?.name ||
-                    previous.detail?.shortDescription !=
-                        current.detail?.shortDescription ||
-                    previous.detail?.imageUrl != current.detail?.imageUrl,
-                builder: (context, state) =>
-                    ApiIdentityHeader(detail: state.detail ?? initialDetail),
-              ),
-              const Divider(height: 1),
-              BlocBuilder<ApiDetailCubit, ApiDetailState>(
-                buildWhen: (previous, current) =>
-                    previous.detail?.health != current.detail?.health ||
-                    previous.isRefreshingHealth != current.isRefreshingHealth ||
-                    previous.healthError != current.healthError,
-                builder: (context, state) => ApiHealthSection(
-                  health: (state.detail ?? initialDetail).health,
-                  isRefreshing: state.isRefreshingHealth,
-                  error: state.healthError,
-                  onRefresh: () => _refreshHealth(_detail(context)),
+                      if (detail.links.homepageUrl != null)
+                        PopupMenuItem(
+                          value: _OverflowAction.homepage,
+                          child: DetailMenuItem(
+                            icon: PhosphorIconsRegular.house,
+                            label: l10n.actionOpenHomepage,
+                          ),
+                        ),
+                      PopupMenuItem(
+                        value: _OverflowAction.report,
+                        child: DetailMenuItem(
+                          icon: PhosphorIconsRegular.flag,
+                          label: l10n.actionReportAProblem,
+                        ),
+                      ),
+                    ];
+                  },
                 ),
-              ),
-              const Divider(height: 1),
-              BlocBuilder<ApiDetailCubit, ApiDetailState>(
-                buildWhen: (previous, current) =>
-                    previous.detail?.access != current.detail?.access ||
-                    previous.detail?.capabilities !=
-                        current.detail?.capabilities,
-                builder: (context, state) =>
-                    ApiQuickFacts(detail: state.detail ?? initialDetail),
-              ),
-              const Divider(height: 1),
-              if (initialDetail.links.baseUrl != null)
-                ApiEndpointSection(
-                  baseUrl: initialDetail.links.baseUrl!,
-                  onCopy: () => _copyBaseUrl(_detail(context)),
+              ],
+            ),
+            SliverList(
+              delegate: SliverChildListDelegate.fixed([
+                BlocBuilder<ApiDetailCubit, ApiDetailState>(
+                  buildWhen: (previous, current) =>
+                      previous.detail?.name != current.detail?.name ||
+                      previous.detail?.shortDescription !=
+                          current.detail?.shortDescription ||
+                      previous.detail?.imageUrl != current.detail?.imageUrl,
+                  builder: (context, state) =>
+                      ApiIdentityHeader(detail: state.detail ?? initialDetail),
                 ),
-              const Divider(height: 1),
-              BlocBuilder<ApiDetailCubit, ApiDetailState>(
-                buildWhen: (previous, current) =>
-                    previous.detail?.fullDescription !=
-                        current.detail?.fullDescription ||
-                    previous.detail?.links != current.detail?.links,
-                builder: (context, state) => ApiAboutSection(
-                  detail: state.detail ?? initialDetail,
-                  onOpen: (uri) => _openExternal(
-                    uri,
-                    docs: uri ==
-                        (state.detail ?? initialDetail).links.documentationUrl,
+                const Divider(height: 1),
+                BlocBuilder<ApiDetailCubit, ApiDetailState>(
+                  buildWhen: (previous, current) =>
+                      previous.detail?.health != current.detail?.health ||
+                      previous.isRefreshingHealth !=
+                          current.isRefreshingHealth ||
+                      previous.healthError != current.healthError,
+                  builder: (context, state) => ApiHealthSection(
+                    health: (state.detail ?? initialDetail).health,
+                    isRefreshing: state.isRefreshingHealth,
+                    error: state.healthError,
+                    onRefresh: () => _refreshHealth(_detail(context)),
                   ),
                 ),
-              ),
-              const Divider(height: 1),
-              ApiRequirementsSection(warnings: initialDetail.warnings),
-              const Divider(height: 1),
-              ApiVerificationSection(items: initialDetail.verification),
-              const Divider(height: 1),
-              BlocBuilder<ApiDetailCubit, ApiDetailState>(
-                buildWhen: (previous, current) =>
-                    previous.detail?.alternatives !=
-                        current.detail?.alternatives ||
-                    previous.isLoadingAlternatives !=
-                        current.isLoadingAlternatives ||
-                    previous.alternativesError != current.alternativesError,
-                builder: (context, state) => ApiAlternativesSection(
-                  alternatives: (state.detail ?? initialDetail).alternatives,
-                  isLoading: state.isLoadingAlternatives,
-                  error: state.alternativesError,
-                  onOpen: _openAlternative,
-                  onSave: _saveAlternative,
+                const Divider(height: 1),
+                BlocBuilder<ApiDetailCubit, ApiDetailState>(
+                  buildWhen: (previous, current) =>
+                      previous.detail?.access != current.detail?.access ||
+                      previous.detail?.capabilities !=
+                          current.detail?.capabilities,
+                  builder: (context, state) =>
+                      ApiQuickFacts(detail: state.detail ?? initialDetail),
                 ),
-              ),
-              const SizedBox(height: AppSpacing.s24),
-            ]),
-          ),
-        ],
+                const Divider(height: 1),
+                if (initialDetail.links.baseUrl != null)
+                  ApiEndpointSection(
+                    baseUrl: initialDetail.links.baseUrl!,
+                    onCopy: () => _copyBaseUrl(_detail(context)),
+                  ),
+                const Divider(height: 1),
+                BlocBuilder<ApiDetailCubit, ApiDetailState>(
+                  buildWhen: (previous, current) =>
+                      previous.detail?.fullDescription !=
+                          current.detail?.fullDescription ||
+                      previous.detail?.links != current.detail?.links,
+                  builder: (context, state) => ApiAboutSection(
+                    detail: state.detail ?? initialDetail,
+                    onOpen: (uri) => _openExternal(
+                      uri,
+                      docs: uri ==
+                          (state.detail ?? initialDetail)
+                              .links
+                              .documentationUrl,
+                    ),
+                  ),
+                ),
+                const Divider(height: 1),
+                ApiRequirementsSection(warnings: initialDetail.warnings),
+                const Divider(height: 1),
+                ApiVerificationSection(items: initialDetail.verification),
+                const Divider(height: 1),
+                BlocBuilder<ApiDetailCubit, ApiDetailState>(
+                  buildWhen: (previous, current) =>
+                      previous.detail?.alternatives !=
+                          current.detail?.alternatives ||
+                      previous.isLoadingAlternatives !=
+                          current.isLoadingAlternatives ||
+                      previous.alternativesError != current.alternativesError,
+                  builder: (context, state) => ApiAlternativesSection(
+                    alternatives: (state.detail ?? initialDetail).alternatives,
+                    isLoading: state.isLoadingAlternatives,
+                    error: state.alternativesError,
+                    onOpen: _openAlternative,
+                    onSave: _saveAlternative,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.s24),
+              ]),
+            ),
+          ],
         ),
       ),
       bottomNavigationBar: BlocBuilder<ProjectsCubit, ProjectsState>(
@@ -288,7 +300,7 @@ class _ApiDetailViewState extends State<ApiDetailView> {
     if (_trackedView) return;
     _trackedView = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) _track('api_detail_viewed', detail);
+      if (mounted) _track('api_detail_view', detail);
     });
   }
 
@@ -300,7 +312,9 @@ class _ApiDetailViewState extends State<ApiDetailView> {
     final link = detail.links.baseUrl?.toString() ?? '';
     if (isBookmarked) {
       final id = cubit.getBookmarkId(link);
-      if (id != null) await cubit.removeBookmark(id, l10n: AppLocalizations.of(context)!);
+      if (id != null) {
+        await cubit.removeBookmark(id, l10n: AppLocalizations.of(context)!);
+      }
       return;
     }
     if (detail.id.isEmpty) {
@@ -316,7 +330,7 @@ class _ApiDetailViewState extends State<ApiDetailView> {
       optimisticApi: _bookmarkApi(detail, AppLocalizations.of(context)!),
       l10n: AppLocalizations.of(context)!,
     );
-    if (saved) _track('api_detail_bookmarked', detail);
+    if (saved) _track('api_save', detail);
   }
 
   Future<void> _copyBaseUrl(ApiDetail detail) async {
@@ -324,13 +338,13 @@ class _ApiDetailViewState extends State<ApiDetailView> {
     if (url == null) return;
     await Clipboard.setData(ClipboardData(text: url.toString()));
     if (!mounted) return;
-    _message(AppLocalizations.of(context)!.snackbarBaseUrlCopied, url.toString(), false);
+    _message(AppLocalizations.of(context)!.snackbarBaseUrlCopied,
+        url.toString(), false);
     _track('api_detail_endpoint_copied', detail);
   }
 
   Future<void> _share(ApiDetail detail) async {
-    final text = StringBuffer()
-      ..writeln('Name: ${detail.name}');
+    final text = StringBuffer()..writeln('Name: ${detail.name}');
     if (detail.links.baseUrl != null) {
       text.writeln('URL: ${detail.links.baseUrl}');
     }
@@ -344,7 +358,10 @@ class _ApiDetailViewState extends State<ApiDetailView> {
       await ShareService.instance.shareText(text.toString().trim());
       _track('api_detail_shared', detail);
     } catch (_) {
-      if (mounted) _message(AppLocalizations.of(context)!.snackbarShareFailedTitle, AppLocalizations.of(context)!.snackbarShareFailedMessage, true);
+      if (mounted) {
+        _message(AppLocalizations.of(context)!.snackbarShareFailedTitle,
+            AppLocalizations.of(context)!.snackbarShareFailedMessage, true);
+      }
     }
   }
 
@@ -352,10 +369,11 @@ class _ApiDetailViewState extends State<ApiDetailView> {
     final detail = _detail(context);
     final opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
     if (!opened && mounted) {
-      _message(AppLocalizations.of(context)!.snackbarCouldNotOpenLink, uri.toString(), true);
+      _message(AppLocalizations.of(context)!.snackbarCouldNotOpenLink,
+          uri.toString(), true);
       return;
     }
-    if (docs) _track('api_detail_docs_opened', detail);
+    if (docs) _track('api_outbound_doc', detail);
   }
 
   void _handleOverflow(_OverflowAction action) {
@@ -378,7 +396,9 @@ class _ApiDetailViewState extends State<ApiDetailView> {
   }
 
   Future<void> _refreshHealth(ApiDetail detail) async {
-    await context.read<ApiDetailCubit>().refreshHealth(l10n: AppLocalizations.of(context));
+    await context
+        .read<ApiDetailCubit>()
+        .refreshHealth(l10n: AppLocalizations.of(context));
     if (mounted) _track('api_detail_health_refreshed', detail);
   }
 
@@ -416,10 +436,12 @@ class _ApiDetailViewState extends State<ApiDetailView> {
                     AppSpacing.s16,
                   ),
                   children: [
-                    Text(AppLocalizations.of(context)!.sectionAddToProject, style: AppTextStyles.labelSmUpper),
+                    Text(AppLocalizations.of(context)!.sectionAddToProject,
+                        style: AppTextStyles.labelSmUpper),
                     if (recent.isNotEmpty) ...[
                       const SizedBox(height: AppSpacing.s16),
-                      SheetLabel(AppLocalizations.of(context)!.sectionRecentlyUsed),
+                      SheetLabel(
+                          AppLocalizations.of(context)!.sectionRecentlyUsed),
                       ...recent.map((project) => ProjectSelectionTile(
                           project: project,
                           isSaved: project.apiLinks
@@ -429,7 +451,8 @@ class _ApiDetailViewState extends State<ApiDetailView> {
                     ],
                     if (all.isNotEmpty) ...[
                       const SizedBox(height: AppSpacing.s12),
-                      SheetLabel(AppLocalizations.of(context)!.sectionAllProjects),
+                      SheetLabel(
+                          AppLocalizations.of(context)!.sectionAllProjects),
                       ...all.map((project) => ProjectSelectionTile(
                           project: project,
                           isSaved: project.apiLinks
@@ -442,7 +465,8 @@ class _ApiDetailViewState extends State<ApiDetailView> {
                       contentPadding: EdgeInsets.zero,
                       minTileHeight: 48,
                       leading: const Icon(PhosphorIconsRegular.plus),
-                      title: Text(AppLocalizations.of(context)!.actionCreateProject),
+                      title: Text(
+                          AppLocalizations.of(context)!.actionCreateProject),
                       onTap: () {
                         Navigator.pop(sheetContext);
                         CreateProjectBottomSheet.show(rootContext);
@@ -472,7 +496,7 @@ class _ApiDetailViewState extends State<ApiDetailView> {
           apiLink: link,
           l10n: AppLocalizations.of(context)!,
         );
-    if (added) _track('api_detail_added_to_project', detail);
+    if (added) _track('api_project_add', detail);
   }
 
   Future<void> _showReportSheet(ApiDetail detail) async {
@@ -481,11 +505,10 @@ class _ApiDetailViewState extends State<ApiDetailView> {
       isScrollControlled: true,
       showDragHandle: true,
       builder: (_) => ReportIssueSheet(
-        onSubmit: (reason, note) =>
-            context.read<ApiDetailCubit>().reportIssue(
-                  reason: reason,
-                  note: note,
-                ),
+        onSubmit: (reason, note) => context.read<ApiDetailCubit>().reportIssue(
+              reason: reason,
+              note: note,
+            ),
       ),
     );
     if (result != true || !mounted) return;
@@ -540,7 +563,8 @@ class _ApiDetailViewState extends State<ApiDetailView> {
         );
   }
 
-  BookmarkApi _bookmarkApi(ApiDetail detail, AppLocalizations l10n) => BookmarkApi(
+  BookmarkApi _bookmarkApi(ApiDetail detail, AppLocalizations l10n) =>
+      BookmarkApi(
         id: detail.id,
         slug: detail.slug,
         name: detail.name,
@@ -570,6 +594,7 @@ class _ApiDetailViewState extends State<ApiDetailView> {
       healthState: detail.health.status.name,
       bookmarkState: context.read<FavoritesCubit>().isFavorited(link),
       projectCount: context.read<ProjectsCubit>().state.projects.length,
+      sourceScreen: widget.sourceScreen,
     );
   }
 
@@ -583,13 +608,15 @@ class _ApiDetailViewState extends State<ApiDetailView> {
   }
 }
 
-String _corsLabelL10n(CorsSupport value, AppLocalizations l10n) => switch (value) {
+String _corsLabelL10n(CorsSupport value, AppLocalizations l10n) =>
+    switch (value) {
       CorsSupport.supported => l10n.apiDetailSupported,
       CorsSupport.unsupported => l10n.apiDetailNotSupported,
       CorsSupport.unknown => l10n.apiDetailUnknownValue,
     };
 
-String _protocolLabelL10n(ApiProtocol value, AppLocalizations l10n) => switch (value) {
+String _protocolLabelL10n(ApiProtocol value, AppLocalizations l10n) =>
+    switch (value) {
       ApiProtocol.rest => l10n.apiDetailRest,
       ApiProtocol.graphql => l10n.apiDetailGraphql,
       ApiProtocol.soap => l10n.apiDetailSoap,

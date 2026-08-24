@@ -27,15 +27,18 @@ class NotificationEnabled extends NotificationState {
   final List<Map<String, dynamic>> notifications;
   final int unreadCount;
   final String? fcmToken;
+  final NotificationPreferences? preferences;
 
   const NotificationEnabled({
     required this.notifications,
     required this.unreadCount,
     this.fcmToken,
+    this.preferences,
   });
 
   @override
-  List<Object?> get props => [notifications, unreadCount, fcmToken];
+  List<Object?> get props =>
+      [notifications, unreadCount, fcmToken, preferences];
 }
 
 class NotificationDisabled extends NotificationState {
@@ -62,6 +65,7 @@ class NotificationCubit extends Cubit<NotificationState> {
 
   StreamSubscription? _foregroundSubscription;
   StreamSubscription? _permissionSubscription;
+  StreamSubscription? _localTapSubscription;
 
   NotificationCubit() : super(const NotificationInitial()) {
     _init();
@@ -85,6 +89,12 @@ class NotificationCubit extends Cubit<NotificationState> {
     _permissionSubscription = _fcmService.permissionStream.listen((settings) {
       _handlePermissionChange(settings);
     });
+
+    _localTapSubscription =
+        _localNotificationService.notificationTapStream.listen((data) {
+      _fcmService.trackEvent('opened', data);
+      routeNotificationTap(data);
+    });
   }
 
   void _handleForegroundMessage(RemoteMessage message) {
@@ -107,6 +117,7 @@ class NotificationCubit extends Cubit<NotificationState> {
         notifications: updatedNotifications,
         unreadCount: currentState.unreadCount + 1,
         fcmToken: currentState.fcmToken,
+        preferences: currentState.preferences,
       ));
     }
   }
@@ -176,6 +187,20 @@ class NotificationCubit extends Cubit<NotificationState> {
       notifications: notifications,
       unreadCount: unreadCount,
       fcmToken: fcmToken,
+      preferences: await _fcmService.getPreferences(),
+    ));
+  }
+
+  Future<void> updatePreference(String key, bool value) async {
+    final current = state;
+    if (current is! NotificationEnabled) return;
+    final preferences = await _fcmService.updatePreference(key, value);
+    if (preferences == null) return;
+    emit(NotificationEnabled(
+      notifications: current.notifications,
+      unreadCount: current.unreadCount,
+      fcmToken: current.fcmToken,
+      preferences: preferences,
     ));
   }
 
@@ -209,8 +234,7 @@ class NotificationCubit extends Cubit<NotificationState> {
   Future<void> close() {
     _foregroundSubscription?.cancel();
     _permissionSubscription?.cancel();
-    _fcmService.dispose();
-    _localNotificationService.dispose();
+    _localTapSubscription?.cancel();
     return super.close();
   }
 }

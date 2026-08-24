@@ -898,6 +898,66 @@
   "intelligenceCompareApis": "Comparar APIs lado a lado",
   "@intelligenceCompareApis": { "description": "Intelligence feature" },
 
+  "intelligenceCompareTitle": "Comparar APIs",
+  "@intelligenceCompareTitle": { "description": "Compare card title" },
+
+  "intelligenceCompareSubtitle": "Confianza, precios y salud lado a lado para hasta 4 APIs.",
+  "@intelligenceCompareSubtitle": { "description": "Compare card subtitle" },
+
+  "intelligenceChooseApis": "Elegir APIs",
+  "@intelligenceChooseApis": { "description": "Open API picker button" },
+
+  "intelligenceCompareNow": "Comparar",
+  "@intelligenceCompareNow": { "description": "Run comparison button" },
+
+  "intelligenceChangeFeed": "CAMBIOS DEL REGISTRO",
+  "@intelligenceChangeFeed": { "description": "Change feed section title" },
+
+  "intelligenceChangeFeedEmpty": "Sin cambios recientes.",
+  "@intelligenceChangeFeedEmpty": { "description": "Empty change feed message" },
+
+  "pickerSearchHint": "Buscar APIs…",
+  "@pickerSearchHint": { "description": "API picker search hint" },
+
+  "pickerSelectedCount": "{count} de 4 seleccionadas",
+  "@pickerSelectedCount": {
+    "description": "Selected count in API picker",
+    "placeholders": { "count": { "type": "int" } }
+  },
+
+  "pickerDone": "Comparar {count}",
+  "@pickerDone": {
+    "description": "Confirm button in API picker",
+    "placeholders": { "count": { "type": "int" } }
+  },
+
+  "pickerNoSavedApis": "Aún no hay APIs guardadas. Busca APIs para comparar.",
+  "@pickerNoSavedApis": { "description": "Picker empty state when nothing saved" },
+
+  "compareTrustScoreValue": "{score} · Grado {grade}",
+  "@compareTrustScoreValue": {
+    "description": "Trust score with grade in compare table header",
+    "placeholders": {
+      "score": { "type": "int" },
+      "grade": { "type": "String" }
+    }
+  },
+
+  "compareResponseTime": "Tiempo de respuesta",
+  "@compareResponseTime": { "description": "Compare table row label" },
+
+  "compareUptime30d": "Disponibilidad (30d)",
+  "@compareUptime30d": { "description": "Compare table row label" },
+
+  "compareRateLimit": "Límite de peticiones",
+  "@compareRateLimit": { "description": "Compare table row label" },
+
+  "compareSdks": "SDKs",
+  "@compareSdks": { "description": "Compare table row label" },
+
+  "compareSelectAtLeastTwo": "Selecciona al menos dos APIs para comparar",
+  "@compareSelectAtLeastTwo": { "description": "Error when fewer than two APIs selected" },
+
   "intelligenceAgentReadiness": "Puntuación de preparación de agentes",
   "@intelligenceAgentReadiness": { "description": "Intelligence feature" },
 
@@ -1053,6 +1113,19 @@
 
   "settingsNotificationDisabled": "Deshabilitado. El token push está revocado.",
   "@settingsNotificationDisabled": { "description": "Notifications disabled status" },
+
+  "notificationSavedApiHealth": "Estado de APIs guardadas",
+  "notificationSavedApiHealthSubtitle": "Alertas cuando una API guardada falla o se recupera.",
+  "notificationNewMatchingApis": "APIs relacionadas",
+  "notificationNewMatchingApisSubtitle": "Nuevas APIs de las categorías que sigues.",
+  "notificationWeeklyDigest": "Resumen y recordatorios semanales",
+  "notificationWeeklyDigestSubtitle": "Descubrimientos y recordatorios semanales de la comunidad.",
+  "notificationLifecycleUpdates": "Actualizaciones de envíos e informes",
+  "notificationLifecycleUpdatesSubtitle": "Resultados de las APIs que envías o reportas.",
+  "notificationPricingChanges": "Cambios de precios",
+  "notificationPricingChangesSubtitle": "Alertas de cambios de precio en APIs guardadas.",
+  "notificationTrustAlerts": "Alertas de confianza",
+  "notificationTrustAlertsSubtitle": "Avisos cuando baja la puntuación de confianza de una API guardada.",
 
   "settingsExportFavoritesSubtitle": "Exporta una lista de tus APIs favoritas (nombre, descripción, enlace).",
   "@settingsExportFavoritesSubtitle": { "description": "Export favorites subtitle" },

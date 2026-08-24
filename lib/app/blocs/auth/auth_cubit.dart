@@ -40,14 +40,17 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  Future<void> _autoLogin() async {
+  Future<void> _autoLogin({bool retried = false}) async {
     try {
       emit(AuthLoading());
-      final deviceId = _tokenService.getStoredDeviceId();
+      final deviceFingerprint = _tokenService.deviceFingerprint;
+      final refreshToken = _tokenService.refreshToken;
       final response = await _unauthDio.post(
         '/v1/auth/anonymous',
         data: {
-          if (deviceId != null) 'deviceId': deviceId,
+          if (deviceFingerprint != null) 'deviceId': deviceFingerprint,
+          if (refreshToken != null && refreshToken.isNotEmpty)
+            'refreshToken': refreshToken,
         },
         options: Options(
           extra: const {RequestErrorNotifierInterceptor.silentKey: true},
@@ -57,7 +60,7 @@ class AuthCubit extends Cubit<AuthState> {
       final data = response.data;
       await _tokenService.saveTokens(
         accessToken: data['accessToken'],
-        refreshToken: data['refreshToken'] ?? '',
+        refreshToken: data['refreshToken'] ?? _tokenService.refreshToken ?? '',
         expiresIn: data['expiresIn'] ?? 900,
         deviceId: data['device']?['id'],
         deviceFingerprint: data['device']?['deviceFingerprint'],
@@ -67,10 +70,40 @@ class AuthCubit extends Cubit<AuthState> {
 
       // Enable FCM after successful authentication
       await _enableFcm();
+    } on DioException catch (e) {
+      if (shouldResetIdentity(
+        statusCode: e.response?.statusCode,
+        hasDeviceFingerprint: _tokenService.deviceFingerprint != null,
+        hasRefreshToken: _tokenService.refreshToken?.isNotEmpty ?? false,
+        alreadyRetried: retried,
+      )) {
+        await _tokenService.clearTokens();
+        DioClient().setAccessToken(null);
+        return _autoLogin(retried: true);
+      }
+      emit(const Unauthenticated());
+      rethrow;
     } catch (e) {
       emit(const Unauthenticated());
       rethrow;
     }
+  }
+
+  /// The backend rejects a deviceId that is already registered when the
+  /// request carries no valid refresh token (409), and rejects replayed
+  /// refresh tokens. Stored identity is stale in both cases — clear it and
+  /// retry once with a clean slate so the user gets a fresh anonymous
+  /// session instead of being stuck unauthenticated forever.
+  @visibleForTesting
+  static bool shouldResetIdentity({
+    required int? statusCode,
+    required bool hasDeviceFingerprint,
+    required bool hasRefreshToken,
+    required bool alreadyRetried,
+  }) {
+    return !alreadyRetried &&
+        statusCode != null &&
+        (hasDeviceFingerprint || hasRefreshToken);
   }
 
   bool get isAuthenticated => state is Authenticated;
@@ -286,7 +319,8 @@ class AuthCubit extends Cubit<AuthState> {
     emit(const Unauthenticated());
   }
 
-  Future<void> updateUserProfile(String displayName, {required AppLocalizations l10n}) async {
+  Future<void> updateUserProfile(String displayName,
+      {required AppLocalizations l10n}) async {
     try {
       final s = state;
       if (s is Authenticated) {
@@ -315,7 +349,8 @@ class AuthCubit extends Cubit<AuthState> {
     String? displayName,
     required AppLocalizations l10n,
   }) async {
-    await _linkEmail(email: email, password: password, name: displayName, l10n: l10n);
+    await _linkEmail(
+        email: email, password: password, name: displayName, l10n: l10n);
   }
 
   Future<void> _fetchProfile() async {

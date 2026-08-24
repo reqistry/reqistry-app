@@ -1808,6 +1808,102 @@ abstract class AppLocalizations {
   /// **'Compare APIs side by side'**
   String get intelligenceCompareApis;
 
+  /// Compare card title
+  ///
+  /// In en, this message translates to:
+  /// **'Compare APIs'**
+  String get intelligenceCompareTitle;
+
+  /// Compare card subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Side-by-side trust, pricing and health for up to 4 APIs.'**
+  String get intelligenceCompareSubtitle;
+
+  /// Open API picker button
+  ///
+  /// In en, this message translates to:
+  /// **'Choose APIs'**
+  String get intelligenceChooseApis;
+
+  /// Run comparison button
+  ///
+  /// In en, this message translates to:
+  /// **'Compare'**
+  String get intelligenceCompareNow;
+
+  /// Change feed section title
+  ///
+  /// In en, this message translates to:
+  /// **'REGISTRY CHANGES'**
+  String get intelligenceChangeFeed;
+
+  /// Empty change feed message
+  ///
+  /// In en, this message translates to:
+  /// **'No recent changes.'**
+  String get intelligenceChangeFeedEmpty;
+
+  /// API picker search hint
+  ///
+  /// In en, this message translates to:
+  /// **'Search APIs…'**
+  String get pickerSearchHint;
+
+  /// Selected count in API picker
+  ///
+  /// In en, this message translates to:
+  /// **'{count} of 4 selected'**
+  String pickerSelectedCount(int count);
+
+  /// Confirm button in API picker
+  ///
+  /// In en, this message translates to:
+  /// **'Compare {count}'**
+  String pickerDone(int count);
+
+  /// Picker empty state when nothing saved
+  ///
+  /// In en, this message translates to:
+  /// **'No saved APIs yet. Search to pick APIs to compare.'**
+  String get pickerNoSavedApis;
+
+  /// Trust score with grade in compare table header
+  ///
+  /// In en, this message translates to:
+  /// **'{score} · Grade {grade}'**
+  String compareTrustScoreValue(int score, String grade);
+
+  /// Compare table row label
+  ///
+  /// In en, this message translates to:
+  /// **'Response time'**
+  String get compareResponseTime;
+
+  /// Compare table row label
+  ///
+  /// In en, this message translates to:
+  /// **'Uptime (30d)'**
+  String get compareUptime30d;
+
+  /// Compare table row label
+  ///
+  /// In en, this message translates to:
+  /// **'Rate limit'**
+  String get compareRateLimit;
+
+  /// Compare table row label
+  ///
+  /// In en, this message translates to:
+  /// **'SDKs'**
+  String get compareSdks;
+
+  /// Error when fewer than two APIs selected
+  ///
+  /// In en, this message translates to:
+  /// **'Select at least two APIs to compare'**
+  String get compareSelectAtLeastTwo;
+
   /// Intelligence feature
   ///
   /// In en, this message translates to:
@@ -2101,6 +2197,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Disabled. Push token is revoked.'**
   String get settingsNotificationDisabled;
+
+  /// No description provided for @notificationSavedApiHealth.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved API health'**
+  String get notificationSavedApiHealth;
+
+  /// No description provided for @notificationSavedApiHealthSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Alerts when an API you saved goes down or recovers.'**
+  String get notificationSavedApiHealthSubtitle;
+
+  /// No description provided for @notificationNewMatchingApis.
+  ///
+  /// In en, this message translates to:
+  /// **'Matching APIs'**
+  String get notificationNewMatchingApis;
+
+  /// No description provided for @notificationNewMatchingApisSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New APIs matching categories you follow.'**
+  String get notificationNewMatchingApisSubtitle;
+
+  /// No description provided for @notificationWeeklyDigest.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly digest and reminders'**
+  String get notificationWeeklyDigest;
+
+  /// No description provided for @notificationWeeklyDigestSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly discoveries and community reminders.'**
+  String get notificationWeeklyDigestSubtitle;
+
+  /// No description provided for @notificationLifecycleUpdates.
+  ///
+  /// In en, this message translates to:
+  /// **'Submission and report updates'**
+  String get notificationLifecycleUpdates;
+
+  /// No description provided for @notificationLifecycleUpdatesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Results for APIs you submit or report.'**
+  String get notificationLifecycleUpdatesSubtitle;
+
+  /// No description provided for @notificationPricingChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Pricing changes'**
+  String get notificationPricingChanges;
+
+  /// No description provided for @notificationPricingChangesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Alerts when pricing changes for saved APIs.'**
+  String get notificationPricingChangesSubtitle;
+
+  /// No description provided for @notificationTrustAlerts.
+  ///
+  /// In en, this message translates to:
+  /// **'Trust alerts'**
+  String get notificationTrustAlerts;
+
+  /// No description provided for @notificationTrustAlertsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Warnings when trust scores drop for saved APIs.'**
+  String get notificationTrustAlertsSubtitle;
 
   /// Export favorites subtitle
   ///

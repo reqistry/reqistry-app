@@ -36,6 +36,34 @@ enum FcmTokenState {
   error,
 }
 
+class NotificationPreferences {
+  const NotificationPreferences({
+    required this.savedApiHealth,
+    required this.newMatchingApis,
+    required this.weeklyDigest,
+    required this.lifecycleUpdates,
+    required this.pricingChanges,
+    required this.trustAlerts,
+  });
+
+  final bool savedApiHealth;
+  final bool newMatchingApis;
+  final bool weeklyDigest;
+  final bool lifecycleUpdates;
+  final bool pricingChanges;
+  final bool trustAlerts;
+
+  factory NotificationPreferences.fromJson(Map<String, dynamic> json) =>
+      NotificationPreferences(
+        savedApiHealth: json['savedApiHealth'] != false,
+        newMatchingApis: json['newMatchingApis'] != false,
+        weeklyDigest: json['weeklyDigest'] != false,
+        lifecycleUpdates: json['lifecycleUpdates'] != false,
+        pricingChanges: json['pricingChanges'] != false,
+        trustAlerts: json['trustAlerts'] != false,
+      );
+}
+
 /// Manages Firebase Cloud Messaging token lifecycle
 class FcmService {
   static final FcmService _instance = FcmService._();
@@ -49,6 +77,18 @@ class FcmService {
   FcmTokenState _state = FcmTokenState.initial;
   Box? _cacheBox;
   bool _messageHandlersConfigured = false;
+  static void Function(Map<String, dynamic> data)? _notificationTapHandler;
+  static Map<String, dynamic>? _pendingNotificationTap;
+
+  static set onNotificationTap(
+      void Function(Map<String, dynamic> data)? callback) {
+    _notificationTapHandler = callback;
+    final pending = _pendingNotificationTap;
+    if (callback != null && pending != null) {
+      _pendingNotificationTap = null;
+      scheduleMicrotask(() => callback(pending));
+    }
+  }
 
   // Stream controllers
   final _tokenStreamController = StreamController<String?>.broadcast();
@@ -78,6 +118,19 @@ class FcmService {
   Future<void> init() async {
     try {
       _cacheBox = await Hive.openBox('fcm_cache');
+
+      if (_cacheBox!.get('notifications_enabled', defaultValue: true) ==
+          false) {
+        _state = FcmTokenState.revoked;
+        if (!_messageHandlersConfigured) {
+          FirebaseMessaging.onBackgroundMessage(
+              firebaseMessagingBackgroundHandler);
+          _configureMessageHandling();
+          _messageHandlersConfigured = true;
+        }
+        await _mergePendingNotifications();
+        return;
+      }
 
       // Request permission
       await requestPermission();
@@ -151,12 +204,13 @@ class FcmService {
 
       // Store in cache for in-app display
       _storeNotification(message);
+      trackEvent('received', message.data);
     });
 
     // Handle background messages (when app is opened from background)
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       debugPrint('[FCM] Message opened app: ${message.messageId}');
-      _notificationStreamController.add(message);
+      trackEvent('opened', message.data);
       _handleNotificationTap(message.data);
     });
 
@@ -164,7 +218,7 @@ class FcmService {
     _messaging.getInitialMessage().then((message) {
       if (message != null) {
         debugPrint('[FCM] Initial message: ${message.messageId}');
-        _notificationStreamController.add(message);
+        trackEvent('opened', message.data);
         _handleNotificationTap(message.data);
       }
     });
@@ -198,16 +252,70 @@ class FcmService {
 
   /// Handle notification tap - route to appropriate screen
   void _handleNotificationTap(Map<String, dynamic> data) {
-    final callback = onNotificationTap;
+    final callback = _notificationTapHandler;
     if (callback != null) {
       callback(data);
     } else {
-      debugPrint('[FCM] Tap received but no handler registered: $data');
+      _pendingNotificationTap = Map<String, dynamic>.from(data);
     }
   }
 
-  /// Set by the router at startup; receives notification data payloads on tap.
-  static void Function(Map<String, dynamic> data)? onNotificationTap;
+  Future<void> trackEvent(String eventType, Map<String, dynamic> data) async {
+    try {
+      await DioClient().dio.post(
+            '/v1/notifications/events',
+            data: {
+              if (data['deliveryId'] != null) 'deliveryId': data['deliveryId'],
+              if (data['apiId'] != null) 'apiId': data['apiId'],
+              'eventType': eventType,
+              'metadata': {
+                if (data['type'] != null) 'type': data['type'],
+                if (data['action'] != null) 'action': data['action'],
+              },
+            },
+            options: Options(extra: const {
+              'silentLoader': true,
+              RequestErrorNotifierInterceptor.silentKey: true,
+            }),
+          );
+    } catch (_) {}
+  }
+
+  Future<NotificationPreferences?> getPreferences() async {
+    try {
+      final response = await DioClient().dio.get(
+            '/v1/notifications/preferences',
+            options: Options(extra: const {
+              'silentLoader': true,
+              RequestErrorNotifierInterceptor.silentKey: true,
+            }),
+          );
+      return NotificationPreferences.fromJson(
+        Map<String, dynamic>.from(response.data['data'] as Map),
+      );
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<NotificationPreferences?> updatePreference(
+      String key, bool value) async {
+    try {
+      final response = await DioClient().dio.patch(
+            '/v1/notifications/preferences',
+            data: {key: value},
+            options: Options(extra: const {
+              'silentLoader': true,
+              RequestErrorNotifierInterceptor.silentKey: true,
+            }),
+          );
+      return NotificationPreferences.fromJson(
+        Map<String, dynamic>.from(response.data['data'] as Map),
+      );
+    } catch (_) {
+      return null;
+    }
+  }
 
   /// Move terminated-state notifications into the in-app feed.
   Future<void> _mergePendingNotifications() async {
@@ -226,7 +334,9 @@ class FcmService {
         notifications.insert(0, item);
       }
     }
-    notifications.removeRange(50, notifications.length);
+    if (notifications.length > 50) {
+      notifications.removeRange(50, notifications.length);
+    }
     await _cacheBox!.put('in_app_notifications', notifications);
     await _cacheBox!.put('pending_notifications', []);
   }
@@ -318,6 +428,7 @@ class FcmService {
   /// Flow: request permission → revoke old token → rotate → register new token
   Future<void> enable() async {
     if (!_tokenService.isAuthenticated) return;
+    await _cacheBox?.put('notifications_enabled', true);
 
     final hasPermission = await isNotificationsEnabled;
     if (!hasPermission) {
@@ -327,10 +438,14 @@ class FcmService {
     await _revokeRotateAndRegister();
   }
 
-  /// Disable FCM
-  /// Flow: revoke old token → rotate → register new token (so backend sees fresh state)
+  /// Disable FCM and leave backend token revoked.
   Future<void> disable() async {
-    await _revokeRotateAndRegister();
+    await revokeTokenOnBackend();
+    await _messaging.deleteToken();
+    await _cacheBox?.put('notifications_enabled', false);
+    _currentToken = null;
+    _state = FcmTokenState.revoked;
+    _tokenStreamController.add(null);
   }
 
   /// Core flow: revoke current token → rotate via Firebase → register new token

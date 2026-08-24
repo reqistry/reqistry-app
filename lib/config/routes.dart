@@ -7,10 +7,8 @@ import 'package:api_scout/app/blocs/api_detail/api_detail_cubit.dart';
 import 'package:api_scout/app/blocs/category_apis/category_apis_cubit.dart';
 import 'package:api_scout/app/blocs/submit_api/submit_api_cubit.dart';
 import 'package:api_scout/app/blocs/app_settings/app_settings_cubit.dart';
-import 'package:api_scout/app/blocs/notification/notification_cubit.dart';
 import 'package:api_scout/app/blocs/privacy/privacy_cubit.dart';
 import 'package:api_scout/app/data/models/api.dart';
-import 'package:api_scout/app/data/models/api_detail.dart';
 import 'package:api_scout/app/data/models/project.dart';
 import 'package:api_scout/app/modules/views/auth/auth_view.dart';
 import 'package:api_scout/app/modules/views/main_shell_view.dart';
@@ -24,6 +22,8 @@ import 'package:api_scout/app/modules/views/contact_view/contact_view.dart';
 import 'package:api_scout/app/modules/views/account_settings_view/account_settings_view.dart';
 import 'package:api_scout/app/modules/views/app_settings_view/app_settings_view.dart';
 import 'package:api_scout/app/modules/views/notifications_view/notifications_view.dart';
+import 'package:api_scout/app/modules/views/intelligence_view/widgets/compare_result_view.dart';
+import 'package:api_scout/app/modules/views/search_screen/search_screen.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/shared/widgets/app_error_state.dart';
 import 'package:api_scout/l10n/app_localizations.dart';
@@ -48,8 +48,17 @@ void routeNotificationTap(Map<String, dynamic> data) {
       break;
     case 'report_update':
     case 'submission_update':
-    case 'weekly_digest':
       break;
+    case 'weekly_digest':
+      AppRouter.router.push(AppRoutes.recommendedApis);
+      return;
+    case 'community_reminder':
+      if (data['action'] == 'submit_api') {
+        AppRouter.router.push(AppRoutes.submitApi);
+      } else {
+        AppRouter.router.go(AppRoutes.home);
+      }
+      return;
   }
   AppRouter.router.push(AppRoutes.notifications);
 }
@@ -100,22 +109,10 @@ class AppRouter {
           final slug = state.pathParameters['slug'] ?? api?.slug ?? '';
           return BlocProvider(
             create: (_) => ApiDetailCubit(slug: slug, seed: api),
-            child: ApiDetailView(slug: slug),
-          );
-        },
-      ),
-      GoRoute(
-        path: AppRoutes.legacyApiDetail,
-        builder: (context, state) {
-          final api = state.extra is Api ? state.extra as Api : null;
-          if (api == null) {
-            return const _ErrorPage(messageKey: 'errorApiDataNotFound');
-          }
-          final slug =
-              api.slug.isNotEmpty ? api.slug : slugifyApiName(api.name);
-          return BlocProvider(
-            create: (_) => ApiDetailCubit(slug: slug, seed: api),
-            child: ApiDetailView(slug: slug),
+            child: ApiDetailView(
+              slug: slug,
+              sourceScreen: state.uri.queryParameters['source'] ?? 'unknown',
+            ),
           );
         },
       ),
@@ -183,10 +180,21 @@ class AppRouter {
       ),
       GoRoute(
         path: AppRoutes.notifications,
-        builder: (context, state) => BlocProvider(
-          create: (_) => NotificationCubit()..initializeNotifications(),
-          child: const NotificationsView(),
-        ),
+        builder: (context, state) => const NotificationsView(),
+      ),
+      GoRoute(
+        path: AppRoutes.compare,
+        builder: (context, state) {
+          final extra = state.extra;
+          if (extra is! List<String> || extra.length < 2) {
+            return const _ErrorPage(messageKey: 'errorApiDataNotFound');
+          }
+          return CompareResultView(apiIds: extra);
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.search,
+        builder: (context, state) => const SearchScreen(),
       ),
     ],
   );

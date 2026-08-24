@@ -4,7 +4,6 @@ abstract class AppRoutes {
   static const auth = '/auth';
   static const home = '/';
   static const apiDetail = '/apis/:slug';
-  static const legacyApiDetail = '/api-detail';
   static const categoryApis = '/category-apis';
   static const projectApis = '/project-apis';
   static const latestApis = '/latest-apis';
@@ -15,9 +14,15 @@ abstract class AppRoutes {
   static const accountSettings = '/account-settings';
   static const appSettings = '/app-settings';
   static const notifications = '/notifications';
+  static const compare = '/compare';
+  static const search = '/search';
 
-  static String apiDetailPath(String slug) =>
-      '/apis/${Uri.encodeComponent(slug)}';
+  static String apiDetailPath(String slug, {String? source}) {
+    final path = '/apis/${Uri.encodeComponent(slug)}';
+    return source == null
+        ? path
+        : '$path?source=${Uri.encodeQueryComponent(source)}';
+  }
 
   // Tab indices (not GoRouter routes)
   static const int tabIndexHome = 0;

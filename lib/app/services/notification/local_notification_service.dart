@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -56,12 +57,11 @@ class LocalNotificationService {
 
   /// Handle notification tap
   void _onNotificationTapped(NotificationResponse response) {
-    final data = <String, dynamic>{
-      'id': response.id,
-      'actionId': response.actionId,
-      'input': response.input,
-      'payload': response.payload,
-    };
+    Map<String, dynamic> data = {};
+    try {
+      final decoded = jsonDecode(response.payload ?? '');
+      if (decoded is Map) data = Map<String, dynamic>.from(decoded);
+    } catch (_) {}
     _notificationTapStreamController.add(data);
     debugPrint('[LocalNotification] Tapped: $data');
   }
@@ -102,7 +102,7 @@ class LocalNotificationService {
       title: notification.title,
       body: notification.body,
       notificationDetails: details,
-      payload: message.data.isNotEmpty ? message.data.toString() : null,
+      payload: message.data.isNotEmpty ? jsonEncode(message.data) : null,
     );
   }
 
@@ -137,7 +137,12 @@ class LocalNotificationService {
       iOS: iosDetails,
     );
 
-    await _plugin.show(id: id, title: title, body: body, notificationDetails: details, payload: payload);
+    await _plugin.show(
+        id: id,
+        title: title,
+        body: body,
+        notificationDetails: details,
+        payload: payload);
   }
 
   /// Schedule a notification

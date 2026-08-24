@@ -913,6 +913,62 @@ class AppLocalizationsEn extends AppLocalizations {
   String get intelligenceCompareApis => 'Compare APIs side by side';
 
   @override
+  String get intelligenceCompareTitle => 'Compare APIs';
+
+  @override
+  String get intelligenceCompareSubtitle =>
+      'Side-by-side trust, pricing and health for up to 4 APIs.';
+
+  @override
+  String get intelligenceChooseApis => 'Choose APIs';
+
+  @override
+  String get intelligenceCompareNow => 'Compare';
+
+  @override
+  String get intelligenceChangeFeed => 'REGISTRY CHANGES';
+
+  @override
+  String get intelligenceChangeFeedEmpty => 'No recent changes.';
+
+  @override
+  String get pickerSearchHint => 'Search APIs…';
+
+  @override
+  String pickerSelectedCount(int count) {
+    return '$count of 4 selected';
+  }
+
+  @override
+  String pickerDone(int count) {
+    return 'Compare $count';
+  }
+
+  @override
+  String get pickerNoSavedApis =>
+      'No saved APIs yet. Search to pick APIs to compare.';
+
+  @override
+  String compareTrustScoreValue(int score, String grade) {
+    return '$score · Grade $grade';
+  }
+
+  @override
+  String get compareResponseTime => 'Response time';
+
+  @override
+  String get compareUptime30d => 'Uptime (30d)';
+
+  @override
+  String get compareRateLimit => 'Rate limit';
+
+  @override
+  String get compareSdks => 'SDKs';
+
+  @override
+  String get compareSelectAtLeastTwo => 'Select at least two APIs to compare';
+
+  @override
   String get intelligenceAgentReadiness => 'Agent readiness scoring';
 
   @override
@@ -1073,6 +1129,48 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsNotificationDisabled => 'Disabled. Push token is revoked.';
+
+  @override
+  String get notificationSavedApiHealth => 'Saved API health';
+
+  @override
+  String get notificationSavedApiHealthSubtitle =>
+      'Alerts when an API you saved goes down or recovers.';
+
+  @override
+  String get notificationNewMatchingApis => 'Matching APIs';
+
+  @override
+  String get notificationNewMatchingApisSubtitle =>
+      'New APIs matching categories you follow.';
+
+  @override
+  String get notificationWeeklyDigest => 'Weekly digest and reminders';
+
+  @override
+  String get notificationWeeklyDigestSubtitle =>
+      'Weekly discoveries and community reminders.';
+
+  @override
+  String get notificationLifecycleUpdates => 'Submission and report updates';
+
+  @override
+  String get notificationLifecycleUpdatesSubtitle =>
+      'Results for APIs you submit or report.';
+
+  @override
+  String get notificationPricingChanges => 'Pricing changes';
+
+  @override
+  String get notificationPricingChangesSubtitle =>
+      'Alerts when pricing changes for saved APIs.';
+
+  @override
+  String get notificationTrustAlerts => 'Trust alerts';
+
+  @override
+  String get notificationTrustAlertsSubtitle =>
+      'Warnings when trust scores drop for saved APIs.';
 
   @override
   String get settingsExportFavoritesSubtitle =>

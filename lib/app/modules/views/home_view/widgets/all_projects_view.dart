@@ -105,6 +105,8 @@ class _ProjectListTile extends StatelessWidget {
             children: [
               Icon(
                 IconData(
+                  // Icon codepoints are stored per-project at runtime.
+                  // ignore: non_const_argument_for_const_parameter
                   project.iconCodePoint,
                   fontFamily: 'PhosphorRegular',
                   fontPackage: 'phosphoricons_flutter',

@@ -94,9 +94,15 @@ class DioClient {
       _pendingRequests.clear();
 
       return newAccessToken;
-    } catch (e) {
-      await tokenService.clearTokens();
-      setAccessToken(null);
+    } on DioException catch (e) {
+      // Only discard the session when the server explicitly rejected the
+      // refresh token (replay protection, revoked device). Network timeouts
+      // and 5xx are transient — keep tokens so the next request retries.
+      final status = e.response?.statusCode;
+      if (status == 401 || status == 403 || status == 404) {
+        await tokenService.clearTokens();
+        setAccessToken(null);
+      }
       for (final c in _pendingRequests) {
         if (!c.isCompleted) c.complete(null);
       }

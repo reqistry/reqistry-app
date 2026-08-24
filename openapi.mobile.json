@@ -63,12 +63,22 @@
     {
       "name": "Metadata",
       "description": "URL metadata extraction"
+    },
+    {
+      "name": "Growth",
+      "description": "Trust scores, stack, comparison, change feed, and curated collections"
+    },
+    {
+      "name": "Notifications",
+      "description": "FCM token management, preferences, and notification event tracking"
     }
   ],
   "paths": {
     "/health": {
       "get": {
-        "tags": ["Health"],
+        "tags": [
+          "Health"
+        ],
         "summary": "Health check",
         "description": "Returns server health status with uptime, version, and dependency checks.",
         "operationId": "healthCheck",
@@ -107,7 +117,9 @@
     },
     "/search": {
       "get": {
-        "tags": ["Search"],
+        "tags": [
+          "Search"
+        ],
         "summary": "Search APIs",
         "description": "Full-text search across name and description with filters for category, auth, pricing, CORS, HTTPS, and alive status. Supports sorting and pagination.",
         "operationId": "searchApis",
@@ -238,7 +250,11 @@
             "in": "query",
             "schema": {
               "type": "string",
-              "enum": ["name", "responseTime", "category"],
+              "enum": [
+                "name",
+                "responseTime",
+                "category"
+              ],
               "default": "name"
             },
             "description": "Sort field"
@@ -248,7 +264,10 @@
             "in": "query",
             "schema": {
               "type": "string",
-              "enum": ["asc", "desc"],
+              "enum": [
+                "asc",
+                "desc"
+              ],
               "default": "asc"
             },
             "description": "Sort direction"
@@ -291,7 +310,9 @@
     },
     "/categories": {
       "get": {
-        "tags": ["Categories"],
+        "tags": [
+          "Categories"
+        ],
         "summary": "List all categories",
         "description": "Returns all active categories with API counts, tags, trending status, descriptions, and image URLs.",
         "operationId": "getCategories",
@@ -311,7 +332,9 @@
     },
     "/categories/{id}": {
       "get": {
-        "tags": ["Categories"],
+        "tags": [
+          "Categories"
+        ],
         "summary": "Get single category",
         "description": "Returns full details for a single category by slug, including description, imageUrl, tags, apiCount, and isTrending.",
         "operationId": "getCategory",
@@ -352,7 +375,9 @@
     },
     "/categories/{id}/image": {
       "get": {
-        "tags": ["Categories"],
+        "tags": [
+          "Categories"
+        ],
         "summary": "Get category image URL",
         "description": "Returns the banner/image URL for a category. Returns 404 if no image is set.",
         "operationId": "getCategoryImage",
@@ -399,7 +424,9 @@
     },
     "/categories/{id}/apis": {
       "get": {
-        "tags": ["Categories"],
+        "tags": [
+          "Categories"
+        ],
         "summary": "List APIs in a category",
         "description": "Returns all published APIs for a specific category. Paginated.",
         "operationId": "getCategoryApis",
@@ -461,7 +488,9 @@
     },
     "/trendy-categories": {
       "get": {
-        "tags": ["Categories"],
+        "tags": [
+          "Categories"
+        ],
         "summary": "Trendy categories",
         "description": "Returns trending category names.",
         "operationId": "getTrendyCategories",
@@ -489,7 +518,9 @@
     },
     "/submit": {
       "post": {
-        "tags": ["Submit"],
+        "tags": [
+          "Submit"
+        ],
         "summary": "Submit an API",
         "description": "Submit a new API for review. Creates a pending submission. Returns 200 with status `approved` if the link was already submitted and approved.",
         "operationId": "submitApi",
@@ -539,7 +570,9 @@
     },
     "/v1/auth/anonymous": {
       "post": {
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "summary": "Get anonymous device token",
         "description": "Create or resume an anonymous device session. If the device has an active refresh token, returns a new access token without creating a new session (200). Otherwise, creates a new device session with refresh + access tokens (201).\n\nThis is the entry point for the Flutter app — no account creation required.",
         "operationId": "anonymousAuth",
@@ -579,7 +612,9 @@
     },
     "/v1/auth/refresh": {
       "post": {
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "summary": "Refresh access token",
         "description": "Rotate the refresh token and issue a new access token. The old refresh token is invalidated (single-use rotation).",
         "operationId": "refreshToken",
@@ -619,7 +654,9 @@
     },
     "/v1/auth/revoke": {
       "post": {
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "summary": "Revoke device session",
         "description": "Deactivate all tokens for a device. The device will need to re-authenticate via `/v1/auth/anonymous`.",
         "operationId": "revokeSession",
@@ -649,7 +686,9 @@
     },
     "/v1/auth/link-email": {
       "post": {
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "summary": "Link email/password to anonymous account",
         "description": "Links the current anonymous device to an email/password account. If the email already exists on another device, bookmarks and folders are merged to that device and the current device is deactivated (user receives new tokens for the existing account). After linking, the user can login from any device via `/v1/auth/login-email`.",
         "operationId": "linkEmail",
@@ -704,7 +743,9 @@
     },
     "/v1/auth/login-email": {
       "post": {
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "summary": "Login with email/password",
         "description": "Authenticate with email and password. Returns access + refresh tokens. Only works for accounts that have been linked via `/v1/auth/link-email`.",
         "operationId": "loginEmail",
@@ -744,7 +785,9 @@
     },
     "/v1/auth/me": {
       "get": {
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "summary": "Get current user profile + stats",
         "description": "Returns full user profile including name, email (if linked), auth provider, device info, and aggregated stats (bookmarks count, folders count, folder items count, days since creation, member since date).",
         "operationId": "getMe",
@@ -777,7 +820,9 @@
         }
       },
       "put": {
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "summary": "Update user profile",
         "description": "Update the current user's profile. Currently only supports updating the name field.",
         "operationId": "updateMe",
@@ -830,7 +875,9 @@
         }
       },
       "delete": {
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "summary": "Delete account and all data",
         "description": "Permanently delete the current user's account and all associated data including bookmarks, folders, FCM tokens, and reports. This action is irreversible.",
         "operationId": "deleteMe",
@@ -847,8 +894,12 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "success": { "type": "boolean" },
-                    "message": { "type": "string" }
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
                   }
                 }
               }
@@ -869,9 +920,11 @@
     },
     "/v1/recently-added": {
       "get": {
-        "tags": ["Discover"],
+        "tags": [
+          "Discover"
+        ],
         "summary": "Recently added APIs",
-        "description": "Returns the latest published APIs in the legacy APIs.json flat format. Ordered by creation date descending.",
+        "description": "Returns the latest published APIs in the legacy flat item format. Ordered by creation date descending.",
         "operationId": "getRecentlyAdded",
         "parameters": [
           {
@@ -902,7 +955,9 @@
     },
     "/v1/recommend": {
       "get": {
-        "tags": ["Discover"],
+        "tags": [
+          "Discover"
+        ],
         "summary": "Personalized recommendations",
         "description": "Returns API recommendations. If a valid Bearer token is provided and the user has bookmarks, returns personalized results scored by shared category, auth type, API type, pricing type, and description keywords with the user's bookmarked APIs. If no bookmarks or no token, returns random APIs.\n\nResults are in the legacy recommendation format.",
         "operationId": "getPersonalizedRecommend",
@@ -941,7 +996,9 @@
     },
     "/v1/apis/{slug}": {
       "get": {
-        "tags": ["API Detail"],
+        "tags": [
+          "API Detail"
+        ],
         "summary": "Get exact API detail",
         "operationId": "getApiDetail",
         "parameters": [
@@ -983,7 +1040,9 @@
     },
     "/v1/apis/{id}/alternatives": {
       "get": {
-        "tags": ["API Detail"],
+        "tags": [
+          "API Detail"
+        ],
         "summary": "Get similar catalog APIs",
         "operationId": "getApiAlternatives",
         "parameters": [
@@ -1026,7 +1085,9 @@
     },
     "/v1/apis/{id}/health-check": {
       "post": {
-        "tags": ["API Detail"],
+        "tags": [
+          "API Detail"
+        ],
         "summary": "Refresh stored API health",
         "operationId": "refreshApiHealth",
         "security": [
@@ -1077,7 +1138,9 @@
     },
     "/v1/apis/{id}/health-checks/{checkId}": {
       "get": {
-        "tags": ["API Detail"],
+        "tags": [
+          "API Detail"
+        ],
         "summary": "Poll an API health check",
         "operationId": "pollApiHealth",
         "security": [
@@ -1123,7 +1186,9 @@
     },
     "/v1/apis/{id}/reports": {
       "post": {
-        "tags": ["Reports"],
+        "tags": [
+          "Reports"
+        ],
         "summary": "Report incorrect API information",
         "operationId": "reportApiInformation",
         "security": [
@@ -1181,7 +1246,9 @@
     },
     "/v1/projects/{projectId}/apis": {
       "post": {
-        "tags": ["Projects"],
+        "tags": [
+          "Projects"
+        ],
         "summary": "Add API to project by stable ID",
         "operationId": "addApiToProjectById",
         "security": [
@@ -1206,7 +1273,9 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["apiId"],
+                "required": [
+                  "apiId"
+                ],
                 "properties": {
                   "apiId": {
                     "type": "string",
@@ -1236,7 +1305,9 @@
     },
     "/v1/projects/{projectId}/apis/{apiId}": {
       "delete": {
-        "tags": ["Projects"],
+        "tags": [
+          "Projects"
+        ],
         "summary": "Remove API from project by stable ID",
         "operationId": "removeApiFromProjectById",
         "security": [
@@ -1283,7 +1354,9 @@
     },
     "/v1/bookmarks": {
       "get": {
-        "tags": ["Bookmarks"],
+        "tags": [
+          "Bookmarks"
+        ],
         "summary": "List bookmarks",
         "description": "Returns all bookmarks for the current device with full API data. Paginated.",
         "operationId": "listBookmarks",
@@ -1337,7 +1410,9 @@
         }
       },
       "post": {
-        "tags": ["Bookmarks"],
+        "tags": [
+          "Bookmarks"
+        ],
         "summary": "Add bookmark",
         "description": "Bookmark an API. Returns 409 if already bookmarked.",
         "operationId": "addBookmark",
@@ -1392,7 +1467,9 @@
     },
     "/v1/bookmarks/{id}": {
       "delete": {
-        "tags": ["Bookmarks"],
+        "tags": [
+          "Bookmarks"
+        ],
         "summary": "Remove bookmark",
         "description": "Remove a bookmark by its ID.",
         "operationId": "removeBookmark",
@@ -1428,7 +1505,9 @@
     },
     "/v1/folders": {
       "get": {
-        "tags": ["Folders"],
+        "tags": [
+          "Folders"
+        ],
         "summary": "List folders",
         "description": "Returns all folders for the current device with apiLinks (URL array) and apiCount.",
         "operationId": "listFolders",
@@ -1461,7 +1540,9 @@
         }
       },
       "post": {
-        "tags": ["Folders"],
+        "tags": [
+          "Folders"
+        ],
         "summary": "Create folder",
         "description": "Create a new folder for organizing APIs.",
         "operationId": "createFolder",
@@ -1506,7 +1587,9 @@
     },
     "/v1/folders/{id}": {
       "get": {
-        "tags": ["Folders"],
+        "tags": [
+          "Folders"
+        ],
         "summary": "Get folder",
         "description": "Returns folder detail with all API link references.",
         "operationId": "getFolder",
@@ -1546,7 +1629,9 @@
         }
       },
       "put": {
-        "tags": ["Folders"],
+        "tags": [
+          "Folders"
+        ],
         "summary": "Update folder",
         "description": "Update folder title and/or iconCodePoint.",
         "operationId": "updateFolder",
@@ -1596,7 +1681,9 @@
         }
       },
       "delete": {
-        "tags": ["Folders"],
+        "tags": [
+          "Folders"
+        ],
         "summary": "Delete folder",
         "description": "Delete folder and all its API references (cascade).",
         "operationId": "deleteFolder",
@@ -1631,7 +1718,9 @@
     },
     "/v1/folders/{id}/api-links": {
       "post": {
-        "tags": ["Folders"],
+        "tags": [
+          "Folders"
+        ],
         "summary": "Add API to folder",
         "description": "Add an API reference to a folder. The API must exist in the catalog. Duplicate links within the same folder are rejected. Returns the updated folder on success.",
         "operationId": "addApiToFolder",
@@ -1696,7 +1785,9 @@
     },
     "/v1/folders/{id}/api-links/{link}": {
       "delete": {
-        "tags": ["Folders"],
+        "tags": [
+          "Folders"
+        ],
         "summary": "Remove API from folder",
         "description": "Remove an API reference from a folder. The link parameter must be URL-encoded. Returns the updated folder on success.",
         "operationId": "removeApiFromFolder",
@@ -1747,7 +1838,9 @@
     },
     "/v1/folders/{id}/metadata": {
       "get": {
-        "tags": ["Folders"],
+        "tags": [
+          "Folders"
+        ],
         "summary": "Folder metadata",
         "description": "Returns folder preview: totalApis count, lastAdded timestamp, and preview[] (first 5 APIs with name, link, isAlive).",
         "operationId": "getFolderMetadata",
@@ -1789,7 +1882,9 @@
     },
     "/v1/fcm-tokens": {
       "get": {
-        "tags": ["Push Notifications"],
+        "tags": [
+          "Push Notifications"
+        ],
         "summary": "List my FCM tokens",
         "description": "Returns all registered FCM push notification tokens for the current device.",
         "operationId": "listFcmTokens",
@@ -1815,7 +1910,9 @@
         }
       },
       "post": {
-        "tags": ["Push Notifications"],
+        "tags": [
+          "Push Notifications"
+        ],
         "summary": "Register FCM token",
         "description": "Register or update a Firebase Cloud Messaging token for push notifications. If the token already exists, updates lastUsedAt.",
         "operationId": "registerFcmToken",
@@ -1854,7 +1951,9 @@
         }
       },
       "delete": {
-        "tags": ["Push Notifications"],
+        "tags": [
+          "Push Notifications"
+        ],
         "summary": "Revoke FCM token",
         "description": "Deactivate an FCM token so it no longer receives push notifications.",
         "operationId": "revokeFcmToken",
@@ -1892,7 +1991,9 @@
     },
     "/track": {
       "post": {
-        "tags": ["Tracking"],
+        "tags": [
+          "Tracking"
+        ],
         "summary": "Track page events",
         "description": "Batch insert page view / interaction events. Accepts a single event object or an array of up to 50 events. Client IP and user-agent are captured automatically.",
         "operationId": "trackEvents",
@@ -1939,7 +2040,9 @@
     },
     "/metadata": {
       "get": {
-        "tags": ["Metadata"],
+        "tags": [
+          "Metadata"
+        ],
         "summary": "Fetch URL metadata",
         "description": "Extract title, description, and Open Graph image from a URL. Uses a 5-second timeout. Private network addresses (localhost, 169.254.x.x, etc.) are blocked.",
         "operationId": "getMetadata",
@@ -1998,6 +2101,272 @@
           }
         }
       }
+    },
+    "/v1/trust-scores/{id}": {
+      "get": {
+        "tags": [
+          "Growth"
+        ],
+        "summary": "Get API trust score",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trust score",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "apiId": {
+                          "type": "string"
+                        },
+                        "slug": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "trustScore": {
+                          "$ref": "#/components/schemas/TrustScore"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/apis/compare": {
+      "get": {
+        "tags": [
+          "Growth"
+        ],
+        "summary": "Compare APIs",
+        "parameters": [
+          {
+            "name": "ids",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Comma-separated 2-4 API ids or slugs"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Compared APIs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/CompareApi"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/change-feed": {
+      "get": {
+        "tags": [
+          "Growth"
+        ],
+        "summary": "Recent API change feed",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Change events"
+          }
+        }
+      }
+    },
+    "/v1/use-case-collections": {
+      "get": {
+        "tags": [
+          "Growth"
+        ],
+        "summary": "Curated API use-case collections",
+        "responses": {
+          "200": {
+            "description": "Collections with APIs"
+          }
+        }
+      }
+    },
+    "/v1/stack": {
+      "get": {
+        "tags": [
+          "Growth"
+        ],
+        "summary": "Current user API stack",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Projects, saved APIs, trust and health summary"
+          }
+        }
+      }
+    },
+    "/v1/notifications/preferences": {
+      "get": {
+        "tags": [
+          "Notifications"
+        ],
+        "summary": "Get notification preferences",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Preferences",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/NotificationPreferences"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Notifications"
+        ],
+        "summary": "Update notification preferences",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NotificationPreferences"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Preferences"
+          }
+        }
+      }
+    },
+    "/v1/notifications/events": {
+      "post": {
+        "tags": [
+          "Notifications"
+        ],
+        "summary": "Track notification event",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "eventType"
+                ],
+                "properties": {
+                  "deliveryId": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "eventType": {
+                    "type": "string",
+                    "enum": [
+                      "received",
+                      "opened",
+                      "dismissed",
+                      "action"
+                    ]
+                  },
+                  "apiId": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "metadata": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Event recorded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/NotificationEventAck"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -2017,7 +2386,26 @@
             "type": "string"
           }
         },
-        "required": ["error"]
+        "required": [
+          "error"
+        ]
+      },
+      "NotificationEventAck": {
+        "type": "object",
+        "required": [
+          "id",
+          "createdAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
       },
       "HealthResponse": {
         "type": "object",
@@ -2054,7 +2442,7 @@
       },
       "LegacyApiItem": {
         "type": "object",
-        "description": "Legacy API item format (from APIs.json flat or search results)",
+        "description": "Legacy API item format (from discovery or search results)",
         "properties": {
           "id": {
             "type": "string",
@@ -2318,7 +2706,10 @@
           },
           "status": {
             "type": "string",
-            "enum": ["pending", "approved"]
+            "enum": [
+              "pending",
+              "approved"
+            ]
           }
         }
       },
@@ -2356,7 +2747,9 @@
       },
       "RefreshTokenRequest": {
         "type": "object",
-        "required": ["refreshToken"],
+        "required": [
+          "refreshToken"
+        ],
         "properties": {
           "refreshToken": {
             "type": "string"
@@ -2365,7 +2758,9 @@
       },
       "RevokeRequest": {
         "type": "object",
-        "required": ["refreshToken"],
+        "required": [
+          "refreshToken"
+        ],
         "properties": {
           "refreshToken": {
             "type": "string"
@@ -2443,7 +2838,10 @@
               },
               "authProvider": {
                 "type": "string",
-                "enum": ["anonymous", "email"],
+                "enum": [
+                  "anonymous",
+                  "email"
+                ],
                 "description": "Authentication method"
               },
               "deviceInfo": {
@@ -2499,7 +2897,10 @@
       },
       "LinkEmailRequest": {
         "type": "object",
-        "required": ["email", "password"],
+        "required": [
+          "email",
+          "password"
+        ],
         "properties": {
           "email": {
             "type": "string",
@@ -2529,7 +2930,9 @@
           },
           "authProvider": {
             "type": "string",
-            "enum": ["email"]
+            "enum": [
+              "email"
+            ]
           },
           "merged": {
             "type": "boolean",
@@ -2551,7 +2954,10 @@
       },
       "EmailLoginRequest": {
         "type": "object",
-        "required": ["email", "password"],
+        "required": [
+          "email",
+          "password"
+        ],
         "properties": {
           "email": {
             "type": "string",
@@ -2705,7 +3111,9 @@
       },
       "AddBookmarkRequest": {
         "type": "object",
-        "required": ["apiId"],
+        "required": [
+          "apiId"
+        ],
         "properties": {
           "apiId": {
             "type": "string",
@@ -2881,7 +3289,9 @@
       },
       "CreateFolderRequest": {
         "type": "object",
-        "required": ["title"],
+        "required": [
+          "title"
+        ],
         "properties": {
           "title": {
             "type": "string",
@@ -2907,7 +3317,9 @@
       },
       "AddApiLinkRequest": {
         "type": "object",
-        "required": ["link"],
+        "required": [
+          "link"
+        ],
         "properties": {
           "link": {
             "type": "string",
@@ -3045,7 +3457,10 @@
       },
       "RegisterFcmTokenRequest": {
         "type": "object",
-        "required": ["token", "platform"],
+        "required": [
+          "token",
+          "platform"
+        ],
         "properties": {
           "token": {
             "type": "string",
@@ -3053,7 +3468,11 @@
           },
           "platform": {
             "type": "string",
-            "enum": ["ios", "android", "web"],
+            "enum": [
+              "ios",
+              "android",
+              "web"
+            ],
             "description": "Device platform"
           },
           "appVersion": {
@@ -3064,7 +3483,9 @@
       },
       "RevokeFcmTokenRequest": {
         "type": "object",
-        "required": ["token"],
+        "required": [
+          "token"
+        ],
         "properties": {
           "token": {
             "type": "string",
@@ -3129,7 +3550,10 @@
       },
       "ApiHealthSummary": {
         "type": "object",
-        "required": ["status", "observationCount"],
+        "required": [
+          "status",
+          "observationCount"
+        ],
         "properties": {
           "status": {
             "type": "string",
@@ -3182,7 +3606,10 @@
       },
       "FieldVerification": {
         "type": "object",
-        "required": ["source", "verifiedAt"],
+        "required": [
+          "source",
+          "verifiedAt"
+        ],
         "properties": {
           "source": {
             "type": "string",
@@ -3204,7 +3631,9 @@
       },
       "ApiDetailResponse": {
         "type": "object",
-        "required": ["data"],
+        "required": [
+          "data"
+        ],
         "properties": {
           "data": {
             "type": "object",
@@ -3264,11 +3693,22 @@
                 "properties": {
                   "authType": {
                     "type": "string",
-                    "enum": ["NONE", "API_KEY", "OAUTH2", "BASIC", "UNKNOWN"]
+                    "enum": [
+                      "NONE",
+                      "API_KEY",
+                      "OAUTH2",
+                      "BASIC",
+                      "UNKNOWN"
+                    ]
                   },
                   "pricingType": {
                     "type": "string",
-                    "enum": ["FREE", "FREEMIUM", "PAID", "UNKNOWN"]
+                    "enum": [
+                      "FREE",
+                      "FREEMIUM",
+                      "PAID",
+                      "UNKNOWN"
+                    ]
                   },
                   "rateLimit": {
                     "type": "string",
@@ -3327,11 +3767,21 @@
                   },
                   "cors": {
                     "type": "string",
-                    "enum": ["SUPPORTED", "UNSUPPORTED", "UNKNOWN"]
+                    "enum": [
+                      "SUPPORTED",
+                      "UNSUPPORTED",
+                      "UNKNOWN"
+                    ]
                   },
                   "protocol": {
                     "type": "string",
-                    "enum": ["REST", "GRAPHQL", "SOAP", "WEBSOCKET", "UNKNOWN"]
+                    "enum": [
+                      "REST",
+                      "GRAPHQL",
+                      "SOAP",
+                      "WEBSOCKET",
+                      "UNKNOWN"
+                    ]
                   },
                   "responseFormats": {
                     "type": "array",
@@ -3378,7 +3828,11 @@
                 "type": "array",
                 "items": {
                   "type": "object",
-                  "required": ["code", "message", "severity"],
+                  "required": [
+                    "code",
+                    "message",
+                    "severity"
+                  ],
                   "properties": {
                     "code": {
                       "type": "string"
@@ -3388,7 +3842,11 @@
                     },
                     "severity": {
                       "type": "string",
-                      "enum": ["INFO", "WARNING", "ERROR"]
+                      "enum": [
+                        "INFO",
+                        "WARNING",
+                        "ERROR"
+                      ]
                     },
                     "verifiedAt": {
                       "type": "string",
@@ -3438,11 +3896,22 @@
                 },
                 "pricingType": {
                   "type": "string",
-                  "enum": ["FREE", "FREEMIUM", "PAID", "UNKNOWN"]
+                  "enum": [
+                    "FREE",
+                    "FREEMIUM",
+                    "PAID",
+                    "UNKNOWN"
+                  ]
                 },
                 "authType": {
                   "type": "string",
-                  "enum": ["NONE", "API_KEY", "OAUTH2", "BASIC", "UNKNOWN"]
+                  "enum": [
+                    "NONE",
+                    "API_KEY",
+                    "OAUTH2",
+                    "BASIC",
+                    "UNKNOWN"
+                  ]
                 },
                 "baseUrl": {
                   "type": "string",
@@ -3458,11 +3927,19 @@
         "properties": {
           "data": {
             "type": "object",
-            "required": ["state"],
+            "required": [
+              "state"
+            ],
             "properties": {
               "state": {
                 "type": "string",
-                "enum": ["CACHED", "QUEUED", "RUNNING", "COMPLETED", "FAILED"]
+                "enum": [
+                  "CACHED",
+                  "QUEUED",
+                  "RUNNING",
+                  "COMPLETED",
+                  "FAILED"
+                ]
               },
               "checkId": {
                 "type": "string",
@@ -3497,7 +3974,9 @@
       },
       "CreateApiReportRequest": {
         "type": "object",
-        "required": ["reason"],
+        "required": [
+          "reason"
+        ],
         "properties": {
           "reason": {
             "type": "string",
@@ -3529,7 +4008,12 @@
               },
               "status": {
                 "type": "string",
-                "enum": ["PENDING", "IN_REVIEW", "RESOLVED", "REJECTED"]
+                "enum": [
+                  "PENDING",
+                  "IN_REVIEW",
+                  "RESOLVED",
+                  "REJECTED"
+                ]
               },
               "createdAt": {
                 "type": "string",
@@ -3594,6 +4078,158 @@
           },
           "totalPages": {
             "type": "integer"
+          }
+        }
+      },
+      "TrustFactor": {
+        "type": "object",
+        "required": [
+          "score",
+          "weight",
+          "label"
+        ],
+        "properties": {
+          "score": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "weight": {
+            "type": "integer"
+          },
+          "label": {
+            "type": "string"
+          }
+        }
+      },
+      "TrustScore": {
+        "type": "object",
+        "required": [
+          "score",
+          "grade",
+          "summary",
+          "factors"
+        ],
+        "properties": {
+          "score": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "grade": {
+            "type": "string",
+            "enum": [
+              "A",
+              "B",
+              "C",
+              "D",
+              "F"
+            ]
+          },
+          "summary": {
+            "type": "string"
+          },
+          "computedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "factors": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/TrustFactor"
+            }
+          }
+        }
+      },
+      "CompareApi": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "trustScore": {
+            "$ref": "#/components/schemas/TrustScore"
+          },
+          "authType": {
+            "type": "string"
+          },
+          "pricingType": {
+            "type": "string"
+          },
+          "rateLimit": {
+            "type": "string",
+            "nullable": true
+          },
+          "sdkLanguages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "responseTimeMs": {
+            "type": "integer",
+            "nullable": true
+          },
+          "uptime30d": {
+            "type": "number",
+            "nullable": true
+          },
+          "cors": {
+            "type": "string"
+          },
+          "https": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "openApiAvailable": {
+            "type": "boolean"
+          },
+          "documentationUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastVerifiedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "NotificationPreferences": {
+        "type": "object",
+        "properties": {
+          "savedApiHealth": {
+            "type": "boolean"
+          },
+          "newMatchingApis": {
+            "type": "boolean"
+          },
+          "weeklyDigest": {
+            "type": "boolean"
+          },
+          "lifecycleUpdates": {
+            "type": "boolean"
+          },
+          "pricingChanges": {
+            "type": "boolean"
+          },
+          "trustAlerts": {
+            "type": "boolean"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       }

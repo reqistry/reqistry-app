@@ -926,6 +926,63 @@ class AppLocalizationsEs extends AppLocalizations {
   String get intelligenceCompareApis => 'Comparar APIs lado a lado';
 
   @override
+  String get intelligenceCompareTitle => 'Comparar APIs';
+
+  @override
+  String get intelligenceCompareSubtitle =>
+      'Confianza, precios y salud lado a lado para hasta 4 APIs.';
+
+  @override
+  String get intelligenceChooseApis => 'Elegir APIs';
+
+  @override
+  String get intelligenceCompareNow => 'Comparar';
+
+  @override
+  String get intelligenceChangeFeed => 'CAMBIOS DEL REGISTRO';
+
+  @override
+  String get intelligenceChangeFeedEmpty => 'Sin cambios recientes.';
+
+  @override
+  String get pickerSearchHint => 'Buscar APIs…';
+
+  @override
+  String pickerSelectedCount(int count) {
+    return '$count de 4 seleccionadas';
+  }
+
+  @override
+  String pickerDone(int count) {
+    return 'Comparar $count';
+  }
+
+  @override
+  String get pickerNoSavedApis =>
+      'Aún no hay APIs guardadas. Busca APIs para comparar.';
+
+  @override
+  String compareTrustScoreValue(int score, String grade) {
+    return '$score · Grado $grade';
+  }
+
+  @override
+  String get compareResponseTime => 'Tiempo de respuesta';
+
+  @override
+  String get compareUptime30d => 'Disponibilidad (30d)';
+
+  @override
+  String get compareRateLimit => 'Límite de peticiones';
+
+  @override
+  String get compareSdks => 'SDKs';
+
+  @override
+  String get compareSelectAtLeastTwo =>
+      'Selecciona al menos dos APIs para comparar';
+
+  @override
   String get intelligenceAgentReadiness =>
       'Puntuación de preparación de agentes';
 
@@ -1092,6 +1149,49 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get settingsNotificationDisabled =>
       'Deshabilitado. El token push está revocado.';
+
+  @override
+  String get notificationSavedApiHealth => 'Estado de APIs guardadas';
+
+  @override
+  String get notificationSavedApiHealthSubtitle =>
+      'Alertas cuando una API guardada falla o se recupera.';
+
+  @override
+  String get notificationNewMatchingApis => 'APIs relacionadas';
+
+  @override
+  String get notificationNewMatchingApisSubtitle =>
+      'Nuevas APIs de las categorías que sigues.';
+
+  @override
+  String get notificationWeeklyDigest => 'Resumen y recordatorios semanales';
+
+  @override
+  String get notificationWeeklyDigestSubtitle =>
+      'Descubrimientos y recordatorios semanales de la comunidad.';
+
+  @override
+  String get notificationLifecycleUpdates =>
+      'Actualizaciones de envíos e informes';
+
+  @override
+  String get notificationLifecycleUpdatesSubtitle =>
+      'Resultados de las APIs que envías o reportas.';
+
+  @override
+  String get notificationPricingChanges => 'Cambios de precios';
+
+  @override
+  String get notificationPricingChangesSubtitle =>
+      'Alertas de cambios de precio en APIs guardadas.';
+
+  @override
+  String get notificationTrustAlerts => 'Alertas de confianza';
+
+  @override
+  String get notificationTrustAlertsSubtitle =>
+      'Avisos cuando baja la puntuación de confianza de una API guardada.';
 
   @override
   String get settingsExportFavoritesSubtitle =>

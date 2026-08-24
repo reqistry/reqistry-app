@@ -1,21 +1,5 @@
-import 'dart:convert';
-
 import 'bookmark_item.dart';
 import 'category_apis.dart';
-
-List<Api> apisFromJson(String str) => List<Api>.from(
-      json.decode(str).map(
-            (x) => Api.fromJson(x),
-          ),
-    );
-
-String apisToJson(List<Api> data) => json.encode(
-      List<dynamic>.from(
-        data.map(
-          (x) => x.toJson(),
-        ),
-      ),
-    );
 
 class Api {
   final String id;

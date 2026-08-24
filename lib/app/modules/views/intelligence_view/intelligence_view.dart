@@ -1,36 +1,54 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
-import 'package:api_scout/l10n/app_localizations.dart';
 
+import 'package:api_scout/app/modules/views/intelligence_view/widgets/api_picker_sheet.dart';
+import 'package:api_scout/app/modules/views/intelligence_view/widgets/change_feed_section.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
+import 'package:api_scout/config/app_routes.dart' show AppRoutes;
+import 'package:api_scout/l10n/app_localizations.dart';
 
-import 'widgets/feature_model.dart';
-import 'widgets/highlight_model.dart';
-import 'widgets/feature_badge.dart';
-import 'widgets/highlight_row.dart';
-
-class IntelligenceView extends StatelessWidget {
+/// Intelligence tab: real API comparison and registry change feed.
+class IntelligenceView extends StatefulWidget {
   const IntelligenceView({super.key});
+
+  @override
+  State<IntelligenceView> createState() => _IntelligenceViewState();
+}
+
+class _IntelligenceViewState extends State<IntelligenceView> {
+  final List<CompareCandidate> _selected = [];
+  final GlobalKey<ChangeFeedSectionState> _feedKey =
+      GlobalKey<ChangeFeedSectionState>();
+
+  void _openPicker() async {
+    final chosen = await ApiPickerSheet.show(
+      context,
+      initiallySelected: _selected.map((c) => c.id).toSet(),
+    );
+    if (chosen == null || !mounted) return;
+    setState(() {
+      _selected
+        ..clear()
+        ..addAll(chosen);
+    });
+  }
+
+  void _removeCandidate(CompareCandidate candidate) {
+    setState(() => _selected.remove(candidate));
+  }
+
+  void _openCompare() {
+    context.push(AppRoutes.compare, extra: _selected.map((c) => c.id).toList());
+  }
 
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(Theme.of(context).brightness);
     final l10n = AppLocalizations.of(context)!;
-    final features = [
-      Feature(icon: PhosphorIconsRegular.scales, label: l10n.intelligenceCompareApis),
-      Feature(icon: PhosphorIconsRegular.robot, label: l10n.intelligenceAgentReadiness),
-      Feature(icon: PhosphorIconsRegular.sealCheck, label: l10n.intelligenceEvidenceBacked),
-      Feature(icon: PhosphorIconsRegular.puzzlePiece, label: l10n.intelligenceMcpToolDiscovery),
-    ];
-    final highlights = [
-      Highlight(l10n.intelligenceSideBySideComparison),
-      Highlight(l10n.intelligenceContextualScores),
-      Highlight(l10n.intelligenceEvidenceBackedRecommendations),
-      Highlight(l10n.intelligenceMcpServerToolDiscovery),
-      Highlight(l10n.intelligenceNaturalLanguageMatching),
-    ];
+
     return Scaffold(
       backgroundColor: c.background,
       appBar: AppBar(
@@ -40,110 +58,84 @@ class IntelligenceView extends StatelessWidget {
         elevation: 0,
         scrolledUnderElevation: 0,
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(1),
-          child: SizedBox(
-            height: 1,
-            child: ColoredBox(color: c.surfaceVariant),
-          ),
+          preferredSize: const Size.fromHeight(1),
+          child: Container(height: 1, color: c.surfaceVariant),
         ),
       ),
-      body: ListView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(
-          AppSpacing.s16,
-          AppSpacing.s16,
-          AppSpacing.s16,
-          AppSpacing.s24,
+      body: RefreshIndicator(
+        onRefresh: () => _feedKey.currentState!.reload(),
+        child: ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.fromLTRB(
+              AppSpacing.s16, AppSpacing.s16, AppSpacing.s16, AppSpacing.s24),
+          children: [
+            _compareCard(c, l10n),
+            const SizedBox(height: AppSpacing.s24),
+            ChangeFeedSection(key: _feedKey),
+          ],
         ),
+      ),
+    );
+  }
+
+  Widget _compareCard(AppColorScheme c, AppLocalizations l10n) {
+    return Container(
+      decoration: BoxDecoration(
+        color: c.surface,
+        border: Border.fromBorderSide(BorderSide(color: c.outline)),
+      ),
+      padding: const EdgeInsets.all(AppSpacing.s16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            decoration: BoxDecoration(
-              color: c.surface,
-              border: Border.fromBorderSide(BorderSide(color: c.outline)),
-            ),
-            padding: const EdgeInsets.all(AppSpacing.s16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          Row(
+            children: [
+              Icon(PhosphorIconsRegular.scales, color: c.info, size: 28),
+              const SizedBox(width: AppSpacing.s8),
+              Expanded(
+                child: Text(l10n.intelligenceCompareTitle,
+                    style: AppTextStyles.bodyMd.copyWith(fontWeight: FontWeight.w600)),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.s6),
+          Text(
+            l10n.intelligenceCompareSubtitle,
+            style:
+                AppTextStyles.bodyMd.copyWith(color: c.onSurfaceVariant),
+          ),
+          if (_selected.isNotEmpty) ...[
+            const SizedBox(height: AppSpacing.s16),
+            Wrap(
+              spacing: AppSpacing.s8,
+              runSpacing: AppSpacing.s8,
               children: [
-                Row(
-                  children: [
-                    Icon(
-                      PhosphorIconsRegular.brain,
-                      color: c.info,
-                      size: 40,
-                    ),
-                    const Spacer(),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.s8,
-                        vertical: AppSpacing.s4,
-                      ),
-                      color: c.infoBg,
-                      child: Text(
-                        l10n.stateComingSoon,
-                        style: AppTextStyles.labelSmUpper.copyWith(
-                          fontSize: 10,
-                          color: c.infoText,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.s20),
-                Text(
-                  l10n.sectionRegistryIntelligence,
-                  style: AppTextStyles.labelSmUpper,
-                ),
-                const SizedBox(height: AppSpacing.s6),
-                Text(
-                  l10n.intelligenceAiPoweredDecisions,
-                  style: AppTextStyles.bodyMd.copyWith(
-                    color: c.onSurfaceVariant,
+                for (final candidate in _selected)
+                  InputChip(
+                    label: Text(candidate.name),
+                    onDeleted: () => _removeCandidate(candidate),
                   ),
-                ),
-                const SizedBox(height: AppSpacing.s24),
-                Column(
-                  children: [
-                    for (var i = 0; i < features.length; i += 2) ...[
-                      if (i > 0) const SizedBox(height: AppSpacing.s8),
-                      IntrinsicHeight(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Expanded(
-                              child: FeatureBadge(feature: features[i]),
-                            ),
-                            const SizedBox(width: AppSpacing.s8),
-                            Expanded(
-                              child: i + 1 < features.length
-                                  ? FeatureBadge(feature: features[i + 1])
-                                  : const SizedBox(),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.s20),
-                Divider(
-                  height: 1,
-                  thickness: 1,
-                  color: c.surfaceVariant,
-                ),
-                const SizedBox(height: AppSpacing.s16),
-                Text(
-                  l10n.sectionUpcoming,
-                  style: AppTextStyles.labelSmUpper.copyWith(fontSize: 10),
-                ),
-                const SizedBox(height: AppSpacing.s10),
-                for (final h in highlights) ...[
-                  HighlightRow(label: h.label),
-                  if (h != highlights.last)
-                    const SizedBox(height: AppSpacing.s10),
-                ],
               ],
             ),
+          ],
+          const SizedBox(height: AppSpacing.s16),
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: _openPicker,
+                  icon: const Icon(Icons.add, size: 18),
+                  label: Text(l10n.intelligenceChooseApis),
+                ),
+              ),
+              const SizedBox(width: AppSpacing.s8),
+              Expanded(
+                child: FilledButton(
+                  onPressed: _selected.length >= 2 ? _openCompare : null,
+                  child: Text(l10n.intelligenceCompareNow),
+                ),
+              ),
+            ],
           ),
         ],
       ),

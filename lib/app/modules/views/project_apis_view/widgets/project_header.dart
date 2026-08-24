@@ -20,6 +20,7 @@ class ProjectHeader extends StatelessWidget {
     final c = AppColors.of(Theme.of(context).brightness);
 
     final iconData = IconData(
+      // ignore: non_const_argument_for_const_parameter
       detail.iconCodePoint,
       fontFamily: 'PhosphorRegular',
       fontPackage: 'phosphoricons_flutter',

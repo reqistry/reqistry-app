@@ -1,12 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:api_scout/config/env.dart';
 import 'package:api_scout/l10n/app_localizations.dart';
-import '../../data/models/apis_data_response.dart';
 import '../../data/models/categories_response.dart';
 import '../../data/models/category_apis.dart';
 import '../../data/models/api.dart' as api_model;
 import '../../data/models/apis_search_response.dart';
+import '../../data/models/intelligence.dart';
 import '../auth/dio_client.dart';
+import '../analytics/api_detail_analytics.dart';
 import 'failure.dart';
 
 class RemoteService {
@@ -15,11 +16,13 @@ class RemoteService {
   static Dio get _dio => DioClient().unauthDio;
   static Dio get _authDio => DioClient().dio;
 
-  static Future<CategoriesResponse> getCategories({AppLocalizations? l10n}) async {
+  static Future<CategoriesResponse> getCategories(
+      {AppLocalizations? l10n}) async {
     try {
       final response = await _dio.get('/categories');
       if (response.data == null) {
-        throw Failure(l10n?.errorEmptyResponse ?? 'Empty response', l10n?.errorServerReturnedEmptyData ?? 'Server returned empty data');
+        throw Failure(l10n?.errorEmptyResponse ?? 'Empty response',
+            l10n?.errorServerReturnedEmptyData ?? 'Server returned empty data');
       }
       return CategoriesResponse.fromJson(response.data);
     } on DioException catch (e) {
@@ -27,11 +30,15 @@ class RemoteService {
     } on Failure {
       rethrow;
     } catch (e) {
-      throw Failure(l10n?.errorParseError ?? 'Parse error', l10n?.errorFailedToProcessData ?? 'Failed to process categories data');
+      throw Failure(
+          l10n?.errorParseError ?? 'Parse error',
+          l10n?.errorFailedToProcessData ??
+              'Failed to process categories data');
     }
   }
 
-  static Future<List<String>> getTrendyCategories({AppLocalizations? l10n}) async {
+  static Future<List<String>> getTrendyCategories(
+      {AppLocalizations? l10n}) async {
     try {
       final response = await _dio.get('/trendy-categories');
       final data = response.data;
@@ -49,18 +56,24 @@ class RemoteService {
     } on Failure {
       rethrow;
     } catch (e) {
-      throw Failure(l10n?.errorParseError ?? 'Parse error', l10n?.errorFailedToProcessData ?? 'Failed to process trendy categories');
+      throw Failure(
+          l10n?.errorParseError ?? 'Parse error',
+          l10n?.errorFailedToProcessData ??
+              'Failed to process trendy categories');
     }
   }
 
-  static Future<CategoryDetail> getCategory(String categoryId, {AppLocalizations? l10n}) async {
+  static Future<CategoryDetail> getCategory(String categoryId,
+      {AppLocalizations? l10n}) async {
     if (categoryId.isEmpty) {
-      throw Failure(l10n?.errorInvalidInput ?? 'Invalid input', l10n?.errorCategoryIdEmpty ?? 'Category ID cannot be empty');
+      throw Failure(l10n?.errorInvalidInput ?? 'Invalid input',
+          l10n?.errorCategoryIdEmpty ?? 'Category ID cannot be empty');
     }
     try {
       final response = await _dio.get('/categories/$categoryId');
       if (response.data == null) {
-        throw Failure(l10n?.errorEmptyResponse ?? 'Empty response', l10n?.errorServerReturnedEmptyData ?? 'Server returned empty data');
+        throw Failure(l10n?.errorEmptyResponse ?? 'Empty response',
+            l10n?.errorServerReturnedEmptyData ?? 'Server returned empty data');
       }
       return CategoryDetail.fromJson(response.data);
     } on DioException catch (e) {
@@ -68,7 +81,8 @@ class RemoteService {
     } on Failure {
       rethrow;
     } catch (e) {
-      throw Failure(l10n?.errorParseError ?? 'Parse error', l10n?.errorFailedToProcessData ?? 'Failed to process category data');
+      throw Failure(l10n?.errorParseError ?? 'Parse error',
+          l10n?.errorFailedToProcessData ?? 'Failed to process category data');
     }
   }
 
@@ -116,15 +130,30 @@ class RemoteService {
 
       final response = await _dio.get('/search', queryParameters: queryParams);
       if (response.data == null) {
-        throw Failure(l10n?.errorEmptyResponse ?? 'Empty response', l10n?.errorServerReturnedEmptyData ?? 'Server returned empty data');
+        throw Failure(l10n?.errorEmptyResponse ?? 'Empty response',
+            l10n?.errorServerReturnedEmptyData ?? 'Server returned empty data');
       }
-      return SearchResponse.fromJson(response.data);
+      final result = SearchResponse.fromJson(response.data);
+      ApiDetailAnalytics.trackSearch(
+        query: q,
+        hasFilters: (pricing?.isNotEmpty ?? false) ||
+            (auth?.isNotEmpty ?? false) ||
+            (apiType?.isNotEmpty ?? false) ||
+            (category?.isNotEmpty ?? false) ||
+            cors != null ||
+            https != null ||
+            alive != null ||
+            maxResponseTime != null,
+        resultCount: result.count,
+      );
+      return result;
     } on DioException catch (e) {
       throw _handleDioError(e, 'Search failed', l10n);
     } on Failure {
       rethrow;
     } catch (e) {
-      throw Failure(l10n?.errorParseError ?? 'Parse error', l10n?.errorFailedToProcessData ?? 'Failed to process search results');
+      throw Failure(l10n?.errorParseError ?? 'Parse error',
+          l10n?.errorFailedToProcessData ?? 'Failed to process search results');
     }
   }
 
@@ -150,7 +179,10 @@ class RemoteService {
     } on Failure {
       rethrow;
     } catch (e) {
-      throw Failure(l10n?.errorParseError ?? 'Parse error', l10n?.errorFailedToProcessData ?? 'Failed to process recommendations');
+      throw Failure(
+          l10n?.errorParseError ?? 'Parse error',
+          l10n?.errorFailedToProcessData ??
+              'Failed to process recommendations');
     }
   }
 
@@ -176,7 +208,10 @@ class RemoteService {
     } on Failure {
       rethrow;
     } catch (e) {
-      throw Failure(l10n?.errorParseError ?? 'Parse error', l10n?.errorFailedToProcessData ?? 'Failed to process recommendations');
+      throw Failure(
+          l10n?.errorParseError ?? 'Parse error',
+          l10n?.errorFailedToProcessData ??
+              'Failed to process recommendations');
     }
   }
 
@@ -186,21 +221,24 @@ class RemoteService {
     AppLocalizations? l10n,
   }) async {
     if (name.trim().isEmpty) {
-      throw Failure(l10n?.errorInvalidInput ?? 'Invalid input', l10n?.errorApiNameEmpty ?? 'API name cannot be empty');
+      throw Failure(l10n?.errorInvalidInput ?? 'Invalid input',
+          l10n?.errorApiNameEmpty ?? 'API name cannot be empty');
     }
     if (link.trim().isEmpty) {
-      throw Failure(l10n?.errorInvalidInput ?? 'Invalid input', l10n?.errorApiLinkEmpty ?? 'API link cannot be empty');
+      throw Failure(l10n?.errorInvalidInput ?? 'Invalid input',
+          l10n?.errorApiLinkEmpty ?? 'API link cannot be empty');
     }
     try {
-      final response = await _dio.post(
-        '/submit',
+      final response = await _authDio.post(
+        '/v1/apis',
         data: {'name': name.trim(), 'link': link.trim()},
         options: Options(
           extra: const {RequestErrorNotifierInterceptor.silentKey: true},
         ),
       );
       if (response.data == null) {
-        throw Failure(l10n?.errorEmptyResponse ?? 'Empty response', l10n?.errorServerReturnedEmptyData ?? 'Server returned empty data');
+        throw Failure(l10n?.errorEmptyResponse ?? 'Empty response',
+            l10n?.errorServerReturnedEmptyData ?? 'Server returned empty data');
       }
       return response.data as Map<String, dynamic>;
     } on DioException catch (e) {
@@ -208,36 +246,10 @@ class RemoteService {
     } on Failure {
       rethrow;
     } catch (e) {
-      throw Failure(l10n?.errorParseError ?? 'Parse error', l10n?.errorFailedToProcessData ?? 'Failed to process submission response');
-    }
-  }
-
-  static Future<APIsDataResponse> getData({String? apiUrl, AppLocalizations? l10n}) async {
-    try {
-      final response = await _dio.get(
-        apiUrl ?? '/APIs.json',
-        queryParameters: {},
-      );
-
-      if (response.data == null) {
-        throw Failure(l10n?.errorEmptyResponse ?? 'Empty response', l10n?.errorServerReturnedEmptyData ?? 'Server returned empty data');
-      }
-
-      final apisDataResponse = response.data is Map<String, dynamic>
-          ? APIsDataResponse.fromJson(response.data)
-          : apisDataResponseFromJson(response.data as String);
-
-      if (!apisDataResponse.validateData()) {
-        throw Failure(l10n?.errorInvalidData ?? 'Invalid Data', l10n?.errorApiResponseInvalid ?? 'The API response data is invalid');
-      }
-
-      return apisDataResponse;
-    } on DioException catch (e) {
-      throw _handleDioError(e, 'Failed to fetch APIs', l10n);
-    } on Failure {
-      rethrow;
-    } catch (e) {
-      throw Failure(l10n?.errorParseError ?? 'Parse error', l10n?.errorFailedToProcessData ?? 'Failed to process APIs data');
+      throw Failure(
+          l10n?.errorParseError ?? 'Parse error',
+          l10n?.errorFailedToProcessData ??
+              'Failed to process submission response');
     }
   }
 
@@ -248,7 +260,8 @@ class RemoteService {
     AppLocalizations? l10n,
   }) async {
     if (categoryId.isEmpty) {
-      throw Failure(l10n?.errorInvalidInput ?? 'Invalid input', l10n?.errorCategoryIdEmpty ?? 'Category ID cannot be empty');
+      throw Failure(l10n?.errorInvalidInput ?? 'Invalid input',
+          l10n?.errorCategoryIdEmpty ?? 'Category ID cannot be empty');
     }
     try {
       final response = await _dio.get(
@@ -256,7 +269,8 @@ class RemoteService {
         queryParameters: {'page': page, 'limit': limit},
       );
       if (response.data == null) {
-        throw Failure(l10n?.errorEmptyResponse ?? 'Empty response', l10n?.errorServerReturnedEmptyData ?? 'Server returned empty data');
+        throw Failure(l10n?.errorEmptyResponse ?? 'Empty response',
+            l10n?.errorServerReturnedEmptyData ?? 'Server returned empty data');
       }
       final data = response.data as Map<String, dynamic>;
       final items = (data['data'] as List? ?? [])
@@ -269,7 +283,8 @@ class RemoteService {
     } on Failure {
       rethrow;
     } catch (e) {
-      throw Failure(l10n?.errorParseError ?? 'Parse error', l10n?.errorFailedToProcessData ?? 'Failed to process category APIs');
+      throw Failure(l10n?.errorParseError ?? 'Parse error',
+          l10n?.errorFailedToProcessData ?? 'Failed to process category APIs');
     }
   }
 
@@ -291,7 +306,10 @@ class RemoteService {
     } on Failure {
       rethrow;
     } catch (e) {
-      throw Failure(l10n?.errorParseError ?? 'Parse error', l10n?.errorFailedToProcessData ?? 'Failed to process recently added data');
+      throw Failure(
+          l10n?.errorParseError ?? 'Parse error',
+          l10n?.errorFailedToProcessData ??
+              'Failed to process recently added data');
     }
   }
 
@@ -306,7 +324,71 @@ class RemoteService {
         .toList();
   }
 
-  static Failure _handleDioError(DioException e, String defaultTitle, AppLocalizations? l10n) {
+  static Future<List<CompareApi>> compareApis({
+    required List<String> ids,
+    AppLocalizations? l10n,
+  }) async {
+    if (ids.length < 2) {
+      throw Failure(
+          l10n?.errorInvalidInput ?? 'Invalid input',
+          l10n?.compareSelectAtLeastTwo ?? 'Select at least two APIs');
+    }
+    try {
+      final response = await _authDio.get(
+        '/v1/apis/compare',
+        queryParameters: {'ids': ids.join(',')},
+      );
+      if (response.data == null) {
+        throw Failure(l10n?.errorEmptyResponse ?? 'Empty response',
+            l10n?.errorServerReturnedEmptyData ?? 'Server returned empty data');
+      }
+      final data = response.data;
+      final List<dynamic> items = data is List ? data : data['data'] ?? [];
+      return items
+          .whereType<Map<String, dynamic>>()
+          .map(CompareApi.fromJson)
+          .toList();
+    } on DioException catch (e) {
+      throw _handleDioError(e, 'Comparison failed', l10n);
+    } on Failure {
+      rethrow;
+    } catch (e) {
+      throw Failure(
+          l10n?.errorParseError ?? 'Parse error',
+          l10n?.errorFailedToProcessData ??
+              'Failed to process comparison data');
+    }
+  }
+
+  static Future<List<ChangeFeedEvent>> getChangeFeed({
+    int limit = 40,
+    AppLocalizations? l10n,
+  }) async {
+    try {
+      final response =
+          await _dio.get('/v1/change-feed', queryParameters: {'limit': limit});
+      if (response.data == null) return [];
+      final data = response.data;
+      final List<dynamic> items =
+          data is List ? data : (data['data'] ?? data['events']) ?? [];
+      return items
+          .whereType<Map<String, dynamic>>()
+          .map(ChangeFeedEvent.fromJson)
+          .toList();
+    } on DioException catch (e) {
+      throw _handleDioError(e, 'Failed to fetch change feed', l10n);
+    } on Failure {
+      rethrow;
+    } catch (e) {
+      throw Failure(
+          l10n?.errorParseError ?? 'Parse error',
+          l10n?.errorFailedToProcessData ??
+              'Failed to process change feed');
+    }
+  }
+
+  static Failure _handleDioError(
+      DioException e, String defaultTitle, AppLocalizations? l10n) {
     if (e.response?.data is Map) {
       final error = e.response?.data['error'];
       if (error != null) {
@@ -316,8 +398,12 @@ class RemoteService {
     if (e.type == DioExceptionType.connectionTimeout ||
         e.type == DioExceptionType.sendTimeout ||
         e.type == DioExceptionType.receiveTimeout) {
-      return Failure(l10n?.errorConnectionTimeout ?? 'Connection timeout', l10n?.errorCheckInternetConnection ?? 'Check your internet connection');
+      return Failure(
+          l10n?.errorConnectionTimeout ?? 'Connection timeout',
+          l10n?.errorCheckInternetConnection ??
+              'Check your internet connection');
     }
-    return Failure(defaultTitle, l10n?.stateSomethingWentWrong ?? 'Something went wrong');
+    return Failure(
+        defaultTitle, l10n?.stateSomethingWentWrong ?? 'Something went wrong');
   }
 }

@@ -67,13 +67,17 @@ class _ApiCollectionViewState extends State<ApiCollectionView> {
           future: _future,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return AppLoading(message: AppLocalizations.of(context)!.stateLoadingTitle(_title(context)), scrollable: true);
+              return AppLoading(
+                  message: AppLocalizations.of(context)!
+                      .stateLoadingTitle(_title(context)),
+                  scrollable: true);
             }
             if (snapshot.hasError) {
               return AppErrorState(
                 title: AppLocalizations.of(context)!.stateCouldNotLoadApis,
                 message: snapshot.error.toString(),
-                onRetry: () => setState(() => _future = _load(l10n: AppLocalizations.of(context)!)),
+                onRetry: () => setState(
+                    () => _future = _load(l10n: AppLocalizations.of(context)!)),
                 scrollable: true,
               );
             }
@@ -94,7 +98,11 @@ class _ApiCollectionViewState extends State<ApiCollectionView> {
                 final api = apis[index];
                 return ApiCard(
                   api: api,
-                  category: api.category.isNotEmpty ? api.category : _title(context),
+                  category:
+                      api.category.isNotEmpty ? api.category : _title(context),
+                  sourceScreen: widget.kind == ApiCollectionKind.recommended
+                      ? 'recommendation'
+                      : 'latest',
                 );
               },
             );

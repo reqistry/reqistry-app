@@ -9,7 +9,7 @@ import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
 import 'package:api_scout/shared/widgets/search/quick_filter_chip.dart';
 
 class AdvancedFiltersSheet extends StatelessWidget {
-  const AdvancedFiltersSheet();
+  const AdvancedFiltersSheet({super.key});
 
   @override
   Widget build(BuildContext context) {
