@@ -1,4 +1,4 @@
-import 'package:api_scout/app/data/models/api.dart' as legacy;
+import 'package:api_scout/app/data/models/category_apis.dart';
 import 'package:api_scout/app/data/models/api_detail.dart';
 import 'package:api_scout/app/modules/views/api_detail_view/widgets/api_detail_sections.dart';
 import 'package:api_scout/l10n/app_localizations.dart';
@@ -9,15 +9,22 @@ void main() {
   testWidgets('quick facts expose unknown values at large text size',
       (tester) async {
     final detail = ApiDetail.fromApi(
-      legacy.Api(
+      ApiItem(
         id: 'api-1',
         name: 'Example API',
         description: 'Example data',
         auth: '',
-        https: false,
-        cors: false,
+        https: 'Unknown',
+        cors: 'Unknown',
         link: 'https://example.com/v1',
-        categoryId: 'Development',
+        category: 'Development',
+        apiType: 'REST',
+        pricing: 'Unknown',
+        rateLimit: 'Unknown',
+        documentation: '',
+        isAlive: false,
+        responseTime: 0,
+        lastChecked: '',
       ),
     );
 

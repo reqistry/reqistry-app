@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:api_scout/app/data/models/api.dart' as legacy;
+import 'package:api_scout/app/data/models/category_apis.dart' show ApiItem;
 import 'package:api_scout/app/data/models/api_detail.dart';
 import 'package:api_scout/app/services/api_detail/api_detail_source.dart';
 import 'package:api_scout/app/services/local_db/hive/initializer.dart';
@@ -11,7 +11,7 @@ abstract class ApiDetailRepository {
 
   Future<ApiDetail> load({
     required String slug,
-    legacy.Api? seed,
+    ApiItem? seed,
     bool forceRefresh = false,
   });
 
@@ -54,7 +54,7 @@ class CachedApiDetailRepository implements ApiDetailRepository {
   @override
   Future<ApiDetail> load({
     required String slug,
-    legacy.Api? seed,
+    ApiItem? seed,
     bool forceRefresh = false,
   }) {
     return _detailRequests.putIfAbsent(slug, () async {

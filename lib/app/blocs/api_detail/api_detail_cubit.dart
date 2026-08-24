@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:api_scout/app/data/models/api.dart' as legacy;
+import 'package:api_scout/app/data/models/category_apis.dart' show ApiItem;
 import 'package:api_scout/app/data/models/api_detail.dart';
 import 'package:api_scout/app/services/api_detail/api_detail_repository.dart';
 import 'package:equatable/equatable.dart';
@@ -26,12 +26,12 @@ class ApiDetailCubit extends Cubit<ApiDetailState> {
   }
 
   final String slug;
-  final legacy.Api? seed;
+  final ApiItem? seed;
   final ApiDetailRepository _repository;
 
   static ApiDetailState _initialState(
     String slug,
-    legacy.Api? seed,
+    ApiItem? seed,
     ApiDetailRepository repository,
   ) {
     final detail = repository.readCached(slug) ??

@@ -8,10 +8,10 @@ import 'package:api_scout/shared/widgets/app_empty_state.dart';
 import 'package:api_scout/shared/widgets/app_error_state.dart';
 import 'package:api_scout/shared/widgets/app_loading.dart';
 import 'package:api_scout/l10n/app_localizations.dart';
-import 'package:api_scout/app/modules/views/search_apis_screen/widgets/browse_by_category.dart';
+import 'package:api_scout/app/modules/views/discover_view/widgets/browse_by_category.dart';
 
-class SearchApisScreen extends StatelessWidget {
-  const SearchApisScreen({super.key});
+class DiscoverView extends StatelessWidget {
+  const DiscoverView({super.key});
 
   Future<void> _refresh(BuildContext context) {
     return context.read<HomeCategoriesCubit>().retryFetch(l10n: AppLocalizations.of(context)!);

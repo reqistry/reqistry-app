@@ -58,8 +58,6 @@ lib/
 
 ## Known debt (do not replicate; fix opportunistically)
 
-- Twin list models `Api` and `ApiItem` (~90% identical) — candidates to merge.
-- Two search surfaces: `search_screen/` (full-screen) vs `search_apis_screen/` (Explore tab).
-- `data/models/api_detail.dart` is an 800+ line monolith model.
-- Root-level junk: `matching_client_flutter/`, marketing docs, `tmp.md`, logs.
+- `data/models/api_detail.dart` is an 800+ line model file with parsing + serialization helpers — split when next touched.
+- Root-level junk: marketing docs, logs.
 - Test coverage thin relative to 14 cubits; auth recovery and model parsing are covered — keep that bar for new logic branches.

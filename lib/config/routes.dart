@@ -8,7 +8,7 @@ import 'package:api_scout/app/blocs/category_apis/category_apis_cubit.dart';
 import 'package:api_scout/app/blocs/submit_api/submit_api_cubit.dart';
 import 'package:api_scout/app/blocs/app_settings/app_settings_cubit.dart';
 import 'package:api_scout/app/blocs/privacy/privacy_cubit.dart';
-import 'package:api_scout/app/data/models/api.dart';
+import 'package:api_scout/app/data/models/category_apis.dart' show ApiItem;
 import 'package:api_scout/app/data/models/project.dart';
 import 'package:api_scout/app/modules/views/auth/auth_view.dart';
 import 'package:api_scout/app/modules/views/main_shell_view.dart';
@@ -105,8 +105,8 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.apiDetail,
         builder: (context, state) {
-          final api = state.extra is Api ? state.extra as Api : null;
-          final slug = state.pathParameters['slug'] ?? api?.slug ?? '';
+          final api = state.extra is ApiItem ? state.extra as ApiItem : null;
+          final slug = state.pathParameters['slug'] ?? '';
           return BlocProvider(
             create: (_) => ApiDetailCubit(slug: slug, seed: api),
             child: ApiDetailView(

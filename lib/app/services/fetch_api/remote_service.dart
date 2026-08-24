@@ -3,7 +3,6 @@ import 'package:api_scout/config/env.dart';
 import 'package:api_scout/l10n/app_localizations.dart';
 import '../../data/models/categories_response.dart';
 import '../../data/models/category_apis.dart';
-import '../../data/models/api.dart' as api_model;
 import '../../data/models/apis_search_response.dart';
 import '../../data/models/intelligence.dart';
 import '../auth/dio_client.dart';
@@ -157,34 +156,6 @@ class RemoteService {
     }
   }
 
-  static Future<List<api_model.Api>> getRecommendations({
-    int limit = 10,
-    AppLocalizations? l10n,
-  }) async {
-    try {
-      final response = await _authDio.get(
-        '/v1/recommend',
-        queryParameters: {'limit': limit},
-      );
-      final data = response.data;
-      if (data == null) return [];
-      final List<dynamic> apisData = data is List ? data : data['data'] ?? [];
-
-      return apisData
-          .whereType<Map<String, dynamic>>()
-          .map((item) => api_model.Api.fromJson(item))
-          .toList();
-    } on DioException catch (e) {
-      throw _handleDioError(e, 'Recommendations failed', l10n);
-    } on Failure {
-      rethrow;
-    } catch (e) {
-      throw Failure(
-          l10n?.errorParseError ?? 'Parse error',
-          l10n?.errorFailedToProcessData ??
-              'Failed to process recommendations');
-    }
-  }
 
   static Future<List<ApiItem>> getRecommendedApiItems({
     int limit = 20,

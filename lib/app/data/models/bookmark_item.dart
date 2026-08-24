@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:api_scout/app/data/models/category_apis.dart' show ApiItem;
 
 class BookmarkItem extends Equatable {
   final String id;
@@ -123,4 +124,28 @@ class HealthStatus extends Equatable {
 
   @override
   List<Object?> get props => [isAlive, responseTimeMs, statusCode];
+}
+
+extension BookmarkApiX on BookmarkApi {
+  /// Convert a bookmarked API into the unified list model used by cards.
+  ApiItem toApiItem() => ApiItem(
+        id: id,
+        slug: slug,
+        name: name,
+        description: description,
+        auth: authTypeName.isEmpty ? 'None' : authTypeName,
+        https: httpsSupport ? 'true' : 'false',
+        cors: corsStatus.isEmpty ? 'Unknown' : corsStatus,
+        link: link,
+        imageUrl: imageUrl,
+        category: categoryName,
+        apiType: apiTypeName.isEmpty ? 'REST' : apiTypeName,
+        pricing: pricingTypeName.isEmpty ? 'Unknown' : pricingTypeName,
+        rateLimit: 'Unknown',
+        documentation: documentationUrl ?? '',
+        isAlive: currentHealth?.isAlive ?? false,
+        responseTime: currentHealth?.responseTimeMs ?? 0,
+        statusCode: currentHealth?.statusCode,
+        lastChecked: '',
+      );
 }

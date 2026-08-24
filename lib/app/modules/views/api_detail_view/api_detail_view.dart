@@ -3,7 +3,7 @@ import 'package:api_scout/app/blocs/favorites/favorites_cubit.dart';
 import 'package:api_scout/app/blocs/favorites/favorites_state.dart';
 import 'package:api_scout/app/blocs/projects/projects_cubit.dart';
 import 'package:api_scout/app/blocs/projects/projects_state.dart';
-import 'package:api_scout/app/data/models/api.dart' as legacy;
+import 'package:api_scout/app/data/models/category_apis.dart';
 import 'package:api_scout/app/data/models/api_detail.dart';
 import 'package:api_scout/app/data/models/bookmark_item.dart';
 import 'package:api_scout/app/data/models/project.dart';
@@ -521,17 +521,23 @@ class _ApiDetailViewState extends State<ApiDetailView> {
   }
 
   void _openAlternative(ApiAlternative alternative) {
-    final api = legacy.Api(
+    final api = ApiItem(
       id: alternative.id,
       slug: alternative.slug,
       name: alternative.name,
       description: alternative.description,
       auth: alternative.authentication,
-      https: alternative.link.startsWith('https://'),
-      cors: false,
+      https: alternative.link.startsWith('https://') ? 'true' : 'false',
+      cors: 'Unknown',
       link: alternative.link,
-      categoryId: '',
       pricing: alternative.pricing,
+      category: '',
+      apiType: 'REST',
+      rateLimit: 'Unknown',
+      documentation: '',
+      isAlive: false,
+      responseTime: 0,
+      lastChecked: '',
     );
     _track('api_detail_alternative_opened', _detail(context));
     context.push(AppRoutes.apiDetailPath(alternative.slug), extra: api);

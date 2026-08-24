@@ -25,6 +25,7 @@ class CategoryApis {
 
 class ApiItem {
   final String id;
+  final String slug;
   final String name;
   final String description;
   final String auth;
@@ -33,6 +34,7 @@ class ApiItem {
   final String link;
   final String? imageUrl;
   final String category;
+  final String? categoryId;
   final String apiType;
   final String pricing;
   final String rateLimit;
@@ -44,6 +46,7 @@ class ApiItem {
 
   ApiItem({
     this.id = '',
+    this.slug = '',
     required this.name,
     required this.description,
     required this.auth,
@@ -52,6 +55,7 @@ class ApiItem {
     required this.link,
     this.imageUrl,
     required this.category,
+    this.categoryId,
     required this.apiType,
     required this.pricing,
     required this.rateLimit,
@@ -71,6 +75,7 @@ class ApiItem {
 
     return ApiItem(
       id: json["id"]?.toString() ?? json["apiId"]?.toString() ?? "",
+      slug: json["slug"]?.toString() ?? "",
       name: json["name"] ?? "",
       description: json["description"] ?? "",
       auth: json["auth"]?.toString() ??
@@ -85,6 +90,8 @@ class ApiItem {
       category: category is Map
           ? category["name"]?.toString() ?? ""
           : category?.toString() ?? "",
+      categoryId: json["categoryId"]?.toString() ??
+          (category is Map ? category["id"]?.toString() : null),
       apiType: json["apiType"] is String
           ? json["apiType"]
           : apiType is Map
@@ -117,6 +124,8 @@ class ApiItem {
 
   Map<String, dynamic> toJson() => {
         if (id.isNotEmpty) "id": id,
+        if (slug.isNotEmpty) "slug": slug,
+        if (categoryId != null) "categoryId": categoryId,
         "name": name,
         "description": description,
         "auth": auth,

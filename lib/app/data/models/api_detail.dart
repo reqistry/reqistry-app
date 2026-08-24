@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
+import 'category_apis.dart' show ApiItem;
 import 'package:api_scout/l10n/app_localizations.dart';
 
-import 'api.dart' as legacy;
 
 enum ApiAuthType { none, apiKey, oauth2, basic, unknown }
 
@@ -162,6 +162,15 @@ class ApiCapabilities extends Equatable {
     this.openApiAvailable,
   });
 
+
+  static CorsSupport _corsFromJson(String? raw) {
+    if (raw == null || raw.isEmpty) return CorsSupport.unknown;
+    for (final value in CorsSupport.values) {
+      if (value.name == raw) return value;
+    }
+    return parseCorsSupport(raw);
+  }
+
   Map<String, dynamic> toJson() => {
         'https': https,
         'cors': cors.name,
@@ -174,7 +183,7 @@ class ApiCapabilities extends Equatable {
   factory ApiCapabilities.fromJson(Map<String, dynamic> json) =>
       ApiCapabilities(
         https: json['https'] as bool?,
-        cors: parseCorsSupport(json['cors']?.toString()),
+        cors: _corsFromJson(json['cors']?.toString()),
         protocol: parseProtocol(json['protocol']?.toString()),
         responseFormats: List<String>.from(json['responseFormats'] ?? const []),
         sdkLanguages: List<String>.from(json['sdkLanguages'] ?? const []),
@@ -275,9 +284,18 @@ class FieldVerification extends Equatable {
   factory FieldVerification.fromJson(Map<String, dynamic> json) =>
       FieldVerification(
         label: json['label']?.toString() ?? '',
-        source: verificationSourceLabel(json['source']?.toString()),
+        // Older cache entries stored the source key ('automated_check');
+        // newer ones store the display label verbatim. Keep labels as-is.
+        source: _verificationSourceFromJson(json['source']?.toString()),
         verifiedAt: DateTime.tryParse(json['verifiedAt']?.toString() ?? ''),
       );
+
+
+  static String _verificationSourceFromJson(String? raw) {
+    final value = raw ?? '';
+    if (value.contains('_')) return verificationSourceLabel(value);
+    return value;
+  }
 
   @override
   List<Object?> get props => [label, source, verifiedAt];
@@ -454,23 +472,27 @@ class ApiDetail extends Equatable {
     );
   }
 
-  factory ApiDetail.fromApi(legacy.Api api, {String? routeSlug, AppLocalizations? l10n}) {
+  factory ApiDetail.fromApi(ApiItem api, {String? routeSlug, AppLocalizations? l10n}) {
     final slug = routeSlug?.trim().isNotEmpty == true
         ? routeSlug!
         : api.slug.isNotEmpty
             ? api.slug
             : slugifyApiName(api.name);
-    final checkedAt = api.lastCheckedAt;
+    final checkedAt = api.lastCheckedDateTime;
     final status = mapHealthStatus(
-      isAlive: api.alive,
+      isAlive: api.isAlive,
       statusCode: api.statusCode,
-      responseTimeMs: api.responseTimeMs,
+      responseTimeMs: api.responseTime,
       checkedAt: checkedAt,
     );
-    final categorySlug = slugifyApiName(api.categoryId);
+    final categorySlug = slugifyApiName(
+        api.category.isNotEmpty ? api.category : (api.categoryId ?? ''));
+    final categoryName = api.category.isNotEmpty
+        ? api.category
+        : (api.categoryId ?? l10n?.apiDetailUnknownValue ?? 'Unknown');
     final auth = parseAuthType(api.auth);
     final pricing = parsePricingType(api.pricing);
-    final cors = parseCorsSupport(api.corsStatus, supported: api.cors);
+    final cors = parseCorsSupport(api.cors, supported: api.supportsCors);
     final baseUrl = _uri(api.link);
 
     return ApiDetail(
@@ -482,9 +504,7 @@ class ApiDetail extends Equatable {
           : api.description,
       category: ApiCategory(
         id: categorySlug,
-        name: api.categoryId.isEmpty
-            ? (l10n?.apiDetailUnknownValue ?? 'Unknown')
-            : api.categoryId,
+        name: categoryName,
         slug: categorySlug,
       ),
       access: ApiAccess(
@@ -497,10 +517,10 @@ class ApiDetail extends Equatable {
       links: ApiLinks(
         baseUrl: baseUrl,
         homepageUrl: _origin(baseUrl),
-        documentationUrl: _uri(api.documentationUrl),
+        documentationUrl: _uri(api.documentation),
       ),
       capabilities: ApiCapabilities(
-        https: api.https ? true : null,
+        https: api.supportsHttps ? true : null,
         cors: cors,
         protocol: parseProtocol(api.apiType),
         responseFormats: const [],
@@ -508,7 +528,7 @@ class ApiDetail extends Equatable {
       health: ApiHealthSummary(
         status: status,
         statusCode: api.statusCode,
-        responseTimeMs: api.responseTimeMs,
+        responseTimeMs: api.responseTime,
         checkedAt: checkedAt,
         method: l10n?.apiDetailAutomatedBackendCheck ?? 'Automated backend check',
       ),
@@ -537,7 +557,7 @@ class ApiDetail extends Equatable {
         authType: auth,
         pricingType: pricing,
         cors: cors,
-        documentationUrl: _uri(api.documentationUrl),
+        documentationUrl: _uri(api.documentation),
         healthStatus: status,
         l10n: l10n,
       ),

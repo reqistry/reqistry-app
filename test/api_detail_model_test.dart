@@ -1,4 +1,4 @@
-import 'package:api_scout/app/data/models/api.dart' as legacy;
+import 'package:api_scout/app/data/models/category_apis.dart';
 import 'package:api_scout/app/data/models/api_detail.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -6,15 +6,22 @@ void main() {
   group('API detail facts', () {
     test('unknown legacy booleans are not presented as confirmed false', () {
       final detail = ApiDetail.fromApi(
-        legacy.Api(
+        ApiItem(
           id: 'api-1',
           name: 'Example API',
           description: 'Example data',
           auth: '',
-          https: false,
-          cors: false,
+          https: 'Unknown',
+          cors: 'Unknown',
           link: 'https://example.com/v1',
-          categoryId: 'Development',
+          category: 'Development',
+          apiType: 'REST',
+          pricing: 'Unknown',
+          rateLimit: 'Unknown',
+          documentation: '',
+          isAlive: false,
+          responseTime: 0,
+          lastChecked: '',
         ),
       );
 
@@ -67,18 +74,24 @@ void main() {
 
     test('cache JSON preserves nullable and verification fields', () {
       final original = ApiDetail.fromApi(
-        legacy.Api(
+        ApiItem(
           id: 'api-1',
           slug: 'example-api',
           name: 'Example API',
           description: 'Example data',
           auth: 'None',
-          https: true,
-          cors: false,
-          corsStatus: 'Unknown',
+          https: 'true',
+          cors: 'Yes',
           link: 'https://example.com/v1',
-          categoryId: 'Development',
+          category: 'Development',
           pricing: 'Free',
+          apiType: 'REST',
+          rateLimit: 'Unknown',
+          documentation: '',
+          isAlive: true,
+          responseTime: 120,
+          statusCode: 200,
+          lastChecked: DateTime.now().toIso8601String(),
         ),
       );
 

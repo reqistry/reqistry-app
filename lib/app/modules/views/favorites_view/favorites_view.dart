@@ -4,7 +4,7 @@ import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:api_scout/app/blocs/favorites/favorites_cubit.dart';
 import 'package:api_scout/app/blocs/favorites/favorites_state.dart';
-import 'package:api_scout/app/data/models/api.dart';
+import 'package:api_scout/app/data/models/bookmark_item.dart';
 import 'package:api_scout/app/modules/views/apis_view/widgets/api_card.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';

@@ -4,7 +4,6 @@ import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:api_scout/app/data/models/api_detail.dart';
 import 'package:api_scout/app/data/models/category_apis.dart';
-import 'package:api_scout/app/data/models/api.dart' as api_model;
 import 'package:api_scout/config/app_routes.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
@@ -107,8 +106,10 @@ class _ApiPreviewSectionState extends State<ApiPreviewSection> {
                     child: LatestApiCard(
                       api: api,
                       onTap: () => context.push(
-                        AppRoutes.apiDetailPath(slugifyApiName(api.name)),
-                        extra: _toApi(api),
+                        AppRoutes.apiDetailPath(
+                          api.slug.isNotEmpty ? api.slug : slugifyApiName(api.name),
+                        ),
+                        extra: api,
                       ),
                     ),
                   );
@@ -163,26 +164,4 @@ class _ApiPreviewSectionState extends State<ApiPreviewSection> {
     );
   }
 
-  api_model.Api _toApi(ApiItem item) {
-    return api_model.Api(
-      id: item.id,
-      slug: slugifyApiName(item.name),
-      name: item.name,
-      description: item.description,
-      auth: item.auth,
-      https: item.supportsHttps,
-      cors: item.supportsCors,
-      link: item.link,
-      categoryId: item.category,
-      pricing: item.pricing,
-      alive: item.isAlive,
-      documentationUrl: item.documentation,
-      apiType: item.apiType,
-      rateLimit: item.rateLimit,
-      corsStatus: item.cors,
-      responseTimeMs: item.responseTime,
-      statusCode: item.statusCode,
-      lastCheckedAt: item.lastCheckedDateTime,
-    );
-  }
 }

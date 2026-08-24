@@ -8,7 +8,7 @@ import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/shared/widgets/app_empty_state.dart';
-import 'package:api_scout/app/modules/views/search_apis_screen/widgets/discover_category_card.dart';
+import 'package:api_scout/app/modules/views/discover_view/widgets/discover_category_card.dart';
 
 class BrowseByCategory extends StatefulWidget {
   final List<Category> categories;

@@ -15,7 +15,6 @@ import 'package:api_scout/l10n/app_localizations.dart';
 
 import '../../../../data/models/category_apis.dart';
 import '../../../../data/models/api_detail.dart';
-import '../../../../data/models/api.dart' as new_api;
 
 class ApiCard extends StatefulWidget {
   const ApiCard({
@@ -35,32 +34,12 @@ class ApiCard extends StatefulWidget {
 
 class _ApiCardState extends State<ApiCard> {
   void _navigateToDetail() {
-    final newApiModel = new_api.Api(
-      id: widget.api.id,
-      slug: slugifyApiName(widget.api.name),
-      name: widget.api.name,
-      description: widget.api.description,
-      auth: widget.api.auth,
-      https: widget.api.supportsHttps,
-      cors: widget.api.supportsCors,
-      link: widget.api.link,
-      imageUrl: widget.api.imageUrl,
-      categoryId: widget.api.category.isNotEmpty
-          ? widget.api.category
-          : widget.category,
-      pricing: widget.api.pricing,
-      alive: widget.api.isAlive,
-      documentationUrl: widget.api.documentation,
-      apiType: widget.api.apiType,
-      rateLimit: widget.api.rateLimit,
-      corsStatus: widget.api.cors,
-      responseTimeMs: widget.api.responseTime,
-      statusCode: widget.api.statusCode,
-      lastCheckedAt: widget.api.lastCheckedDateTime,
-    );
+    final slug = widget.api.slug.isNotEmpty
+        ? widget.api.slug
+        : slugifyApiName(widget.api.name);
     context.push(
-      AppRoutes.apiDetailPath(newApiModel.slug, source: widget.sourceScreen),
-      extra: newApiModel,
+      AppRoutes.apiDetailPath(slug, source: widget.sourceScreen),
+      extra: widget.api,
     );
   }
 

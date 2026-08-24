@@ -10,7 +10,7 @@ import '../../blocs/user_activity/user_activity_cubit.dart';
 import '../../utils/design_system/app_colors.dart';
 import '../../utils/design_system/app_spacing.dart';
 import 'home_view/home_view.dart';
-import 'search_apis_screen.dart';
+import 'discover_view.dart';
 import 'settings_view/settings_view.dart';
 import 'favorites_view/favorites_view.dart';
 import 'package:api_scout/l10n/app_localizations.dart';
@@ -29,7 +29,7 @@ class _MainShellViewState extends State<MainShellView> {
 
   static const List<Widget> _tabTabs = [
     HomeView(),
-    SearchApisScreen(),
+    DiscoverView(),
     IntelligenceView(),
     FavoritesView(),
     SettingsView(),

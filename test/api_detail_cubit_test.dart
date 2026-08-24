@@ -1,5 +1,5 @@
 import 'package:api_scout/app/blocs/api_detail/api_detail_cubit.dart';
-import 'package:api_scout/app/data/models/api.dart' as legacy;
+import 'package:api_scout/app/data/models/category_apis.dart';
 import 'package:api_scout/app/data/models/api_detail.dart';
 import 'package:api_scout/app/services/api_detail/api_detail_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -8,20 +8,24 @@ void main() {
   test('health refresh preserves the detail while updating only health',
       () async {
     final detail = ApiDetail.fromApi(
-      legacy.Api(
+      ApiItem(
         id: 'api-1',
         slug: 'example-api',
         name: 'Example API',
         description: 'Example data',
         auth: 'None',
-        https: true,
-        cors: true,
+        https: 'true',
+        cors: 'Yes',
         link: 'https://example.com/v1',
-        categoryId: 'Development',
-        alive: true,
+        category: 'Development',
+        apiType: 'REST',
+        pricing: 'Unknown',
+        rateLimit: 'Unknown',
+        documentation: '',
+        isAlive: true,
         statusCode: 200,
-        responseTimeMs: 120,
-        lastCheckedAt: DateTime.now(),
+        responseTime: 120,
+        lastChecked: DateTime.now().toIso8601String(),
       ),
     );
     final refreshed = ApiHealthSummary(
@@ -59,7 +63,7 @@ class _FakeRepository implements ApiDetailRepository {
   @override
   Future<ApiDetail> load({
     required String slug,
-    legacy.Api? seed,
+    ApiItem? seed,
     bool forceRefresh = false,
   }) async =>
       detail;
