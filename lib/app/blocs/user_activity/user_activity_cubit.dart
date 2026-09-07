@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:api_scout/app/blocs/auth/auth_cubit.dart';
 import 'package:api_scout/app/blocs/favorites/favorites_cubit.dart';
+import 'package:api_scout/app/services/fetch_api/remote_service.dart';
 import 'user_activity_state.dart';
 
 class UserActivityCubit extends Cubit<UserActivityState> {
@@ -36,12 +37,28 @@ class UserActivityCubit extends Cubit<UserActivityState> {
       } else {
         emit(state.copyWith(isLoading: false));
       }
+      // Server rollup supplements local counts with health the device
+      // may have missed offline. Best-effort: never fail the section.
+      try {
+        final stack = await RemoteService.getStackSummary();
+        if (stack != null && !isClosed) {
+          emit(state.copyWith(
+            downCount: stack.downCount,
+            averageTrustScore: stack.averageTrustScore,
+          ));
+        }
+      } catch (_) {}
     } catch (e) {
       emit(state.copyWith(isLoading: false));
     }
   }
 
   void refresh() => loadStats();
+
+  /// Drops all user data on sign-out/account switch. Never fetches.
+  void clear() {
+    if (!isClosed) emit(const UserActivityState());
+  }
 
   @override
   Future<void> close() {

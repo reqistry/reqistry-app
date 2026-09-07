@@ -34,7 +34,8 @@ class SearchResultsList extends StatelessWidget {
               Text(
                   AppLocalizations.of(context)!
                       .resultsCount(state.totalResults),
-                  style: AppTextStyles.bodyMd.copyWith(color: c.onSurface)),
+                  style: AppTextStyles.withTabular(
+                      AppTextStyles.bodyMd.copyWith(color: c.onSurface))),
               const Spacer(),
               PopupMenuButton<String>(
                 icon: Row(
@@ -128,6 +129,7 @@ class SearchResultsList extends StatelessWidget {
                     ? state.category.first
                     : AppLocalizations.of(context)!.apiDetailSearchFallback;
                 return ApiCard(
+                  key: ValueKey(api.id.isNotEmpty ? api.id : api.link),
                   api: api,
                   category: category,
                   sourceScreen: 'search',

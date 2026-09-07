@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:api_scout/app/services/connectivity/connectivity_service.dart';
 import 'package:api_scout/app/utils/snackbar_helper.dart';
@@ -10,14 +9,33 @@ import 'package:flutter/foundation.dart';
 import 'package:requests_inspector/requests_inspector.dart';
 import 'auth_token_service.dart';
 
+class RefreshSingleFlight {
+  Future<String?>? _inFlight;
+
+  Future<String?> run(Future<String?> Function() refresh) {
+    final current = _inFlight;
+    if (current != null) return current;
+    final future = _run(refresh);
+    _inFlight = future;
+    return future;
+  }
+
+  Future<String?> _run(Future<String?> Function() refresh) async {
+    try {
+      return await refresh();
+    } finally {
+      _inFlight = null;
+    }
+  }
+}
+
 class DioClient {
   static final DioClient _instance = DioClient._();
   factory DioClient() => _instance;
 
   late final Dio dio;
   late final Dio unauthDio;
-  bool _isRefreshing = false;
-  final List<Completer<String?>> _pendingRequests = [];
+  final RefreshSingleFlight _refresh = RefreshSingleFlight();
 
   DioClient._() {
     unauthDio = Dio(BaseOptions(
@@ -33,11 +51,11 @@ class DioClient {
     ));
 
     unauthDio.interceptors.add(BusyInterceptor());
-    unauthDio.interceptors.add(ConnectivityInterceptor(unauthDio));
+    unauthDio.interceptors.add(ConnectivityInterceptor());
     unauthDio.interceptors.add(RequestErrorNotifierInterceptor());
     dio.interceptors.add(BusyInterceptor());
     dio.interceptors.add(AuthInterceptor(this));
-    dio.interceptors.add(ConnectivityInterceptor(dio));
+    dio.interceptors.add(ConnectivityInterceptor());
     dio.interceptors.add(RequestErrorNotifierInterceptor());
 
     if (kDebugMode) {
@@ -54,18 +72,12 @@ class DioClient {
     }
   }
 
-  Future<String?> refreshAccessToken() async {
+  Future<String?> refreshAccessToken() => _refresh.run(_performRefresh);
+
+  Future<String?> _performRefresh() async {
     final tokenService = AuthTokenService();
     final refresh = tokenService.refreshToken;
     if (refresh == null) return null;
-
-    if (_isRefreshing) {
-      final completer = Completer<String?>();
-      _pendingRequests.add(completer);
-      return completer.future;
-    }
-
-    _isRefreshing = true;
 
     try {
       final response = await unauthDio.post(
@@ -87,12 +99,6 @@ class DioClient {
       );
 
       setAccessToken(newAccessToken);
-
-      for (final c in _pendingRequests) {
-        if (!c.isCompleted) c.complete(newAccessToken);
-      }
-      _pendingRequests.clear();
-
       return newAccessToken;
     } on DioException catch (e) {
       // Only discard the session when the server explicitly rejected the
@@ -103,13 +109,7 @@ class DioClient {
         await tokenService.clearTokens();
         setAccessToken(null);
       }
-      for (final c in _pendingRequests) {
-        if (!c.isCompleted) c.complete(null);
-      }
-      _pendingRequests.clear();
       return null;
-    } finally {
-      _isRefreshing = false;
     }
   }
 }
@@ -146,10 +146,6 @@ class BusyInterceptor extends Interceptor {
 }
 
 class ConnectivityInterceptor extends Interceptor {
-  final Dio _dio;
-
-  ConnectivityInterceptor(this._dio);
-
   bool _shouldHandle(RequestOptions options) {
     return options.extra['skipOfflineHandling'] != true;
   }
@@ -161,7 +157,11 @@ class ConnectivityInterceptor extends Interceptor {
       handler.reject(
         DioException.connectionError(
           requestOptions: options,
-          reason: rootNavigatorKey.currentContext != null ? (AppLocalizations.of(rootNavigatorKey.currentContext!)?.snackbarNoInternetMessage ?? 'No internet connection') : 'No internet connection',
+          reason: rootNavigatorKey.currentContext != null
+              ? (AppLocalizations.of(rootNavigatorKey.currentContext!)
+                      ?.snackbarNoInternetMessage ??
+                  'No internet connection')
+              : 'No internet connection',
         ),
       );
       return;
@@ -178,7 +178,6 @@ class ConnectivityInterceptor extends Interceptor {
         err.type == DioExceptionType.receiveTimeout;
 
     if (_shouldHandle(err.requestOptions) && isConnectivityError) {
-      service.registerFailedRequest(err.requestOptions, _dio);
       service.notifyOffline();
     }
     handler.next(err);
@@ -208,7 +207,9 @@ class RequestErrorNotifierInterceptor extends Interceptor {
         final l10n = context != null ? AppLocalizations.of(context) : null;
         final message = _friendlyMessage(err, l10n);
         if (message != null) {
-          AppSnackBarHelper.error(title: l10n?.snackbarRequestFailedTitle ?? 'REQUEST FAILED', message: message);
+          AppSnackBarHelper.error(
+              title: l10n?.snackbarRequestFailedTitle ?? 'REQUEST FAILED',
+              message: message);
         }
       }
     }
@@ -228,18 +229,23 @@ class RequestErrorNotifierInterceptor extends Interceptor {
       case DioExceptionType.cancel:
         return null;
       case DioExceptionType.badCertificate:
-        return l10n?.errorBadCertificate ?? 'The connection could not be verified securely.';
+        return l10n?.errorBadCertificate ??
+            'The connection could not be verified securely.';
       case DioExceptionType.badResponse:
         final status = err.response?.statusCode ?? 0;
         if (status == 429) {
-          return l10n?.errorTooManyRequests ?? 'Too many requests. Please wait a moment and try again.';
+          return l10n?.errorTooManyRequests ??
+              'Too many requests. Please wait a moment and try again.';
         }
         if (status >= 500) {
-          return l10n?.errorServerError ?? 'The server is having trouble. Please try again later.';
+          return l10n?.errorServerError ??
+              'The server is having trouble. Please try again later.';
         }
-        return l10n?.errorSomethingWentWrong ?? 'Something went wrong. Please try again.';
+        return l10n?.errorSomethingWentWrong ??
+            'Something went wrong. Please try again.';
       default:
-        return l10n?.errorSomethingWentWrong ?? 'Something went wrong. Please try again.';
+        return l10n?.errorSomethingWentWrong ??
+            'Something went wrong. Please try again.';
     }
   }
 }

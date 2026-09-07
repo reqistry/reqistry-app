@@ -934,6 +934,93 @@
   "pickerNoSavedApis": "Aún no hay APIs guardadas. Busca APIs para comparar.",
   "@pickerNoSavedApis": { "description": "Picker empty state when nothing saved" },
 
+  "changeTypeTrustScore": "PUNTUACIÓN DE CONFIANZA",
+  "@changeTypeTrustScore": { "description": "Change feed event type label" },
+
+  "changeTypePricing": "PRECIOS",
+  "@changeTypePricing": { "description": "Change feed event type label" },
+
+  "changeTypeHealth": "SALUD",
+  "@changeTypeHealth": { "description": "Change feed event type label" },
+
+  "changeTypeUpdate": "ACTUALIZACIÓN",
+  "@changeTypeUpdate": { "description": "Change feed event type label" },
+
+  "compareOpenApi": "Especificación OpenAPI",
+  "@compareOpenApi": { "description": "Compare table row label" },
+
+  "onboardingSearchFabTitle": "BUSCA CUALQUIER COSA",
+  "@onboardingSearchFabTitle": { "description": "Onboarding step title" },
+
+  "onboardingSearchFabDesc": "Toca el botón de búsqueda para encontrar APIs en todo el registro.",
+  "@onboardingSearchFabDesc": { "description": "Onboarding step description" },
+
+  "onboardingNavBarTitle": "NAVEGACIÓN",
+  "@onboardingNavBarTitle": { "description": "Onboarding step title" },
+
+  "onboardingNavBarDesc": "Cambia entre Inicio, Explorar, Inteligencia, Guardadas y Tú.",
+  "@onboardingNavBarDesc": { "description": "Onboarding step description" },
+
+  "onboardingSubmitApiTitle": "¿CONOCES UNA API?",
+  "@onboardingSubmitApiTitle": { "description": "Onboarding step title" },
+
+  "onboardingSubmitApiDesc": "Envía las APIs que falten y ayuda a crecer el registro.",
+  "@onboardingSubmitApiDesc": { "description": "Onboarding step description" },
+
+  "onboardingCompareTitle": "COMPARAR APIS",
+  "@onboardingCompareTitle": { "description": "Onboarding step title" },
+
+  "onboardingCompareDesc": "Elige hasta 4 APIs y compara confianza, precios y salud lado a lado.",
+  "@onboardingCompareDesc": { "description": "Onboarding step description" },
+
+  "onboardingStatsTitle": "TU ACTIVIDAD",
+  "@onboardingStatsTitle": { "description": "Onboarding step title" },
+
+  "onboardingStatsDesc": "Controla tus APIs guardadas y proyectos de un vistazo.",
+  "@onboardingStatsDesc": { "description": "Onboarding step description" },
+
+  "onboardingProjectsTitle": "TUS PROYECTOS",
+  "@onboardingProjectsTitle": { "description": "Onboarding step title" },
+
+  "onboardingProjectsDesc": "Agrupa APIs en proyectos para compararlos y compartirlos con tu equipo.",
+  "@onboardingProjectsDesc": { "description": "Onboarding step description" },
+
+  "onboardingApiMetaTitle": "RESUMEN DE LA API",
+  "@onboardingApiMetaTitle": { "description": "Onboarding step title" },
+
+  "onboardingApiMetaDesc": "Todo sobre esta API: descripción, categoría, precios, autenticación y salud en vivo.",
+  "@onboardingApiMetaDesc": { "description": "Onboarding step description" },
+
+  "onboardingSaveProjectTitle": "GUARDAR EN PROYECTO",
+  "@onboardingSaveProjectTitle": { "description": "Onboarding step title" },
+
+  "onboardingSaveProjectDesc": "Añade esta API a uno de tus proyectos o crea uno nuevo.",
+  "@onboardingSaveProjectDesc": { "description": "Onboarding step description" },
+
+  "onboardingBookmarkTitle": "GUÁRDALA",
+  "@onboardingBookmarkTitle": { "description": "Onboarding step title" },
+
+  "onboardingBookmarkDesc": "Guarda la API en tus marcadores para acceder rápido cuando quieras.",
+  "@onboardingBookmarkDesc": { "description": "Onboarding step description" },
+
+  "settingsReplayIntro": "Repetir introducción",
+  "@settingsReplayIntro": { "description": "Replay onboarding tour entry" },
+
+  "actionSkip": "SALTAR",
+  "@actionSkip": { "description": "Skip onboarding button" },
+
+  "actionPrevious": "ANTERIOR",
+  "@actionPrevious": { "description": "Previous onboarding step button" },
+
+  "actionNext": "SIGUIENTE",
+  "@actionNext": { "description": "Next onboarding step button" },
+
+  "nudgeSubmitApiTitle": "¿CONOCES UNA API QUE FALTE?",
+  "@nudgeSubmitApiTitle": { "description": "Submit-API encouragement nudge" },
+
+  "nudgeSubmitApiMessage": "Has explorado 5 APIs. Ayuda a crecer el registro enviando una que te encante.",
+  "@nudgeSubmitApiMessage": { "description": "Submit-API encouragement nudge" },
+
   "compareTrustScoreValue": "{score} · Grado {grade}",
   "@compareTrustScoreValue": {
     "description": "Trust score with grade in compare table header",
@@ -1590,5 +1677,325 @@
   "@errorCheckInternetConnection": { "description": "Check internet connection message" },
 
   "settingsLanguage": "Idioma",
-  "@settingsLanguage": { "description": "Language setting label" }
+  "@settingsLanguage": { "description": "Language setting label" },
+
+  "intelligenceCollections": "COLECCIONES CURADAS",
+  "@intelligenceCollections": { "description": "Intelligence collections section" },
+
+  "intelligenceCollectionsSubtitle": "Puntos de partida por tarea. Elige un caso y compara la selección.",
+  "@intelligenceCollectionsSubtitle": { "description": "Intelligence collections subtitle" },
+  "intelligenceHeroTitle": "DECIDE CON EVIDENCIA.",
+  "@intelligenceHeroTitle": { "description": "Intelligence hero title" },
+  "intelligenceHeroSubtitle": "Compara APIs lado a lado, con evidencia de confianza en vivo.",
+  "@intelligenceHeroSubtitle": { "description": "Intelligence hero subtitle" },
+  "intelligenceRecent": "RECIENTES",
+  "@intelligenceRecent": { "description": "Recent comparisons label" },
+
+  "collectionApisCount": "{count} APIs",
+  "@collectionApisCount": { "description": "API count in a collection" },
+
+  "compareTrust": "Confianza",
+  "@compareTrust": { "description": "Compare table trust row label" },
+  "compareTopPick": "ELECCIÓN",
+  "@compareTopPick": { "description": "Compare verdict title" },
+  "compareBest": "MEJOR",
+  "@compareBest": { "description": "Best value badge" },
+  "compareVerdictFastest": "Respuesta más rápida: {name} en {ms} ms",
+  "@compareVerdictFastest": { "description": "Verdict fastest bullet" },
+  "compareVerdictUptime": "Mejor disponibilidad: {name} con {uptime}",
+  "@compareVerdictUptime": { "description": "Verdict uptime bullet" },
+  "compareVerdictAlsoFastest": "También la opción más rápida",
+  "@compareVerdictAlsoFastest": { "description": "Verdict fastest tie bullet" },
+  "compareShareHeader": "Comparativa de APIs vía Reqistry",
+  "@compareShareHeader": { "description": "Shared comparison header" },
+
+  "trustEvidenceTitle": "EVIDENCIA DE CONFIANZA",
+  "@trustEvidenceTitle": { "description": "Trust evidence sheet title" },
+
+  "trustEvidenceVerifiedOn": "Verificado el {date}",
+  "@trustEvidenceVerifiedOn": { "description": "Trust score verification date" },
+
+  "trustEvidenceLiveScore": "Nota en vivo, recién calculada",
+  "@trustEvidenceLiveScore": { "description": "Live trust score note" },
+
+  "statsAvgTrust": "CONFIANZA MEDIA",
+  "@statsAvgTrust": { "description": "Average trust stat label" },
+
+  "statsDownNow": "CAÍDAS",
+  "@statsDownNow": { "description": "Down APIs stat label" },
+
+  "sectionTrendingCategories": "TENDENCIA",
+  "@sectionTrendingCategories": { "description": "Trending categories section" },
+
+  "contactFormTitle": "ENVÍA UN MENSAJE",
+  "@contactFormTitle": { "description": "Contact form title" },
+
+  "contactFormSubtitle": "Preguntas, comentarios o datos rotos. El equipo lo lee todo.",
+  "@contactFormSubtitle": { "description": "Contact form subtitle" },
+
+  "formSubject": "ASUNTO (OPCIONAL)",
+  "@formSubject": { "description": "Contact subject field label" },
+
+  "formMessage": "MENSAJE",
+  "@formMessage": { "description": "Contact message field label" },
+
+  "formInvalidEmail": "Introduce un correo válido",
+  "@formInvalidEmail": { "description": "Invalid email error" },
+
+  "snackbarContactSentTitle": "Mensaje enviado",
+  "@snackbarContactSentTitle": { "description": "Contact sent title" },
+  "snackbarContactSentMessage": "Tu mensaje ha sido enviado.",
+  "@snackbarContactSentMessage": { "description": "Contact sent fallback message" },
+
+  "snackbarContactFailedMessage": "No se pudo enviar. Inténtalo de nuevo.",
+  "@snackbarContactFailedMessage": { "description": "Contact failed message" },
+
+  "notifFeedTitle": "Notificaciones",
+  "@notifFeedTitle": { "description": "Notification feed title" },
+
+  "notifFeedClearTooltip": "Borrar todo",
+  "@notifFeedClearTooltip": { "description": "Clear notifications tooltip" },
+
+  "notifFeedEmptyTitle": "Sin notificaciones todavía",
+  "@notifFeedEmptyTitle": { "description": "Empty notifications title" },
+
+  "notifFeedEmptyMessage": "Aquí aparecerán alertas de salud, precios y confianza de tus APIs guardadas.",
+  "@notifFeedEmptyMessage": { "description": "Empty notifications message" },
+
+  "notifFeedClearTitle": "¿Borrar todas las notificaciones?",
+  "@notifFeedClearTitle": { "description": "Clear notifications confirm title" },
+
+  "notifFeedClearMessage": "Esto elimina tu historial local de notificaciones. No se puede deshacer.",
+  "@notifFeedClearMessage": { "description": "Clear notifications confirm message" },
+
+  "submissionsTitle": "Mis envíos",
+  "@submissionsTitle": { "description": "Submission history title" },
+
+  "submissionsEmptyTitle": "Sin envíos todavía",
+  "@submissionsEmptyTitle": { "description": "Empty submissions title" },
+
+  "submissionsEmptyMessage": "Las APIs que envíes para revisión aparecerán aquí con su estado.",
+  "@submissionsEmptyMessage": { "description": "Empty submissions message" },
+
+  "submissionsOpenApi": "Abrir API",
+  "@submissionsOpenApi": { "description": "Open approved API action" },
+
+  "submissionsSubmittedOn": "Enviado el {date}",
+  "@submissionsSubmittedOn": {
+    "description": "Submission date label",
+    "placeholders": { "date": { "type": "String" } }
+  },
+
+  "submissionsReviewedOn": "Revisado el {date}",
+  "@submissionsReviewedOn": {
+    "description": "Review date label",
+    "placeholders": { "date": { "type": "String" } }
+  },
+
+  "submissionsRejectionReason": "Motivo: {reason}",
+  "@submissionsRejectionReason": {
+    "description": "Rejection reason label",
+    "placeholders": { "reason": { "type": "String" } }
+  },
+
+  "submissionStatusPending": "Pendiente",
+  "@submissionStatusPending": { "description": "Pending status" },
+
+  "submissionStatusApproved": "Aprobado",
+  "@submissionStatusApproved": { "description": "Approved status" },
+
+  "submissionStatusRejected": "Rechazado",
+  "@submissionStatusRejected": { "description": "Rejected status" },
+
+  "submissionStatusDuplicate": "Duplicado",
+  "@submissionStatusDuplicate": { "description": "Duplicate status" },
+
+  "submissionStatusSpam": "Spam",
+  "@submissionStatusSpam": { "description": "Spam status" },
+
+  "settingsMySubmissions": "Mis envíos",
+  "@settingsMySubmissions": { "description": "My submissions settings entry" },
+
+  "actionUndo": "Deshacer",
+  "@actionUndo": { "description": "Undo action button" },
+
+  "actionDone": "Listo",
+  "@actionDone": { "description": "Done action button" },
+
+  "paywallTitle": "REQISTRY PRO",
+  "@paywallTitle": { "description": "Paywall title" },
+
+  "paywallHeadline": "Construye más rápido con APIs fiables",
+  "@paywallHeadline": { "description": "Paywall headline" },
+
+  "paywallSubtitle": "Un solo plan. Precio de fundador, para siempre. Cancela cuando quieras.",
+  "@paywallSubtitle": { "description": "Paywall subtitle" },
+
+  "paywallBenefitPriceLock": "Precio de fundador de por vida",
+  "@paywallBenefitPriceLock": { "description": "Pro benefit" },
+
+  "paywallBenefitBadge": "Insignia de fundador en tu perfil",
+  "@paywallBenefitBadge": { "description": "Pro benefit" },
+
+  "paywallBenefitSupport": "Soporte prioritario",
+  "@paywallBenefitSupport": { "description": "Pro benefit" },
+
+  "paywallBenefitEarlyAccess": "Acceso anticipado a verificaciones, monitor y claves de agente",
+  "@paywallBenefitEarlyAccess": { "description": "Pro benefit" },
+
+  "paywallChoosePlan": "ELIGE PLAN",
+  "@paywallChoosePlan": { "description": "Plan selector label" },
+
+  "paywallMonthlyTitle": "Mensual",
+  "@paywallMonthlyTitle": { "description": "Monthly plan title" },
+
+  "paywallYearlyTitle": "Anual",
+  "@paywallYearlyTitle": { "description": "Yearly plan title" },
+
+  "paywallTrialIncluded": "Prueba gratis de 7 días incluida",
+  "@paywallTrialIncluded": { "description": "Trial note" },
+
+  "paywallYearlyBadge": "AHORRA 33%",
+  "@paywallYearlyBadge": { "description": "Yearly savings badge" },
+
+  "paywallCtaTrial": "Empezar prueba gratis",
+  "@paywallCtaTrial": { "description": "Trial CTA" },
+
+  "paywallAccountRequiredTitle": "Cuenta de correo requerida",
+  "@paywallAccountRequiredTitle": { "description": "Purchase gate title" },
+
+  "paywallAccountRequiredBody": "Vincula un correo a tu cuenta antes de comprar para conservar Pro en todos tus dispositivos.",
+  "@paywallAccountRequiredBody": { "description": "Purchase gate body" },
+
+  "paywallAccountRequiredAction": "Vincular correo",
+  "@paywallAccountRequiredAction": { "description": "Purchase gate action" },
+
+  "paywallRestore": "Restaurar compras",
+  "@paywallRestore": { "description": "Restore action" },
+
+  "paywallRestoreEmpty": "No se encontraron compras.",
+  "@paywallRestoreEmpty": { "description": "Restore empty message" },
+
+  "paywallLoading": "Cargando planes",
+  "@paywallLoading": { "description": "Plans loading message" },
+
+  "paywallLoadError": "No se pudieron cargar los planes. Revisa la conexión e inténtalo de nuevo.",
+  "@paywallLoadError": { "description": "Plans load error" },
+
+  "paywallUnavailable": "Compras no disponibles en este dispositivo.",
+  "@paywallUnavailable": { "description": "Store unavailable message" },
+
+  "paywallPurchasing": "Confirma en la tienda",
+  "@paywallPurchasing": { "description": "Purchasing state" },
+
+  "paywallSuccessTitle": "Bienvenido a Pro",
+  "@paywallSuccessTitle": { "description": "Purchase success title" },
+
+  "paywallSuccessBody": "Tu suscripción está activa. Precio de fundador asegurado.",
+  "@paywallSuccessBody": { "description": "Purchase success message" },
+
+  "paywallTerms": "Cancela cuando quieras en ajustes de la tienda. La prueba se convierte en pago salvo cancelación 24h antes del fin.",
+  "@paywallTerms": { "description": "Subscription terms" },
+
+  "settingsGoPro": "Hazte Pro",
+  "@settingsGoPro": { "description": "Upgrade entry" },
+
+  "settingsGoProSubtitle": "Precio fundador, insignia y acceso anticipado",
+  "@settingsGoProSubtitle": { "description": "Upgrade entry subtitle" },
+
+  "settingsProActive": "Pro activo",
+  "@settingsProActive": { "description": "Active subscription label" },
+
+  "badgePro": "PRO",
+  "@badgePro": { "description": "Pro badge" },
+
+  "proTeaserTitle": "Verificación Pro",
+  "@proTeaserTitle": { "description": "Pro teaser title" },
+
+  "proTeaserBody": "Informes de evidencia, digests de monitor y claves de agente llegan aquí primero.",
+  "@proTeaserBody": { "description": "Pro teaser body" },
+
+  "pickerProCompareUp": "Pro compara hasta 8",
+  "@pickerProCompareUp": { "description": "Compare upsell" },
+
+  "watchTitle": "Seguimientos",
+  "@watchTitle": { "description": "Watchlists title" },
+
+  "watchEmptyTitle": "Sin seguimientos",
+  "@watchEmptyTitle": { "description": "Empty watchlists title" },
+
+  "watchEmptyMessage": "Vigila una palabra para recibir alertas de novedades, precios o confianza.",
+  "@watchEmptyMessage": { "description": "Empty watchlists message" },
+
+  "watchAction": "Vigilar esta búsqueda",
+  "@watchAction": { "description": "Create keyword watch action" },
+
+  "watchAdded": "Seguimiento añadido",
+  "@watchAdded": { "description": "Watch added message" },
+
+  "watchLimitReached": "Límite de seguimientos",
+  "@watchLimitReached": { "description": "Watchlist limit message" },
+
+  "agentKeysTitle": "Claves de agente",
+  "@agentKeysTitle": { "description": "Agent keys title" },
+
+  "agentKeysEmpty": "Sin claves. Crea una para que tus agentes consulten Reqistry.",
+  "@agentKeysEmpty": { "description": "Empty agent keys message" },
+
+  "agentKeyCreate": "Crear clave",
+  "@agentKeyCreate": { "description": "Create key action" },
+
+  "agentKeyNameHint": "Nombre de clave (opcional)",
+  "@agentKeyNameHint": { "description": "Key name hint" },
+
+  "agentKeyOnceWarning": "Copia ahora — la clave completa solo se muestra una vez.",
+  "@agentKeyOnceWarning": { "description": "Key once warning" },
+
+  "agentKeyCopied": "Clave copiada",
+  "@agentKeyCopied": { "description": "Key copied message" },
+
+  "agentKeyUsageToday": "{used} llamadas hoy",
+  "@agentKeyUsageToday": {
+    "description": "Key usage label",
+    "placeholders": { "used": { "type": "int" } }
+  },
+
+  "agentKeyRevokeTitle": "¿Revocar esta clave?",
+  "@agentKeyRevokeTitle": { "description": "Revoke confirm title" },
+
+  "agentKeyRevokeMessage": "Los agentes que la usen dejarán de funcionar.",
+  "@agentKeyRevokeMessage": { "description": "Revoke confirm message" },
+
+  "shipReportTitle": "Informe de lanzamiento",
+  "@shipReportTitle": { "description": "Ship report title" },
+
+  "shipVerdictShip": "Seguro para lanzar",
+  "@shipVerdictShip": { "description": "Ship verdict" },
+
+  "shipVerdictCaution": "Lanza con precaución",
+  "@shipVerdictCaution": { "description": "Caution verdict" },
+
+  "shipVerdictAvoid": "No lanzar",
+  "@shipVerdictAvoid": { "description": "Avoid verdict" },
+
+  "monitorTitle": "Monitorizar proyecto",
+  "@monitorTitle": { "description": "Monitor toggle title" },
+
+  "monitorSubtitle": "Digest diario de salud de este proyecto",
+  "@monitorSubtitle": { "description": "Monitor toggle subtitle" },
+
+  "stackHistoryTitle": "Historial del stack",
+  "@stackHistoryTitle": { "description": "Stack history title" },
+
+  "stackHistoryEmpty": "Las snapshots aparecen tras el primer digest diario.",
+  "@stackHistoryEmpty": { "description": "Empty stack history" },
+
+  "stackHistoryDown": "CAÍDAS",
+  "@stackHistoryDown": { "description": "Down count ticker" },
+
+  "stackHistoryTrust": "CONFIANZA",
+  "@stackHistoryTrust": { "description": "Trust ticker" },
+
+  "notifFeedRemovedMessage": "Notificación eliminada.",
+  "@notifFeedRemovedMessage": { "description": "Notification deleted message" }
 }

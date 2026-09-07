@@ -102,7 +102,7 @@ class AuthCubit extends Cubit<AuthState> {
     required bool alreadyRetried,
   }) {
     return !alreadyRetried &&
-        statusCode != null &&
+        (statusCode == 401 || statusCode == 409) &&
         (hasDeviceFingerprint || hasRefreshToken);
   }
 

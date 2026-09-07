@@ -9,13 +9,18 @@ import 'package:api_scout/app/data/models/bookmark_item.dart';
 import 'package:api_scout/app/data/models/project.dart';
 import 'package:api_scout/app/modules/views/api_detail_view/widgets/api_detail_actions.dart';
 import 'package:api_scout/app/modules/views/api_detail_view/widgets/api_detail_sections.dart';
+import 'package:api_scout/app/modules/views/api_detail_view/widgets/api_detail_showcase.dart';
+import 'package:api_scout/app/modules/views/api_detail_view/widgets/api_trust_section.dart';
+import 'package:api_scout/app/modules/views/api_detail_view/widgets/pro_teaser_row.dart';
 import 'package:api_scout/app/modules/views/api_detail_view/widgets/core_state_scaffold.dart';
 import 'package:api_scout/app/modules/views/api_detail_view/widgets/detail_menu_item.dart';
 import 'package:api_scout/app/modules/views/api_detail_view/widgets/sheet_label.dart';
 import 'package:api_scout/app/modules/views/api_detail_view/widgets/project_selection_tile.dart';
 import 'package:api_scout/app/modules/views/api_detail_view/widgets/report_issue_sheet.dart';
 import 'package:api_scout/app/modules/views/home_view/widgets/create_project_bottom_sheet.dart';
+import 'package:api_scout/app/modules/views/main_shell_view/widgets/root_showcase.dart';
 import 'package:api_scout/app/services/analytics/api_detail_analytics.dart';
+import 'package:api_scout/app/services/local_db/hive/locals_box.dart';
 import 'package:api_scout/app/services/share/share_plus/share_plus.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
@@ -33,6 +38,27 @@ import 'package:url_launcher/url_launcher.dart';
 
 enum _OverflowAction { addToProject, share, homepage, report }
 
+/// Shows a one-time submit-API nudge after the user opens
+/// [_nudgeVisitThreshold] API detail screens.
+class _SubmitNudge {
+  _SubmitNudge._();
+
+  static const _visitCountKey = 'apiDetailVisitCount';
+  static const _shownKey = 'submitApiNudgeShown';
+  static const visitThreshold = 5;
+
+  /// Returns true when the threshold is reached on this visit.
+  static Future<bool> recordVisitAndCheckThreshold() async {
+    final locals = LocalsDB.instance;
+    if (locals.getWithKey(_shownKey) == true) return false;
+    final visits = ((locals.getWithKey(_visitCountKey) as int?) ?? 0) + 1;
+    await locals.putWithKey(_visitCountKey, visits);
+    if (visits < visitThreshold) return false;
+    await locals.putWithKey(_shownKey, true);
+    return true;
+  }
+}
+
 class ApiDetailView extends StatefulWidget {
   const ApiDetailView({
     super.key,
@@ -49,6 +75,7 @@ class ApiDetailView extends StatefulWidget {
 
 class _ApiDetailViewState extends State<ApiDetailView> {
   bool _trackedView = false;
+  bool _showcaseTriggered = false;
 
   @override
   Widget build(BuildContext context) {
@@ -80,6 +107,7 @@ class _ApiDetailViewState extends State<ApiDetailView> {
             );
           }
           _trackView(detail);
+          _maybeShowcase();
           return _buildReady(context, detail);
         },
       ),
@@ -123,9 +151,10 @@ class _ApiDetailViewState extends State<ApiDetailView> {
                         .read<FavoritesCubit>()
                         .isFavorited(detail.links.baseUrl?.toString() ?? '');
                     return IconButton(
-                      constraints:
-                          const BoxConstraints.tightFor(width: 48, height: 48),
-                      onPressed: () => _toggleBookmark(detail, isBookmarked),
+                      constraints: const BoxConstraints.tightFor(
+                          width: 48, height: 48),
+                      onPressed: () =>
+                          _toggleBookmark(detail, isBookmarked),
                       tooltip: isBookmarked
                           ? l10n.apiDetailRemoveBookmark
                           : l10n.apiDetailBookmarkApi,
@@ -187,8 +216,15 @@ class _ApiDetailViewState extends State<ApiDetailView> {
                       previous.detail?.shortDescription !=
                           current.detail?.shortDescription ||
                       previous.detail?.imageUrl != current.detail?.imageUrl,
-                  builder: (context, state) =>
-                      ApiIdentityHeader(detail: state.detail ?? initialDetail),
+                  builder: (context, state) => RootShowcase.scope(
+                    context: context,
+                    showcaseKey: ApiDetailShowcase.identityHeaderKey,
+                    title: AppLocalizations.of(context)!.onboardingApiMetaTitle,
+                    description:
+                        AppLocalizations.of(context)!.onboardingApiMetaDesc,
+                    child: ApiIdentityHeader(
+                        detail: state.detail ?? initialDetail),
+                  ),
                 ),
                 const Divider(height: 1),
                 BlocBuilder<ApiDetailCubit, ApiDetailState>(
@@ -213,12 +249,41 @@ class _ApiDetailViewState extends State<ApiDetailView> {
                   builder: (context, state) =>
                       ApiQuickFacts(detail: state.detail ?? initialDetail),
                 ),
-                const Divider(height: 1),
-                if (initialDetail.links.baseUrl != null)
-                  ApiEndpointSection(
-                    baseUrl: initialDetail.links.baseUrl!,
-                    onCopy: () => _copyBaseUrl(_detail(context)),
+                BlocBuilder<ApiDetailCubit, ApiDetailState>(
+                  buildWhen: (previous, current) =>
+                      previous.detail?.trustScore !=
+                      current.detail?.trustScore,
+                  builder: (context, state) => ApiTrustSection(
+                    trustScore:
+                        (state.detail ?? initialDetail).trustScore,
                   ),
+                ),
+                const SizedBox(height: AppSpacing.s8),
+                BlocBuilder<ApiDetailCubit, ApiDetailState>(
+                  buildWhen: (previous, current) =>
+                      previous.detail?.id != current.detail?.id,
+                  builder: (context, state) {
+                    final detail = state.detail ?? initialDetail;
+                    return ProTeaserRow(
+                      apiId: detail.id,
+                      slug: detail.slug,
+                    );
+                  },
+                ),
+                const SizedBox(height: AppSpacing.s8),
+                BlocBuilder<ApiDetailCubit, ApiDetailState>(
+                  buildWhen: (previous, current) =>
+                      previous.detail?.links != current.detail?.links,
+                  builder: (context, state) {
+                    final baseUrl =
+                        (state.detail ?? initialDetail).links.baseUrl;
+                    if (baseUrl == null) return const SizedBox.shrink();
+                    return ApiEndpointSection(
+                      baseUrl: baseUrl,
+                      onCopy: () => _copyBaseUrl(_detail(context)),
+                    );
+                  },
+                ),
                 const Divider(height: 1),
                 BlocBuilder<ApiDetailCubit, ApiDetailState>(
                   buildWhen: (previous, current) =>
@@ -236,10 +301,23 @@ class _ApiDetailViewState extends State<ApiDetailView> {
                     ),
                   ),
                 ),
+                const SizedBox(height: AppSpacing.s8),
+                BlocBuilder<ApiDetailCubit, ApiDetailState>(
+                  buildWhen: (previous, current) =>
+                      previous.detail?.warnings != current.detail?.warnings,
+                  builder: (context, state) => ApiRequirementsSection(
+                    warnings: (state.detail ?? initialDetail).warnings,
+                  ),
+                ),
                 const Divider(height: 1),
-                ApiRequirementsSection(warnings: initialDetail.warnings),
-                const Divider(height: 1),
-                ApiVerificationSection(items: initialDetail.verification),
+                BlocBuilder<ApiDetailCubit, ApiDetailState>(
+                  buildWhen: (previous, current) =>
+                      previous.detail?.verification !=
+                      current.detail?.verification,
+                  builder: (context, state) => ApiVerificationSection(
+                    items: (state.detail ?? initialDetail).verification,
+                  ),
+                ),
                 const Divider(height: 1),
                 BlocBuilder<ApiDetailCubit, ApiDetailState>(
                   buildWhen: (previous, current) =>
@@ -301,6 +379,31 @@ class _ApiDetailViewState extends State<ApiDetailView> {
     _trackedView = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) _track('api_detail_view', detail);
+      if (mounted) _maybeShowSubmitNudge();
+    });
+  }
+
+  Future<void> _maybeShowSubmitNudge() async {
+    final reached = await _SubmitNudge.recordVisitAndCheckThreshold();
+    if (!reached || !mounted) return;
+    final l10n = AppLocalizations.of(context)!;
+    AppSnackbarManager.showSnackbar(
+      context: context,
+      title: l10n.nudgeSubmitApiTitle,
+      message: l10n.nudgeSubmitApiMessage,
+      type: AppSnackbarType.info,
+      duration: const Duration(seconds: 6),
+      actionLabel: l10n.actionSubmit,
+      onAction: () => context.push(AppRoutes.submitApi),
+    );
+  }
+
+  void _maybeShowcase() {
+    if (_showcaseTriggered) return;
+    _showcaseTriggered = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      ApiDetailShowcase.maybeStart(context);
     });
   }
 

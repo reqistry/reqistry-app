@@ -48,6 +48,18 @@ class AppTextStyles {
     letterSpacing: 0,
   );
 
+  static TextStyle bodySm = _body.copyWith(
+    fontSize: 13,
+    fontWeight: FontWeight.w400,
+    height: 1.46,
+    letterSpacing: 0,
+  );
+
+  /// Tabular figures for counts, latency, uptime. Prevents layout jitter.
+  static TextStyle withTabular(TextStyle style) => style.copyWith(
+        fontFeatures: const [FontFeature.tabularFigures()],
+      );
+
   // ── Labels ────────────────────────────────────────────────────
   static TextStyle labelSm = _body.copyWith(
     fontSize: 12,
@@ -77,6 +89,7 @@ class AppTextStyles {
         headlineSmall: headlineSm,
         bodyLarge: bodyLg,
         bodyMedium: bodyMd,
+        bodySmall: bodySm,
         labelSmall: labelSm,
       );
 }

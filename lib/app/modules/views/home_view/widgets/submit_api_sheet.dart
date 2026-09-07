@@ -28,6 +28,7 @@ class _SubmitApiSheetState extends State<SubmitApiSheet> {
   }
 
   Future<void> _submit() async {
+    if (_isLoading) return;
     if (!_formKey.currentState!.validate()) return;
 
     final name = _nameController.text.trim();

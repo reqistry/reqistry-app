@@ -20,32 +20,70 @@ class StatsGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: StatBox(
-            label: AppLocalizations.of(context)!.settingsSavedStat,
-            value: state.totalBookmarks.toString(),
-            onTap: onSavedTap,
-          ),
-        ),
-        const SizedBox(width: AppSpacing.s8),
-        Expanded(
-          child: StatBox(
-            label: AppLocalizations.of(context)!.settingsProjectsStat,
-            value: state.totalProjects.toString(),
-            onTap: onProjectsTap,
-          ),
-        ),
-        const SizedBox(width: AppSpacing.s8),
-        Expanded(
-          child: StatBox(
-            label: AppLocalizations.of(context)!.settingsProjectApisStat,
-            value: state.totalProjectItems.toString(),
-            onTap: onProjectApisTap,
-          ),
-        ),
-      ],
+    final l10n = AppLocalizations.of(context)!;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final threeColumn = constraints.maxWidth >= 360;
+        if (threeColumn) {
+          return Row(
+            children: [
+              Expanded(
+                child: StatBox(
+                  label: l10n.settingsSavedStat,
+                  value: state.totalBookmarks.toString(),
+                  onTap: onSavedTap,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.s8),
+              Expanded(
+                child: StatBox(
+                  label: l10n.settingsProjectsStat,
+                  value: state.totalProjects.toString(),
+                  onTap: onProjectsTap,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.s8),
+              Expanded(
+                child: StatBox(
+                  label: l10n.settingsProjectApisStat,
+                  value: state.totalProjectItems.toString(),
+                  onTap: onProjectApisTap,
+                ),
+              ),
+            ],
+          );
+        }
+        return Wrap(
+          spacing: AppSpacing.s8,
+          runSpacing: AppSpacing.s8,
+          children: [
+            SizedBox(
+              width: (constraints.maxWidth - AppSpacing.s8) / 2,
+              child: StatBox(
+                label: l10n.settingsSavedStat,
+                value: state.totalBookmarks.toString(),
+                onTap: onSavedTap,
+              ),
+            ),
+            SizedBox(
+              width: (constraints.maxWidth - AppSpacing.s8) / 2,
+              child: StatBox(
+                label: l10n.settingsProjectsStat,
+                value: state.totalProjects.toString(),
+                onTap: onProjectsTap,
+              ),
+            ),
+            SizedBox(
+              width: (constraints.maxWidth - AppSpacing.s8) / 2,
+              child: StatBox(
+                label: l10n.settingsProjectApisStat,
+                value: state.totalProjectItems.toString(),
+                onTap: onProjectApisTap,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

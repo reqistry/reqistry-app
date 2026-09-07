@@ -10,7 +10,7 @@ part of 'env.dart';
 // ignore_for_file: type=lint
 // generated_from: .env.dev
 final class _Env {
-  static const String apiUrl = 'https://api.reqistry.gwhyyy.com';
+  static const String apiUrl = 'https://api.reqistry.dev';
 
   static const String appName = 'Reqistry';
 
@@ -25,11 +25,11 @@ final class _Env {
   static const String contactEmail = 'work@gwhyyy.com';
 
   static const String privacyPolicyUrl =
-      'https://api.reqistry.gwhyyy.com/static/privacy.md';
+      'https://api.reqistry.dev/static/privacy.md';
 
   static const String metadataUserAgent =
       'Mozilla/5.0 (compatible; Reqistry/1.0; +https://gwhyyy.com)';
 
   static const String privacyMdUrl =
-      'https://api.reqistry.gwhyyy.com/static/privacy.md';
+      'https://api.reqistry.dev/static/privacy.md';
 }

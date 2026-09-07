@@ -7,12 +7,19 @@ class UserActivityState extends Equatable {
   final int daysSinceCreation;
   final bool isLoading;
 
+  /// Server-side rollup from `GET /v1/stack`. Null/absent while offline
+  /// or before the first successful fetch; UI hides the stack row then.
+  final int downCount;
+  final int? averageTrustScore;
+
   const UserActivityState({
     this.totalBookmarks = 0,
     this.totalProjects = 0,
     this.totalProjectItems = 0,
     this.daysSinceCreation = 0,
     this.isLoading = false,
+    this.downCount = 0,
+    this.averageTrustScore,
   });
 
   UserActivityState copyWith({
@@ -21,6 +28,8 @@ class UserActivityState extends Equatable {
     int? totalProjectItems,
     int? daysSinceCreation,
     bool? isLoading,
+    int? downCount,
+    int? averageTrustScore,
   }) {
     return UserActivityState(
       totalBookmarks: totalBookmarks ?? this.totalBookmarks,
@@ -28,6 +37,8 @@ class UserActivityState extends Equatable {
       totalProjectItems: totalProjectItems ?? this.totalProjectItems,
       daysSinceCreation: daysSinceCreation ?? this.daysSinceCreation,
       isLoading: isLoading ?? this.isLoading,
+      downCount: downCount ?? this.downCount,
+      averageTrustScore: averageTrustScore ?? this.averageTrustScore,
     );
   }
 
@@ -38,5 +49,7 @@ class UserActivityState extends Equatable {
         totalProjectItems,
         daysSinceCreation,
         isLoading,
+        downCount,
+        averageTrustScore,
       ];
 }

@@ -15,24 +15,30 @@ class ReportIssueSheet extends StatefulWidget {
 
 class _ReportIssueSheetState extends State<ReportIssueSheet> {
   final _noteController = TextEditingController();
-  late String _selected;
+  String _selectedCode = 'API_UNAVAILABLE';
   bool _submitting = false;
-  late List<String> _reasons;
+  String? _error;
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final l10n = AppLocalizations.of(context)!;
-    _reasons = [
-      l10n.reportApiUnavailable,
-      l10n.reportLinkBroken,
-      l10n.reportPricingIncorrect,
-      l10n.reportAuthenticationIncorrect,
-      l10n.reportDescriptionIncorrect,
-      l10n.reportApiDiscontinued,
-      l10n.reportOther,
-    ];
-    _selected = _reasons.first;
+  static const _codes = [
+    'API_UNAVAILABLE',
+    'LINK_BROKEN',
+    'PRICING_INCORRECT',
+    'AUTHENTICATION_INCORRECT',
+    'DESCRIPTION_INCORRECT',
+    'DISCONTINUED',
+    'OTHER',
+  ];
+
+  String _labelFor(String code, AppLocalizations l10n) {
+    return switch (code) {
+      'API_UNAVAILABLE' => l10n.reportApiUnavailable,
+      'LINK_BROKEN' => l10n.reportLinkBroken,
+      'PRICING_INCORRECT' => l10n.reportPricingIncorrect,
+      'AUTHENTICATION_INCORRECT' => l10n.reportAuthenticationIncorrect,
+      'DESCRIPTION_INCORRECT' => l10n.reportDescriptionIncorrect,
+      'DISCONTINUED' => l10n.reportApiDiscontinued,
+      _ => l10n.reportOther,
+    };
   }
 
   @override
@@ -43,12 +49,23 @@ class _ReportIssueSheetState extends State<ReportIssueSheet> {
 
   Future<void> _submit() async {
     if (_submitting) return;
-    setState(() => _submitting = true);
+    setState(() {
+      _submitting = true;
+      _error = null;
+    });
     final note = _noteController.text.trim();
     final saved =
-        await widget.onSubmit(_selected, note.isEmpty ? '' : note);
+        await widget.onSubmit(_selectedCode, note.isEmpty ? '' : note);
     if (!mounted) return;
-    Navigator.of(context).pop(saved);
+    if (saved) {
+      Navigator.of(context).pop(true);
+      return;
+    }
+    final l10n = AppLocalizations.of(context)!;
+    setState(() {
+      _submitting = false;
+      _error = l10n.snackbarRequestFailedMessage;
+    });
   }
 
   @override
@@ -70,15 +87,15 @@ class _ReportIssueSheetState extends State<ReportIssueSheet> {
             const SizedBox(height: AppSpacing.s8),
             NoticeBanner(l10n.formReportNoticeBanner),
             RadioGroup<String>(
-              groupValue: _selected,
-              onChanged: (value) => setState(() => _selected = value!),
+              groupValue: _selectedCode,
+              onChanged: (value) => setState(() => _selectedCode = value!),
               child: Column(
                 children: [
-                  for (final reason in _reasons)
+                  for (final code in _codes)
                     RadioListTile<String>(
                       contentPadding: EdgeInsets.zero,
-                      title: Text(reason),
-                      value: reason,
+                      title: Text(_labelFor(code, l10n)),
+                      value: code,
                     ),
                 ],
               ),
@@ -87,10 +104,20 @@ class _ReportIssueSheetState extends State<ReportIssueSheet> {
               controller: _noteController,
               minLines: 2,
               maxLines: 4,
+              maxLength: 2000,
               decoration: InputDecoration(
                 labelText: l10n.formOptionalNote,
               ),
             ),
+            if (_error != null) ...[
+              const SizedBox(height: AppSpacing.s8),
+              Text(
+                _error!,
+                style: AppTextStyles.bodyMd.copyWith(
+                  color: Theme.of(context).colorScheme.error,
+                ),
+              ),
+            ],
             const SizedBox(height: AppSpacing.s12),
             SizedBox(
               width: double.infinity,

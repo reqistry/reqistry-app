@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:api_scout/app/data/models/apis_search_response.dart';
 import 'package:api_scout/app/data/models/category_apis.dart';
+import 'package:api_scout/app/services/fetch_api/failure.dart';
 import 'package:api_scout/app/services/fetch_api/remote_service.dart';
 import 'package:api_scout/app/services/local_db/hive/locals_box.dart';
 import 'package:api_scout/app/utils/snackbar_helper.dart';
@@ -12,10 +14,19 @@ import 'package:api_scout/l10n/app_localizations.dart';
 part 'search_event.dart';
 part 'search_state.dart';
 
+typedef SearchPageLoader = Future<SearchResponse> Function(
+  Map<String, dynamic> params,
+  AppLocalizations? l10n,
+);
+
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
   final int limit = 20;
+  final SearchPageLoader _search;
+  int _requestId = 0;
 
-  SearchBloc() : super(const SearchState()) {
+  SearchBloc({SearchPageLoader? search})
+      : _search = search ?? _loadSearchPage,
+        super(const SearchState()) {
     on<SearchFilterToggled>(_onFilterToggled);
     on<SearchFiltersReset>(_onFiltersReset);
     on<SearchQuickFilterApplied>(_onQuickFilterApplied);
@@ -25,6 +36,28 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     on<SearchTokenSaved>(_onSaveToken);
     on<SearchQueryChanged>(_onQueryChanged);
     on<SearchSortChanged>(_onSortChanged);
+  }
+
+  static Future<SearchResponse> _loadSearchPage(
+    Map<String, dynamic> params,
+    AppLocalizations? l10n,
+  ) {
+    return RemoteService.searchApis(
+      q: params['q'] as String?,
+      pricing: params['pricing'] as List<String>?,
+      auth: params['auth'] as List<String>?,
+      apiType: params['apiType'] as List<String>?,
+      category: params['category'] as List<String>?,
+      cors: params['cors'] as String?,
+      https: params['https'] as bool?,
+      alive: params['alive'] as bool?,
+      maxResponseTime: params['maxResponseTime'] as int?,
+      sortBy: params['sortBy'] as String? ?? 'name',
+      sortOrder: params['sortOrder'] as String? ?? 'asc',
+      page: params['page'] as int? ?? 1,
+      limit: params['limit'] as int? ?? 20,
+      l10n: l10n,
+    );
   }
 
   bool get canSearch {
@@ -192,41 +225,59 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     if (!canSearch) return;
 
     final reset = event.reset;
+    final requestId = ++_requestId;
+    final targetPage = event.page ?? (reset ? 1 : state.currentPage);
 
     if (reset) {
-      emit(state.copyWith(currentPage: 1, searchResults: []));
+      emit(state.copyWith(
+        currentPage: 1,
+        searchResults: [],
+        hasSearched: true,
+        errorMessage: '',
+      ));
+    } else {
+      emit(state.copyWith(hasSearched: true, errorMessage: ''));
     }
 
-    emit(state.copyWith(isSearching: true, errorMessage: ''));
+    emit(state.copyWith(
+        isSearching: targetPage == 1, isLoadingMore: targetPage > 1));
 
     try {
-      final requestParams = _buildRequestParams(state);
+      final base = _buildRequestParams(state);
+      final requestParams = {...base, 'page': targetPage};
       String debugOutput = '';
       if (kDebugMode) {
         debugOutput = const JsonEncoder.withIndent('  ').convert(requestParams);
       }
 
-      final response = await RemoteService.searchApis(
-        q: requestParams['q'] as String?,
-        pricing: requestParams['pricing'] as List<String>?,
-        auth: requestParams['auth'] as List<String>?,
-        apiType: requestParams['apiType'] as List<String>?,
-        category: requestParams['category'] as List<String>?,
-        cors: requestParams['cors'] as String?,
-        https: requestParams['https'] as bool?,
-        alive: requestParams['alive'] as bool?,
-        maxResponseTime: requestParams['maxResponseTime'] as int?,
-        sortBy: requestParams['sortBy'] as String? ?? 'name',
-        sortOrder: requestParams['sortOrder'] as String? ?? 'asc',
-        page: requestParams['page'] as int? ?? state.currentPage,
-        limit: requestParams['limit'] as int? ?? limit,
-        l10n: event.l10n,
-      );
+      var effectivePage = targetPage;
+      var response = await _search(requestParams, event.l10n);
+      if (requestId != _requestId || emit.isDone) return;
 
       if (response.success) {
-        final apis = response.data;
+        // apiType/maxResponseTime are client-side: the backend strips
+        // unknown query keys, so narrow the server page locally. Unknown
+        // latency (0) never satisfies a max-response-time filter.
+        var apis = applyClientFilters(
+          response.data,
+          state.apiType.map((e) => e.toLowerCase()).toSet(),
+          state.maxResponseTime,
+        );
+        while (apis.isEmpty && response.pagination.hasMore) {
+          effectivePage++;
+          response = await _search(
+            {...requestParams, 'page': effectivePage},
+            event.l10n,
+          );
+          if (requestId != _requestId || emit.isDone) return;
+          apis = applyClientFilters(
+            response.data,
+            state.apiType.map((e) => e.toLowerCase()).toSet(),
+            state.maxResponseTime,
+          );
+        }
         final List<ApiItem> updatedResults;
-        if (reset) {
+        if (reset || targetPage == 1) {
           updatedResults = apis;
         } else {
           updatedResults = [...state.searchResults, ...apis];
@@ -240,8 +291,13 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
         emit(state.copyWith(
           isSearching: false,
+          isLoadingMore: false,
+          currentPage: effectivePage,
           searchResults: sortedResults,
-          totalResults: response.pagination.total,
+          totalResults:
+              state.apiType.isNotEmpty || state.maxResponseTime != null
+                  ? sortedResults.length
+                  : response.pagination.total,
           totalPages: response.pagination.totalPages,
           hasMore: response.pagination.hasMore,
           lastRequestDebug: debugOutput,
@@ -250,14 +306,19 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         throw Exception(response.message ?? 'Search failed');
       }
     } catch (e) {
+      if (requestId != _requestId || emit.isDone) return;
+      final message = e is Failure
+          ? e.content
+          : (event.l10n?.stateSomethingWentWrong ?? 'Something went wrong');
       emit(state.copyWith(
         isSearching: false,
-        errorMessage: e.toString(),
+        isLoadingMore: false,
+        errorMessage: message,
       ));
       if (event.l10n != null) {
         AppSnackBarHelper.show(
           title: event.l10n!.snackbarSearchErrorTitle,
-          message: e.toString(),
+          message: message,
           isError: true,
         );
       }
@@ -267,17 +328,11 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   Future<void> _onLoadMore(
       SearchLoadMore event, Emitter<SearchState> emit) async {
     final s = state;
-    if (s.isLoadingMore || !s.hasMore) return;
-
-    emit(state.copyWith(isLoadingMore: true, currentPage: s.currentPage + 1));
-
-    try {
-      await _onSearch(SearchPerformed(reset: false, l10n: event.l10n), emit);
-    } catch (e) {
-      emit(state.copyWith(currentPage: s.currentPage));
-    } finally {
-      emit(state.copyWith(isLoadingMore: false));
-    }
+    if (s.isSearching || s.isLoadingMore || !s.hasMore) return;
+    await _onSearch(
+      SearchPerformed(reset: false, l10n: event.l10n, page: s.currentPage + 1),
+      emit,
+    );
   }
 
   Future<void> _onLoadCategories(
@@ -300,7 +355,9 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     try {
       await LocalsDB.instance.putWithKey('searchToken', event.token);
       emit(state.copyWith(searchToken: event.token));
-      AppSnackBarHelper.show(title: event.l10n.snackbarSavedTitle, message: event.l10n.snackbarSearchTokenSaved);
+      AppSnackBarHelper.show(
+          title: event.l10n.snackbarSavedTitle,
+          message: event.l10n.snackbarSearchTokenSaved);
     } catch (e) {
       AppSnackBarHelper.show(
         title: event.l10n.snackbarSaveErrorTitle,
@@ -308,6 +365,27 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         isError: true,
       );
     }
+  }
+
+  /// Client-side narrowing for filters the search backend does not
+  /// support (`apiType`, `maxResponseTime`). Pure for testing.
+  @visibleForTesting
+  static List<ApiItem> applyClientFilters(
+    List<ApiItem> apis,
+    Set<String> wantedTypesLower,
+    int? maxMs,
+  ) {
+    return apis.where((api) {
+      if (wantedTypesLower.isNotEmpty &&
+          !wantedTypesLower.contains(api.apiType.toLowerCase())) {
+        return false;
+      }
+      if (maxMs != null &&
+          (api.responseTime <= 0 || api.responseTime > maxMs)) {
+        return false;
+      }
+      return true;
+    }).toList();
   }
 
   List<ApiItem> _applyLocalSort(

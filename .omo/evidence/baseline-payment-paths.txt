@@ -1,0 +1,236 @@
+=== BASELINE 2026-09-07T18:55:26Z — payment-path state before wave 1 ===
+
+--- FLUTTER reqistry-app (branch main @ 2455601) ---
+ M lib/app/blocs/app_settings/app_settings_cubit.dart
+ M lib/app/blocs/auth/auth_cubit.dart
+ M lib/app/blocs/category_apis/category_apis_cubit.dart
+ M lib/app/blocs/favorites/favorites_cubit.dart
+ M lib/app/blocs/favorites/favorites_state.dart
+ M lib/app/blocs/home_categories/home_categories_cubit.dart
+ M lib/app/blocs/main_shell/main_shell_cubit.dart
+ M lib/app/blocs/notification/notification_cubit.dart
+ M lib/app/blocs/privacy/privacy_cubit.dart
+ M lib/app/blocs/projects/projects_cubit.dart
+ M lib/app/blocs/search/search_bloc.dart
+ M lib/app/blocs/search/search_event.dart
+ M lib/app/blocs/search/search_state.dart
+ M lib/app/blocs/submit_api/submit_api_cubit.dart
+ M lib/app/blocs/user_activity/user_activity_cubit.dart
+ M lib/app/blocs/user_activity/user_activity_state.dart
+ M lib/app/data/models/api_detail.dart
+ M lib/app/data/models/intelligence.dart
+ M lib/app/modules/views/api_detail_view/api_detail_view.dart
+ M lib/app/modules/views/api_detail_view/widgets/api_detail_actions.dart
+ M lib/app/modules/views/api_detail_view/widgets/api_health_section.dart
+ M lib/app/modules/views/api_detail_view/widgets/report_issue_sheet.dart
+ M lib/app/modules/views/apis_view/widgets/api_card.dart
+ M lib/app/modules/views/app_settings_view/app_settings_view.dart
+ M lib/app/modules/views/app_settings_view/widgets/app_toggle.dart
+ M lib/app/modules/views/category_apis_view/category_apis_view.dart
+ M lib/app/modules/views/contact_view/contact_view.dart
+ M lib/app/modules/views/discover_view.dart
+ M lib/app/modules/views/discover_view/widgets/browse_by_category.dart
+ M lib/app/modules/views/discover_view/widgets/discover_category_card.dart
+ M lib/app/modules/views/favorites_view/favorites_view.dart
+ M lib/app/modules/views/home_view/home_view.dart
+ M lib/app/modules/views/home_view/widgets/all_projects_view.dart
+ M lib/app/modules/views/home_view/widgets/continue_work_section.dart
+ M lib/app/modules/views/home_view/widgets/create_project_bottom_sheet.dart
+ M lib/app/modules/views/home_view/widgets/project_card.dart
+ M lib/app/modules/views/home_view/widgets/submit_api_sheet.dart
+ M lib/app/modules/views/home_view/widgets/user_activity_section.dart
+ M lib/app/modules/views/intelligence_view/intelligence_view.dart
+ M lib/app/modules/views/intelligence_view/widgets/api_picker_sheet.dart
+ D lib/app/modules/views/intelligence_view/widgets/change_feed_section.dart
+ M lib/app/modules/views/intelligence_view/widgets/compare_result_view.dart
+ M lib/app/modules/views/main_shell_view.dart
+ M lib/app/modules/views/main_shell_view/widgets/nav_item.dart
+ M lib/app/modules/views/notifications_view/notifications_view.dart
+ M lib/app/modules/views/project_apis_view/project_apis_view.dart
+ M lib/app/modules/views/search_screen/widgets/search_body.dart
+ M lib/app/modules/views/search_screen/widgets/search_header.dart
+ M lib/app/modules/views/search_screen/widgets/search_results_list.dart
+ M lib/app/modules/views/settings_view/settings_view.dart
+ M lib/app/modules/views/settings_view/widgets/entry_tile.dart
+ M lib/app/modules/views/settings_view/widgets/meta_chip.dart
+ M lib/app/modules/views/settings_view/widgets/profile_panel.dart
+ M lib/app/modules/views/settings_view/widgets/stats_grid.dart
+ M lib/app/modules/views/submit_api_view/submit_api_view.dart
+ M lib/app/services/api_detail/api_detail_repository.dart
+ M lib/app/services/api_detail/api_detail_source.dart
+ M lib/app/services/auth/dio_client.dart
+ M lib/app/services/connectivity/connectivity_service.dart
+ M lib/app/services/fetch_api/remote_service.dart
+ M lib/app/services/in_app_review/in_app_review.dart
+ D lib/app/services/in_app_review/in_app_review_show_interface.dart
+ M lib/app/services/local_db/hive/locals_box.dart
+ M lib/app/services/notification/fcm_service.dart
+ M lib/app/services/notification/local_notification_service.dart
+ M lib/app/utils/design_system/app_colors.dart
+ M lib/app/utils/design_system/app_text_styles.dart
+ M lib/app/utils/themes.dart
+ M lib/config/app_routes.dart
+ M lib/config/env.g.dart
+ M lib/config/routes.dart
+ M lib/l10n/app_en.arb
+ M lib/l10n/app_es.arb
+ M lib/l10n/app_localizations.dart
+ M lib/l10n/app_localizations_en.dart
+ M lib/l10n/app_localizations_es.dart
+ M lib/main.dart
+ M lib/shared/widgets/api/api_badge_row.dart
+ M lib/shared/widgets/api/api_chip.dart
+ M lib/shared/widgets/api/status_dot.dart
+ M lib/shared/widgets/ui/section_header_link.dart
+ M lib/shared/widgets/ui/stat_widgets.dart
+ M openapi.mobile.json
+ M pubspec.lock
+ M pubspec.yaml
+ M test/auth_identity_recovery_test.dart
+ M test/intelligence_models_test.dart
+?? .omo/
+?? lib/app/blocs/paywall/
+?? lib/app/data/models/pro.dart
+?? lib/app/data/models/submission.dart
+?? lib/app/modules/views/api_detail_view/widgets/api_detail_showcase.dart
+?? lib/app/modules/views/api_detail_view/widgets/api_trust_section.dart
+?? lib/app/modules/views/api_detail_view/widgets/pro_teaser_row.dart
+?? lib/app/modules/views/api_detail_view/widgets/ship_check_sheet.dart
+?? lib/app/modules/views/app_settings_view/widgets/notification_settings_group.dart
+?? lib/app/modules/views/change_feed_view/
+?? lib/app/modules/views/home_view/widgets/registry_changes_section.dart
+?? lib/app/modules/views/home_view/widgets/stack_history_sheet.dart
+?? lib/app/modules/views/home_view/widgets/trending_category_card.dart
+?? lib/app/modules/views/home_view/widgets/trendy_categories_section.dart
+?? lib/app/modules/views/intelligence_view/widgets/change_feed_tile.dart
+?? lib/app/modules/views/intelligence_view/widgets/collections_section.dart
+?? lib/app/modules/views/main_shell_view/widgets/root_showcase.dart
+?? lib/app/modules/views/paywall_view/
+?? lib/app/modules/views/project_apis_view/widgets/monitor_toggle.dart
+?? lib/app/modules/views/settings_view/widgets/agent_keys_section.dart
+?? lib/app/modules/views/submissions_view/
+?? lib/app/modules/views/watchlists_view/
+?? lib/app/services/billing/
+?? lib/shared/widgets/api/trust_evidence.dart
+?? test/compare_verdict_test.dart
+?? test/discover_category_card_test.dart
+?? test/free_flow_regression_test.dart
+?? test/in_app_review_policy_test.dart
+?? test/notification_actions_test.dart
+?? test/paywall_cubit_test.dart
+?? test/pro_models_test.dart
+?? test/search_state_test.dart
+?? test/submission_model_test.dart
+?? test/trending_category_card_test.dart
+?? test/trust_factor_test.dart
+
+FLUTTER payment-path file hashes:
+73acac2a1299503f731e9bc911469f5732aaf8d4c49538d987305db82197648d  lib/app/services/billing/billing_service.dart
+e48bce0c174ca54fc7f8447aa5241fe0b8c3345e6ca849bd56d7ac809c0bc8dd  lib/app/blocs/paywall/paywall_cubit.dart
+031c60d37612dd1b828033cdc18415410cf92e348f663a47ecd9fbc439f906d7  lib/app/data/models/pro.dart
+877d7eeaa90ab74a1a2e780cda188a2f771e864cdd9e901183bf2434e19982d7  lib/app/services/fetch_api/failure.dart
+653158f176bd107b67e3d12e7c2b9c93dbddc781af017f7ceedc0f130094b60f  lib/app/services/fetch_api/remote_service.dart
+22b5b7bf30536a0ff30af733fd90861ab63dceeb2340e7a2593c51609689c666  lib/app/services/auth/dio_client.dart
+f9fa5a9b8ed56929c2ea571912304b6eae3717ecf5769868fe95936cbb8c9797  openapi.mobile.json
+107e604b33fa2d3b9f8a8d6a542890254285b3f03cf8e9a6ec04cc229a231581  test/paywall_cubit_test.dart
+8d162ad4ad72dad7905d003b13cf390e3b27f25ddda50b33d470ecfc6e8e363e  test/pro_models_test.dart
+e7c59b0aff901fb5d989c0b4715fe5b4f1c1a5bef72058d1a26312bc15f487ef  pubspec.yaml
+
+FLUTTER tracked-payment-path diffstat:
+ lib/app/services/auth/dio_client.dart          |   82 +-
+ lib/app/services/fetch_api/remote_service.dart |  505 ++-
+ lib/config/env.g.dart                          |    6 +-
+ openapi.mobile.json                            | 5019 ++++++++++++++++--------
+ pubspec.yaml                                   |    6 +-
+ 5 files changed, 3981 insertions(+), 1637 deletions(-)
+
+--- BACKEND reqistry-web-api-mcp-admin (branch main @ 36527c36) ---
+ M .env.example
+ M apps/admin/src/components/code-block.tsx
+ M apps/admin/src/components/landing-page.tsx
+ M apps/admin/src/components/site-footer.tsx
+ M apps/admin/src/components/site-nav.tsx
+ M apps/api/package.json
+ M apps/api/src/index.ts
+ M apps/api/src/routes/v1/apis.ts
+ M apps/api/src/routes/v1/growth.ts
+ M apps/docs/src/app/layout.tsx
+ M apps/docs/src/components/code-block.tsx
+ M apps/docs/src/components/docs-shell.tsx
+ M apps/mcp/src/api-client.ts
+ M apps/mcp/src/index.ts
+ M apps/worker/src/index.ts
+ M apps/worker/src/notifications.ts
+ M docker-compose.yml
+ M openapi.mobile.json
+ M package.json
+ M packages/config/src/index.ts
+ M packages/database/package.json
+ M packages/database/prisma/schema.prisma
+ M pnpm-lock.yaml
+?? apps/admin/src/lib/urls.ts
+?? apps/api/src/lib/billing-config.test.ts
+?? apps/api/src/lib/billing-service.test.ts
+?? apps/api/src/lib/billing-service.ts
+?? apps/api/src/lib/play-billing.test.ts
+?? apps/api/src/lib/play-billing.ts
+?? apps/api/src/lib/prisma-billing-store.ts
+?? apps/api/src/lib/rtdn-linked-token.test.ts
+?? apps/api/src/lib/rtdn-ownership.ts
+?? apps/api/src/lib/rtdn.test.ts
+?? apps/api/src/lib/rtdn.ts
+?? apps/api/src/lib/tiers.test.ts
+?? apps/api/src/lib/tiers.ts
+?? apps/api/src/routes/v1/agent-keys.ts
+?? apps/api/src/routes/v1/billing.test.ts
+?? apps/api/src/routes/v1/billing.ts
+?? apps/api/src/routes/v1/ship-check.test.ts
+?? apps/api/src/routes/v1/ship-check.ts
+?? apps/api/src/routes/v1/watchlists.ts
+?? apps/mcp/src/api-client.test.ts
+?? apps/mcp/src/index.test.ts
+?? apps/mcp/src/metadata.ts
+?? apps/worker/src/pro-digest.test.ts
+?? apps/worker/src/pro-digest.ts
+?? apps/worker/src/watchlist-match.ts
+?? apps/worker/src/worker-reliability.test.ts
+?? apps/worker/src/worker-reliability.ts
+?? packages/database/prisma/migrations/20260907000000_pro_subscriptions/
+
+BACKEND payment-path file hashes:
+6a102b92df68bd2cf610c22fdb1454716975013041d2f8f3b89efedf3daf9eb9  apps/api/src/routes/v1/billing.ts
+73399c28a2616a6ea3f8c0583979fa983c05f3aa0ae478bbbc689b052772afc4  apps/api/src/routes/v1/billing.test.ts
+4f241e5fb21e09a96fea7030867e30a6e1ed605ee58f0da4bffd8f39c5198eed  apps/api/src/lib/billing-service.ts
+8aa2658a6836d52f1439cc95020821117829ffe43776c4c9df2f853e7967a0c9  apps/api/src/lib/play-billing.ts
+dc0622f1ad83f3b9bc3ce816488d9c93f76889a3ebd33f5088f361af1ca80f72  apps/api/src/lib/prisma-billing-store.ts
+265d07e50608cbdcfdc3c95c956d91078b5f3659fee9060e86ae45bfb9387531  apps/api/src/lib/rtdn.ts
+d3eb8668536e48954edb2dcceae62a58e7e196830729b0e6ca009a9820ae8c9b  apps/api/src/lib/rtdn-ownership.ts
+c7904077461e61f7665263d3a6d52b483adc6d804c6539de2088ada6fda9af85  apps/api/src/lib/tiers.ts
+8b84091d4bfc61108e438a395eaf295a3c9fdb9a5479f6d777e1ee26d47f6099  apps/worker/src/index.ts
+de8ed9bca0d32dfbf6cb7bef4b0d29cac45a0cbcb728a67e9ec1642c99b8f3c6  apps/worker/src/worker-reliability.ts
+47f451b77cf141f443c379579aeebc267c4df4b16ab161fd6eed3567b58937ed  apps/worker/src/pro-digest.ts
+315bf784546cfcbd119998fcf6213a7082789a5e6721f88828d7fc85a5b023f0  packages/database/prisma/schema.prisma
+0a1f77bc4a68b579104ee43dec4029760e295abf58a1cc5d91bb72770d97d749  packages/config/src/index.ts
+15edc12d1016654623a85a122ae161fa462604e779eb44116fe3205ebc99717c  .env.example
+7594a2b7fb3bd7023bc04f285cc04e6c1a6dd43f866b87745d1fbba95a705ebe  docker-compose.yml
+f9fa5a9b8ed56929c2ea571912304b6eae3717ecf5769868fe95936cbb8c9797  openapi.mobile.json
+b006777635c3860a78b9a3290322c7322f43ba50518e16dacca24e7f9668713f  apps/api/src/index.ts
+
+BACKEND migration dir:
+total 12
+drwxrwxr-x 2 gwhyyy gwhyyy 4096 Sep  6 01:37 .
+drwxrwxr-x 7 gwhyyy gwhyyy 4096 Sep  6 01:37 ..
+-rw-rw-r-- 1 gwhyyy gwhyyy 3508 Sep  6 15:54 migration.sql
+
+BACKEND tracked-payment-path diffstat:
+ .env.example                           |    9 +
+ apps/api/package.json                  |    3 +-
+ apps/api/src/index.ts                  |   10 +-
+ apps/worker/src/index.ts               |   45 +-
+ docker-compose.yml                     |   19 +-
+ openapi.mobile.json                    | 2524 +++++++++++++++++++++++++-------
+ package.json                           |    1 +
+ packages/config/src/index.ts           |   23 +-
+ packages/database/prisma/schema.prisma |   83 ++
+ pnpm-lock.yaml                         |    3 +
+ 10 files changed, 2167 insertions(+), 553 deletions(-)

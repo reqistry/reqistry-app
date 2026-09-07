@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:api_scout/app/blocs/projects/projects_cubit.dart';
 import 'package:api_scout/app/blocs/main_shell/main_shell_cubit.dart';
 import 'package:api_scout/app/data/models/project.dart';
+import 'package:api_scout/app/data/models/project_detail.dart';
+import 'package:api_scout/app/data/models/category_apis.dart' show ApiItem;
 import 'package:api_scout/app/modules/views/apis_view/widgets/api_card.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
@@ -15,15 +17,18 @@ import 'package:api_scout/shared/widgets/app_empty_state.dart';
 import 'package:api_scout/shared/widgets/app_error_state.dart';
 import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:api_scout/shared/widgets/app_loading.dart';
+import 'package:api_scout/app/modules/views/project_apis_view/widgets/monitor_toggle.dart';
 import 'package:api_scout/app/modules/views/project_apis_view/widgets/project_header.dart';
 import 'package:api_scout/app/modules/views/project_apis_view/widgets/project_apis_data.dart';
 
 class ProjectApisView extends StatefulWidget {
-  final Project project;
+  final String projectId;
+  final Project? project;
 
   const ProjectApisView({
     super.key,
-    required this.project,
+    required this.projectId,
+    this.project,
   });
 
   @override
@@ -42,21 +47,24 @@ class _ProjectApisViewState extends State<ProjectApisView> {
   Future<ProjectApisData> _load() async {
     final cubit = context.read<ProjectsCubit>();
     final results = await Future.wait([
-      cubit.getProject(widget.project.id),
-      cubit.getProjectMetadata(widget.project.id),
+      cubit.getProject(widget.projectId),
+      cubit.getProjectMetadata(widget.projectId),
     ]);
     return ProjectApisData(
-      detail: results[0] as dynamic,
-      metadata: results[1] as dynamic,
+      detail: results[0] as ProjectDetail,
+      metadata: results[1] as ProjectMetadata,
     );
   }
 
   Future<void> _refresh() async {
     setState(() => _future = _load());
-    await _future;
+    // Error UI comes from the FutureBuilder; never let refresh itself throw.
+    try {
+      await _future;
+    } catch (_) {}
   }
 
-  Future<void> _rename(dynamic detail) async {
+  Future<void> _rename(ProjectDetail detail) async {
     final title = await AppDialog.showInput(
       context: context,
       title: AppLocalizations.of(context)!.dialogRenameProjectTitle,
@@ -65,28 +73,44 @@ class _ProjectApisViewState extends State<ProjectApisView> {
       confirmLabel: AppLocalizations.of(context)!.actionSave,
     );
     if (title == null || title.isEmpty || !mounted) return;
-    await context.read<ProjectsCubit>().updateProject(detail.id, title: title, l10n: AppLocalizations.of(context)!);
+    await context.read<ProjectsCubit>().updateProject(detail.id,
+        title: title, l10n: AppLocalizations.of(context)!);
     if (mounted) setState(() => _future = _load());
   }
 
-  Future<void> _delete(dynamic detail) async {
+  Future<void> _delete(ProjectDetail detail) async {
     final confirmed = await AppDialog.showConfirm(
       context: context,
       title: AppLocalizations.of(context)!.dialogDeleteProjectTitle,
-      message: AppLocalizations.of(context)!.dialogDeleteProjectMessage(detail.title),
+      message: AppLocalizations.of(context)!
+          .dialogDeleteProjectMessage(detail.title),
       confirmLabel: AppLocalizations.of(context)!.actionDelete,
       cancelLabel: AppLocalizations.of(context)!.actionCancel,
       isDestructive: true,
     );
     if (!confirmed || !mounted) return;
-    await context.read<ProjectsCubit>().deleteProject(detail.id, l10n: AppLocalizations.of(context)!);
-    if (mounted) Navigator.pop(context);
+    final deleted = await context
+        .read<ProjectsCubit>()
+        .deleteProject(detail.id, l10n: AppLocalizations.of(context)!);
+    if (deleted && mounted) context.pop();
   }
 
-  Future<void> _remove(dynamic detail, dynamic api) async {
-    await context
-        .read<ProjectsCubit>()
-        .removeApiFromProject(detail.id, api.link, l10n: AppLocalizations.of(context)!);
+  Future<void> _remove(ProjectDetail detail, ApiItem api) async {
+    // Authoritative lookup first: folder items carry stable API ids.
+    String? apiId;
+    for (final item in detail.items) {
+      if (item.link == api.link && (item.apiId ?? '').isNotEmpty) {
+        apiId = item.apiId;
+        break;
+      }
+    }
+    apiId ??= api.id.isNotEmpty ? api.id : null;
+    await context.read<ProjectsCubit>().removeApiFromProject(
+          detail.id,
+          api.link,
+          apiId: apiId,
+          l10n: AppLocalizations.of(context)!,
+        );
     if (mounted) setState(() => _future = _load());
   }
 
@@ -97,7 +121,9 @@ class _ProjectApisViewState extends State<ProjectApisView> {
     return FutureBuilder<ProjectApisData>(
       future: _future,
       builder: (context, snapshot) {
-        final title = snapshot.data?.detail.title ?? widget.project.title;
+        final title = snapshot.data?.detail.title ??
+            widget.project?.title ??
+            AppLocalizations.of(context)!.stateLoadingProjectApis;
         return Scaffold(
           backgroundColor: c.background,
           appBar: AppBar(
@@ -132,7 +158,8 @@ class _ProjectApisViewState extends State<ProjectApisView> {
   Widget _buildBody(AsyncSnapshot<ProjectApisData> snapshot) {
     if (snapshot.connectionState == ConnectionState.waiting) {
       return AppLoading(
-          message: AppLocalizations.of(context)!.stateLoadingProjectApis, scrollable: true);
+          message: AppLocalizations.of(context)!.stateLoadingProjectApis,
+          scrollable: true);
     }
     if (snapshot.hasError) {
       return AppErrorState(
@@ -165,9 +192,16 @@ class _ProjectApisViewState extends State<ProjectApisView> {
       itemCount: apis.length + 1,
       itemBuilder: (context, index) {
         if (index == 0) {
-          return ProjectHeader(
-            detail: data.detail,
-            totalApis: apis.length,
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              ProjectHeader(
+                detail: data.detail,
+                totalApis: apis.length,
+              ),
+              MonitorToggle(projectId: data.detail.id),
+            ],
           );
         }
         final api = apis[index - 1];

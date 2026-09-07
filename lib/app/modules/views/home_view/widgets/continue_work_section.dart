@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:api_scout/l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:api_scout/app/blocs/projects/projects_cubit.dart';
 import 'package:api_scout/app/blocs/projects/projects_state.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
+import 'package:api_scout/config/app_routes.dart';
 import 'package:api_scout/shared/widgets/app_empty_state.dart';
+import 'package:api_scout/shared/widgets/app_error_state.dart';
 import 'package:api_scout/shared/widgets/app_loading.dart';
 import 'package:api_scout/shared/widgets/ui/section_header_link.dart';
 
-import 'all_projects_view.dart';
 import 'create_project_bottom_sheet.dart';
 import 'project_card.dart';
 
@@ -25,19 +27,27 @@ class ContinueWorkSection extends StatelessWidget {
           children: [
             SectionHeaderLink(
               title: AppLocalizations.of(context)!.sectionContinueYourWork,
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => const AllProjectsView(),
-                  ),
-                );
-              },
+              onTap: () => context.push(AppRoutes.allProjects),
             ),
             const SizedBox(height: AppSpacing.s12),
-            if (state.isLoading)
+            if (state.isLoading && state.projects.isEmpty)
               AppLoading(
                 message: AppLocalizations.of(context)!.stateLoadingProjects,
                 compact: true,
+              )
+            else if (state.projects.isEmpty &&
+                state.errorMessage.isNotEmpty)
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: AppSpacing.s16),
+                child: AppErrorState(
+                  title: AppLocalizations.of(context)!.stateError,
+                  message: state.errorMessage,
+                  onRetry: () => context.read<ProjectsCubit>().loadProjects(
+                        l10n: AppLocalizations.of(context)!,
+                      ),
+                  compact: true,
+                ),
               )
             else if (state.isEmpty)
               _EmptyState(
@@ -62,14 +72,16 @@ class _EmptyState extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s16),
-      child: GestureDetector(
-        onTap: onCreateTap,
-        child: AppEmptyState(
-          title: AppLocalizations.of(context)!.stateCreateYourFirstProject,
-          message:
-              AppLocalizations.of(context)!.stateOrganizeApisMessage,
-          icon: PhosphorIconsRegular.folderPlus,
-          compact: true,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onCreateTap,
+          child: AppEmptyState(
+            title: AppLocalizations.of(context)!.stateCreateYourFirstProject,
+            message: AppLocalizations.of(context)!.stateOrganizeApisMessage,
+            icon: PhosphorIconsRegular.folderPlus,
+            compact: true,
+          ),
         ),
       ),
     );

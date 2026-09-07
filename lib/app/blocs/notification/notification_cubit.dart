@@ -91,9 +91,16 @@ class NotificationCubit extends Cubit<NotificationState> {
     });
 
     _localTapSubscription =
-        _localNotificationService.notificationTapStream.listen((data) {
+        _localNotificationService.notificationTapStream.listen((envelope) {
+      final data = envelope['data'] is Map
+          ? Map<String, dynamic>.from(envelope['data'] as Map)
+          : envelope;
       _fcmService.trackEvent('opened', data);
-      routeNotificationTap(data);
+      routeNotificationTap(
+        data,
+        title: envelope['title']?.toString(),
+        body: envelope['body']?.toString(),
+      );
     });
   }
 
@@ -194,14 +201,36 @@ class NotificationCubit extends Cubit<NotificationState> {
   Future<void> updatePreference(String key, bool value) async {
     final current = state;
     if (current is! NotificationEnabled) return;
+    final previous = current.preferences;
+    // Optimistic: reflect instantly, roll back if the PATCH fails.
+    if (previous != null) {
+      emit(NotificationEnabled(
+        notifications: current.notifications,
+        unreadCount: current.unreadCount,
+        fcmToken: current.fcmToken,
+        preferences: previous.withKey(key, value),
+      ));
+    }
     final preferences = await _fcmService.updatePreference(key, value);
-    if (preferences == null) return;
-    emit(NotificationEnabled(
-      notifications: current.notifications,
-      unreadCount: current.unreadCount,
-      fcmToken: current.fcmToken,
-      preferences: preferences,
-    ));
+    if (preferences == null) {
+      if (previous != null && !isClosed) {
+        emit(NotificationEnabled(
+          notifications: current.notifications,
+          unreadCount: current.unreadCount,
+          fcmToken: current.fcmToken,
+          preferences: previous,
+        ));
+      }
+      return;
+    }
+    if (!isClosed) {
+      emit(NotificationEnabled(
+        notifications: current.notifications,
+        unreadCount: current.unreadCount,
+        fcmToken: current.fcmToken,
+        preferences: preferences,
+      ));
+    }
   }
 
   Future<void> refresh() => _loadNotifications();
@@ -221,13 +250,23 @@ class NotificationCubit extends Cubit<NotificationState> {
     await _loadNotifications();
   }
 
+  Future<void> restoreNotification(
+      Map<String, dynamic> entry, int index) async {
+    await _fcmService.restoreNotification(entry, index);
+    await _loadNotifications();
+  }
+
   Future<void> clearAll() async {
     await _fcmService.clearAll();
     await _loadNotifications();
   }
 
-  void handleNotificationTap(Map<String, dynamic> data) {
-    routeNotificationTap(data);
+  void handleNotificationTap(
+    Map<String, dynamic> data, {
+    String? title,
+    String? body,
+  }) {
+    routeNotificationTap(data, title: title, body: body);
   }
 
   @override

@@ -1,5 +1,5 @@
 name: api_scout
-version: 5.0.1+12
+version: 5.2.0+14
 publish_to: none
 description: Reqistry — API intelligence for builders and agents
 environment:
@@ -24,9 +24,11 @@ dependencies:
   go_router: ^14.0.0
   hive:
   hive_flutter:
-  in_app_review:
+  in_app_review: ^2.0.12
+  in_app_purchase:
   intl: any
   share_plus:
+  showcaseview: ^5.1.0
   timezone: ^0.11.0
   url_launcher:
   flutter_svg:

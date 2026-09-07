@@ -2,23 +2,36 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 import 'package:api_scout/app/blocs/favorites/favorites_cubit.dart';
+import 'package:api_scout/app/blocs/paywall/paywall_cubit.dart';
 import 'package:api_scout/app/services/fetch_api/remote_service.dart';
+import 'package:api_scout/config/app_routes.dart';
+import 'package:api_scout/config/routes.dart' show AppRouter;
+import 'package:api_scout/app/utils/design_system/app_colors.dart';
+import 'package:api_scout/app/utils/design_system/app_spacing.dart';
+import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
 import 'package:api_scout/l10n/app_localizations.dart';
 
 /// A pickable API for comparison.
 class CompareCandidate {
   final String id;
   final String name;
+  final String category;
 
-  const CompareCandidate({required this.id, required this.name});
+  const CompareCandidate({
+    required this.id,
+    required this.name,
+    this.category = '',
+  });
 }
 
-/// Bottom sheet to select 2–4 APIs for comparison from saved APIs and search.
+/// Bottom sheet to select APIs for comparison (2–4 free, up to 8 Pro).
 class ApiPickerSheet extends StatefulWidget {
   final Set<String> initiallySelected;
   static const maxSelection = 4;
+  static const proMaxSelection = 8;
 
   const ApiPickerSheet({super.key, required this.initiallySelected});
 
@@ -59,8 +72,11 @@ class _ApiPickerSheetState extends State<ApiPickerSheet> {
     _selected = Set.of(widget.initiallySelected);
     for (final b in context.read<FavoritesCubit>().state.bookmarks) {
       if (b.api.id.isNotEmpty) {
-        _candidates[b.api.id] =
-            CompareCandidate(id: b.api.id, name: b.api.name);
+        _candidates[b.api.id] = CompareCandidate(
+          id: b.api.id,
+          name: b.api.name,
+          category: b.api.categoryName,
+        );
       }
     }
   }
@@ -85,13 +101,21 @@ class _ApiPickerSheetState extends State<ApiPickerSheet> {
       final response = await RemoteService.searchApis(q: query, limit: 20);
       final apis = response.data;
       for (final api in apis.where((a) => a.id.isNotEmpty)) {
-        _candidates[api.id] = CompareCandidate(id: api.id, name: api.name);
+        _candidates[api.id] = CompareCandidate(
+          id: api.id,
+          name: api.name,
+          category: api.category,
+        );
       }
       if (!mounted) return;
       setState(() {
         _results = apis
             .where((a) => a.id.isNotEmpty)
-            .map((a) => CompareCandidate(id: a.id, name: a.name))
+            .map((a) => CompareCandidate(
+                  id: a.id,
+                  name: a.name,
+                  category: a.category,
+                ))
             .toList();
         _searching = false;
         _searchFailed = false;
@@ -105,15 +129,25 @@ class _ApiPickerSheetState extends State<ApiPickerSheet> {
     }
   }
 
+  bool get _isPro => context.read<PaywallCubit>().isPro;
+
+  int get _maxSelection =>
+      _isPro ? ApiPickerSheet.proMaxSelection : ApiPickerSheet.maxSelection;
+
   void _toggle(CompareCandidate candidate) {
     setState(() {
       if (_selected.contains(candidate.id)) {
         _selected.remove(candidate.id);
-      } else if (_selected.length < ApiPickerSheet.maxSelection) {
+      } else if (_selected.length < _maxSelection) {
         _selected.add(candidate.id);
         _candidates[candidate.id] = candidate;
       }
     });
+  }
+
+  void _openProUpsell() {
+    Navigator.of(context).pop();
+    AppRouter.router.push(AppRoutes.pro);
   }
 
   @override
@@ -126,7 +160,7 @@ class _ApiPickerSheetState extends State<ApiPickerSheet> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final c = Theme.of(context);
+    final c = AppColors.of(Theme.of(context).brightness);
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
 
     return Padding(
@@ -135,12 +169,50 @@ class _ApiPickerSheetState extends State<ApiPickerSheet> {
         constraints: BoxConstraints(
           maxHeight: MediaQuery.of(context).size.height * 0.85,
         ),
-        color: c.colorScheme.surface,
+        decoration: BoxDecoration(
+          color: c.surface,
+          border: Border(top: BorderSide(color: c.primary, width: 1)),
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            Container(
+              margin: const EdgeInsets.only(
+                  top: AppSpacing.s12, bottom: AppSpacing.s8),
+              width: 40,
+              height: 4,
+              color: c.outlineVariant,
+            ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+              padding:
+                  const EdgeInsets.fromLTRB(16, 0, 16, AppSpacing.s12),
+              child: Row(
+                children: [
+                  Icon(PhosphorIconsRegular.scales,
+                      size: 20, color: c.primary),
+                  const SizedBox(width: AppSpacing.s8),
+                  Expanded(
+                    child: Text(
+                      l10n.intelligenceCompareTitle.toUpperCase(),
+                      style: AppTextStyles.labelSmUpper.copyWith(
+                        color: c.onSurface,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    l10n.pickerSelectedCount(_selected.length),
+                    style: AppTextStyles.labelSmUpper.copyWith(
+                      fontSize: 10,
+                      color: c.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Divider(height: 1, thickness: 1, color: c.surfaceVariant),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                  16, AppSpacing.s12, 16, AppSpacing.s8),
               child: TextField(
                 controller: _searchController,
                 onChanged: _onSearchChanged,
@@ -148,31 +220,85 @@ class _ApiPickerSheetState extends State<ApiPickerSheet> {
                   hintText: l10n.pickerSearchHint,
                   prefixIcon: const Icon(Icons.search),
                   isDense: true,
-                  border: const OutlineInputBorder(),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  l10n.pickerSelectedCount(_selected.length),
-                  style: c.textTheme.bodySmall,
                 ),
               ),
             ),
             Flexible(child: _buildList(c)),
-            SafeArea(
-              top: false,
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: FilledButton(
-                    onPressed: _selected.length >= 2 ? _submit : null,
-                    child: Text(l10n.pickerDone(_selected.length)),
-                  ),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(AppSpacing.s16),
+              decoration: BoxDecoration(
+                border: Border(
+                  top: BorderSide(color: c.surfaceVariant, width: 1),
+                ),
+              ),
+              child: SafeArea(
+                top: false,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    ElevatedButton(
+                      onPressed: _selected.length >= 2 ? _submit : null,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: c.primary,
+                        foregroundColor: c.onPrimary,
+                        disabledBackgroundColor: c.surfaceContainerHighest,
+                        disabledForegroundColor: c.onSurfaceVariant,
+                        minimumSize: const Size(double.infinity, 50),
+                        elevation: 0,
+                      ),
+                      child: Text(
+                        l10n.pickerDone(_selected.length),
+                        style:
+                            AppTextStyles.labelSmUpper.copyWith(fontSize: 11),
+                      ),
+                    ),
+                    if (!_isPro &&
+                        _selected.length >= ApiPickerSheet.maxSelection)
+                      Padding(
+                        padding: const EdgeInsets.only(top: AppSpacing.s8),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: _openProUpsell,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: AppSpacing.s12,
+                                vertical: AppSpacing.s12,
+                              ),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: c.outlineVariant),
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    PhosphorIconsRegular.crown,
+                                    size: 18,
+                                    color: c.onSurface,
+                                  ),
+                                  const SizedBox(width: AppSpacing.s8),
+                                  Expanded(
+                                    child: Text(
+                                      l10n.pickerProCompareUp,
+                                      style: AppTextStyles.bodyMd.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                  Icon(
+                                    PhosphorIconsRegular.caretRight,
+                                    size: 18,
+                                    color: c.outline,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
             ),
@@ -182,7 +308,7 @@ class _ApiPickerSheetState extends State<ApiPickerSheet> {
     );
   }
 
-  Widget _buildList(ThemeData c) {
+  Widget _buildList(AppColorScheme c) {
     final l10n = AppLocalizations.of(context)!;
     if (_searching) {
       return const Center(
@@ -193,7 +319,26 @@ class _ApiPickerSheetState extends State<ApiPickerSheet> {
       );
     }
     if (_searchFailed) {
-      return Center(child: Text(l10n.stateSomethingWentWrong));
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.s24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                l10n.stateSomethingWentWrong,
+                style: AppTextStyles.labelSm.copyWith(color: c.onSurfaceVariant),
+              ),
+              const SizedBox(height: AppSpacing.s8),
+              TextButton(
+                onPressed: () =>
+                    _runSearch(_searchController.text.trim()),
+                child: Text(l10n.actionRetry),
+              ),
+            ],
+          ),
+        ),
+      );
     }
 
     final savedIds = context
@@ -216,6 +361,8 @@ class _ApiPickerSheetState extends State<ApiPickerSheet> {
           child: Text(
             searching ? l10n.stateNoApis : l10n.pickerNoSavedApis,
             textAlign: TextAlign.center,
+            style:
+                AppTextStyles.bodyMd.copyWith(color: c.onSurfaceVariant),
           ),
         ),
       );
@@ -224,18 +371,66 @@ class _ApiPickerSheetState extends State<ApiPickerSheet> {
     return ListView(
       shrinkWrap: true,
       children: [
-        for (final candidate in visible)
-          ListTile(
-            dense: true,
-            leading: Icon(
-              _selected.contains(candidate.id)
-                  ? Icons.check_box
-                  : Icons.check_box_outline_blank,
-            ),
-            title: Text(candidate.name),
-            onTap: () => _toggle(candidate),
-          ),
+        for (var i = 0; i < visible.length; i++) ...[
+          _candidateRow(c, visible[i]),
+          if (i != visible.length - 1)
+            Divider(height: 1, thickness: 1, color: c.surfaceVariant),
+        ],
       ],
+    );
+  }
+
+  Widget _candidateRow(AppColorScheme c, CompareCandidate candidate) {
+    final isSelected = _selected.contains(candidate.id);
+    return InkWell(
+      onTap: () => _toggle(candidate),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.s16, vertical: AppSpacing.s10),
+        child: Row(
+          children: [
+            Icon(
+              isSelected
+                  ? PhosphorIconsFill.checkSquare
+                  : PhosphorIconsRegular.square,
+              size: 20,
+              color: isSelected ? c.primary : c.onSurfaceVariant,
+            ),
+            const SizedBox(width: AppSpacing.s12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    candidate.name,
+                    style: AppTextStyles.bodyMd
+                        .copyWith(fontWeight: FontWeight.w600),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  if (candidate.category.isNotEmpty) ...[
+                    const SizedBox(height: AppSpacing.s2),
+                    Text(
+                      candidate.category.toUpperCase(),
+                      style: AppTextStyles.labelSmUpper.copyWith(
+                        fontSize: 9,
+                        color: c.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            if (isSelected) ...[
+              const SizedBox(width: AppSpacing.s8),
+              Text(
+                '${_selected.toList().indexOf(candidate.id) + 1}',
+                style: AppTextStyles.codeMd.copyWith(color: c.primary),
+              ),
+            ],
+          ],
+        ),
+      ),
     );
   }
 

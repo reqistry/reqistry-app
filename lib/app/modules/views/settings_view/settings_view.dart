@@ -13,7 +13,10 @@ import 'package:api_scout/app/blocs/main_shell/main_shell_cubit.dart';
 import 'package:api_scout/app/blocs/user_activity/user_activity_cubit.dart';
 import 'package:api_scout/app/blocs/user_activity/user_activity_state.dart';
 import 'package:api_scout/app/blocs/language/language_cubit.dart';
-import 'package:api_scout/app/modules/views/home_view/widgets/all_projects_view.dart';
+import 'package:api_scout/app/blocs/paywall/paywall_cubit.dart';
+import 'package:api_scout/app/blocs/paywall/paywall_state.dart';
+import 'package:api_scout/app/modules/views/main_shell_view/widgets/root_showcase.dart';
+import 'package:api_scout/app/modules/views/api_detail_view/widgets/api_detail_showcase.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
@@ -21,6 +24,7 @@ import 'package:api_scout/app/utils/snackbar_helper.dart';
 import 'package:api_scout/config/app_routes.dart';
 import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:api_scout/config/env.dart';
+import 'package:api_scout/app/modules/views/settings_view/widgets/agent_keys_section.dart';
 import 'package:api_scout/app/modules/views/settings_view/widgets/profile_panel.dart';
 import 'package:api_scout/app/modules/views/settings_view/widgets/stats_grid.dart';
 import 'package:api_scout/app/modules/views/settings_view/widgets/settings_section.dart';
@@ -56,9 +60,7 @@ class _SettingsViewState extends State<SettingsView> {
   }
 
   void _openAllProjects() {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => const AllProjectsView()),
-    );
+    context.push(AppRoutes.allProjects);
   }
 
   Future<void> _openDeveloperSite() async {
@@ -163,12 +165,15 @@ class _SettingsViewState extends State<SettingsView> {
             BlocBuilder<AuthCubit, AuthState>(
               builder: (context, state) {
                 final cubit = context.read<AuthCubit>();
-                return ProfilePanel(
-                  name: _name(cubit),
-                  email: cubit.userEmail,
-                  accountType: cubit.isGuestUser ? AppLocalizations.of(context)!.settingsGuestAccountType : AppLocalizations.of(context)!.settingsEmailAccountType,
-                  profile: cubit.currentUserProfile,
-                  onModify: () => context.push(AppRoutes.accountSettings),
+                return BlocBuilder<PaywallCubit, PaywallState>(
+                  builder: (context, paywall) => ProfilePanel(
+                    name: _name(cubit),
+                    email: cubit.userEmail,
+                    accountType: cubit.isGuestUser ? AppLocalizations.of(context)!.settingsGuestAccountType : AppLocalizations.of(context)!.settingsEmailAccountType,
+                    profile: cubit.currentUserProfile,
+                    onModify: () => context.push(AppRoutes.accountSettings),
+                    isPro: paywall.isPro,
+                  ),
                 );
               },
             ),
@@ -185,6 +190,23 @@ class _SettingsViewState extends State<SettingsView> {
             SettingsSection(
               title: AppLocalizations.of(context)!.sectionMy,
               children: [
+                BlocBuilder<PaywallCubit, PaywallState>(
+                  builder: (context, paywall) {
+                    final l10n = AppLocalizations.of(context)!;
+                    return SettingsEntryTile(
+                      icon: paywall.isPro
+                          ? PhosphorIconsFill.crown
+                          : PhosphorIconsRegular.crown,
+                      title: paywall.isPro
+                          ? l10n.settingsProActive
+                          : l10n.settingsGoPro,
+                      subtitle: paywall.isPro
+                          ? null
+                          : l10n.settingsGoProSubtitle,
+                      onTap: () => context.push(AppRoutes.pro),
+                    );
+                  },
+                ),
                 SettingsEntryTile(
                   icon: PhosphorIconsRegular.folder,
                   title: AppLocalizations.of(context)!.settingsProjects,
@@ -200,8 +222,33 @@ class _SettingsViewState extends State<SettingsView> {
                   title: AppLocalizations.of(context)!.settingsSubmitAnApi,
                   onTap: () => context.push(AppRoutes.submitApi),
                 ),
+                SettingsEntryTile(
+                  icon: PhosphorIconsRegular.tray,
+                  title:
+                      AppLocalizations.of(context)!.settingsMySubmissions,
+                  onTap: () => context.push(AppRoutes.submissions),
+                ),
+                SettingsEntryTile(
+                  icon: PhosphorIconsRegular.bellRinging,
+                  title: AppLocalizations.of(context)!.watchTitle,
+                  onTap: () => context.push(AppRoutes.watchlists),
+                ),
+                BlocBuilder<PaywallCubit, PaywallState>(
+                  builder: (context, paywall) {
+                    if (paywall.isPro) return const SizedBox.shrink();
+                    return SettingsEntryTile(
+                      icon: PhosphorIconsRegular.key,
+                      title: AppLocalizations.of(context)!.agentKeysTitle,
+                      subtitle:
+                          AppLocalizations.of(context)!.settingsGoProSubtitle,
+                      onTap: () => context.push(AppRoutes.pro),
+                    );
+                  },
+                ),
               ],
             ),
+            const SizedBox(height: AppSpacing.s24),
+            const AgentKeysSection(),
             const SizedBox(height: AppSpacing.s24),
             SettingsSection(
               title: AppLocalizations.of(context)!.sectionManage,
@@ -217,6 +264,15 @@ class _SettingsViewState extends State<SettingsView> {
                   onTap: () => context.push(AppRoutes.accountSettings),
                 ),
                 _buildLanguageTile(context),
+                SettingsEntryTile(
+                  icon: PhosphorIconsRegular.compass,
+                  title: AppLocalizations.of(context)!.settingsReplayIntro,
+                  onTap: () {
+                    _switchTab(AppRoutes.tabIndexHome);
+                    ApiDetailShowcase.resetForReplay();
+                    RootShowcase.start(context);
+                  },
+                ),
               ],
             ),
             const SizedBox(height: AppSpacing.s24),

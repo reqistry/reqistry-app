@@ -4,23 +4,16 @@ import 'package:api_scout/app/data/models/categories_response.dart';
 import 'package:api_scout/app/data/models/category.dart';
 import 'package:api_scout/app/services/fetch_api/failure.dart';
 import 'package:api_scout/app/services/fetch_api/remote_service.dart';
-import 'package:api_scout/app/services/in_app_review/in_app_review.dart';
-import 'package:api_scout/app/services/local_db/hive/locals_box.dart';
 import 'package:api_scout/l10n/app_localizations.dart';
 
 part 'home_categories_state.dart';
 
 class HomeCategoriesCubit extends Cubit<HomeCategoriesState> {
-  final LocalsDB _locals = LocalsDB.instance;
-  final InAppReview _inAppReview = InAppReview();
   List<Category> _allCategories = [];
 
   HomeCategoriesCubit() : super(const HomeCategoriesState()) {
     fetchCategories();
   }
-
-  bool get isFirstTimeOpenedTheAppAfterUpdate =>
-      _locals.getWithKey("isFirstTimeOpenedTheAppAfterUpdate") ?? true;
 
   Future<void> fetchCategories({AppLocalizations? l10n}) async {
     try {
@@ -80,12 +73,5 @@ class HomeCategoriesCubit extends Cubit<HomeCategoriesState> {
 
   Future<void> retryFetch({AppLocalizations? l10n}) async {
     await fetchCategories(l10n: l10n);
-  }
-
-  void onReady() {
-    if (isFirstTimeOpenedTheAppAfterUpdate) {
-      // showNewAppUpdateDialog can be triggered here
-    }
-    _inAppReview.handleShowingTheReviewRequest();
   }
 }

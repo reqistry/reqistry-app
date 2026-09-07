@@ -90,5 +90,28 @@ void main() {
       expect(event.apiName, isNull);
       expect(event.createdAt, isA<DateTime>());
     });
+
+    test('detailsSummary joins primitive values and skips nested', () {
+      final event = ChangeFeedEvent.fromJson({
+        'id': 'evt-3',
+        'eventType': 'trust_score_changed',
+        'title': '',
+        'createdAt': '2026-08-23T20:08:19.997Z',
+        'details': {'score': 93, 'grade': 'A', 'factors': {}, 'ok': true},
+      });
+
+      expect(event.detailsSummary, 'score: 93 · grade: A · ok: true');
+    });
+
+    test('detailsSummary empty when no details', () {
+      final event = ChangeFeedEvent.fromJson({
+        'id': 'evt-4',
+        'eventType': 'health_changed',
+        'title': '',
+        'createdAt': '2026-08-23T20:08:19.997Z',
+      });
+
+      expect(event.detailsSummary, isEmpty);
+    });
   });
 }

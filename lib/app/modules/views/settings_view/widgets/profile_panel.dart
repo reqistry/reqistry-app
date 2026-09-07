@@ -15,6 +15,7 @@ class ProfilePanel extends StatelessWidget {
     required this.accountType,
     required this.profile,
     required this.onModify,
+    this.isPro = false,
   });
 
   final String name;
@@ -22,6 +23,7 @@ class ProfilePanel extends StatelessWidget {
   final String accountType;
   final UserProfile? profile;
   final VoidCallback onModify;
+  final bool isPro;
 
   @override
   Widget build(BuildContext context) {
@@ -82,6 +84,11 @@ class ProfilePanel extends StatelessWidget {
             runSpacing: AppSpacing.s8,
             children: [
               MetaChip(label: accountType),
+              if (isPro)
+                MetaChip(
+                  label: AppLocalizations.of(context)!.badgePro,
+                  highlight: true,
+                ),
               if (profile?.memberSince != null)
                 MetaChip(label: AppLocalizations.of(context)!.settingsMemberSincePrefix(_date(profile!.memberSince!))),
               if (profile?.lastUsedAt != null)

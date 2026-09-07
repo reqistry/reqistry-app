@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:api_scout/app/blocs/category_apis/category_apis_cubit.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
@@ -133,12 +134,22 @@ class _CategorySummary extends StatelessWidget {
                           vertical: AppSpacing.s4,
                         ),
                         color: c.primary,
-                        child: Text(
-                          AppLocalizations.of(context)!.stateTrending,
-                          style: AppTextStyles.labelSmUpper.copyWith(
-                            color: c.onPrimary,
-                            fontSize: 9,
-                          ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              PhosphorIconsRegular.trendUp,
+                              size: 12,
+                              color: c.onPrimary,
+                            ),
+                            const SizedBox(width: AppSpacing.s4),
+                            Text(
+                              AppLocalizations.of(context)!.stateTrending,
+                              style: AppTextStyles.labelSmUpper.copyWith(
+                                color: c.onPrimary,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                   ],

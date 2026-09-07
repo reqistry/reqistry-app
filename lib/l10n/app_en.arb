@@ -943,6 +943,93 @@
   "pickerNoSavedApis": "No saved APIs yet. Search to pick APIs to compare.",
   "@pickerNoSavedApis": { "description": "Picker empty state when nothing saved" },
 
+  "changeTypeTrustScore": "TRUST SCORE",
+  "@changeTypeTrustScore": { "description": "Change feed event type label" },
+
+  "changeTypePricing": "PRICING",
+  "@changeTypePricing": { "description": "Change feed event type label" },
+
+  "changeTypeHealth": "HEALTH",
+  "@changeTypeHealth": { "description": "Change feed event type label" },
+
+  "changeTypeUpdate": "UPDATE",
+  "@changeTypeUpdate": { "description": "Change feed event type label" },
+
+  "compareOpenApi": "OpenAPI spec",
+  "@compareOpenApi": { "description": "Compare table row label" },
+
+  "onboardingSearchFabTitle": "SEARCH ANYTHING",
+  "@onboardingSearchFabTitle": { "description": "Onboarding step title" },
+
+  "onboardingSearchFabDesc": "Tap the search button to find APIs across the whole registry.",
+  "@onboardingSearchFabDesc": { "description": "Onboarding step description" },
+
+  "onboardingNavBarTitle": "NAVIGATION",
+  "@onboardingNavBarTitle": { "description": "Onboarding step title" },
+
+  "onboardingNavBarDesc": "Switch between Home, Explore, Intelligence, Saved and You.",
+  "@onboardingNavBarDesc": { "description": "Onboarding step description" },
+
+  "onboardingSubmitApiTitle": "KNOW AN API?",
+  "@onboardingSubmitApiTitle": { "description": "Onboarding step title" },
+
+  "onboardingSubmitApiDesc": "Submit missing APIs and help the registry grow.",
+  "@onboardingSubmitApiDesc": { "description": "Onboarding step description" },
+
+  "onboardingCompareTitle": "COMPARE APIS",
+  "@onboardingCompareTitle": { "description": "Onboarding step title" },
+
+  "onboardingCompareDesc": "Pick up to 4 APIs and compare trust, pricing and health side by side.",
+  "@onboardingCompareDesc": { "description": "Onboarding step description" },
+
+  "onboardingStatsTitle": "YOUR ACTIVITY",
+  "@onboardingStatsTitle": { "description": "Onboarding step title" },
+
+  "onboardingStatsDesc": "Keep track of your bookmarked APIs and projects at a glance.",
+  "@onboardingStatsDesc": { "description": "Onboarding step description" },
+
+  "onboardingProjectsTitle": "YOUR PROJECTS",
+  "@onboardingProjectsTitle": { "description": "Onboarding step title" },
+
+  "onboardingProjectsDesc": "Group APIs into projects to compare and share them with your team.",
+  "@onboardingProjectsDesc": { "description": "Onboarding step description" },
+
+  "onboardingApiMetaTitle": "API OVERVIEW",
+  "@onboardingApiMetaTitle": { "description": "Onboarding step title" },
+
+  "onboardingApiMetaDesc": "Everything about this API: description, category, pricing, auth type and live health.",
+  "@onboardingApiMetaDesc": { "description": "Onboarding step description" },
+
+  "onboardingSaveProjectTitle": "SAVE TO PROJECT",
+  "@onboardingSaveProjectTitle": { "description": "Onboarding step title" },
+
+  "onboardingSaveProjectDesc": "Add this API to one of your projects, or create a new one.",
+  "@onboardingSaveProjectDesc": { "description": "Onboarding step description" },
+
+  "onboardingBookmarkTitle": "BOOKMARK IT",
+  "@onboardingBookmarkTitle": { "description": "Onboarding step title" },
+
+  "onboardingBookmarkDesc": "Save the API to your bookmarks for quick access anytime.",
+  "@onboardingBookmarkDesc": { "description": "Onboarding step description" },
+
+  "settingsReplayIntro": "Replay intro",
+  "@settingsReplayIntro": { "description": "Replay onboarding tour entry" },
+
+  "actionSkip": "SKIP",
+  "@actionSkip": { "description": "Skip onboarding button" },
+
+  "actionPrevious": "PREVIOUS",
+  "@actionPrevious": { "description": "Previous onboarding step button" },
+
+  "actionNext": "NEXT",
+  "@actionNext": { "description": "Next onboarding step button" },
+
+  "nudgeSubmitApiTitle": "KNOW AN API WE'RE MISSING?",
+  "@nudgeSubmitApiTitle": { "description": "Submit-API encouragement nudge" },
+
+  "nudgeSubmitApiMessage": "You've explored 5 APIs. Help the registry grow by submitting one you love.",
+  "@nudgeSubmitApiMessage": { "description": "Submit-API encouragement nudge" },
+
   "compareTrustScoreValue": "{score} · Grade {grade}",
   "@compareTrustScoreValue": {
     "description": "Trust score with grade in compare table header",
@@ -1606,5 +1693,322 @@
   "@errorCheckInternetConnection": { "description": "Check internet connection message" },
 
   "settingsLanguage": "Language",
-  "@settingsLanguage": { "description": "Language setting label" }
+  "@settingsLanguage": { "description": "Language setting label" },
+
+  "intelligenceCollections": "CURATED COLLECTIONS",
+  "@intelligenceCollections": { "description": "Intelligence collections section" },
+  "intelligenceCollectionsSubtitle": "Task-fit starters. Pick a job, compare the shortlist.",
+  "@intelligenceCollectionsSubtitle": { "description": "Intelligence collections subtitle" },
+  "intelligenceHeroTitle": "DECIDE WITH EVIDENCE.",
+  "@intelligenceHeroTitle": { "description": "Intelligence hero title" },
+  "intelligenceHeroSubtitle": "Compare APIs side by side, backed by live trust evidence.",
+  "@intelligenceHeroSubtitle": { "description": "Intelligence hero subtitle" },
+  "intelligenceRecent": "RECENT",
+  "@intelligenceRecent": { "description": "Recent comparisons label" },
+
+  "collectionApisCount": "{count} APIs",
+  "@collectionApisCount": { "description": "API count in a collection" },
+
+  "compareTrust": "Trust",
+  "@compareTrust": { "description": "Compare table trust row label" },
+  "compareTopPick": "TOP PICK",
+  "@compareTopPick": { "description": "Compare verdict title" },
+  "compareBest": "BEST",
+  "@compareBest": { "description": "Best value badge" },
+  "compareVerdictFastest": "Fastest response: {name} at {ms} ms",
+  "@compareVerdictFastest": { "description": "Verdict fastest bullet" },
+  "compareVerdictUptime": "Best uptime: {name} at {uptime}",
+  "@compareVerdictUptime": { "description": "Verdict uptime bullet" },
+  "compareVerdictAlsoFastest": "Also the fastest option",
+  "@compareVerdictAlsoFastest": { "description": "Verdict fastest tie bullet" },
+  "compareShareHeader": "API comparison via Reqistry",
+  "@compareShareHeader": { "description": "Shared comparison header" },
+  "trustEvidenceTitle": "TRUST EVIDENCE",
+  "@trustEvidenceTitle": { "description": "Trust evidence sheet title" },
+
+  "trustEvidenceVerifiedOn": "Verified {date}",
+  "@trustEvidenceVerifiedOn": { "description": "Trust score verification date" },
+
+  "trustEvidenceLiveScore": "Live score, fresh from this check",
+  "@trustEvidenceLiveScore": { "description": "Live trust score note" },
+
+  "statsAvgTrust": "AVG TRUST",
+  "@statsAvgTrust": { "description": "Average trust stat label" },
+
+  "statsDownNow": "DOWN NOW",
+  "@statsDownNow": { "description": "Down APIs stat label" },
+
+  "sectionTrendingCategories": "TRENDING",
+  "@sectionTrendingCategories": { "description": "Trending categories section" },
+
+  "contactFormTitle": "SEND A MESSAGE",
+  "@contactFormTitle": { "description": "Contact form title" },
+
+  "contactFormSubtitle": "Questions, feedback or broken data. The team reads everything.",
+  "@contactFormSubtitle": { "description": "Contact form subtitle" },
+
+  "formSubject": "SUBJECT (OPTIONAL)",
+  "@formSubject": { "description": "Contact subject field label" },
+
+  "formMessage": "MESSAGE",
+  "@formMessage": { "description": "Contact message field label" },
+
+  "formInvalidEmail": "Enter a valid email",
+  "@formInvalidEmail": { "description": "Invalid email error" },
+
+  "snackbarContactSentTitle": "Message sent",
+  "@snackbarContactSentTitle": { "description": "Contact sent title" },
+  "snackbarContactSentMessage": "Your message has been sent.",
+  "@snackbarContactSentMessage": { "description": "Contact sent fallback message" },
+  "snackbarContactFailedMessage": "Unable to send right now. Please try again.",
+  "@snackbarContactFailedMessage": { "description": "Contact failed message" },
+
+  "notifFeedTitle": "Notifications",
+  "@notifFeedTitle": { "description": "Notification feed title" },
+
+  "notifFeedClearTooltip": "Clear all",
+  "@notifFeedClearTooltip": { "description": "Clear notifications tooltip" },
+
+  "notifFeedEmptyTitle": "No notifications yet",
+  "@notifFeedEmptyTitle": { "description": "Empty notifications title" },
+
+  "notifFeedEmptyMessage": "Health, price, and trust alerts for your saved APIs will appear here.",
+  "@notifFeedEmptyMessage": { "description": "Empty notifications message" },
+
+  "notifFeedClearTitle": "Clear all notifications?",
+  "@notifFeedClearTitle": { "description": "Clear notifications confirm title" },
+
+  "notifFeedClearMessage": "This removes your local notification history. This cannot be undone.",
+  "@notifFeedClearMessage": { "description": "Clear notifications confirm message" },
+
+  "submissionsTitle": "My submissions",
+  "@submissionsTitle": { "description": "Submission history title" },
+
+  "submissionsEmptyTitle": "No submissions yet",
+  "@submissionsEmptyTitle": { "description": "Empty submissions title" },
+
+  "submissionsEmptyMessage": "APIs you submit for review will appear here with their review status.",
+  "@submissionsEmptyMessage": { "description": "Empty submissions message" },
+
+  "submissionsOpenApi": "Open API",
+  "@submissionsOpenApi": { "description": "Open approved API action" },
+
+  "submissionsSubmittedOn": "Submitted {date}",
+  "@submissionsSubmittedOn": {
+    "description": "Submission date label",
+    "placeholders": { "date": { "type": "String" } }
+  },
+
+  "submissionsReviewedOn": "Reviewed {date}",
+  "@submissionsReviewedOn": {
+    "description": "Review date label",
+    "placeholders": { "date": { "type": "String" } }
+  },
+
+  "submissionsRejectionReason": "Reason: {reason}",
+  "@submissionsRejectionReason": {
+    "description": "Rejection reason label",
+    "placeholders": { "reason": { "type": "String" } }
+  },
+
+  "submissionStatusPending": "Pending",
+  "@submissionStatusPending": { "description": "Pending status" },
+
+  "submissionStatusApproved": "Approved",
+  "@submissionStatusApproved": { "description": "Approved status" },
+
+  "submissionStatusRejected": "Rejected",
+  "@submissionStatusRejected": { "description": "Rejected status" },
+
+  "submissionStatusDuplicate": "Duplicate",
+  "@submissionStatusDuplicate": { "description": "Duplicate status" },
+
+  "submissionStatusSpam": "Spam",
+  "@submissionStatusSpam": { "description": "Spam status" },
+
+  "settingsMySubmissions": "My submissions",
+  "@settingsMySubmissions": { "description": "My submissions settings entry" },
+
+  "actionUndo": "Undo",
+  "@actionUndo": { "description": "Undo action button" },
+
+  "actionDone": "Done",
+  "@actionDone": { "description": "Done action button" },
+
+  "paywallTitle": "REQISTRY PRO",
+  "@paywallTitle": { "description": "Paywall title" },
+
+  "paywallHeadline": "Build faster on trusted APIs",
+  "@paywallHeadline": { "description": "Paywall headline" },
+
+  "paywallSubtitle": "One tier. Founder pricing, locked forever. Cancel anytime.",
+  "@paywallSubtitle": { "description": "Paywall subtitle" },
+
+  "paywallBenefitPriceLock": "Founder pricing locked for life",
+  "@paywallBenefitPriceLock": { "description": "Pro benefit" },
+
+  "paywallBenefitBadge": "Founder badge on your profile",
+  "@paywallBenefitBadge": { "description": "Pro benefit" },
+
+  "paywallBenefitSupport": "Priority support lane",
+  "@paywallBenefitSupport": { "description": "Pro benefit" },
+
+  "paywallBenefitEarlyAccess": "First access to ship-checks, monitor and agent keys",
+  "@paywallBenefitEarlyAccess": { "description": "Pro benefit" },
+
+  "paywallChoosePlan": "CHOOSE PLAN",
+  "@paywallChoosePlan": { "description": "Plan selector label" },
+
+  "paywallMonthlyTitle": "Monthly",
+  "@paywallMonthlyTitle": { "description": "Monthly plan title" },
+
+  "paywallYearlyTitle": "Yearly",
+  "@paywallYearlyTitle": { "description": "Yearly plan title" },
+
+  "paywallTrialIncluded": "7-day free trial included",
+  "@paywallTrialIncluded": { "description": "Trial note" },
+
+  "paywallYearlyBadge": "SAVE 33%",
+  "@paywallYearlyBadge": { "description": "Yearly savings badge" },
+
+  "paywallCtaTrial": "Start free trial",
+  "@paywallCtaTrial": { "description": "Trial CTA" },
+
+  "paywallAccountRequiredTitle": "Email account required",
+  "@paywallAccountRequiredTitle": { "description": "Purchase gate title" },
+
+  "paywallAccountRequiredBody": "Link an email to your account before purchasing so Pro stays with you on every device.",
+  "@paywallAccountRequiredBody": { "description": "Purchase gate body" },
+
+  "paywallAccountRequiredAction": "Link email",
+  "@paywallAccountRequiredAction": { "description": "Purchase gate action" },
+
+  "paywallRestore": "Restore purchases",
+  "@paywallRestore": { "description": "Restore action" },
+
+  "paywallRestoreEmpty": "No purchases found.",
+  "@paywallRestoreEmpty": { "description": "Restore empty message" },
+
+  "paywallLoading": "Loading plans",
+  "@paywallLoading": { "description": "Plans loading message" },
+
+  "paywallLoadError": "Could not load plans. Check connection and retry.",
+  "@paywallLoadError": { "description": "Plans load error" },
+
+  "paywallUnavailable": "Purchases unavailable on this device.",
+  "@paywallUnavailable": { "description": "Store unavailable message" },
+
+  "paywallPurchasing": "Confirm in the store",
+  "@paywallPurchasing": { "description": "Purchasing state" },
+
+  "paywallSuccessTitle": "Welcome to Pro",
+  "@paywallSuccessTitle": { "description": "Purchase success title" },
+
+  "paywallSuccessBody": "Your subscription is active. Founder pricing is locked.",
+  "@paywallSuccessBody": { "description": "Purchase success message" },
+
+  "paywallTerms": "Cancel anytime in store settings. Trial converts to paid unless canceled 24h before end.",
+  "@paywallTerms": { "description": "Subscription terms" },
+
+  "settingsGoPro": "Go Pro",
+  "@settingsGoPro": { "description": "Upgrade entry" },
+
+  "settingsGoProSubtitle": "Founder pricing, badge, early access",
+  "@settingsGoProSubtitle": { "description": "Upgrade entry subtitle" },
+
+  "settingsProActive": "Pro active",
+  "@settingsProActive": { "description": "Active subscription label" },
+
+  "badgePro": "PRO",
+  "@badgePro": { "description": "Pro badge" },
+
+  "proTeaserTitle": "Pro ship-check",
+  "@proTeaserTitle": { "description": "Pro teaser title" },
+
+  "proTeaserBody": "Evidence exports, monitor digests and agent keys land here first.",
+  "@proTeaserBody": { "description": "Pro teaser body" },
+
+  "pickerProCompareUp": "Pro compares up to 8",
+  "@pickerProCompareUp": { "description": "Compare upsell" },
+
+  "watchTitle": "Watchlists",
+  "@watchTitle": { "description": "Watchlists title" },
+
+  "watchEmptyTitle": "No watches yet",
+  "@watchEmptyTitle": { "description": "Empty watchlists title" },
+
+  "watchEmptyMessage": "Watch a keyword to get push alerts on new, price or trust changes.",
+  "@watchEmptyMessage": { "description": "Empty watchlists message" },
+
+  "watchAction": "Watch this search",
+  "@watchAction": { "description": "Create keyword watch action" },
+
+  "watchAdded": "Watch added",
+  "@watchAdded": { "description": "Watch added message" },
+
+  "watchLimitReached": "Watchlist limit reached",
+  "@watchLimitReached": { "description": "Watchlist limit message" },
+
+  "agentKeysTitle": "Agent API keys",
+  "@agentKeysTitle": { "description": "Agent keys title" },
+
+  "agentKeysEmpty": "No keys yet. Create one so your agents can query Reqistry.",
+  "@agentKeysEmpty": { "description": "Empty agent keys message" },
+
+  "agentKeyCreate": "Create key",
+  "@agentKeyCreate": { "description": "Create key action" },
+
+  "agentKeyNameHint": "Key name (optional)",
+  "@agentKeyNameHint": { "description": "Key name hint" },
+
+  "agentKeyOnceWarning": "Copy now — the full key shows only once.",
+  "@agentKeyOnceWarning": { "description": "Key once warning" },
+
+  "agentKeyCopied": "Key copied",
+  "@agentKeyCopied": { "description": "Key copied message" },
+
+  "agentKeyUsageToday": "{used} calls today",
+  "@agentKeyUsageToday": {
+    "description": "Key usage label",
+    "placeholders": { "used": { "type": "int" } }
+  },
+
+  "agentKeyRevokeTitle": "Revoke this key?",
+  "@agentKeyRevokeTitle": { "description": "Revoke confirm title" },
+
+  "agentKeyRevokeMessage": "Agents using it stop working immediately.",
+  "@agentKeyRevokeMessage": { "description": "Revoke confirm message" },
+
+  "shipReportTitle": "Ship-check report",
+  "@shipReportTitle": { "description": "Ship report title" },
+
+  "shipVerdictShip": "Safe to ship",
+  "@shipVerdictShip": { "description": "Ship verdict" },
+
+  "shipVerdictCaution": "Ship with caution",
+  "@shipVerdictCaution": { "description": "Caution verdict" },
+
+  "shipVerdictAvoid": "Do not ship",
+  "@shipVerdictAvoid": { "description": "Avoid verdict" },
+
+  "monitorTitle": "Monitor stack",
+  "@monitorTitle": { "description": "Monitor toggle title" },
+
+  "monitorSubtitle": "Daily health digest for this project",
+  "@monitorSubtitle": { "description": "Monitor toggle subtitle" },
+
+  "stackHistoryTitle": "Stack history",
+  "@stackHistoryTitle": { "description": "Stack history title" },
+
+  "stackHistoryEmpty": "Snapshots appear after the first daily digest.",
+  "@stackHistoryEmpty": { "description": "Empty stack history" },
+
+  "stackHistoryDown": "DOWN",
+  "@stackHistoryDown": { "description": "Down count ticker" },
+
+  "stackHistoryTrust": "TRUST",
+  "@stackHistoryTrust": { "description": "Trust ticker" },
+
+  "notifFeedRemovedMessage": "Notification deleted.",
+  "@notifFeedRemovedMessage": { "description": "Notification deleted message" }
 }

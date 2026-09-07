@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:api_scout/app/blocs/submit_api/submit_api_cubit.dart';
 import 'package:api_scout/app/blocs/submit_api/submit_api_state.dart';
@@ -45,7 +46,7 @@ class _SubmitApiViewState extends State<SubmitApiView> {
     return BlocListener<SubmitApiCubit, SubmitApiState>(
       listenWhen: (prev, curr) => curr.submitted,
       listener: (context, state) {
-        Navigator.of(context).pop();
+        context.pop();
         _maybePromptEmailLink();
       },
       child: Scaffold(

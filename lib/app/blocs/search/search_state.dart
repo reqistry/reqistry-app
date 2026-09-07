@@ -25,6 +25,9 @@ class SearchState extends Equatable {
   final String lastRequestDebug;
   final List<String> availableCategories;
   final bool isLoadingCategories;
+  final bool hasSearched;
+
+  static const _unset = Object();
 
   const SearchState({
     this.query = '',
@@ -51,6 +54,7 @@ class SearchState extends Equatable {
     this.lastRequestDebug = '',
     this.availableCategories = const [],
     this.isLoadingCategories = false,
+    this.hasSearched = false,
   });
 
   SearchState copyWith({
@@ -59,10 +63,10 @@ class SearchState extends Equatable {
     List<String>? auth,
     List<String>? apiType,
     List<String>? category,
-    String? cors,
-    bool? https,
-    bool? alive,
-    int? maxResponseTime,
+    Object? cors = _unset,
+    Object? https = _unset,
+    Object? alive = _unset,
+    Object? maxResponseTime = _unset,
     String? sortBy,
     String? sortOrder,
     List<ApiItem>? searchResults,
@@ -73,11 +77,12 @@ class SearchState extends Equatable {
     int? totalResults,
     int? totalPages,
     bool? hasMore,
-    String? activeQuickFilter,
+    Object? activeQuickFilter = _unset,
     String? searchToken,
     String? lastRequestDebug,
     List<String>? availableCategories,
     bool? isLoadingCategories,
+    bool? hasSearched,
   }) {
     return SearchState(
       query: query ?? this.query,
@@ -85,10 +90,12 @@ class SearchState extends Equatable {
       auth: auth ?? this.auth,
       apiType: apiType ?? this.apiType,
       category: category ?? this.category,
-      cors: cors ?? this.cors,
-      https: https ?? this.https,
-      alive: alive ?? this.alive,
-      maxResponseTime: maxResponseTime ?? this.maxResponseTime,
+      cors: cors == _unset ? this.cors : cors as String?,
+      https: https == _unset ? this.https : https as bool?,
+      alive: alive == _unset ? this.alive : alive as bool?,
+      maxResponseTime: maxResponseTime == _unset
+          ? this.maxResponseTime
+          : maxResponseTime as int?,
       sortBy: sortBy ?? this.sortBy,
       sortOrder: sortOrder ?? this.sortOrder,
       searchResults: searchResults ?? this.searchResults,
@@ -99,11 +106,14 @@ class SearchState extends Equatable {
       totalResults: totalResults ?? this.totalResults,
       totalPages: totalPages ?? this.totalPages,
       hasMore: hasMore ?? this.hasMore,
-      activeQuickFilter: activeQuickFilter ?? this.activeQuickFilter,
+      activeQuickFilter: activeQuickFilter == _unset
+          ? this.activeQuickFilter
+          : activeQuickFilter as String?,
       searchToken: searchToken ?? this.searchToken,
       lastRequestDebug: lastRequestDebug ?? this.lastRequestDebug,
       availableCategories: availableCategories ?? this.availableCategories,
       isLoadingCategories: isLoadingCategories ?? this.isLoadingCategories,
+      hasSearched: hasSearched ?? this.hasSearched,
     );
   }
 
@@ -133,5 +143,6 @@ class SearchState extends Equatable {
         lastRequestDebug,
         availableCategories,
         isLoadingCategories,
+        hasSearched,
       ];
 }

@@ -17,25 +17,35 @@ class SectionHeaderLink extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(Theme.of(context).brightness);
-    return GestureDetector(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s16),
-        child: Row(
-          children: [
-            Text(
-              title,
-              style: AppTextStyles.labelSmUpper.copyWith(
-                color: c.onSurface,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        highlightColor: c.surfaceContainerHigh,
+        splashColor: c.surfaceContainerHighest,
+        child: Container(
+          constraints: const BoxConstraints(minHeight: 44),
+          alignment: Alignment.centerLeft,
+          padding:
+              const EdgeInsets.symmetric(horizontal: AppSpacing.s16),
+          child: Row(
+            children: [
+              Text(
+                title,
+                style: AppTextStyles.labelSmUpper.copyWith(
+                  color: c.onSurface,
+                ),
               ),
-            ),
-            const Spacer(),
-            Icon(
-              PhosphorIconsRegular.arrowRight,
-              size: 18,
-              color: c.onSurfaceVariant,
-            ),
-          ],
+              const Spacer(),
+              ExcludeSemantics(
+                child: Icon(
+                  PhosphorIconsRegular.arrowRight,
+                  size: 18,
+                  color: c.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

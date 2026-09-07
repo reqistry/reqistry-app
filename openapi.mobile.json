@@ -1,8 +1,8 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Public APIs — Mobile Client API",
-    "description": "API reference for the Public APIs Flutter mobile app. Includes anonymous device auth, email/password account linking, profile management, bookmarks, folders, discovery, categories, search, and legacy JSON endpoints.\n\n## Authentication\n\nAll `/v1/*` endpoints (except `/v1/auth/anonymous`, `/v1/auth/login-email`, `/v1/recently-added`, and `GET /v1/recommend`) require a Bearer token:\n\n```\nAuthorization: Bearer <accessToken>\n```\n\nTokens are obtained via `POST /v1/auth/anonymous` or `POST /v1/auth/login-email`.\n\n## Account Types\n- **Anonymous**: Device-only, no email. Data tied to device fingerprint.\n- **Email-linked**: Has email + password. Can login from any device. Data merges on link.\n\n## Token Lifecycle\n- **Access token**: 15 minutes, used for API requests\n- **Refresh token**: 30 days, used to rotate access tokens\n- Refreshing a token invalidates the old one (single-use rotation)\n- Revoking deactivates all tokens for a device",
+    "title": "Public APIs \u2014 Mobile Client API",
+    "description": "API reference for the Public APIs Flutter mobile app. Includes anonymous device auth, email/password account linking, profile management, bookmarks, folders, discovery, categories, search, and legacy JSON endpoints.\n\n## Authentication\n\nBearer-protected endpoints require:\n\n```\nAuthorization: Bearer <accessToken>\n```\n\nTokens are obtained via `POST /v1/auth/anonymous` or `POST /v1/auth/login-email`.\n\nPublic endpoints (no token required): `POST /submit`, `POST /v1/apis` (auth optional, enables submission attribution), `POST /v1/auth/anonymous`, `POST /v1/auth/refresh`, `POST /v1/auth/revoke`, `POST /v1/auth/login-email`, `GET /v1/recently-added`, `GET /v1/recommend` (auth optional, personalizes with bookmarks), `GET /v1/apis/{slug}`, `GET /v1/apis/{id}/alternatives`, `GET /v1/trust-scores/{id}`, `GET /v1/apis/compare`, `GET /v1/change-feed`, `GET /v1/use-case-collections`, categories (unversioned and `/v1` aliases), `GET /search`, `GET /metadata`, `POST /track`, and `POST /admin/v1/contact-messages`. Every other `/v1/*` operation requires a Bearer token.\n\n## Account Types\n- **Anonymous**: Device-only, no email. Data tied to device fingerprint.\n- **Email-linked**: Has email + password. Can login from any device. Data merges on link.\n\n## Token Lifecycle\n- **Access token**: 15 minutes, used for API requests\n- **Refresh token**: 30 days, used to rotate access tokens\n- Refreshing a token invalidates the old one (single-use rotation)\n- Revoking deactivates all tokens for a device",
     "version": "1.0.0",
     "contact": {
       "name": "Public APIs",
@@ -30,7 +30,7 @@
     },
     {
       "name": "Discover",
-      "description": "API discovery — recently added, recommendations"
+      "description": "API discovery \u2014 recently added, recommendations"
     },
     {
       "name": "Categories",
@@ -536,7 +536,65 @@
         },
         "responses": {
           "200": {
-            "description": "Duplicate link — already submitted and approved",
+            "description": "Duplicate link \u2014 already submitted and approved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitApiResponse"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Submission created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitApiResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/apis": {
+      "post": {
+        "tags": [
+          "Submit"
+        ],
+        "summary": "Submit an API (attributed)",
+        "description": "Submit a new API for review, attributed to the calling device when a Bearer token is provided (enables submission lifecycle notifications and `GET /v1/submissions/mine`). Same payload and responses as `POST /submit`. Auth is optional.",
+        "operationId": "submitAttributedApi",
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {}
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitApiRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Duplicate link \u2014 already submitted and approved",
             "content": {
               "application/json": {
                 "schema": {
@@ -574,7 +632,7 @@
           "Auth"
         ],
         "summary": "Get anonymous device token",
-        "description": "Create or resume an anonymous device session. If the device has an active refresh token, returns a new access token without creating a new session (200). Otherwise, creates a new device session with refresh + access tokens (201).\n\nThis is the entry point for the Flutter app — no account creation required.",
+        "description": "Create or resume an anonymous device session. If the device has an active refresh token, returns a new access token without creating a new session (200). Otherwise, creates a new device session with refresh + access tokens (201).\n\nThis is the entry point for the Flutter app \u2014 no account creation required.",
         "operationId": "anonymousAuth",
         "requestBody": {
           "required": false,
@@ -588,7 +646,7 @@
         },
         "responses": {
           "200": {
-            "description": "Existing device — tokens re-issued (refreshToken is null)",
+            "description": "Existing device \u2014 tokens re-issued (refreshToken is null)",
             "content": {
               "application/json": {
                 "schema": {
@@ -598,7 +656,7 @@
             }
           },
           "201": {
-            "description": "New device created — full token pair issued",
+            "description": "New device created \u2014 full token pair issued",
             "content": {
               "application/json": {
                 "schema": {
@@ -1752,7 +1810,7 @@
         },
         "responses": {
           "200": {
-            "description": "API added — updated folder returned",
+            "description": "API added \u2014 updated folder returned",
             "content": {
               "application/json": {
                 "schema": {
@@ -1818,7 +1876,7 @@
         ],
         "responses": {
           "200": {
-            "description": "API removed — updated folder returned",
+            "description": "API removed \u2014 updated folder returned",
             "content": {
               "application/json": {
                 "schema": {
@@ -2148,7 +2206,8 @@
               }
             }
           }
-        }
+        },
+        "operationId": "getTrustScore"
       }
     },
     "/v1/apis/compare": {
@@ -2187,7 +2246,9 @@
               }
             }
           }
-        }
+        },
+        "operationId": "compareApis",
+        "description": "Side-by-side comparison of 2 to 4 APIs (up to 8 for Pro, by tier)."
       }
     },
     "/v1/change-feed": {
@@ -2205,13 +2266,50 @@
               "minimum": 1,
               "maximum": 50
             }
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "description": "Only events after this ISO datetime",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "description": "Keyword filter on event titles",
+            "schema": {
+              "type": "string",
+              "maxLength": 100
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Change events"
+            "description": "Recent change events with API context",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ChangeFeedEvent"
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
-        }
+        },
+        "operationId": "getChangeFeed"
       }
     },
     "/v1/use-case-collections": {
@@ -2222,9 +2320,28 @@
         "summary": "Curated API use-case collections",
         "responses": {
           "200": {
-            "description": "Collections with APIs"
+            "description": "Curated collections with APIs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/UseCaseCollection"
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
-        }
+        },
+        "operationId": "getUseCaseCollections"
       }
     },
     "/v1/stack": {
@@ -2240,9 +2357,47 @@
         ],
         "responses": {
           "200": {
-            "description": "Projects, saved APIs, trust and health summary"
+            "description": "Stack summary, per-project health, and saved APIs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "summary",
+                        "projects",
+                        "savedApis"
+                      ],
+                      "properties": {
+                        "summary": {
+                          "$ref": "#/components/schemas/StackSummary"
+                        },
+                        "projects": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/StackProjectSummary"
+                          }
+                        },
+                        "savedApis": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/CompareApi"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
-        }
+        },
+        "operationId": "getStack"
       }
     },
     "/v1/notifications/preferences": {
@@ -2272,7 +2427,8 @@
               }
             }
           }
-        }
+        },
+        "operationId": "getNotificationPreferences"
       },
       "patch": {
         "tags": [
@@ -2295,9 +2451,22 @@
         },
         "responses": {
           "200": {
-            "description": "Preferences"
+            "description": "Updated preferences",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/NotificationPreferences"
+                    }
+                  }
+                }
+              }
+            }
           }
-        }
+        },
+        "operationId": "updateNotificationPreferences"
       }
     },
     "/v1/notifications/events": {
@@ -2361,6 +2530,1048 @@
                       "$ref": "#/components/schemas/NotificationEventAck"
                     }
                   }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "trackNotificationEvent"
+      }
+    },
+    "/v1/categories": {
+      "get": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "List all categories",
+        "description": "Returns all active categories with API counts, tags, trending status, descriptions, and image URLs.",
+        "operationId": "getV1Categories",
+        "responses": {
+          "200": {
+            "description": "Category list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoriesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/categories/{id}": {
+      "get": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "Get single category",
+        "description": "Returns full details for a single category by slug, including description, imageUrl, tags, apiCount, and isTrending.",
+        "operationId": "getV1Category",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Category slug (e.g. ai, finance, weather)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Category details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoryDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Category not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/categories/{id}/apis": {
+      "get": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "List APIs in a category",
+        "description": "Returns all published APIs for a specific category. Paginated.",
+        "operationId": "getV1CategoryApis",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Category slug"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            },
+            "description": "Page number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            },
+            "description": "Results per page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "APIs in category",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoryApisResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Category not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/categories/{id}/image": {
+      "get": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "Get category image URL",
+        "description": "Returns the banner/image URL for a category. Returns 404 if no image is set.",
+        "operationId": "getV1CategoryImage",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Category slug"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Image URL",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "imageUrl": {
+                      "type": "string",
+                      "format": "uri"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Category not found or no image available",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/submissions/mine": {
+      "get": {
+        "tags": [
+          "Submit"
+        ],
+        "summary": "List my submissions",
+        "description": "Returns the current device's API submissions, newest first. Requires Bearer access token. Supports pagination (page/limit). Each item includes submissionId (publicId), status, rejectionReason, reviewedAt, submittedAt, and api (populated only when approved->approvedApiId or duplicate->duplicateOfApiId resolves to a published API).",
+        "operationId": "listMySubmissions",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            },
+            "description": "Page number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20
+            },
+            "description": "Results per page (max 50)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "My submissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmissionsMineResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/v1/contact-messages": {
+      "post": {
+        "tags": [
+          "Contact"
+        ],
+        "summary": "Send a contact message",
+        "description": "Public contact form intake. Creates a message for the team to read; admin listing lives outside the mobile contract.",
+        "operationId": "sendContactMessage",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactMessageRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Message sent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactMessageResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/billing/entitlements": {
+      "get": {
+        "tags": [
+          "Billing"
+        ],
+        "summary": "Get entitlements",
+        "description": "Tier, expiry, trial state and limits for the current device.",
+        "operationId": "getEntitlements",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Entitlements",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Entitlements"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/billing/verify": {
+      "post": {
+        "tags": [
+          "Billing"
+        ],
+        "summary": "Verify Play purchase",
+        "description": "Verifies a Play purchase token server-side and activates Pro. Email-linked accounts only.",
+        "operationId": "verifyPlayPurchase",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "purchaseToken"
+                ],
+                "properties": {
+                  "purchaseToken": {
+                    "type": "string"
+                  },
+                  "productId": {
+                    "type": "string"
+                  },
+                  "orderId": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Entitlements",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Entitlements"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Email required or inactive subscription",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "Billing verification unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Could not verify purchase",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/billing/rtdn": {
+      "post": {
+        "tags": [
+          "Billing"
+        ],
+        "summary": "Play RTDN webhook",
+        "description": "Google Pub/Sub push for subscription lifecycle. No user auth; optional ?token shared secret.",
+        "operationId": "playRtdn",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Acknowledged"
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/ship-check": {
+      "post": {
+        "tags": [
+          "Growth"
+        ],
+        "summary": "Ship-check verdict",
+        "description": "Pro production-safety verdict for one API by id or slug. Accepts a Bearer session or an X-Agent-Key header.",
+        "operationId": "shipCheck",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "apiId": {
+                    "type": "string"
+                  },
+                  "slug": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Verdict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/ShipCheckReport"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Pro required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "API not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/watchlists": {
+      "get": {
+        "tags": [
+          "Watchlists"
+        ],
+        "summary": "List watchlists",
+        "description": "Pro keyword/category/project watches.",
+        "operationId": "listWatchlists",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Watchlists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/WatchlistItem"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Pro required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Watchlists"
+        ],
+        "summary": "Add watch",
+        "description": "Adds a watch (max 10 per device).",
+        "operationId": "addWatch",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "kind",
+                  "value"
+                ],
+                "properties": {
+                  "kind": {
+                    "type": "string",
+                    "enum": [
+                      "keyword",
+                      "category",
+                      "project"
+                    ]
+                  },
+                  "value": {
+                    "type": "string",
+                    "maxLength": 255
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Watch created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/WatchlistItem"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Pro required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Duplicate or limit reached",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/watchlists/{id}": {
+      "delete": {
+        "tags": [
+          "Watchlists"
+        ],
+        "summary": "Remove watch",
+        "description": "Removes a watch.",
+        "operationId": "removeWatch",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Removed"
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Pro required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agent-keys": {
+      "get": {
+        "tags": [
+          "AgentKeys"
+        ],
+        "summary": "List agent keys",
+        "description": "Pro personal agent keys (prefixes only).",
+        "operationId": "listAgentKeys",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Keys",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/AgentKeyItem"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Pro required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "AgentKeys"
+        ],
+        "summary": "Create agent key",
+        "description": "Mints a personal agent key (max 5 active). Full key returned once. Unlimited daily calls; per-minute throttle applies.",
+        "operationId": "createAgentKey",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "maxLength": 100
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Key created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/AgentKeyItem"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Pro required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Key limit reached",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agent-keys/{id}": {
+      "delete": {
+        "tags": [
+          "AgentKeys"
+        ],
+        "summary": "Revoke agent key",
+        "description": "Deactivates a key.",
+        "operationId": "revokeAgentKey",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Revoked"
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Pro required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/stack/history": {
+      "get": {
+        "tags": [
+          "Growth"
+        ],
+        "summary": "Stack history",
+        "description": "Pro daily stack snapshots, newest first.",
+        "operationId": "getStackHistory",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "History",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/StackHistoryItem"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Pro required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
                 }
               }
             }
@@ -2689,7 +3900,19 @@
             "format": "uri",
             "description": "API URL"
           }
-        }
+        },
+        "anyOf": [
+          {
+            "required": [
+              "name"
+            ]
+          },
+          {
+            "required": [
+              "link"
+            ]
+          }
+        ]
       },
       "SubmitApiResponse": {
         "type": "object",
@@ -2742,6 +3965,10 @@
                 "type": "string"
               }
             }
+          },
+          "refreshToken": {
+            "type": "string",
+            "description": "Active refresh token to resume an existing device session (200 with a null refreshToken). Omit for a new device."
           }
         }
       },
@@ -2784,8 +4011,11 @@
             "description": "JWT access token (15min expiry)"
           },
           "refreshToken": {
-            "type": "string",
-            "description": "Refresh token (30 day expiry, single-use)"
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Refresh token (30 day expiry, single-use). Null when resuming an existing device session \u2014 keep the stored token."
           },
           "expiresIn": {
             "type": "integer",
@@ -2891,7 +4121,7 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 100,
-            "description": "Display name (1–100 characters)"
+            "description": "Display name (1\u2013100 characters)"
           }
         }
       },
@@ -3859,6 +5089,10 @@
               "updatedAt": {
                 "type": "string",
                 "format": "date-time"
+              },
+              "trustScore": {
+                "$ref": "#/components/schemas/TrustScore",
+                "description": "Trust score with grade, summary and weighted evidence factors. Present on published APIs."
               }
             }
           }
@@ -4228,6 +5462,665 @@
             "type": "boolean"
           },
           "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "SubmissionApiRef": {
+        "type": "object",
+        "required": [
+          "id",
+          "slug",
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "SubmissionMineItem": {
+        "type": "object",
+        "required": [
+          "submissionId",
+          "name",
+          "link",
+          "status",
+          "submittedAt"
+        ],
+        "properties": {
+          "submissionId": {
+            "type": "string",
+            "description": "Public submission ID (publicId)"
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Submitted API name"
+          },
+          "link": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Submitted API URL",
+            "format": "uri"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "approved",
+              "rejected",
+              "duplicate",
+              "spam"
+            ]
+          },
+          "rejectionReason": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Populated only when status=rejected"
+          },
+          "reviewedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "submittedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "api": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SubmissionApiRef"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Populated when approved (approvedApiId) or duplicate (duplicateOfApiId) resolves to a published API"
+          }
+        }
+      },
+      "SubmissionsMineResponse": {
+        "type": "object",
+        "required": [
+          "data",
+          "pagination"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SubmissionMineItem"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        }
+      },
+      "ReportUpdatePayload": {
+        "type": "object",
+        "description": "FCM data payload for trigger report_update (user's incorrect-info report changed status). Tap opens the reported API detail via apiSlug.",
+        "required": [
+          "type",
+          "apiId",
+          "apiSlug",
+          "reportId",
+          "status"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "report_update"
+            ]
+          },
+          "apiId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Reported API id (not routable on mobile, use apiSlug)"
+          },
+          "apiSlug": {
+            "type": "string",
+            "description": "Reported API slug for /apis/:slug deep-link"
+          },
+          "reportId": {
+            "type": "string",
+            "description": "Public report id"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "IN_REVIEW",
+              "RESOLVED",
+              "REJECTED"
+            ]
+          }
+        }
+      },
+      "SubmissionUpdatePayload": {
+        "type": "object",
+        "description": "FCM data payload for trigger submission_update (user's API submission reviewed). Tap opens the live API detail via apiSlug when present.",
+        "required": [
+          "type",
+          "submissionId",
+          "status",
+          "approvedApiId"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "submission_update"
+            ]
+          },
+          "submissionId": {
+            "type": "string",
+            "description": "Public submission id (matches GET /v1/submissions/mine item)"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "approved",
+              "rejected",
+              "duplicate",
+              "spam"
+            ]
+          },
+          "approvedApiId": {
+            "type": "string",
+            "description": "Approved API uuid, empty string unless status=approved"
+          },
+          "apiSlug": {
+            "type": "string",
+            "description": "Live catalog slug when status=approved (approvedApiId) or duplicate (duplicateOfApiId); omitted otherwise or when the API is unpublished"
+          }
+        }
+      },
+      "ContactMessageRequest": {
+        "type": "object",
+        "required": [
+          "name",
+          "email",
+          "message"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 300
+          },
+          "subject": {
+            "type": "string",
+            "maxLength": 500,
+            "default": ""
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10000
+          }
+        }
+      },
+      "ContactMessageResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "message",
+          "id"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          }
+        }
+      },
+      "ChangeFeedEvent": {
+        "type": "object",
+        "required": [
+          "id",
+          "eventType",
+          "title",
+          "createdAt",
+          "api"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "eventType": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "details": {
+            "type": "object",
+            "description": "Event-specific key/value details"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "api": {
+            "type": "object",
+            "required": [
+              "id",
+              "slug",
+              "name"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "slug": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "category": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "slug": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "UseCaseCollection": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "description",
+          "apis"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "filters": {
+            "type": "object",
+            "description": "Category/pricing/auth filters backing the set"
+          },
+          "apis": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CompareApi"
+            }
+          }
+        }
+      },
+      "StackSummary": {
+        "type": "object",
+        "required": [
+          "apiCount",
+          "projectCount",
+          "downCount"
+        ],
+        "properties": {
+          "apiCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "projectCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "downCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "averageTrustScore": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 100
+          }
+        }
+      },
+      "StackProjectSummary": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "apiCount",
+          "downCount",
+          "apis"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "apiCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "downCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "averageTrustScore": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 100
+          },
+          "apis": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CompareApi"
+            }
+          }
+        }
+      },
+      "Entitlements": {
+        "type": "object",
+        "required": [
+          "tier",
+          "isPro",
+          "trialUsed",
+          "emailLinked",
+          "limits"
+        ],
+        "properties": {
+          "tier": {
+            "type": "string",
+            "enum": [
+              "free",
+              "pro"
+            ]
+          },
+          "isPro": {
+            "type": "boolean"
+          },
+          "proExpiresAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "trialUsed": {
+            "type": "boolean"
+          },
+          "emailLinked": {
+            "type": "boolean"
+          },
+          "limits": {
+            "type": "object",
+            "properties": {
+              "healthCooldownSeconds": {
+                "type": "integer"
+              },
+              "healthRateLimitPerMinute": {
+                "type": "integer"
+              },
+              "compareMax": {
+                "type": "integer"
+              },
+              "watchlistsMax": {
+                "type": "integer"
+              },
+              "agentKeysMax": {
+                "type": "integer"
+              },
+              "stackHistoryDays": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      "ShipCheckReport": {
+        "type": "object",
+        "required": [
+          "apiId",
+          "slug",
+          "name",
+          "verdict",
+          "score",
+          "grade",
+          "checks"
+        ],
+        "properties": {
+          "apiId": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "verdict": {
+            "type": "string",
+            "enum": [
+              "ship",
+              "caution",
+              "avoid"
+            ]
+          },
+          "score": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "grade": {
+            "type": "string"
+          },
+          "summary": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "factors": {
+            "type": "object"
+          },
+          "checks": {
+            "type": "object",
+            "properties": {
+              "health": {
+                "type": "string",
+                "enum": [
+                  "pass",
+                  "fail",
+                  "unknown"
+                ]
+              },
+              "https": {
+                "type": "string",
+                "enum": [
+                  "pass",
+                  "fail",
+                  "unknown"
+                ]
+              },
+              "documentation": {
+                "type": "string",
+                "enum": [
+                  "pass",
+                  "fail",
+                  "unknown"
+                ]
+              },
+              "rateLimit": {
+                "type": "string",
+                "enum": [
+                  "pass",
+                  "fail",
+                  "unknown"
+                ]
+              },
+              "auth": {
+                "type": "string",
+                "enum": [
+                  "pass",
+                  "fail",
+                  "unknown"
+                ]
+              }
+            }
+          },
+          "computedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "WatchlistItem": {
+        "type": "object",
+        "required": [
+          "id",
+          "kind",
+          "value",
+          "createdAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "keyword",
+              "category",
+              "project"
+            ]
+          },
+          "value": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "AgentKeyItem": {
+        "type": "object",
+        "required": [
+          "id",
+          "prefix",
+          "name",
+          "isActive",
+          "createdAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "prefix": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "dailyQuota": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "usedToday": {
+            "type": "integer"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "lastUsedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "key": {
+            "type": "string",
+            "description": "Full key, returned only at creation"
+          }
+        }
+      },
+      "StackHistoryItem": {
+        "type": "object",
+        "required": [
+          "id",
+          "downCount",
+          "apiCount",
+          "createdAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "downCount": {
+            "type": "integer"
+          },
+          "avgTrust": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "apiCount": {
+            "type": "integer"
+          },
+          "createdAt": {
             "type": "string",
             "format": "date-time"
           }

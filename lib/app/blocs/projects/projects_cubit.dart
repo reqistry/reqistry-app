@@ -1,20 +1,27 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:api_scout/app/data/models/project.dart';
 import 'package:api_scout/app/data/models/project_detail.dart';
 import 'package:api_scout/app/services/auth/dio_client.dart';
+import 'package:api_scout/app/services/in_app_review/in_app_review.dart';
 import 'package:api_scout/app/utils/snackbar_helper.dart';
 import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:dio/dio.dart';
 import 'projects_state.dart';
 
 class ProjectsCubit extends Cubit<ProjectsState> {
-  ProjectsCubit() : super(const ProjectsState());
+  ProjectsCubit({Dio? dio})
+      : _dio = dio ?? DioClient().dio,
+        super(const ProjectsState());
+
+  final Dio _dio;
 
   Future<void> loadProjects({required AppLocalizations l10n}) async {
     try {
       emit(state.copyWith(isLoading: true, errorMessage: ''));
-      final response = await DioClient().dio.get('/v1/folders');
+      final response = await _dio.get('/v1/folders');
       final data = response.data;
       final projects = (data['folders'] as List)
           .whereType<Map<String, dynamic>>()
@@ -34,9 +41,10 @@ class ProjectsCubit extends Cubit<ProjectsState> {
     }
   }
 
-  Future<void> createProject(String title, {IconData? icon, required AppLocalizations l10n}) async {
+  Future<bool> createProject(String title,
+      {IconData? icon, required AppLocalizations l10n}) async {
     try {
-      final response = await DioClient().dio.post('/v1/folders',
+      final response = await _dio.post('/v1/folders',
           data: {
             'title': title,
             'iconCodePoint': icon?.codePoint ?? 0,
@@ -50,12 +58,16 @@ class ProjectsCubit extends Cubit<ProjectsState> {
         title: l10n.snackbarProjectCreatedTitle,
         message: l10n.snackbarProjectCreatedMessage(title),
       );
+      // Best-effort review prompt; never blocks the create flow.
+      unawaited(InAppReview().recordWinAndMaybePrompt());
+      return true;
     } catch (e) {
       AppSnackBarHelper.show(
         title: l10n.stateError,
         message: l10n.snackbarFailedToCreateProject,
         isError: true,
       );
+      return false;
     }
   }
 
@@ -66,7 +78,7 @@ class ProjectsCubit extends Cubit<ProjectsState> {
     required AppLocalizations l10n,
   }) async {
     try {
-      final response = await DioClient().dio.put('/v1/folders/$id',
+      final response = await _dio.put('/v1/folders/$id',
           data: {
             if (title != null) 'title': title,
             if (icon != null) 'iconCodePoint': icon.codePoint,
@@ -98,9 +110,10 @@ class ProjectsCubit extends Cubit<ProjectsState> {
     }
   }
 
-  Future<void> deleteProject(String id, {required AppLocalizations l10n}) async {
+  Future<bool> deleteProject(String id,
+      {required AppLocalizations l10n}) async {
     try {
-      await DioClient().dio.delete('/v1/folders/$id',
+      await _dio.delete('/v1/folders/$id',
           options: Options(
             extra: const {RequestErrorNotifierInterceptor.silentKey: true},
           ));
@@ -110,12 +123,14 @@ class ProjectsCubit extends Cubit<ProjectsState> {
         title: l10n.snackbarDeletedTitle,
         message: l10n.snackbarProjectDeleted,
       );
+      return true;
     } catch (e) {
       AppSnackBarHelper.show(
         title: l10n.stateError,
         message: l10n.snackbarFailedToDeleteProject,
         isError: true,
       );
+      return false;
     }
   }
 
@@ -125,7 +140,6 @@ class ProjectsCubit extends Cubit<ProjectsState> {
     required String apiLink,
     required AppLocalizations l10n,
   }) async {
-    final previous = state.projects;
     Project? project;
     for (final item in state.projects) {
       if (item.id == projectId) {
@@ -144,32 +158,31 @@ class ProjectsCubit extends Cubit<ProjectsState> {
     }
     final alreadyAdded = project.apiLinks.contains(apiLink);
     if (alreadyAdded) return true;
-    emit(state.copyWith(
-      projects: state.projects.map((item) {
-        if (item.id != projectId) return item;
-        return item.copyWith(
-          apiLinks: [...item.apiLinks, apiLink],
-          apiCount: item.apiCount + 1,
-          updatedAt: DateTime.now(),
-        );
-      }).toList(),
-    ));
     try {
-      await DioClient().dio.post(
-            '/v1/projects/$projectId/apis',
-            data: {'apiId': apiId},
-            options: Options(extra: const {
-              'silentLoader': true,
-              RequestErrorNotifierInterceptor.silentKey: true,
-            }),
+      await _dio.post(
+        '/v1/projects/$projectId/apis',
+        data: {'apiId': apiId},
+        options: Options(extra: const {
+          'silentLoader': true,
+          RequestErrorNotifierInterceptor.silentKey: true,
+        }),
+      );
+      emit(state.copyWith(
+        projects: state.projects.map((item) {
+          if (item.id != projectId) return item;
+          return item.copyWith(
+            apiLinks: [...item.apiLinks, apiLink],
+            apiCount: item.apiCount + 1,
+            updatedAt: DateTime.now(),
           );
+        }).toList(),
+      ));
       AppSnackBarHelper.success(
         title: l10n.snackbarAddedTitle,
         message: l10n.snackbarAddedToProject(project.title),
       );
       return true;
     } catch (e) {
-      emit(state.copyWith(projects: previous));
       AppSnackBarHelper.show(
         title: l10n.stateError,
         message: l10n.snackbarCouldNotAddToProject(project.title),
@@ -179,15 +192,32 @@ class ProjectsCubit extends Cubit<ProjectsState> {
     }
   }
 
-  Future<void> removeApiFromProject(String projectId, String apiLink, {required AppLocalizations l10n}) async {
+  /// Removes an API from a project, preferring the stable-ID route
+  /// (`DELETE /v1/projects/{id}/apis/{apiId}`) and falling back to the
+  /// legacy URL-encoded link route when only a link is known.
+  Future<void> removeApiFromProject(
+    String projectId,
+    String apiLink, {
+    String? apiId,
+    required AppLocalizations l10n,
+  }) async {
     try {
-      final encodedLink = Uri.encodeComponent(apiLink);
-      await DioClient().dio.delete(
-            '/v1/folders/$projectId/api-links/$encodedLink',
-            options: Options(
-              extra: const {RequestErrorNotifierInterceptor.silentKey: true},
-            ),
-          );
+      final options = Options(
+        extra: const {RequestErrorNotifierInterceptor.silentKey: true},
+      );
+      final stableId = apiId?.trim() ?? '';
+      if (stableId.isNotEmpty) {
+        await _dio.delete(
+          '/v1/projects/$projectId/apis/$stableId',
+          options: options,
+        );
+      } else {
+        final encodedLink = Uri.encodeComponent(apiLink);
+        await _dio.delete(
+          '/v1/folders/$projectId/api-links/$encodedLink',
+          options: options,
+        );
+      }
       await loadProjects(l10n: l10n);
       AppSnackBarHelper.success(
         title: l10n.snackbarRemovedTitle,
@@ -202,13 +232,18 @@ class ProjectsCubit extends Cubit<ProjectsState> {
     }
   }
 
+  /// Drops all user data on sign-out/account switch. Never fetches.
+  void clear() {
+    if (!isClosed) emit(const ProjectsState());
+  }
+
   Future<ProjectDetail> getProject(String id) async {
-    final response = await DioClient().dio.get('/v1/folders/$id');
+    final response = await _dio.get('/v1/folders/$id');
     return ProjectDetail.fromJson(response.data);
   }
 
   Future<ProjectMetadata> getProjectMetadata(String id) async {
-    final response = await DioClient().dio.get('/v1/folders/$id/metadata');
+    final response = await _dio.get('/v1/folders/$id/metadata');
     return ProjectMetadata.fromJson(response.data);
   }
 }

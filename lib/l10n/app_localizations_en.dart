@@ -949,6 +949,103 @@ class AppLocalizationsEn extends AppLocalizations {
       'No saved APIs yet. Search to pick APIs to compare.';
 
   @override
+  String get changeTypeTrustScore => 'TRUST SCORE';
+
+  @override
+  String get changeTypePricing => 'PRICING';
+
+  @override
+  String get changeTypeHealth => 'HEALTH';
+
+  @override
+  String get changeTypeUpdate => 'UPDATE';
+
+  @override
+  String get compareOpenApi => 'OpenAPI spec';
+
+  @override
+  String get onboardingSearchFabTitle => 'SEARCH ANYTHING';
+
+  @override
+  String get onboardingSearchFabDesc =>
+      'Tap the search button to find APIs across the whole registry.';
+
+  @override
+  String get onboardingNavBarTitle => 'NAVIGATION';
+
+  @override
+  String get onboardingNavBarDesc =>
+      'Switch between Home, Explore, Intelligence, Saved and You.';
+
+  @override
+  String get onboardingSubmitApiTitle => 'KNOW AN API?';
+
+  @override
+  String get onboardingSubmitApiDesc =>
+      'Submit missing APIs and help the registry grow.';
+
+  @override
+  String get onboardingCompareTitle => 'COMPARE APIS';
+
+  @override
+  String get onboardingCompareDesc =>
+      'Pick up to 4 APIs and compare trust, pricing and health side by side.';
+
+  @override
+  String get onboardingStatsTitle => 'YOUR ACTIVITY';
+
+  @override
+  String get onboardingStatsDesc =>
+      'Keep track of your bookmarked APIs and projects at a glance.';
+
+  @override
+  String get onboardingProjectsTitle => 'YOUR PROJECTS';
+
+  @override
+  String get onboardingProjectsDesc =>
+      'Group APIs into projects to compare and share them with your team.';
+
+  @override
+  String get onboardingApiMetaTitle => 'API OVERVIEW';
+
+  @override
+  String get onboardingApiMetaDesc =>
+      'Everything about this API: description, category, pricing, auth type and live health.';
+
+  @override
+  String get onboardingSaveProjectTitle => 'SAVE TO PROJECT';
+
+  @override
+  String get onboardingSaveProjectDesc =>
+      'Add this API to one of your projects, or create a new one.';
+
+  @override
+  String get onboardingBookmarkTitle => 'BOOKMARK IT';
+
+  @override
+  String get onboardingBookmarkDesc =>
+      'Save the API to your bookmarks for quick access anytime.';
+
+  @override
+  String get settingsReplayIntro => 'Replay intro';
+
+  @override
+  String get actionSkip => 'SKIP';
+
+  @override
+  String get actionPrevious => 'PREVIOUS';
+
+  @override
+  String get actionNext => 'NEXT';
+
+  @override
+  String get nudgeSubmitApiTitle => 'KNOW AN API WE\'RE MISSING?';
+
+  @override
+  String get nudgeSubmitApiMessage =>
+      'You\'ve explored 5 APIs. Help the registry grow by submitting one you love.';
+
+  @override
   String compareTrustScoreValue(int score, String grade) {
     return '$score · Grade $grade';
   }
@@ -1640,4 +1737,356 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsLanguage => 'Language';
+
+  @override
+  String get intelligenceCollections => 'CURATED COLLECTIONS';
+
+  @override
+  String get intelligenceCollectionsSubtitle =>
+      'Task-fit starters. Pick a job, compare the shortlist.';
+
+  @override
+  String get intelligenceHeroTitle => 'DECIDE WITH EVIDENCE.';
+
+  @override
+  String get intelligenceHeroSubtitle =>
+      'Compare APIs side by side, backed by live trust evidence.';
+
+  @override
+  String get intelligenceRecent => 'RECENT';
+
+  @override
+  String collectionApisCount(Object count) {
+    return '$count APIs';
+  }
+
+  @override
+  String get compareTrust => 'Trust';
+
+  @override
+  String get compareTopPick => 'TOP PICK';
+
+  @override
+  String get compareBest => 'BEST';
+
+  @override
+  String compareVerdictFastest(Object ms, Object name) {
+    return 'Fastest response: $name at $ms ms';
+  }
+
+  @override
+  String compareVerdictUptime(Object name, Object uptime) {
+    return 'Best uptime: $name at $uptime';
+  }
+
+  @override
+  String get compareVerdictAlsoFastest => 'Also the fastest option';
+
+  @override
+  String get compareShareHeader => 'API comparison via Reqistry';
+
+  @override
+  String get trustEvidenceTitle => 'TRUST EVIDENCE';
+
+  @override
+  String trustEvidenceVerifiedOn(Object date) {
+    return 'Verified $date';
+  }
+
+  @override
+  String get trustEvidenceLiveScore => 'Live score, fresh from this check';
+
+  @override
+  String get statsAvgTrust => 'AVG TRUST';
+
+  @override
+  String get statsDownNow => 'DOWN NOW';
+
+  @override
+  String get sectionTrendingCategories => 'TRENDING';
+
+  @override
+  String get contactFormTitle => 'SEND A MESSAGE';
+
+  @override
+  String get contactFormSubtitle =>
+      'Questions, feedback or broken data. The team reads everything.';
+
+  @override
+  String get formSubject => 'SUBJECT (OPTIONAL)';
+
+  @override
+  String get formMessage => 'MESSAGE';
+
+  @override
+  String get formInvalidEmail => 'Enter a valid email';
+
+  @override
+  String get snackbarContactSentTitle => 'Message sent';
+
+  @override
+  String get snackbarContactSentMessage => 'Your message has been sent.';
+
+  @override
+  String get snackbarContactFailedMessage =>
+      'Unable to send right now. Please try again.';
+
+  @override
+  String get notifFeedTitle => 'Notifications';
+
+  @override
+  String get notifFeedClearTooltip => 'Clear all';
+
+  @override
+  String get notifFeedEmptyTitle => 'No notifications yet';
+
+  @override
+  String get notifFeedEmptyMessage =>
+      'Health, price, and trust alerts for your saved APIs will appear here.';
+
+  @override
+  String get notifFeedClearTitle => 'Clear all notifications?';
+
+  @override
+  String get notifFeedClearMessage =>
+      'This removes your local notification history. This cannot be undone.';
+
+  @override
+  String get submissionsTitle => 'My submissions';
+
+  @override
+  String get submissionsEmptyTitle => 'No submissions yet';
+
+  @override
+  String get submissionsEmptyMessage =>
+      'APIs you submit for review will appear here with their review status.';
+
+  @override
+  String get submissionsOpenApi => 'Open API';
+
+  @override
+  String submissionsSubmittedOn(String date) {
+    return 'Submitted $date';
+  }
+
+  @override
+  String submissionsReviewedOn(String date) {
+    return 'Reviewed $date';
+  }
+
+  @override
+  String submissionsRejectionReason(String reason) {
+    return 'Reason: $reason';
+  }
+
+  @override
+  String get submissionStatusPending => 'Pending';
+
+  @override
+  String get submissionStatusApproved => 'Approved';
+
+  @override
+  String get submissionStatusRejected => 'Rejected';
+
+  @override
+  String get submissionStatusDuplicate => 'Duplicate';
+
+  @override
+  String get submissionStatusSpam => 'Spam';
+
+  @override
+  String get settingsMySubmissions => 'My submissions';
+
+  @override
+  String get actionUndo => 'Undo';
+
+  @override
+  String get actionDone => 'Done';
+
+  @override
+  String get paywallTitle => 'REQISTRY PRO';
+
+  @override
+  String get paywallHeadline => 'Build faster on trusted APIs';
+
+  @override
+  String get paywallSubtitle =>
+      'One tier. Founder pricing, locked forever. Cancel anytime.';
+
+  @override
+  String get paywallBenefitPriceLock => 'Founder pricing locked for life';
+
+  @override
+  String get paywallBenefitBadge => 'Founder badge on your profile';
+
+  @override
+  String get paywallBenefitSupport => 'Priority support lane';
+
+  @override
+  String get paywallBenefitEarlyAccess =>
+      'First access to ship-checks, monitor and agent keys';
+
+  @override
+  String get paywallChoosePlan => 'CHOOSE PLAN';
+
+  @override
+  String get paywallMonthlyTitle => 'Monthly';
+
+  @override
+  String get paywallYearlyTitle => 'Yearly';
+
+  @override
+  String get paywallTrialIncluded => '7-day free trial included';
+
+  @override
+  String get paywallYearlyBadge => 'SAVE 33%';
+
+  @override
+  String get paywallCtaTrial => 'Start free trial';
+
+  @override
+  String get paywallAccountRequiredTitle => 'Email account required';
+
+  @override
+  String get paywallAccountRequiredBody =>
+      'Link an email to your account before purchasing so Pro stays with you on every device.';
+
+  @override
+  String get paywallAccountRequiredAction => 'Link email';
+
+  @override
+  String get paywallRestore => 'Restore purchases';
+
+  @override
+  String get paywallRestoreEmpty => 'No purchases found.';
+
+  @override
+  String get paywallLoading => 'Loading plans';
+
+  @override
+  String get paywallLoadError =>
+      'Could not load plans. Check connection and retry.';
+
+  @override
+  String get paywallUnavailable => 'Purchases unavailable on this device.';
+
+  @override
+  String get paywallPurchasing => 'Confirm in the store';
+
+  @override
+  String get paywallSuccessTitle => 'Welcome to Pro';
+
+  @override
+  String get paywallSuccessBody =>
+      'Your subscription is active. Founder pricing is locked.';
+
+  @override
+  String get paywallTerms =>
+      'Cancel anytime in store settings. Trial converts to paid unless canceled 24h before end.';
+
+  @override
+  String get settingsGoPro => 'Go Pro';
+
+  @override
+  String get settingsGoProSubtitle => 'Founder pricing, badge, early access';
+
+  @override
+  String get settingsProActive => 'Pro active';
+
+  @override
+  String get badgePro => 'PRO';
+
+  @override
+  String get proTeaserTitle => 'Pro ship-check';
+
+  @override
+  String get proTeaserBody =>
+      'Evidence exports, monitor digests and agent keys land here first.';
+
+  @override
+  String get pickerProCompareUp => 'Pro compares up to 8';
+
+  @override
+  String get watchTitle => 'Watchlists';
+
+  @override
+  String get watchEmptyTitle => 'No watches yet';
+
+  @override
+  String get watchEmptyMessage =>
+      'Watch a keyword to get push alerts on new, price or trust changes.';
+
+  @override
+  String get watchAction => 'Watch this search';
+
+  @override
+  String get watchAdded => 'Watch added';
+
+  @override
+  String get watchLimitReached => 'Watchlist limit reached';
+
+  @override
+  String get agentKeysTitle => 'Agent API keys';
+
+  @override
+  String get agentKeysEmpty =>
+      'No keys yet. Create one so your agents can query Reqistry.';
+
+  @override
+  String get agentKeyCreate => 'Create key';
+
+  @override
+  String get agentKeyNameHint => 'Key name (optional)';
+
+  @override
+  String get agentKeyOnceWarning => 'Copy now — the full key shows only once.';
+
+  @override
+  String get agentKeyCopied => 'Key copied';
+
+  @override
+  String agentKeyUsageToday(int used) {
+    return '$used calls today';
+  }
+
+  @override
+  String get agentKeyRevokeTitle => 'Revoke this key?';
+
+  @override
+  String get agentKeyRevokeMessage =>
+      'Agents using it stop working immediately.';
+
+  @override
+  String get shipReportTitle => 'Ship-check report';
+
+  @override
+  String get shipVerdictShip => 'Safe to ship';
+
+  @override
+  String get shipVerdictCaution => 'Ship with caution';
+
+  @override
+  String get shipVerdictAvoid => 'Do not ship';
+
+  @override
+  String get monitorTitle => 'Monitor stack';
+
+  @override
+  String get monitorSubtitle => 'Daily health digest for this project';
+
+  @override
+  String get stackHistoryTitle => 'Stack history';
+
+  @override
+  String get stackHistoryEmpty =>
+      'Snapshots appear after the first daily digest.';
+
+  @override
+  String get stackHistoryDown => 'DOWN';
+
+  @override
+  String get stackHistoryTrust => 'TRUST';
+
+  @override
+  String get notifFeedRemovedMessage => 'Notification deleted.';
 }

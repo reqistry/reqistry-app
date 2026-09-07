@@ -71,13 +71,19 @@ class _BrowseByCategoryState extends State<BrowseByCategory> {
               prefixIcon: Icon(PhosphorIconsRegular.magnifyingGlass,
                   color: c.outline, size: 18),
               suffixIcon: _query.isNotEmpty
-                  ? GestureDetector(
-                      onTap: () {
+                  ? IconButton(
+                      tooltip: MaterialLocalizations.of(context).cancelButtonLabel,
+                      constraints: const BoxConstraints.tightFor(
+                        width: 48,
+                        height: 48,
+                      ),
+                      iconSize: 18,
+                      onPressed: () {
                         _controller.clear();
                         setState(() => _query = '');
                       },
-                      child: Icon(PhosphorIconsRegular.x,
-                          color: c.outline, size: 16),
+                      icon: Icon(PhosphorIconsRegular.x,
+                          color: c.outline, size: 18),
                     )
                   : null,
             ),
@@ -115,13 +121,30 @@ class _BrowseByCategoryState extends State<BrowseByCategory> {
                     itemCount: filtered.length,
                     itemBuilder: (context, index) {
                       final category = filtered[index];
+                      final l10n = AppLocalizations.of(context)!;
 
-                      return GestureDetector(
-                        onTap: () => context.push(
-                          AppRoutes.categoryApis,
-                          extra: category,
+                      return Semantics(
+                        button: true,
+                        label: category.hasTrendyBorder
+                            ? '${l10n.stateTrending}: ${category.name}, '
+                                '${category.apiCount} ${l10n.miscApis}'
+                            : category.name,
+                        child: ExcludeSemantics(
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              key: ValueKey(category.id),
+                              onTap: () => context.push(
+                                AppRoutes.categoryApis,
+                                extra: category,
+                              ),
+                              highlightColor: c.surfaceContainerHigh,
+                              splashColor: c.surfaceContainerHighest,
+                              child:
+                                  DiscoverCategoryCard(category: category),
+                            ),
+                          ),
                         ),
-                        child: DiscoverCategoryCard(category: category),
                       );
                     },
                   ),

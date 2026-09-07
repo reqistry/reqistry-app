@@ -1868,6 +1868,180 @@ abstract class AppLocalizations {
   /// **'No saved APIs yet. Search to pick APIs to compare.'**
   String get pickerNoSavedApis;
 
+  /// Change feed event type label
+  ///
+  /// In en, this message translates to:
+  /// **'TRUST SCORE'**
+  String get changeTypeTrustScore;
+
+  /// Change feed event type label
+  ///
+  /// In en, this message translates to:
+  /// **'PRICING'**
+  String get changeTypePricing;
+
+  /// Change feed event type label
+  ///
+  /// In en, this message translates to:
+  /// **'HEALTH'**
+  String get changeTypeHealth;
+
+  /// Change feed event type label
+  ///
+  /// In en, this message translates to:
+  /// **'UPDATE'**
+  String get changeTypeUpdate;
+
+  /// Compare table row label
+  ///
+  /// In en, this message translates to:
+  /// **'OpenAPI spec'**
+  String get compareOpenApi;
+
+  /// Onboarding step title
+  ///
+  /// In en, this message translates to:
+  /// **'SEARCH ANYTHING'**
+  String get onboardingSearchFabTitle;
+
+  /// Onboarding step description
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the search button to find APIs across the whole registry.'**
+  String get onboardingSearchFabDesc;
+
+  /// Onboarding step title
+  ///
+  /// In en, this message translates to:
+  /// **'NAVIGATION'**
+  String get onboardingNavBarTitle;
+
+  /// Onboarding step description
+  ///
+  /// In en, this message translates to:
+  /// **'Switch between Home, Explore, Intelligence, Saved and You.'**
+  String get onboardingNavBarDesc;
+
+  /// Onboarding step title
+  ///
+  /// In en, this message translates to:
+  /// **'KNOW AN API?'**
+  String get onboardingSubmitApiTitle;
+
+  /// Onboarding step description
+  ///
+  /// In en, this message translates to:
+  /// **'Submit missing APIs and help the registry grow.'**
+  String get onboardingSubmitApiDesc;
+
+  /// Onboarding step title
+  ///
+  /// In en, this message translates to:
+  /// **'COMPARE APIS'**
+  String get onboardingCompareTitle;
+
+  /// Onboarding step description
+  ///
+  /// In en, this message translates to:
+  /// **'Pick up to 4 APIs and compare trust, pricing and health side by side.'**
+  String get onboardingCompareDesc;
+
+  /// Onboarding step title
+  ///
+  /// In en, this message translates to:
+  /// **'YOUR ACTIVITY'**
+  String get onboardingStatsTitle;
+
+  /// Onboarding step description
+  ///
+  /// In en, this message translates to:
+  /// **'Keep track of your bookmarked APIs and projects at a glance.'**
+  String get onboardingStatsDesc;
+
+  /// Onboarding step title
+  ///
+  /// In en, this message translates to:
+  /// **'YOUR PROJECTS'**
+  String get onboardingProjectsTitle;
+
+  /// Onboarding step description
+  ///
+  /// In en, this message translates to:
+  /// **'Group APIs into projects to compare and share them with your team.'**
+  String get onboardingProjectsDesc;
+
+  /// Onboarding step title
+  ///
+  /// In en, this message translates to:
+  /// **'API OVERVIEW'**
+  String get onboardingApiMetaTitle;
+
+  /// Onboarding step description
+  ///
+  /// In en, this message translates to:
+  /// **'Everything about this API: description, category, pricing, auth type and live health.'**
+  String get onboardingApiMetaDesc;
+
+  /// Onboarding step title
+  ///
+  /// In en, this message translates to:
+  /// **'SAVE TO PROJECT'**
+  String get onboardingSaveProjectTitle;
+
+  /// Onboarding step description
+  ///
+  /// In en, this message translates to:
+  /// **'Add this API to one of your projects, or create a new one.'**
+  String get onboardingSaveProjectDesc;
+
+  /// Onboarding step title
+  ///
+  /// In en, this message translates to:
+  /// **'BOOKMARK IT'**
+  String get onboardingBookmarkTitle;
+
+  /// Onboarding step description
+  ///
+  /// In en, this message translates to:
+  /// **'Save the API to your bookmarks for quick access anytime.'**
+  String get onboardingBookmarkDesc;
+
+  /// Replay onboarding tour entry
+  ///
+  /// In en, this message translates to:
+  /// **'Replay intro'**
+  String get settingsReplayIntro;
+
+  /// Skip onboarding button
+  ///
+  /// In en, this message translates to:
+  /// **'SKIP'**
+  String get actionSkip;
+
+  /// Previous onboarding step button
+  ///
+  /// In en, this message translates to:
+  /// **'PREVIOUS'**
+  String get actionPrevious;
+
+  /// Next onboarding step button
+  ///
+  /// In en, this message translates to:
+  /// **'NEXT'**
+  String get actionNext;
+
+  /// Submit-API encouragement nudge
+  ///
+  /// In en, this message translates to:
+  /// **'KNOW AN API WE\'RE MISSING?'**
+  String get nudgeSubmitApiTitle;
+
+  /// Submit-API encouragement nudge
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve explored 5 APIs. Help the registry grow by submitting one you love.'**
+  String get nudgeSubmitApiMessage;
+
   /// Trust score with grade in compare table header
   ///
   /// In en, this message translates to:
@@ -3109,6 +3283,642 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Language'**
   String get settingsLanguage;
+
+  /// Intelligence collections section
+  ///
+  /// In en, this message translates to:
+  /// **'CURATED COLLECTIONS'**
+  String get intelligenceCollections;
+
+  /// Intelligence collections subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Task-fit starters. Pick a job, compare the shortlist.'**
+  String get intelligenceCollectionsSubtitle;
+
+  /// Intelligence hero title
+  ///
+  /// In en, this message translates to:
+  /// **'DECIDE WITH EVIDENCE.'**
+  String get intelligenceHeroTitle;
+
+  /// Intelligence hero subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Compare APIs side by side, backed by live trust evidence.'**
+  String get intelligenceHeroSubtitle;
+
+  /// Recent comparisons label
+  ///
+  /// In en, this message translates to:
+  /// **'RECENT'**
+  String get intelligenceRecent;
+
+  /// API count in a collection
+  ///
+  /// In en, this message translates to:
+  /// **'{count} APIs'**
+  String collectionApisCount(Object count);
+
+  /// Compare table trust row label
+  ///
+  /// In en, this message translates to:
+  /// **'Trust'**
+  String get compareTrust;
+
+  /// Compare verdict title
+  ///
+  /// In en, this message translates to:
+  /// **'TOP PICK'**
+  String get compareTopPick;
+
+  /// Best value badge
+  ///
+  /// In en, this message translates to:
+  /// **'BEST'**
+  String get compareBest;
+
+  /// Verdict fastest bullet
+  ///
+  /// In en, this message translates to:
+  /// **'Fastest response: {name} at {ms} ms'**
+  String compareVerdictFastest(Object ms, Object name);
+
+  /// Verdict uptime bullet
+  ///
+  /// In en, this message translates to:
+  /// **'Best uptime: {name} at {uptime}'**
+  String compareVerdictUptime(Object name, Object uptime);
+
+  /// Verdict fastest tie bullet
+  ///
+  /// In en, this message translates to:
+  /// **'Also the fastest option'**
+  String get compareVerdictAlsoFastest;
+
+  /// Shared comparison header
+  ///
+  /// In en, this message translates to:
+  /// **'API comparison via Reqistry'**
+  String get compareShareHeader;
+
+  /// Trust evidence sheet title
+  ///
+  /// In en, this message translates to:
+  /// **'TRUST EVIDENCE'**
+  String get trustEvidenceTitle;
+
+  /// Trust score verification date
+  ///
+  /// In en, this message translates to:
+  /// **'Verified {date}'**
+  String trustEvidenceVerifiedOn(Object date);
+
+  /// Live trust score note
+  ///
+  /// In en, this message translates to:
+  /// **'Live score, fresh from this check'**
+  String get trustEvidenceLiveScore;
+
+  /// Average trust stat label
+  ///
+  /// In en, this message translates to:
+  /// **'AVG TRUST'**
+  String get statsAvgTrust;
+
+  /// Down APIs stat label
+  ///
+  /// In en, this message translates to:
+  /// **'DOWN NOW'**
+  String get statsDownNow;
+
+  /// Trending categories section
+  ///
+  /// In en, this message translates to:
+  /// **'TRENDING'**
+  String get sectionTrendingCategories;
+
+  /// Contact form title
+  ///
+  /// In en, this message translates to:
+  /// **'SEND A MESSAGE'**
+  String get contactFormTitle;
+
+  /// Contact form subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Questions, feedback or broken data. The team reads everything.'**
+  String get contactFormSubtitle;
+
+  /// Contact subject field label
+  ///
+  /// In en, this message translates to:
+  /// **'SUBJECT (OPTIONAL)'**
+  String get formSubject;
+
+  /// Contact message field label
+  ///
+  /// In en, this message translates to:
+  /// **'MESSAGE'**
+  String get formMessage;
+
+  /// Invalid email error
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid email'**
+  String get formInvalidEmail;
+
+  /// Contact sent title
+  ///
+  /// In en, this message translates to:
+  /// **'Message sent'**
+  String get snackbarContactSentTitle;
+
+  /// Contact sent fallback message
+  ///
+  /// In en, this message translates to:
+  /// **'Your message has been sent.'**
+  String get snackbarContactSentMessage;
+
+  /// Contact failed message
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to send right now. Please try again.'**
+  String get snackbarContactFailedMessage;
+
+  /// Notification feed title
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notifFeedTitle;
+
+  /// Clear notifications tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'Clear all'**
+  String get notifFeedClearTooltip;
+
+  /// Empty notifications title
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications yet'**
+  String get notifFeedEmptyTitle;
+
+  /// Empty notifications message
+  ///
+  /// In en, this message translates to:
+  /// **'Health, price, and trust alerts for your saved APIs will appear here.'**
+  String get notifFeedEmptyMessage;
+
+  /// Clear notifications confirm title
+  ///
+  /// In en, this message translates to:
+  /// **'Clear all notifications?'**
+  String get notifFeedClearTitle;
+
+  /// Clear notifications confirm message
+  ///
+  /// In en, this message translates to:
+  /// **'This removes your local notification history. This cannot be undone.'**
+  String get notifFeedClearMessage;
+
+  /// Submission history title
+  ///
+  /// In en, this message translates to:
+  /// **'My submissions'**
+  String get submissionsTitle;
+
+  /// Empty submissions title
+  ///
+  /// In en, this message translates to:
+  /// **'No submissions yet'**
+  String get submissionsEmptyTitle;
+
+  /// Empty submissions message
+  ///
+  /// In en, this message translates to:
+  /// **'APIs you submit for review will appear here with their review status.'**
+  String get submissionsEmptyMessage;
+
+  /// Open approved API action
+  ///
+  /// In en, this message translates to:
+  /// **'Open API'**
+  String get submissionsOpenApi;
+
+  /// Submission date label
+  ///
+  /// In en, this message translates to:
+  /// **'Submitted {date}'**
+  String submissionsSubmittedOn(String date);
+
+  /// Review date label
+  ///
+  /// In en, this message translates to:
+  /// **'Reviewed {date}'**
+  String submissionsReviewedOn(String date);
+
+  /// Rejection reason label
+  ///
+  /// In en, this message translates to:
+  /// **'Reason: {reason}'**
+  String submissionsRejectionReason(String reason);
+
+  /// Pending status
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get submissionStatusPending;
+
+  /// Approved status
+  ///
+  /// In en, this message translates to:
+  /// **'Approved'**
+  String get submissionStatusApproved;
+
+  /// Rejected status
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected'**
+  String get submissionStatusRejected;
+
+  /// Duplicate status
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate'**
+  String get submissionStatusDuplicate;
+
+  /// Spam status
+  ///
+  /// In en, this message translates to:
+  /// **'Spam'**
+  String get submissionStatusSpam;
+
+  /// My submissions settings entry
+  ///
+  /// In en, this message translates to:
+  /// **'My submissions'**
+  String get settingsMySubmissions;
+
+  /// Undo action button
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get actionUndo;
+
+  /// Done action button
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get actionDone;
+
+  /// Paywall title
+  ///
+  /// In en, this message translates to:
+  /// **'REQISTRY PRO'**
+  String get paywallTitle;
+
+  /// Paywall headline
+  ///
+  /// In en, this message translates to:
+  /// **'Build faster on trusted APIs'**
+  String get paywallHeadline;
+
+  /// Paywall subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'One tier. Founder pricing, locked forever. Cancel anytime.'**
+  String get paywallSubtitle;
+
+  /// Pro benefit
+  ///
+  /// In en, this message translates to:
+  /// **'Founder pricing locked for life'**
+  String get paywallBenefitPriceLock;
+
+  /// Pro benefit
+  ///
+  /// In en, this message translates to:
+  /// **'Founder badge on your profile'**
+  String get paywallBenefitBadge;
+
+  /// Pro benefit
+  ///
+  /// In en, this message translates to:
+  /// **'Priority support lane'**
+  String get paywallBenefitSupport;
+
+  /// Pro benefit
+  ///
+  /// In en, this message translates to:
+  /// **'First access to ship-checks, monitor and agent keys'**
+  String get paywallBenefitEarlyAccess;
+
+  /// Plan selector label
+  ///
+  /// In en, this message translates to:
+  /// **'CHOOSE PLAN'**
+  String get paywallChoosePlan;
+
+  /// Monthly plan title
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get paywallMonthlyTitle;
+
+  /// Yearly plan title
+  ///
+  /// In en, this message translates to:
+  /// **'Yearly'**
+  String get paywallYearlyTitle;
+
+  /// Trial note
+  ///
+  /// In en, this message translates to:
+  /// **'7-day free trial included'**
+  String get paywallTrialIncluded;
+
+  /// Yearly savings badge
+  ///
+  /// In en, this message translates to:
+  /// **'SAVE 33%'**
+  String get paywallYearlyBadge;
+
+  /// Trial CTA
+  ///
+  /// In en, this message translates to:
+  /// **'Start free trial'**
+  String get paywallCtaTrial;
+
+  /// Purchase gate title
+  ///
+  /// In en, this message translates to:
+  /// **'Email account required'**
+  String get paywallAccountRequiredTitle;
+
+  /// Purchase gate body
+  ///
+  /// In en, this message translates to:
+  /// **'Link an email to your account before purchasing so Pro stays with you on every device.'**
+  String get paywallAccountRequiredBody;
+
+  /// Purchase gate action
+  ///
+  /// In en, this message translates to:
+  /// **'Link email'**
+  String get paywallAccountRequiredAction;
+
+  /// Restore action
+  ///
+  /// In en, this message translates to:
+  /// **'Restore purchases'**
+  String get paywallRestore;
+
+  /// Restore empty message
+  ///
+  /// In en, this message translates to:
+  /// **'No purchases found.'**
+  String get paywallRestoreEmpty;
+
+  /// Plans loading message
+  ///
+  /// In en, this message translates to:
+  /// **'Loading plans'**
+  String get paywallLoading;
+
+  /// Plans load error
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load plans. Check connection and retry.'**
+  String get paywallLoadError;
+
+  /// Store unavailable message
+  ///
+  /// In en, this message translates to:
+  /// **'Purchases unavailable on this device.'**
+  String get paywallUnavailable;
+
+  /// Purchasing state
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm in the store'**
+  String get paywallPurchasing;
+
+  /// Purchase success title
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to Pro'**
+  String get paywallSuccessTitle;
+
+  /// Purchase success message
+  ///
+  /// In en, this message translates to:
+  /// **'Your subscription is active. Founder pricing is locked.'**
+  String get paywallSuccessBody;
+
+  /// Subscription terms
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel anytime in store settings. Trial converts to paid unless canceled 24h before end.'**
+  String get paywallTerms;
+
+  /// Upgrade entry
+  ///
+  /// In en, this message translates to:
+  /// **'Go Pro'**
+  String get settingsGoPro;
+
+  /// Upgrade entry subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Founder pricing, badge, early access'**
+  String get settingsGoProSubtitle;
+
+  /// Active subscription label
+  ///
+  /// In en, this message translates to:
+  /// **'Pro active'**
+  String get settingsProActive;
+
+  /// Pro badge
+  ///
+  /// In en, this message translates to:
+  /// **'PRO'**
+  String get badgePro;
+
+  /// Pro teaser title
+  ///
+  /// In en, this message translates to:
+  /// **'Pro ship-check'**
+  String get proTeaserTitle;
+
+  /// Pro teaser body
+  ///
+  /// In en, this message translates to:
+  /// **'Evidence exports, monitor digests and agent keys land here first.'**
+  String get proTeaserBody;
+
+  /// Compare upsell
+  ///
+  /// In en, this message translates to:
+  /// **'Pro compares up to 8'**
+  String get pickerProCompareUp;
+
+  /// Watchlists title
+  ///
+  /// In en, this message translates to:
+  /// **'Watchlists'**
+  String get watchTitle;
+
+  /// Empty watchlists title
+  ///
+  /// In en, this message translates to:
+  /// **'No watches yet'**
+  String get watchEmptyTitle;
+
+  /// Empty watchlists message
+  ///
+  /// In en, this message translates to:
+  /// **'Watch a keyword to get push alerts on new, price or trust changes.'**
+  String get watchEmptyMessage;
+
+  /// Create keyword watch action
+  ///
+  /// In en, this message translates to:
+  /// **'Watch this search'**
+  String get watchAction;
+
+  /// Watch added message
+  ///
+  /// In en, this message translates to:
+  /// **'Watch added'**
+  String get watchAdded;
+
+  /// Watchlist limit message
+  ///
+  /// In en, this message translates to:
+  /// **'Watchlist limit reached'**
+  String get watchLimitReached;
+
+  /// Agent keys title
+  ///
+  /// In en, this message translates to:
+  /// **'Agent API keys'**
+  String get agentKeysTitle;
+
+  /// Empty agent keys message
+  ///
+  /// In en, this message translates to:
+  /// **'No keys yet. Create one so your agents can query Reqistry.'**
+  String get agentKeysEmpty;
+
+  /// Create key action
+  ///
+  /// In en, this message translates to:
+  /// **'Create key'**
+  String get agentKeyCreate;
+
+  /// Key name hint
+  ///
+  /// In en, this message translates to:
+  /// **'Key name (optional)'**
+  String get agentKeyNameHint;
+
+  /// Key once warning
+  ///
+  /// In en, this message translates to:
+  /// **'Copy now — the full key shows only once.'**
+  String get agentKeyOnceWarning;
+
+  /// Key copied message
+  ///
+  /// In en, this message translates to:
+  /// **'Key copied'**
+  String get agentKeyCopied;
+
+  /// Key usage label
+  ///
+  /// In en, this message translates to:
+  /// **'{used} calls today'**
+  String agentKeyUsageToday(int used);
+
+  /// Revoke confirm title
+  ///
+  /// In en, this message translates to:
+  /// **'Revoke this key?'**
+  String get agentKeyRevokeTitle;
+
+  /// Revoke confirm message
+  ///
+  /// In en, this message translates to:
+  /// **'Agents using it stop working immediately.'**
+  String get agentKeyRevokeMessage;
+
+  /// Ship report title
+  ///
+  /// In en, this message translates to:
+  /// **'Ship-check report'**
+  String get shipReportTitle;
+
+  /// Ship verdict
+  ///
+  /// In en, this message translates to:
+  /// **'Safe to ship'**
+  String get shipVerdictShip;
+
+  /// Caution verdict
+  ///
+  /// In en, this message translates to:
+  /// **'Ship with caution'**
+  String get shipVerdictCaution;
+
+  /// Avoid verdict
+  ///
+  /// In en, this message translates to:
+  /// **'Do not ship'**
+  String get shipVerdictAvoid;
+
+  /// Monitor toggle title
+  ///
+  /// In en, this message translates to:
+  /// **'Monitor stack'**
+  String get monitorTitle;
+
+  /// Monitor toggle subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Daily health digest for this project'**
+  String get monitorSubtitle;
+
+  /// Stack history title
+  ///
+  /// In en, this message translates to:
+  /// **'Stack history'**
+  String get stackHistoryTitle;
+
+  /// Empty stack history
+  ///
+  /// In en, this message translates to:
+  /// **'Snapshots appear after the first daily digest.'**
+  String get stackHistoryEmpty;
+
+  /// Down count ticker
+  ///
+  /// In en, this message translates to:
+  /// **'DOWN'**
+  String get stackHistoryDown;
+
+  /// Trust ticker
+  ///
+  /// In en, this message translates to:
+  /// **'TRUST'**
+  String get stackHistoryTrust;
+
+  /// Notification deleted message
+  ///
+  /// In en, this message translates to:
+  /// **'Notification deleted.'**
+  String get notifFeedRemovedMessage;
 }
 
 class _AppLocalizationsDelegate

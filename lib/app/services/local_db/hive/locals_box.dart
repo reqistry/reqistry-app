@@ -14,6 +14,10 @@ class LocalsDB {
     return HiveBoxes.localsBox.put(key, value);
   }
 
+  Future<void> deleteWithKey(String key) async {
+    return HiveBoxes.localsBox.delete(key);
+  }
+
   Future<int> clear() async {
     return HiveBoxes.localsBox.clear();
   }

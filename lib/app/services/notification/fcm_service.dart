@@ -6,6 +6,16 @@ import 'package:dio/dio.dart';
 import 'package:api_scout/app/services/auth/dio_client.dart';
 import 'package:api_scout/app/services/auth/auth_token_service.dart';
 
+/// Hive returns untyped maps. Normalize to string-keyed maps.
+/// Prevents `'_Map<dynamic, dynamic>'` cast crash on cache reads.
+List<Map<String, dynamic>> _stringKeyedMapList(Object? raw) {
+  if (raw is! List) return [];
+  return [
+    for (final e in raw)
+      if (e is Map) Map<String, dynamic>.from(e),
+  ];
+}
+
 /// Background message handler - must be top-level function
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -14,9 +24,8 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
   // Store notification for later display if app is closed
   final cache = Hive.box('fcm_cache');
-  final notifications = List<Map<String, dynamic>>.from(
-    cache.get('pending_notifications', defaultValue: []),
-  );
+  final notifications =
+      _stringKeyedMapList(cache.get('pending_notifications'));
   notifications.add({
     'id': message.messageId ?? DateTime.now().millisecondsSinceEpoch.toString(),
     'title': message.notification?.title ?? '',
@@ -62,6 +71,43 @@ class NotificationPreferences {
         pricingChanges: json['pricingChanges'] != false,
         trustAlerts: json['trustAlerts'] != false,
       );
+
+  NotificationPreferences copyWith({
+    bool? savedApiHealth,
+    bool? newMatchingApis,
+    bool? weeklyDigest,
+    bool? lifecycleUpdates,
+    bool? pricingChanges,
+    bool? trustAlerts,
+  }) {
+    return NotificationPreferences(
+      savedApiHealth: savedApiHealth ?? this.savedApiHealth,
+      newMatchingApis: newMatchingApis ?? this.newMatchingApis,
+      weeklyDigest: weeklyDigest ?? this.weeklyDigest,
+      lifecycleUpdates: lifecycleUpdates ?? this.lifecycleUpdates,
+      pricingChanges: pricingChanges ?? this.pricingChanges,
+      trustAlerts: trustAlerts ?? this.trustAlerts,
+    );
+  }
+
+  NotificationPreferences withKey(String key, bool value) {
+    switch (key) {
+      case 'savedApiHealth':
+        return copyWith(savedApiHealth: value);
+      case 'newMatchingApis':
+        return copyWith(newMatchingApis: value);
+      case 'weeklyDigest':
+        return copyWith(weeklyDigest: value);
+      case 'lifecycleUpdates':
+        return copyWith(lifecycleUpdates: value);
+      case 'pricingChanges':
+        return copyWith(pricingChanges: value);
+      case 'trustAlerts':
+        return copyWith(trustAlerts: value);
+      default:
+        return this;
+    }
+  }
 }
 
 /// Manages Firebase Cloud Messaging token lifecycle
@@ -77,16 +123,26 @@ class FcmService {
   FcmTokenState _state = FcmTokenState.initial;
   Box? _cacheBox;
   bool _messageHandlersConfigured = false;
-  static void Function(Map<String, dynamic> data)? _notificationTapHandler;
+  static void Function(Map<String, dynamic> data,
+      {String? title, String? body})? _notificationTapHandler;
   static Map<String, dynamic>? _pendingNotificationTap;
+  static String? _pendingNotificationTitle;
+  static String? _pendingNotificationBody;
 
   static set onNotificationTap(
-      void Function(Map<String, dynamic> data)? callback) {
+      void Function(Map<String, dynamic> data,
+              {String? title, String? body})?
+          callback) {
     _notificationTapHandler = callback;
     final pending = _pendingNotificationTap;
     if (callback != null && pending != null) {
       _pendingNotificationTap = null;
-      scheduleMicrotask(() => callback(pending));
+      final title = _pendingNotificationTitle;
+      final body = _pendingNotificationBody;
+      _pendingNotificationTitle = null;
+      _pendingNotificationBody = null;
+      scheduleMicrotask(
+          () => callback(pending, title: title, body: body));
     }
   }
 
@@ -211,7 +267,11 @@ class FcmService {
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       debugPrint('[FCM] Message opened app: ${message.messageId}');
       trackEvent('opened', message.data);
-      _handleNotificationTap(message.data);
+      _handleNotificationTap(
+        message.data,
+        title: message.notification?.title,
+        body: message.notification?.body,
+      );
     });
 
     // Check if app was opened from a terminated state via notification
@@ -219,7 +279,11 @@ class FcmService {
       if (message != null) {
         debugPrint('[FCM] Initial message: ${message.messageId}');
         trackEvent('opened', message.data);
-        _handleNotificationTap(message.data);
+        _handleNotificationTap(
+          message.data,
+          title: message.notification?.title,
+          body: message.notification?.body,
+        );
       }
     });
   }
@@ -228,8 +292,8 @@ class FcmService {
   void _storeNotification(RemoteMessage message) {
     if (_cacheBox == null) return;
 
-    final notifications = List<Map<String, dynamic>>.from(
-      _cacheBox!.get('in_app_notifications', defaultValue: []),
+    final notifications = _stringKeyedMapList(
+      _cacheBox!.get('in_app_notifications'),
     );
 
     notifications.insert(0, {
@@ -251,12 +315,18 @@ class FcmService {
   }
 
   /// Handle notification tap - route to appropriate screen
-  void _handleNotificationTap(Map<String, dynamic> data) {
+  void _handleNotificationTap(
+    Map<String, dynamic> data, {
+    String? title,
+    String? body,
+  }) {
     final callback = _notificationTapHandler;
     if (callback != null) {
-      callback(data);
+      callback(data, title: title, body: body);
     } else {
       _pendingNotificationTap = Map<String, dynamic>.from(data);
+      _pendingNotificationTitle = title;
+      _pendingNotificationBody = body;
     }
   }
 
@@ -320,13 +390,13 @@ class FcmService {
   /// Move terminated-state notifications into the in-app feed.
   Future<void> _mergePendingNotifications() async {
     if (_cacheBox == null) return;
-    final pending = List<Map<String, dynamic>>.from(
-      _cacheBox!.get('pending_notifications', defaultValue: []),
+    final pending = _stringKeyedMapList(
+      _cacheBox!.get('pending_notifications'),
     );
     if (pending.isEmpty) return;
 
-    final notifications = List<Map<String, dynamic>>.from(
-      _cacheBox!.get('in_app_notifications', defaultValue: []),
+    final notifications = _stringKeyedMapList(
+      _cacheBox!.get('in_app_notifications'),
     );
     final existingIds = notifications.map((n) => n['id']).toSet();
     for (final item in pending) {
@@ -393,6 +463,12 @@ class FcmService {
       }
       return false;
     } catch (e) {
+      // 404 means the token is already gone server-side, which is the
+      // desired end state (e.g. fresh install reusing a Firebase token).
+      if (e is DioException && e.response?.statusCode == 404) {
+        _state = FcmTokenState.revoked;
+        return true;
+      }
       debugPrint('[FCM] Failed to revoke token: $e');
       return false;
     }
@@ -482,8 +558,8 @@ class FcmService {
   /// Get in-app notifications from cache
   List<Map<String, dynamic>> getInAppNotifications() {
     if (_cacheBox == null) return [];
-    return List<Map<String, dynamic>>.from(
-      _cacheBox!.get('in_app_notifications', defaultValue: []),
+    return _stringKeyedMapList(
+      _cacheBox!.get('in_app_notifications'),
     );
   }
 
@@ -491,8 +567,8 @@ class FcmService {
   Future<void> markAsRead(String notificationId) async {
     if (_cacheBox == null) return;
 
-    final notifications = List<Map<String, dynamic>>.from(
-      _cacheBox!.get('in_app_notifications', defaultValue: []),
+    final notifications = _stringKeyedMapList(
+      _cacheBox!.get('in_app_notifications'),
     );
 
     final index = notifications.indexWhere((n) => n['id'] == notificationId);
@@ -506,10 +582,23 @@ class FcmService {
   Future<void> removeNotification(String notificationId) async {
     if (_cacheBox == null) return;
 
-    final notifications = List<Map<String, dynamic>>.from(
-      _cacheBox!.get('in_app_notifications', defaultValue: []),
+    final notifications = _stringKeyedMapList(
+      _cacheBox!.get('in_app_notifications'),
     );
     notifications.removeWhere((n) => n['id'] == notificationId);
+    await _cacheBox!.put('in_app_notifications', notifications);
+  }
+
+  /// Restores a removed notification at its former position (swipe-undo).
+  Future<void> restoreNotification(
+      Map<String, dynamic> entry, int index) async {
+    if (_cacheBox == null) return;
+    final notifications = _stringKeyedMapList(
+      _cacheBox!.get('in_app_notifications'),
+    );
+    if (notifications.any((n) => n['id'] == entry['id'])) return;
+    final at = index.clamp(0, notifications.length);
+    notifications.insert(at, Map<String, dynamic>.from(entry));
     await _cacheBox!.put('in_app_notifications', notifications);
   }
 
@@ -517,8 +606,8 @@ class FcmService {
   Future<void> markAllAsRead() async {
     if (_cacheBox == null) return;
 
-    final notifications = List<Map<String, dynamic>>.from(
-      _cacheBox!.get('in_app_notifications', defaultValue: []),
+    final notifications = _stringKeyedMapList(
+      _cacheBox!.get('in_app_notifications'),
     );
 
     for (var i = 0; i < notifications.length; i++) {

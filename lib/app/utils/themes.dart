@@ -51,12 +51,15 @@ class AppThemes {
         elevation: 0,
         scrolledUnderElevation: 0,
         surfaceTintColor: Colors.transparent,
-        centerTitle: true,
+        centerTitle: false,
         titleTextStyle: TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.w600,
           color: c.onSurface,
           letterSpacing: 0,
+        ),
+        shape: Border(
+          bottom: BorderSide(color: c.outlineVariant, width: 1),
         ),
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
@@ -85,15 +88,15 @@ class AppThemes {
         fillColor: c.surface,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.s12,
-          vertical: AppSpacing.s8,
+          vertical: AppSpacing.s12,
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.zero,
-          borderSide: BorderSide(color: c.surfaceVariant, width: 1),
+          borderSide: BorderSide(color: c.outlineVariant, width: 1),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.zero,
-          borderSide: BorderSide(color: c.surfaceVariant, width: 1),
+          borderSide: BorderSide(color: c.outlineVariant, width: 1),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.zero,
@@ -117,9 +120,26 @@ class AppThemes {
           elevation: 0,
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.s16,
-            vertical: AppSpacing.s8,
+            vertical: AppSpacing.s12,
           ),
-          minimumSize: const Size(0, 36),
+          minimumSize: const Size(0, 48),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.zero,
+          ),
+          side: BorderSide(color: c.primary, width: 1),
+          textStyle: AppTextStyles.labelSm.copyWith(color: c.onPrimary),
+        ),
+      ),
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          backgroundColor: c.primary,
+          foregroundColor: c.onPrimary,
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.s16,
+            vertical: AppSpacing.s12,
+          ),
+          minimumSize: const Size(0, 48),
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.zero,
           ),
@@ -134,24 +154,24 @@ class AppThemes {
           elevation: 0,
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.s16,
-            vertical: AppSpacing.s8,
+            vertical: AppSpacing.s12,
           ),
-          minimumSize: const Size(0, 36),
+          minimumSize: const Size(0, 48),
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.zero,
           ),
-          side: BorderSide(color: c.surfaceVariant, width: 1),
+          side: BorderSide(color: c.outlineVariant, width: 1),
           textStyle: AppTextStyles.labelSm.copyWith(color: c.onSurface),
         ),
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          foregroundColor: c.outline,
+          foregroundColor: c.onSurfaceVariant,
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.s12,
-            vertical: AppSpacing.s8,
+            vertical: AppSpacing.s12,
           ),
-          minimumSize: const Size(0, 36),
+          minimumSize: const Size(0, 48),
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.zero,
           ),
