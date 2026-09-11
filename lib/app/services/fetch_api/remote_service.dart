@@ -803,10 +803,12 @@ class RemoteService {
 
   static Failure _handleDioError(
       DioException e, String defaultTitle, AppLocalizations? l10n) {
-    if (e.response?.data is Map) {
-      final error = e.response?.data['error'];
+    final data = e.response?.data;
+    if (data is Map) {
+      final error = data['error'];
       if (error != null) {
-        return Failure(defaultTitle, error);
+        final code = data['code'];
+        return Failure(defaultTitle, error.toString(), code: code?.toString());
       }
     }
     if (e.type == DioExceptionType.connectionTimeout ||

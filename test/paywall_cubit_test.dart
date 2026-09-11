@@ -5,6 +5,8 @@ import 'package:api_scout/app/blocs/paywall/paywall_cubit.dart';
 import 'package:api_scout/app/blocs/paywall/paywall_state.dart';
 import 'package:api_scout/app/services/auth/dio_client.dart';
 import 'package:api_scout/app/services/billing/billing_service.dart';
+import 'package:api_scout/app/services/fetch_api/failure.dart';
+import 'package:api_scout/app/services/fetch_api/remote_service.dart';
 import 'package:api_scout/app/services/local_db/hive/constants/boxes.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -112,7 +114,7 @@ void main() {
 
     test('email-required server denial stays free and does not complete',
         () async {
-      _denyVerification('email required');
+      _denyVerification('email required', code: FailureCode.emailRequired);
       final billing = _FakeBilling();
       final cubit = PaywallCubit(billing: billing);
       await _settle();
@@ -146,7 +148,9 @@ void main() {
       var verificationRequests = 0;
       DioClient().dio.interceptors.add(InterceptorsWrapper(
         onRequest: (options, handler) {
-          verificationRequests++;
+          if (options.path.contains('/v1/billing/verify')) {
+            verificationRequests++;
+          }
           handler.resolve(Response(
             requestOptions: options,
             data: {'isPro': true, 'tier': 'pro'},
@@ -172,15 +176,22 @@ void main() {
     test('pending transaction completes only after active server response',
         () async {
       final events = <String>[];
+      final completion = Completer<void>();
       _respondToVerification(
         {'isPro': true, 'tier': 'pro'},
         onRequest: () => events.add('verify'),
       );
-      final billing = _FakeBilling(onComplete: () => events.add('complete'));
+      final billing = _FakeBilling(
+        onComplete: () {
+          events.add('complete');
+          completion.complete();
+        },
+      );
       final cubit = PaywallCubit(billing: billing);
       await _settle();
 
       billing.add(_purchase(PurchaseStatus.purchased));
+      await completion.future.timeout(const Duration(seconds: 1));
       await _settle();
 
       expect(events, ['verify', 'complete']);
@@ -215,6 +226,131 @@ void main() {
     expect(HiveBoxes.localsBox.get(PaywallCubit.proProductKey), isNull);
     expect(HiveBoxes.localsBox.get(PaywallCubit.proSinceKey), isNull);
   });
+
+  group('purchases gate and fresh entitlement refresh', () {
+    test('buy refreshes entitlements immediately before launching', () async {
+      final events = <String>[];
+      DioClient().dio.interceptors.add(InterceptorsWrapper(
+        onRequest: (options, handler) {
+          if (options.path.contains('/v1/billing/entitlements')) {
+            events.add('entitlements');
+            handler.resolve(Response(requestOptions: options, data: {
+              'data': {
+                'isPro': false,
+                'tier': 'free',
+                'purchasesEnabled': true
+              },
+            }));
+            return;
+          }
+          handler.resolve(Response(
+              requestOptions: options, data: {'isPro': false, 'tier': 'free'}));
+        },
+      ));
+      final billing = _FakeBilling(
+        onBuy: () => events.add('buy'),
+        onQuery: () => events.add('products'),
+      );
+      final cubit = PaywallCubit(billing: billing);
+      await _settle();
+
+      expect(events, ['entitlements', 'products']);
+
+      await cubit.buy();
+      await _settle();
+
+      expect(events,
+          ['entitlements', 'products', 'products', 'entitlements', 'buy']);
+      expect(billing.launched, hasLength(1));
+      await cubit.close();
+    });
+
+    test('buy is blocked when purchasesEnabled is false', () async {
+      var entitlementsFetches = 0;
+      DioClient().dio.interceptors.add(InterceptorsWrapper(
+        onRequest: (options, handler) {
+          if (options.path.contains('/v1/billing/entitlements')) {
+            entitlementsFetches++;
+            handler.resolve(Response(requestOptions: options, data: {
+              'data': {
+                'isPro': false,
+                'tier': 'free',
+                'purchasesEnabled': false,
+              },
+            }));
+            return;
+          }
+          handler.resolve(Response(
+              requestOptions: options, data: {'isPro': false, 'tier': 'free'}));
+        },
+      ));
+      final billing = _FakeBilling();
+      final cubit = PaywallCubit(billing: billing);
+      await _settle();
+      expect(entitlementsFetches, 1);
+
+      await cubit.buy();
+      await _settle();
+
+      expect(entitlementsFetches, 2);
+      expect(billing.launched, isEmpty);
+      expect(cubit.state.status, PaywallStatus.ready);
+      expect(cubit.state.purchasesEnabled, isFalse);
+      await cubit.close();
+    });
+
+    test('verify surfaces typed upgrade_required failure code', () async {
+      DioClient().dio.interceptors.add(InterceptorsWrapper(
+        onRequest: (options, handler) {
+          handler.reject(DioException(
+            requestOptions: options,
+            response: Response(
+              requestOptions: options,
+              statusCode: 402,
+              data: {
+                'error': 'Update required before purchasing',
+                'code': 'upgrade_required',
+              },
+            ),
+            type: DioExceptionType.badResponse,
+          ));
+        },
+      ));
+
+      await expectLater(
+        RemoteService.verifyPlayPurchase(purchaseToken: 'token'),
+        throwsA(isA<Failure>()
+            .having((f) => f.code, 'code', FailureCode.upgradeRequired)),
+      );
+    });
+
+    test('upgrade_required is not mistaken for email_required', () async {
+      DioClient().dio.interceptors.add(InterceptorsWrapper(
+        onRequest: (options, handler) {
+          handler.reject(DioException(
+            requestOptions: options,
+            response: Response(
+              requestOptions: options,
+              statusCode: 402,
+              data: {'error': 'Update required', 'code': 'upgrade_required'},
+            ),
+            type: DioExceptionType.badResponse,
+          ));
+        },
+      ));
+      final billing = _FakeBilling();
+      final cubit = PaywallCubit(billing: billing);
+      await _settle();
+
+      billing.add(_purchase(PurchaseStatus.purchased));
+      await _settle();
+
+      expect(cubit.state.isPro, isFalse);
+      expect(cubit.state.verifyEmailRequired, isFalse);
+      expect(billing.completed, isEmpty);
+      await cubit.close();
+    });
+  });
 }
 
 void _respondToVerification(
@@ -223,13 +359,15 @@ void _respondToVerification(
 }) {
   DioClient().dio.interceptors.add(InterceptorsWrapper(
     onRequest: (options, handler) {
-      onRequest?.call();
+      if (options.path.contains('/v1/billing/verify')) {
+        onRequest?.call();
+      }
       handler.resolve(Response(requestOptions: options, data: data));
     },
   ));
 }
 
-void _denyVerification(String error) {
+void _denyVerification(String error, {String? code}) {
   DioClient().dio.interceptors.add(InterceptorsWrapper(
     onRequest: (options, handler) {
       handler.reject(DioException(
@@ -237,7 +375,7 @@ void _denyVerification(String error) {
         response: Response(
           requestOptions: options,
           statusCode: 402,
-          data: {'error': error},
+          data: {'error': error, if (code != null) 'code': code},
         ),
         type: DioExceptionType.badResponse,
       ));
@@ -264,10 +402,13 @@ Future<void> _settle() =>
     Future<void>.delayed(const Duration(milliseconds: 20));
 
 class _FakeBilling extends BillingService {
-  _FakeBilling({this.onComplete});
+  _FakeBilling({this.onComplete, this.onBuy, this.onQuery});
 
   final void Function()? onComplete;
+  final void Function()? onBuy;
+  final void Function()? onQuery;
   final completed = <PurchaseDetails>[];
+  final launched = <ProductDetails>[];
   final _purchases = StreamController<List<PurchaseDetails>>.broadcast();
 
   void add(Object purchase) {
@@ -280,16 +421,26 @@ class _FakeBilling extends BillingService {
   Future<bool> isAvailable() async => true;
 
   @override
-  Future<List<ProductDetails>> queryProducts() async => [
-        ProductDetails(
-          id: BillingService.monthlyProductId,
-          title: 'Monthly',
-          description: 'Monthly Pro',
-          price: r'$4.99',
-          rawPrice: 4.99,
-          currencyCode: 'USD',
-        ),
-      ];
+  Future<List<ProductDetails>> queryProducts() async {
+    onQuery?.call();
+    return [
+      ProductDetails(
+        id: BillingService.monthlyProductId,
+        title: 'Monthly',
+        description: 'Monthly Pro',
+        price: r'$4.99',
+        rawPrice: 4.99,
+        currencyCode: 'USD',
+      ),
+    ];
+  }
+
+  @override
+  Future<bool> buy(ProductDetails product) async {
+    onBuy?.call();
+    launched.add(product);
+    return true;
+  }
 
   @override
   StreamSubscription<List<PurchaseDetails>> listen(

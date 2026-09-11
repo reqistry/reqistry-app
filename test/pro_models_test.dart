@@ -27,6 +27,25 @@ void main() {
       expect(entitlements.tier, 'free');
       expect(entitlements.compareMax, 4);
     });
+
+    test('parses opaque billing account and purchases gate', () {
+      final entitlements = Entitlements.fromJson({
+        'data': {
+          'tier': 'pro',
+          'isPro': true,
+          'billingAccountId': 'uuid-123',
+          'purchasesEnabled': true,
+        },
+      });
+      expect(entitlements.billingAccountId, 'uuid-123');
+      expect(entitlements.purchasesEnabled, isTrue);
+    });
+
+    test('defaults billing account empty and purchases disabled', () {
+      final entitlements = Entitlements.fromJson({});
+      expect(entitlements.billingAccountId, isEmpty);
+      expect(entitlements.purchasesEnabled, isFalse);
+    });
   });
 
   group('ShipCheckReport.fromJson', () {

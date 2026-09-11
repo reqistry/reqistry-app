@@ -6,6 +6,7 @@ import 'package:api_scout/config/env.dart';
 import 'package:api_scout/config/routes.dart';
 import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:flutter/foundation.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:requests_inspector/requests_inspector.dart';
 import 'auth_token_service.dart';
 
@@ -33,6 +34,15 @@ class DioClient {
   static final DioClient _instance = DioClient._();
   factory DioClient() => _instance;
 
+  static const String buildHeader = 'X-Reqistry-App-Build';
+
+  static int buildNumber = 0;
+
+  /// Shared base-options headers applied to both clients so the build rides
+  /// on every request.
+  static Map<String, dynamic> buildHeadersFor(int buildNumber) =>
+      {buildHeader: '$buildNumber'};
+
   late final Dio dio;
   late final Dio unauthDio;
   final RefreshSingleFlight _refresh = RefreshSingleFlight();
@@ -42,14 +52,24 @@ class DioClient {
       baseUrl: Env.apiUrl,
       connectTimeout: const Duration(seconds: 15),
       receiveTimeout: const Duration(seconds: 15),
+      headers: buildHeadersFor(buildNumber),
     ));
 
     dio = Dio(BaseOptions(
       baseUrl: Env.apiUrl,
       connectTimeout: const Duration(seconds: 15),
       receiveTimeout: const Duration(seconds: 15),
+      headers: buildHeadersFor(buildNumber),
     ));
 
+    final buildReady = resolveBuildNumber();
+    for (final client in [dio, unauthDio]) {
+      client.interceptors.add(InterceptorsWrapper(onRequest: (options, handler) async {
+        await buildReady;
+        options.headers[buildHeader] = '$buildNumber';
+        handler.next(options);
+      }));
+    }
     unauthDio.interceptors.add(BusyInterceptor());
     unauthDio.interceptors.add(ConnectivityInterceptor());
     unauthDio.interceptors.add(RequestErrorNotifierInterceptor());
@@ -62,6 +82,20 @@ class DioClient {
       unauthDio.interceptors.add(RequestsInspectorInterceptor());
       dio.interceptors.add(RequestsInspectorInterceptor());
     }
+
+  }
+
+  /// Reads the real build number and updates both clients' base options.
+  /// Uses zero to fail closed when the platform build is unavailable.
+  Future<void> resolveBuildNumber() async {
+    try {
+      final info = await PackageInfo.fromPlatform();
+      final parsed = int.tryParse(info.buildNumber);
+      if (parsed == null || parsed <= 0) return;
+      buildNumber = parsed;
+      dio.options.headers[buildHeader] = '$buildNumber';
+      unauthDio.options.headers[buildHeader] = '$buildNumber';
+    } catch (_) {}
   }
 
   void setAccessToken(String? token) {

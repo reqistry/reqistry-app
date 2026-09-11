@@ -2826,6 +2826,7 @@
         "summary": "Get entitlements",
         "description": "Tier, expiry, trial state and limits for the current device.",
         "operationId": "getEntitlements",
+        "parameters": [{ "name": "X-Reqistry-App-Build", "in": "header", "required": false, "schema": { "type": "integer", "minimum": 1 }, "description": "Missing, malformed or old builds receive purchasesEnabled=false." }],
         "security": [
           {
             "bearerAuth": []
@@ -2871,6 +2872,7 @@
         "summary": "Verify Play purchase",
         "description": "Verifies a Play purchase token server-side and activates Pro. Email-linked accounts only.",
         "operationId": "verifyPlayPurchase",
+        "parameters": [{ "name": "X-Reqistry-App-Build", "in": "header", "required": true, "schema": { "type": "integer", "minimum": 1 }, "description": "Missing, malformed or old builds return upgrade_required. PLAY_PURCHASES_ENABLED does not block verification." }],
         "security": [
           {
             "bearerAuth": []
@@ -2940,7 +2942,7 @@
             }
           },
           "402": {
-            "description": "Email required or inactive subscription",
+            "description": "email_required, inactive_subscription, or upgrade_required; machine-readable code accompanies error.",
             "content": {
               "application/json": {
                 "schema": {
@@ -2948,6 +2950,10 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Purchase belongs to another account (code: token_owned)",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
           },
           "501": {
             "description": "Billing verification unavailable",
@@ -5871,7 +5877,9 @@
           "isPro",
           "trialUsed",
           "emailLinked",
-          "limits"
+          "limits",
+          "billingAccountId",
+          "purchasesEnabled"
         ],
         "properties": {
           "tier": {
@@ -5896,6 +5904,14 @@
           },
           "emailLinked": {
             "type": "boolean"
+          },
+          "billingAccountId": {
+            "type": "string",
+            "description": "Server-issued opaque billing account id. Never a fingerprint, email, purchase token, or order id."
+          },
+          "purchasesEnabled": {
+            "type": "boolean",
+            "description": "Server-derived gate: whether this client build may launch a new billing sheet."
           },
           "limits": {
             "type": "object",

@@ -36,6 +36,7 @@ class PaywallState extends Equatable {
     this.isRestoring = false,
     this.errorMessage = '',
     this.verifyEmailRequired = false,
+    this.purchasesEnabled = false,
   });
 
   final PaywallStatus status;
@@ -48,6 +49,9 @@ class PaywallState extends Equatable {
   /// Paid on the store but the server needs a linked email first. The
   /// paywall surfaces the link banner/snackbar until resolved.
   final bool verifyEmailRequired;
+
+  /// Server-derived gate for launching a new billing sheet.
+  final bool purchasesEnabled;
 
   StoreProduct? get selected {
     for (final product in products) {
@@ -64,6 +68,7 @@ class PaywallState extends Equatable {
     bool? isRestoring,
     String? errorMessage,
     bool? verifyEmailRequired,
+    bool? purchasesEnabled,
   }) {
     return PaywallState(
       status: status ?? this.status,
@@ -73,6 +78,7 @@ class PaywallState extends Equatable {
       isRestoring: isRestoring ?? this.isRestoring,
       errorMessage: errorMessage ?? this.errorMessage,
       verifyEmailRequired: verifyEmailRequired ?? this.verifyEmailRequired,
+      purchasesEnabled: purchasesEnabled ?? this.purchasesEnabled,
     );
   }
 
@@ -85,5 +91,6 @@ class PaywallState extends Equatable {
         isRestoring,
         errorMessage,
         verifyEmailRequired,
+        purchasesEnabled,
       ];
 }

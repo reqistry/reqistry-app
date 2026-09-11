@@ -11,6 +11,8 @@ class Entitlements {
   final int watchlistsMax;
   final int agentKeysMax;
   final int stackHistoryDays;
+  final String billingAccountId;
+  final bool purchasesEnabled;
 
   const Entitlements({
     required this.isPro,
@@ -22,6 +24,8 @@ class Entitlements {
     this.watchlistsMax = 0,
     this.agentKeysMax = 0,
     this.stackHistoryDays = 0,
+    this.billingAccountId = '',
+    this.purchasesEnabled = false,
   });
 
   factory Entitlements.fromJson(Map<String, dynamic> json) {
@@ -46,6 +50,8 @@ class Entitlements {
       watchlistsMax: limit('watchlistsMax', 0),
       agentKeysMax: limit('agentKeysMax', 0),
       stackHistoryDays: limit('stackHistoryDays', 0),
+      billingAccountId: data['billingAccountId']?.toString() ?? '',
+      purchasesEnabled: data['purchasesEnabled'] == true,
     );
   }
 }

@@ -59,6 +59,7 @@ class PaywallCubit extends Cubit<PaywallState> {
             : PaywallStatus.ready,
         isPro: false,
         verifyEmailRequired: false,
+        purchasesEnabled: false,
       ));
     }
     return _identityReset = _clearEntitlement(_locals);
@@ -75,6 +76,8 @@ class PaywallCubit extends Cubit<PaywallState> {
   Future<void> loadProducts({AppLocalizations? l10n}) async {
     emit(state.copyWith(status: PaywallStatus.loading, errorMessage: ''));
     try {
+      await _refreshEntitlements();
+      if (isClosed) return;
       if (!await _billing.isAvailable()) {
         emit(state.copyWith(status: PaywallStatus.unavailable));
         return;
@@ -127,6 +130,12 @@ class PaywallCubit extends Cubit<PaywallState> {
       if (details == null) {
         throw StateError('product missing');
       }
+      final entitlements = await _refreshEntitlements();
+      if (isClosed) return;
+      if (!(entitlements?.purchasesEnabled ?? false)) {
+        emit(state.copyWith(status: PaywallStatus.ready));
+        return;
+      }
       final launched = await _billing.buy(details);
       if (!launched && !isClosed) {
         emit(state.copyWith(status: PaywallStatus.ready));
@@ -177,12 +186,10 @@ class PaywallCubit extends Cubit<PaywallState> {
 
   /// Refreshes server truth, then silently replays store-side changes.
   Future<void> syncEntitlement() async {
-    await _identityReset;
+    final entitlements = await _refreshEntitlements();
     if (isClosed) return;
-    try {
-      final entitlements = await RemoteService.getEntitlements();
-      if (isClosed) return;
-      if (entitlements != null) {
+    if (entitlements != null) {
+      try {
         await _locals.putWithKey(proActiveKey, entitlements.isPro);
         if (entitlements.isPro != state.isPro ||
             (entitlements.isPro && state.verifyEmailRequired)) {
@@ -191,11 +198,27 @@ class PaywallCubit extends Cubit<PaywallState> {
             verifyEmailRequired: false,
           ));
         }
-      }
-    } catch (_) {}
+      } catch (_) {}
+    }
     try {
       await _billing.restore();
     } catch (_) {}
+  }
+
+  /// Fetches current entitlements and mirrors the server purchases gate.
+  Future<Entitlements?> _refreshEntitlements() async {
+    try {
+      await _identityReset;
+      if (isClosed) return null;
+      final entitlements = await RemoteService.getEntitlements();
+      if (isClosed) return null;
+      emit(state.copyWith(
+          purchasesEnabled: entitlements?.purchasesEnabled ?? false));
+      return entitlements;
+    } catch (_) {
+      if (!isClosed) emit(state.copyWith(purchasesEnabled: false));
+      return null;
+    }
   }
 
   Future<void> _onPurchases(List<PurchaseDetails> purchases) async {
@@ -250,7 +273,7 @@ class PaywallCubit extends Cubit<PaywallState> {
         status: PaywallStatus.ready,
         isRestoring: false,
         verifyEmailRequired:
-            e is Failure && e.content.toLowerCase().contains('email'),
+            e is Failure && e.code == FailureCode.emailRequired,
       ));
       return;
     }
