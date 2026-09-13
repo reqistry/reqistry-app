@@ -12,6 +12,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'billing_service_test.dart' show playRows, TestStore;
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -36,9 +37,15 @@ void main() {
 
   group('PaywallState.selected', () {
     const monthly = StoreProduct(
-        id: 'reqistry_pro_monthly', price: '\$4.99', isYearly: false);
+        id: 'reqistry_pro_monthly',
+        price: '\$4.99',
+        isYearly: false,
+        basePlanId: 'monthly');
     const yearly = StoreProduct(
-        id: 'reqistry_pro_yearly', price: '\$39.99', isYearly: true);
+        id: 'reqistry_pro_yearly',
+        price: '\$39.99',
+        isYearly: true,
+        basePlanId: 'yearly');
 
     test('falls back to first product without selection', () {
       const state = PaywallState(
@@ -239,6 +246,7 @@ void main() {
                 'isPro': false,
                 'tier': 'free',
                 'purchasesEnabled': true
+                , 'billingAccountId': events.where((event) => event == 'entitlements').length == 1 ? 'old-fixture-id' : 'fresh-fixture-id'
               },
             }));
             return;
@@ -262,6 +270,41 @@ void main() {
       expect(events,
           ['entitlements', 'products', 'products', 'entitlements', 'buy']);
       expect(billing.launched, hasLength(1));
+      expect(billing.accountIds.single == 'fresh-fixture-id', isTrue);
+      await cubit.close();
+    });
+
+    test('selected state exposes actual base-plan evidence and store prices', () async {
+      _respondToVerification({'purchasesEnabled': true});
+      final cubit = PaywallCubit(billing: _FakeBilling());
+      await _settle();
+      expect(cubit.state.selected?.basePlanId, 'monthly');
+      expect(cubit.state.selected?.price, '7,49 EUR');
+      await cubit.close();
+    });
+
+    for (final accountId in [null, '', '   ']) {
+      test('fresh missing or blank account blocks buy (${accountId?.length})', () async {
+        _respondToVerification({'purchasesEnabled': true, 'billingAccountId': accountId});
+        final billing = _FakeBilling();
+        final cubit = PaywallCubit(billing: billing);
+        await _settle();
+        await cubit.buy();
+        expect(billing.launched, isEmpty);
+        expect(cubit.state.status, PaywallStatus.ready);
+        await cubit.close();
+      });
+    }
+
+    test('duplicate plugin rows surface load error', () async {
+      _respondToVerification({'purchasesEnabled': true});
+      final service = BillingService(store: TestStore([
+        ...playRows(BillingService.monthlyProductId, 'monthly', count: 2),
+        ...playRows(BillingService.yearlyProductId, 'yearly'),
+      ]));
+      final cubit = PaywallCubit(billing: _FakeBilling(onQuery: () {}, query: service.queryProducts));
+      await _settle();
+      expect(cubit.state.status, PaywallStatus.loadError);
       await cubit.close();
     });
 
@@ -402,7 +445,10 @@ Future<void> _settle() =>
     Future<void>.delayed(const Duration(milliseconds: 20));
 
 class _FakeBilling extends BillingService {
-  _FakeBilling({this.onComplete, this.onBuy, this.onQuery});
+  _FakeBilling({this.onComplete, this.onBuy, this.onQuery, this.query});
+
+  final Future<List<ProductDetails>> Function()? query;
+  final accountIds = <String>[];
 
   final void Function()? onComplete;
   final void Function()? onBuy;
@@ -423,20 +469,13 @@ class _FakeBilling extends BillingService {
   @override
   Future<List<ProductDetails>> queryProducts() async {
     onQuery?.call();
-    return [
-      ProductDetails(
-        id: BillingService.monthlyProductId,
-        title: 'Monthly',
-        description: 'Monthly Pro',
-        price: r'$4.99',
-        rawPrice: 4.99,
-        currencyCode: 'USD',
-      ),
-    ];
+    if (query != null) return query!();
+    return playRows(BillingService.monthlyProductId, 'monthly');
   }
 
   @override
-  Future<bool> buy(ProductDetails product) async {
+  Future<bool> buy(ProductDetails product, {String billingAccountId = ''}) async {
+    accountIds.add(billingAccountId);
     onBuy?.call();
     launched.add(product);
     return true;

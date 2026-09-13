@@ -97,6 +97,10 @@ class PaywallCubit extends Cubit<PaywallState> {
             id: product.id,
             price: product.price,
             isYearly: product.id == BillingService.yearlyProductId,
+            basePlanId: BillingService.basePlanDetails(product)?.basePlanId ??
+                (product.id == BillingService.yearlyProductId
+                    ? 'yearly'
+                    : 'monthly'),
           ),
       ];
       final yearly = products.where((p) => p.isYearly);
@@ -136,7 +140,12 @@ class PaywallCubit extends Cubit<PaywallState> {
         emit(state.copyWith(status: PaywallStatus.ready));
         return;
       }
-      final launched = await _billing.buy(details);
+      final accountId = entitlements?.billingAccountId.trim() ?? '';
+      if (accountId.isEmpty) {
+        emit(state.copyWith(status: PaywallStatus.ready));
+        return;
+      }
+      final launched = await _billing.buy(details, billingAccountId: accountId);
       if (!launched && !isClosed) {
         emit(state.copyWith(status: PaywallStatus.ready));
         AppSnackBarHelper.show(

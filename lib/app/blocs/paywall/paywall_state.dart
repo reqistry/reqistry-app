@@ -17,14 +17,16 @@ class StoreProduct extends Equatable {
     required this.id,
     required this.price,
     required this.isYearly,
+    required this.basePlanId,
   });
 
   final String id;
   final String price;
   final bool isYearly;
+  final String basePlanId;
 
   @override
-  List<Object> get props => [id, price, isYearly];
+  List<Object> get props => [id, price, isYearly, basePlanId];
 }
 
 class PaywallState extends Equatable {
