@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
-import 'package:api_scout/app/blocs/paywall/paywall_cubit.dart';
-import 'package:api_scout/app/blocs/paywall/paywall_state.dart';
-import 'package:api_scout/app/data/models/pro.dart';
+import 'package:api_scout/app/data/models/feature_models.dart';
 import 'package:api_scout/app/services/fetch_api/remote_service.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
@@ -16,8 +13,7 @@ import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:api_scout/shared/widgets/app_error_state.dart';
 import 'package:api_scout/shared/widgets/app_loading.dart';
 
-/// Pro agent API keys. Free users see an upgrade row; Pro users manage
-/// keys inline (create, copy-once, usage, revoke).
+/// Agent API keys. Manage keys inline (create, copy-once, usage, revoke).
 class AgentKeysSection extends StatefulWidget {
   const AgentKeysSection({super.key});
 
@@ -31,9 +27,7 @@ class _AgentKeysSectionState extends State<AgentKeysSection> {
   @override
   void initState() {
     super.initState();
-    if (context.read<PaywallCubit>().isPro) {
-      _future = RemoteService.getAgentKeys();
-    }
+    _future = RemoteService.getAgentKeys();
   }
 
   void _reload() {
@@ -142,14 +136,11 @@ class _AgentKeysSectionState extends State<AgentKeysSection> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PaywallCubit, PaywallState>(
-      builder: (context, paywall) {
-        if (!paywall.isPro) return const SizedBox.shrink();
-        final c = AppColors.of(Theme.of(context).brightness);
-        final l10n = AppLocalizations.of(context)!;
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+    final c = AppColors.of(Theme.of(context).brightness);
+    final l10n = AppLocalizations.of(context)!;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
             Row(
               children: [
                 Expanded(
@@ -258,9 +249,7 @@ class _AgentKeysSectionState extends State<AgentKeysSection> {
                 );
               },
             ),
-          ],
-        );
-      },
+      ],
     );
   }
 }

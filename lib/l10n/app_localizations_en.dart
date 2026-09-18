@@ -438,9 +438,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get stateUnavailable => 'Unavailable';
 
   @override
-  String get stateComingSoon => 'COMING SOON';
-
-  @override
   String get stateTrending => 'TRENDING';
 
   @override
@@ -1904,109 +1901,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get actionDone => 'Done';
 
   @override
-  String get paywallTitle => 'REQISTRY PRO';
-
-  @override
-  String get paywallHeadline => 'Build faster on trusted APIs';
-
-  @override
-  String get paywallSubtitle =>
-      'One tier. Founder pricing, locked forever. Cancel anytime.';
-
-  @override
-  String get paywallBenefitPriceLock => 'Founder pricing locked for life';
-
-  @override
-  String get paywallBenefitBadge => 'Founder badge on your profile';
-
-  @override
-  String get paywallBenefitSupport => 'Priority support lane';
-
-  @override
-  String get paywallBenefitEarlyAccess =>
-      'First access to ship-checks, monitor and agent keys';
-
-  @override
-  String get paywallChoosePlan => 'CHOOSE PLAN';
-
-  @override
-  String get paywallMonthlyTitle => 'Monthly';
-
-  @override
-  String get paywallYearlyTitle => 'Yearly';
-
-  @override
-  String get paywallTrialIncluded => '7-day free trial included';
-
-  @override
-  String get paywallYearlyBadge => 'SAVE 33%';
-
-  @override
-  String get paywallCtaTrial => 'Start free trial';
-
-  @override
-  String get paywallAccountRequiredTitle => 'Email account required';
-
-  @override
-  String get paywallAccountRequiredBody =>
-      'Link an email to your account before purchasing so Pro stays with you on every device.';
-
-  @override
-  String get paywallAccountRequiredAction => 'Link email';
-
-  @override
-  String get paywallRestore => 'Restore purchases';
-
-  @override
-  String get paywallRestoreEmpty => 'No purchases found.';
-
-  @override
-  String get paywallLoading => 'Loading plans';
-
-  @override
-  String get paywallLoadError =>
-      'Could not load plans. Check connection and retry.';
-
-  @override
-  String get paywallUnavailable => 'Purchases unavailable on this device.';
-
-  @override
-  String get paywallPurchasing => 'Confirm in the store';
-
-  @override
-  String get paywallSuccessTitle => 'Welcome to Pro';
-
-  @override
-  String get paywallSuccessBody =>
-      'Your subscription is active. Founder pricing is locked.';
-
-  @override
-  String get paywallTerms =>
-      'Cancel anytime in store settings. Trial converts to paid unless canceled 24h before end.';
-
-  @override
-  String get settingsGoPro => 'Go Pro';
-
-  @override
-  String get settingsGoProSubtitle => 'Founder pricing, badge, early access';
-
-  @override
-  String get settingsProActive => 'Pro active';
-
-  @override
-  String get badgePro => 'PRO';
-
-  @override
-  String get proTeaserTitle => 'Pro ship-check';
-
-  @override
-  String get proTeaserBody =>
-      'Evidence exports, monitor digests and agent keys land here first.';
-
-  @override
-  String get pickerProCompareUp => 'Pro compares up to 8';
-
-  @override
   String get watchTitle => 'Watchlists';
 
   @override
@@ -2089,4 +1983,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notifFeedRemovedMessage => 'Notification deleted.';
+
+  @override
+  String get shipCheckRowTitle => 'Production safety check';
+
+  @override
+  String get shipCheckRowBody =>
+      'Trust, health, docs and auth signals for this API.';
 }

@@ -3,7 +3,6 @@ import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:api_scout/app/blocs/paywall/paywall_cubit.dart';
 import 'package:api_scout/app/blocs/search/search_bloc.dart';
 import 'package:api_scout/app/services/fetch_api/remote_service.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
@@ -12,7 +11,6 @@ import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
 import 'package:api_scout/app/utils/snackbar_helper.dart';
 import 'package:api_scout/app/modules/views/search_screen/widgets/search_header.dart';
 import 'package:api_scout/app/modules/views/search_screen/widgets/search_results_list.dart';
-import 'package:api_scout/config/app_routes.dart';
 import 'package:api_scout/shared/widgets/ui/async_state_handler.dart';
 
 class SearchBody extends StatefulWidget {
@@ -119,17 +117,13 @@ class _SearchBodyState extends State<SearchBody> {
   }
 }
 
-/// Pro keyword watch entry. Visible after a real search; free users land
-/// on the paywall, Pro users watch the query directly.
+/// Keyword watch entry. Visible after a real search; watches the query
+/// directly.
 class _WatchSearchRow extends StatelessWidget {
   const _WatchSearchRow();
 
   Future<void> _watch(BuildContext context, String query) async {
     final l10n = AppLocalizations.of(context)!;
-    if (!context.read<PaywallCubit>().isPro) {
-      context.push(AppRoutes.pro);
-      return;
-    }
     try {
       await RemoteService.addWatch(kind: 'keyword', value: query, l10n: l10n);
       if (!context.mounted) return;

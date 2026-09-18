@@ -5,10 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 import 'package:api_scout/app/blocs/favorites/favorites_cubit.dart';
-import 'package:api_scout/app/blocs/paywall/paywall_cubit.dart';
 import 'package:api_scout/app/services/fetch_api/remote_service.dart';
-import 'package:api_scout/config/app_routes.dart';
-import 'package:api_scout/config/routes.dart' show AppRouter;
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
@@ -27,11 +24,10 @@ class CompareCandidate {
   });
 }
 
-/// Bottom sheet to select APIs for comparison (2–4 free, up to 8 Pro).
+/// Bottom sheet to select APIs for comparison (2–8).
 class ApiPickerSheet extends StatefulWidget {
   final Set<String> initiallySelected;
-  static const maxSelection = 4;
-  static const proMaxSelection = 8;
+  static const maxSelection = 8;
 
   const ApiPickerSheet({super.key, required this.initiallySelected});
 
@@ -129,25 +125,15 @@ class _ApiPickerSheetState extends State<ApiPickerSheet> {
     }
   }
 
-  bool get _isPro => context.read<PaywallCubit>().isPro;
-
-  int get _maxSelection =>
-      _isPro ? ApiPickerSheet.proMaxSelection : ApiPickerSheet.maxSelection;
-
   void _toggle(CompareCandidate candidate) {
     setState(() {
       if (_selected.contains(candidate.id)) {
         _selected.remove(candidate.id);
-      } else if (_selected.length < _maxSelection) {
+      } else if (_selected.length < ApiPickerSheet.maxSelection) {
         _selected.add(candidate.id);
         _candidates[candidate.id] = candidate;
       }
     });
-  }
-
-  void _openProUpsell() {
-    Navigator.of(context).pop();
-    AppRouter.router.push(AppRoutes.pro);
   }
 
   @override
@@ -254,50 +240,6 @@ class _ApiPickerSheetState extends State<ApiPickerSheet> {
                             AppTextStyles.labelSmUpper.copyWith(fontSize: 11),
                       ),
                     ),
-                    if (!_isPro &&
-                        _selected.length >= ApiPickerSheet.maxSelection)
-                      Padding(
-                        padding: const EdgeInsets.only(top: AppSpacing.s8),
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: _openProUpsell,
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: AppSpacing.s12,
-                                vertical: AppSpacing.s12,
-                              ),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                    color: c.outlineVariant),
-                              ),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    PhosphorIconsRegular.crown,
-                                    size: 18,
-                                    color: c.onSurface,
-                                  ),
-                                  const SizedBox(width: AppSpacing.s8),
-                                  Expanded(
-                                    child: Text(
-                                      l10n.pickerProCompareUp,
-                                      style: AppTextStyles.bodyMd.copyWith(
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ),
-                                  Icon(
-                                    PhosphorIconsRegular.caretRight,
-                                    size: 18,
-                                    color: c.outline,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
                   ],
                 ),
               ),

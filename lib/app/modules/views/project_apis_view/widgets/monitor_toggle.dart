@@ -1,19 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
-import 'package:api_scout/app/blocs/paywall/paywall_cubit.dart';
 import 'package:api_scout/app/services/fetch_api/remote_service.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
 import 'package:api_scout/app/utils/snackbar_helper.dart';
-import 'package:api_scout/config/app_routes.dart';
 import 'package:api_scout/l10n/app_localizations.dart';
 
-/// Pro stack monitor toggle. Free users land on the paywall; Pro toggles a
-/// `project` watchlist entry that feeds the daily digest.
+/// Stack monitor toggle. Toggles a `project` watchlist entry that feeds
+/// the daily digest.
 class MonitorToggle extends StatefulWidget {
   const MonitorToggle({super.key, required this.projectId});
 
@@ -36,10 +32,6 @@ class _MonitorToggleState extends State<MonitorToggle> {
 
   Future<void> _load() async {
     if (!mounted) return;
-    if (!context.read<PaywallCubit>().isPro) {
-      setState(() => _watching = false);
-      return;
-    }
     try {
       final watches = await RemoteService.getWatchlists();
       if (!mounted) return;
@@ -61,10 +53,6 @@ class _MonitorToggleState extends State<MonitorToggle> {
 
   Future<void> _toggle(bool value) async {
     final l10n = AppLocalizations.of(context)!;
-    if (!context.read<PaywallCubit>().isPro) {
-      context.push(AppRoutes.pro);
-      return;
-    }
     if (_busy) return;
     setState(() => _busy = true);
     try {

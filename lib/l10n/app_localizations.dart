@@ -938,12 +938,6 @@ abstract class AppLocalizations {
   /// **'Unavailable'**
   String get stateUnavailable;
 
-  /// Coming soon badge
-  ///
-  /// In en, this message translates to:
-  /// **'COMING SOON'**
-  String get stateComingSoon;
-
   /// Trending badge
   ///
   /// In en, this message translates to:
@@ -3572,198 +3566,6 @@ abstract class AppLocalizations {
   /// **'Done'**
   String get actionDone;
 
-  /// Paywall title
-  ///
-  /// In en, this message translates to:
-  /// **'REQISTRY PRO'**
-  String get paywallTitle;
-
-  /// Paywall headline
-  ///
-  /// In en, this message translates to:
-  /// **'Build faster on trusted APIs'**
-  String get paywallHeadline;
-
-  /// Paywall subtitle
-  ///
-  /// In en, this message translates to:
-  /// **'One tier. Founder pricing, locked forever. Cancel anytime.'**
-  String get paywallSubtitle;
-
-  /// Pro benefit
-  ///
-  /// In en, this message translates to:
-  /// **'Founder pricing locked for life'**
-  String get paywallBenefitPriceLock;
-
-  /// Pro benefit
-  ///
-  /// In en, this message translates to:
-  /// **'Founder badge on your profile'**
-  String get paywallBenefitBadge;
-
-  /// Pro benefit
-  ///
-  /// In en, this message translates to:
-  /// **'Priority support lane'**
-  String get paywallBenefitSupport;
-
-  /// Pro benefit
-  ///
-  /// In en, this message translates to:
-  /// **'First access to ship-checks, monitor and agent keys'**
-  String get paywallBenefitEarlyAccess;
-
-  /// Plan selector label
-  ///
-  /// In en, this message translates to:
-  /// **'CHOOSE PLAN'**
-  String get paywallChoosePlan;
-
-  /// Monthly plan title
-  ///
-  /// In en, this message translates to:
-  /// **'Monthly'**
-  String get paywallMonthlyTitle;
-
-  /// Yearly plan title
-  ///
-  /// In en, this message translates to:
-  /// **'Yearly'**
-  String get paywallYearlyTitle;
-
-  /// Trial note
-  ///
-  /// In en, this message translates to:
-  /// **'7-day free trial included'**
-  String get paywallTrialIncluded;
-
-  /// Yearly savings badge
-  ///
-  /// In en, this message translates to:
-  /// **'SAVE 33%'**
-  String get paywallYearlyBadge;
-
-  /// Trial CTA
-  ///
-  /// In en, this message translates to:
-  /// **'Start free trial'**
-  String get paywallCtaTrial;
-
-  /// Purchase gate title
-  ///
-  /// In en, this message translates to:
-  /// **'Email account required'**
-  String get paywallAccountRequiredTitle;
-
-  /// Purchase gate body
-  ///
-  /// In en, this message translates to:
-  /// **'Link an email to your account before purchasing so Pro stays with you on every device.'**
-  String get paywallAccountRequiredBody;
-
-  /// Purchase gate action
-  ///
-  /// In en, this message translates to:
-  /// **'Link email'**
-  String get paywallAccountRequiredAction;
-
-  /// Restore action
-  ///
-  /// In en, this message translates to:
-  /// **'Restore purchases'**
-  String get paywallRestore;
-
-  /// Restore empty message
-  ///
-  /// In en, this message translates to:
-  /// **'No purchases found.'**
-  String get paywallRestoreEmpty;
-
-  /// Plans loading message
-  ///
-  /// In en, this message translates to:
-  /// **'Loading plans'**
-  String get paywallLoading;
-
-  /// Plans load error
-  ///
-  /// In en, this message translates to:
-  /// **'Could not load plans. Check connection and retry.'**
-  String get paywallLoadError;
-
-  /// Store unavailable message
-  ///
-  /// In en, this message translates to:
-  /// **'Purchases unavailable on this device.'**
-  String get paywallUnavailable;
-
-  /// Purchasing state
-  ///
-  /// In en, this message translates to:
-  /// **'Confirm in the store'**
-  String get paywallPurchasing;
-
-  /// Purchase success title
-  ///
-  /// In en, this message translates to:
-  /// **'Welcome to Pro'**
-  String get paywallSuccessTitle;
-
-  /// Purchase success message
-  ///
-  /// In en, this message translates to:
-  /// **'Your subscription is active. Founder pricing is locked.'**
-  String get paywallSuccessBody;
-
-  /// Subscription terms
-  ///
-  /// In en, this message translates to:
-  /// **'Cancel anytime in store settings. Trial converts to paid unless canceled 24h before end.'**
-  String get paywallTerms;
-
-  /// Upgrade entry
-  ///
-  /// In en, this message translates to:
-  /// **'Go Pro'**
-  String get settingsGoPro;
-
-  /// Upgrade entry subtitle
-  ///
-  /// In en, this message translates to:
-  /// **'Founder pricing, badge, early access'**
-  String get settingsGoProSubtitle;
-
-  /// Active subscription label
-  ///
-  /// In en, this message translates to:
-  /// **'Pro active'**
-  String get settingsProActive;
-
-  /// Pro badge
-  ///
-  /// In en, this message translates to:
-  /// **'PRO'**
-  String get badgePro;
-
-  /// Pro teaser title
-  ///
-  /// In en, this message translates to:
-  /// **'Pro ship-check'**
-  String get proTeaserTitle;
-
-  /// Pro teaser body
-  ///
-  /// In en, this message translates to:
-  /// **'Evidence exports, monitor digests and agent keys land here first.'**
-  String get proTeaserBody;
-
-  /// Compare upsell
-  ///
-  /// In en, this message translates to:
-  /// **'Pro compares up to 8'**
-  String get pickerProCompareUp;
-
   /// Watchlists title
   ///
   /// In en, this message translates to:
@@ -3919,6 +3721,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Notification deleted.'**
   String get notifFeedRemovedMessage;
+
+  /// Ship-check row title
+  ///
+  /// In en, this message translates to:
+  /// **'Production safety check'**
+  String get shipCheckRowTitle;
+
+  /// Ship-check row body
+  ///
+  /// In en, this message translates to:
+  /// **'Trust, health, docs and auth signals for this API.'**
+  String get shipCheckRowBody;
 }
 
 class _AppLocalizationsDelegate

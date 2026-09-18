@@ -1,24 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
-import 'package:api_scout/app/blocs/paywall/paywall_cubit.dart';
-import 'package:api_scout/app/blocs/paywall/paywall_state.dart';
-import 'package:api_scout/app/data/models/pro.dart';
+import 'package:api_scout/app/data/models/feature_models.dart';
 import 'package:api_scout/app/services/fetch_api/remote_service.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
 import 'package:api_scout/app/utils/snackbar_helper.dart';
-import 'package:api_scout/config/app_routes.dart';
 import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:api_scout/shared/widgets/app_empty_state.dart';
 import 'package:api_scout/shared/widgets/app_error_state.dart';
 import 'package:api_scout/shared/widgets/app_loading.dart';
 
-/// Pro keyword/category/project watches. Free users are routed to the
-/// paywall; the list itself needs no extra state management.
+/// Keyword/category/project watches with change alerts.
 class WatchlistsView extends StatefulWidget {
   const WatchlistsView({super.key});
 
@@ -79,21 +74,9 @@ class _WatchlistsViewState extends State<WatchlistsView> {
           onPressed: () => context.pop(),
         ),
       ),
-      body: BlocBuilder<PaywallCubit, PaywallState>(
-        builder: (context, paywall) {
-          if (!paywall.isPro) {
-            return AppEmptyState(
-              title: l10n.settingsGoPro,
-              message: l10n.settingsGoProSubtitle,
-              icon: PhosphorIconsRegular.crown,
-              actionLabel: l10n.settingsGoPro,
-              onAction: () => context.push(AppRoutes.pro),
-              scrollable: true,
-            );
-          }
-          return RefreshIndicator(
-            onRefresh: _refresh,
-            child: FutureBuilder<List<WatchItem>>(
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: FutureBuilder<List<WatchItem>>(
               future: _future,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -184,9 +167,7 @@ class _WatchlistsViewState extends State<WatchlistsView> {
                 );
               },
             ),
-          );
-        },
-      ),
+          ),
     );
   }
 }

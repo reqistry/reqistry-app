@@ -13,8 +13,6 @@ import 'package:api_scout/app/blocs/main_shell/main_shell_cubit.dart';
 import 'package:api_scout/app/blocs/user_activity/user_activity_cubit.dart';
 import 'package:api_scout/app/blocs/user_activity/user_activity_state.dart';
 import 'package:api_scout/app/blocs/language/language_cubit.dart';
-import 'package:api_scout/app/blocs/paywall/paywall_cubit.dart';
-import 'package:api_scout/app/blocs/paywall/paywall_state.dart';
 import 'package:api_scout/app/modules/views/main_shell_view/widgets/root_showcase.dart';
 import 'package:api_scout/app/modules/views/api_detail_view/widgets/api_detail_showcase.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
@@ -165,15 +163,12 @@ class _SettingsViewState extends State<SettingsView> {
             BlocBuilder<AuthCubit, AuthState>(
               builder: (context, state) {
                 final cubit = context.read<AuthCubit>();
-                return BlocBuilder<PaywallCubit, PaywallState>(
-                  builder: (context, paywall) => ProfilePanel(
-                    name: _name(cubit),
-                    email: cubit.userEmail,
-                    accountType: cubit.isGuestUser ? AppLocalizations.of(context)!.settingsGuestAccountType : AppLocalizations.of(context)!.settingsEmailAccountType,
-                    profile: cubit.currentUserProfile,
-                    onModify: () => context.push(AppRoutes.accountSettings),
-                    isPro: paywall.isPro,
-                  ),
+                return ProfilePanel(
+                  name: _name(cubit),
+                  email: cubit.userEmail,
+                  accountType: cubit.isGuestUser ? AppLocalizations.of(context)!.settingsGuestAccountType : AppLocalizations.of(context)!.settingsEmailAccountType,
+                  profile: cubit.currentUserProfile,
+                  onModify: () => context.push(AppRoutes.accountSettings),
                 );
               },
             ),
@@ -190,23 +185,6 @@ class _SettingsViewState extends State<SettingsView> {
             SettingsSection(
               title: AppLocalizations.of(context)!.sectionMy,
               children: [
-                BlocBuilder<PaywallCubit, PaywallState>(
-                  builder: (context, paywall) {
-                    final l10n = AppLocalizations.of(context)!;
-                    return SettingsEntryTile(
-                      icon: paywall.isPro
-                          ? PhosphorIconsFill.crown
-                          : PhosphorIconsRegular.crown,
-                      title: paywall.isPro
-                          ? l10n.settingsProActive
-                          : l10n.settingsGoPro,
-                      subtitle: paywall.isPro
-                          ? null
-                          : l10n.settingsGoProSubtitle,
-                      onTap: () => context.push(AppRoutes.pro),
-                    );
-                  },
-                ),
                 SettingsEntryTile(
                   icon: PhosphorIconsRegular.folder,
                   title: AppLocalizations.of(context)!.settingsProjects,
@@ -232,18 +210,6 @@ class _SettingsViewState extends State<SettingsView> {
                   icon: PhosphorIconsRegular.bellRinging,
                   title: AppLocalizations.of(context)!.watchTitle,
                   onTap: () => context.push(AppRoutes.watchlists),
-                ),
-                BlocBuilder<PaywallCubit, PaywallState>(
-                  builder: (context, paywall) {
-                    if (paywall.isPro) return const SizedBox.shrink();
-                    return SettingsEntryTile(
-                      icon: PhosphorIconsRegular.key,
-                      title: AppLocalizations.of(context)!.agentKeysTitle,
-                      subtitle:
-                          AppLocalizations.of(context)!.settingsGoProSubtitle,
-                      onTap: () => context.push(AppRoutes.pro),
-                    );
-                  },
                 ),
               ],
             ),

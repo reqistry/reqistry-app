@@ -1,14 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'package:api_scout/app/blocs/paywall/paywall_cubit.dart';
 import 'package:api_scout/app/data/models/intelligence.dart';
-import 'package:api_scout/config/app_routes.dart';
 import 'package:api_scout/app/services/fetch_api/remote_service.dart';
 import 'package:api_scout/app/services/share/share_plus/share_plus.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
@@ -70,14 +66,10 @@ class _CompareResultViewState extends State<CompareResultView> {
             icon: const Icon(PhosphorIconsRegular.shareNetwork),
           ),
           IconButton(
-            tooltip: l10n.badgePro,
+            tooltip: l10n.actionShare,
             constraints:
                 const BoxConstraints.tightFor(width: 48, height: 48),
             onPressed: () async {
-              if (!context.read<PaywallCubit>().isPro) {
-                context.push(AppRoutes.pro);
-                return;
-              }
               final apis = await _future;
               if (!context.mounted) return;
               _shareJson(apis);
@@ -347,7 +339,7 @@ class _CompareResultViewState extends State<CompareResultView> {
     ShareService.instance.shareText(lines.join('\n'));
   }
 
-  /// Pro evidence-pack export: full-fidelity JSON of the comparison.
+  /// Evidence-pack export: full-fidelity JSON of the comparison.
   void _shareJson(List<CompareApi> apis) {
     const encoder = JsonEncoder.withIndent('  ');
     ShareService.instance.shareText(

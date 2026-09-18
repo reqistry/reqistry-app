@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
-import 'package:api_scout/app/data/models/pro.dart';
+import 'package:api_scout/app/data/models/feature_models.dart';
 import 'package:api_scout/app/services/fetch_api/remote_service.dart';
 import 'package:api_scout/app/services/share/share_plus/share_plus.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
@@ -11,7 +11,7 @@ import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:api_scout/shared/widgets/app_error_state.dart';
 import 'package:api_scout/shared/widgets/app_loading.dart';
 
-/// Pro ship-check evidence report for one API.
+/// Ship-check evidence report for one API.
 class ShipCheckSheet extends StatefulWidget {
   const ShipCheckSheet({super.key, required this.apiRef});
 

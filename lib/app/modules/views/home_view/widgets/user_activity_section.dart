@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:api_scout/app/blocs/paywall/paywall_cubit.dart';
 import 'package:api_scout/app/modules/views/main_shell_view/widgets/root_showcase.dart';
 import 'package:api_scout/app/modules/views/home_view/widgets/stack_history_sheet.dart';
-import 'package:api_scout/config/app_routes.dart';
 import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:api_scout/app/blocs/user_activity/user_activity_cubit.dart';
 import 'package:api_scout/app/blocs/user_activity/user_activity_state.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
@@ -93,13 +90,7 @@ class UserActivitySection extends StatelessWidget {
                         valueColor:
                             state.downCount > 0 ? c.danger : null,
                         onTap: () {
-                          if (context
-                              .read<PaywallCubit>()
-                              .isPro) {
-                            StackHistorySheet.show(context);
-                          } else {
-                            context.push(AppRoutes.pro);
-                          }
+                          StackHistorySheet.show(context);
                         },
                       ),
                     ),
