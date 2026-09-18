@@ -6,7 +6,7 @@ import '../../data/models/category_apis.dart';
 import '../../data/models/apis_search_response.dart';
 import '../../data/models/bookmark_item.dart';
 import '../../data/models/intelligence.dart';
-import '../../data/models/pro.dart';
+import '../../data/models/feature_models.dart';
 import '../../data/models/submission.dart';
 import '../auth/dio_client.dart';
 import '../analytics/api_detail_analytics.dart';
@@ -533,55 +533,7 @@ class RemoteService {
     }
   }
 
-  /// Current device entitlements (tier source of truth). Null on network
-  /// failure so callers keep the local flag.
-  static Future<Entitlements?> getEntitlements({AppLocalizations? l10n}) async {
-    try {
-      final response = await _authDio.get('/v1/billing/entitlements');
-      if (response.data == null) return null;
-      return Entitlements.fromJson(Map<String, dynamic>.from(response.data as Map));
-    } catch (_) {
-      return null;
-    }
-  }
-
-  /// Reports a Play purchase token for server-side verification. Returns
-  /// fresh entitlements; throws [Failure] (402 email_required included).
-  static Future<Entitlements> verifyPlayPurchase({
-    required String purchaseToken,
-    String? productId,
-    String? orderId,
-    AppLocalizations? l10n,
-  }) async {
-    try {
-      final response = await _authDio.post(
-        '/v1/billing/verify',
-        data: {
-          'purchaseToken': purchaseToken,
-          if (productId != null) 'productId': productId,
-          if (orderId != null) 'orderId': orderId,
-        },
-        options: Options(
-          extra: const {RequestErrorNotifierInterceptor.silentKey: true},
-        ),
-      );
-      if (response.data == null) {
-        throw Failure(l10n?.errorEmptyResponse ?? 'Empty response',
-            l10n?.errorServerReturnedEmptyData ?? 'Server returned empty data');
-      }
-      return Entitlements.fromJson(Map<String, dynamic>.from(response.data as Map));
-    } on DioException catch (e) {
-      throw _handleDioError(e, 'Purchase verification failed', l10n);
-    } on Failure {
-      rethrow;
-    } catch (e) {
-      throw Failure(
-          l10n?.errorParseError ?? 'Parse error',
-          l10n?.errorFailedToProcessData ?? 'Failed to verify purchase');
-    }
-  }
-
-  /// Pro production-safety verdict for one API (id or slug — both are
+  /// Production-safety verdict for one API (id or slug — both are
   /// sent, the backend matches either).
   static Future<ShipCheckReport> shipCheck({
     required String apiRef,

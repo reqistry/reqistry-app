@@ -9,7 +9,6 @@ import 'package:requests_inspector/requests_inspector.dart';
 
 import 'app/blocs/auth/auth_cubit.dart';
 import 'app/blocs/auth/auth_state.dart';
-import 'app/blocs/paywall/paywall_cubit.dart';
 import 'app/blocs/projects/projects_cubit.dart';
 import 'app/blocs/home_categories/home_categories_cubit.dart';
 import 'app/blocs/main_shell/main_shell_cubit.dart';
@@ -76,9 +75,6 @@ class ApiScoutApp extends StatelessWidget {
         BlocProvider(create: (_) => ProjectsCubit()),
         BlocProvider(create: (_) => NotificationCubit()),
         BlocProvider(
-          create: (_) => PaywallCubit(),
-        ),
-        BlocProvider(
           create: (context) => UserActivityCubit(
             authCubit: context.read<AuthCubit>(),
             favoritesCubit: context.read<FavoritesCubit>(),
@@ -89,17 +85,14 @@ class ApiScoutApp extends StatelessWidget {
         listenWhen: (_, current) =>
             current is Unauthenticated || current is Authenticated,
         listener: (context, state) async {
-          final paywall = context.read<PaywallCubit>();
           if (state is Authenticated) {
-            await paywall.syncEntitlement();
             return;
           }
-          // Identity change: never leak the previous account's data or Pro
-          // grant into the new session. Cubits reload lazily on demand.
+          // Identity change: never leak the previous account's data into
+          // the new session. Cubits reload lazily on demand.
           context.read<FavoritesCubit>().clear();
           context.read<ProjectsCubit>().clear();
           context.read<UserActivityCubit>().clear();
-          await paywall.clearEntitlement();
         },
         child: Builder(
           builder: (context) {

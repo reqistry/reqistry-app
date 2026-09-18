@@ -25,7 +25,7 @@ dependencies:
   hive:
   hive_flutter:
   in_app_review: ^2.0.12
-  in_app_purchase:
+  google_mobile_ads:
   intl: any
   share_plus:
   showcaseview: ^5.1.0
