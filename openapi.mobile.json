@@ -2824,7 +2824,7 @@
           "Growth"
         ],
         "summary": "Ship-check verdict",
-        "description": "Pro production-safety verdict for one API by id or slug. Accepts a Bearer session or an X-Agent-Key header.",
+        "description": "Production-safety verdict for one API by id or slug. Accepts a Bearer session or an X-Agent-Key header.",
         "operationId": "shipCheck",
         "security": [
           {
@@ -2907,7 +2907,7 @@
           "Watchlists"
         ],
         "summary": "List watchlists",
-        "description": "Pro keyword/category/project watches.",
+        "description": "Keyword/category/project watches with change alerts.",
         "operationId": "listWatchlists",
         "security": [
           {
@@ -3096,7 +3096,7 @@
           "AgentKeys"
         ],
         "summary": "List agent keys",
-        "description": "Pro personal agent keys (prefixes only).",
+        "description": "Personal agent keys (prefixes only).",
         "operationId": "listAgentKeys",
         "security": [
           {
@@ -3263,7 +3263,7 @@
           "Growth"
         ],
         "summary": "Stack history",
-        "description": "Pro daily stack snapshots, newest first.",
+        "description": "Daily stack snapshots, newest first.",
         "operationId": "getStackHistory",
         "security": [
           {
