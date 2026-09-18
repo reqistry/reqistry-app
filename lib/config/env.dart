@@ -30,4 +30,13 @@ abstract class Env {
 
   @EnviedField(varName: 'PRIVACY_MD_URL')
   static const String privacyMdUrl = _Env.privacyMdUrl;
+
+  @EnviedField(varName: 'ADMOB_ANDROID_APP_ID', defaultValue: '')
+  static const String admobAndroidAppId = _Env.admobAndroidAppId;
+
+  @EnviedField(varName: 'ADMOB_ANDROID_BANNER_UNIT_ID', defaultValue: '')
+  static const String admobAndroidBannerUnitId = _Env.admobAndroidBannerUnitId;
+
+  @EnviedField(varName: 'ADMOB_ANDROID_NATIVE_UNIT_ID', defaultValue: '')
+  static const String admobAndroidNativeUnitId = _Env.admobAndroidNativeUnitId;
 }

@@ -17,6 +17,8 @@ import 'app/blocs/search/search_bloc.dart';
 import 'app/blocs/favorites/favorites_cubit.dart';
 import 'app/blocs/user_activity/user_activity_cubit.dart';
 import 'app/blocs/language/language_cubit.dart';
+import 'app/services/ads/ad_config.dart';
+import 'app/services/ads/ads_controller.dart';
 import 'app/services/connectivity/connectivity_service.dart';
 import 'app/services/notification/fcm_service.dart';
 import 'config/env.dart';
@@ -27,8 +29,36 @@ import 'app/utils/theme_provider.dart';
 import 'app/utils/themes.dart';
 import 'app/widgets/app_overlay_host.dart';
 
+/// Consent-gated ads owner. Resolved once at startup; ad widgets read
+/// [ads] to decide whether they may request and render ads.
+late final AdsController ads;
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Release without production IDs (or with sample IDs): ads stay off.
+  // Every feature keeps working; the controller never initializes.
+  var adsEnabled = true;
+  AdUnits units;
+  try {
+    units = AdConfig.resolve(
+      isRelease: kReleaseMode,
+      appId: Env.admobAndroidAppId,
+      bannerUnitId: Env.admobAndroidBannerUnitId,
+      nativeUnitId: Env.admobAndroidNativeUnitId,
+    );
+  } catch (_) {
+    adsEnabled = false;
+    units = const AdUnits(
+      appId: AdConfig.testAppId,
+      bannerUnitId: AdConfig.testBannerUnitId,
+      nativeUnitId: AdConfig.testNativeUnitId,
+    );
+  }
+  ads = AdsController(units: units);
+  if (adsEnabled) {
+    // Fire-and-forget: consent/SDK failure degrades to no-ads internally.
+    unawaited(ads.ensureInitialized());
+  }
   await MainInit().init();
   ThemeProvider.instance.init();
   ConnectivityService.instance.init();
