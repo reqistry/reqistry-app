@@ -3733,6 +3733,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Trust, health, docs and auth signals for this API.'**
   String get shipCheckRowBody;
+
+  /// Disclosure chip on native ad cards
+  ///
+  /// In en, this message translates to:
+  /// **'Ad'**
+  String get adBadgeLabel;
 }
 
 class _AppLocalizationsDelegate

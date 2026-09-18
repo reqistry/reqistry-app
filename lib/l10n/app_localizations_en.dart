@@ -1990,4 +1990,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get shipCheckRowBody =>
       'Trust, health, docs and auth signals for this API.';
+
+  @override
+  String get adBadgeLabel => 'Ad';
 }

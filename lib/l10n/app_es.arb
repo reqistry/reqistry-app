@@ -2585,5 +2585,9 @@
   "shipCheckRowBody": "Señales de confianza, salud, documentación y autenticación de esta API.",
   "@shipCheckRowBody": {
     "description": "Cuerpo de fila de verificación"
+  },
+  "adBadgeLabel": "Anuncio",
+  "@adBadgeLabel": {
+    "description": "Etiqueta de anuncio en tarjetas nativas"
   }
 }

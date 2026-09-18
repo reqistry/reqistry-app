@@ -2585,5 +2585,9 @@
   "shipCheckRowBody": "Trust, health, docs and auth signals for this API.",
   "@shipCheckRowBody": {
     "description": "Ship-check row body"
+  },
+  "adBadgeLabel": "Ad",
+  "@adBadgeLabel": {
+    "description": "Disclosure chip on native ad cards"
   }
 }

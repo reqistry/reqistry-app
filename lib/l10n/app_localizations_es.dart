@@ -2023,4 +2023,7 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get shipCheckRowBody =>
       'Señales de confianza, salud, documentación y autenticación de esta API.';
+
+  @override
+  String get adBadgeLabel => 'Anuncio';
 }
