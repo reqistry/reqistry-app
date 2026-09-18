@@ -409,8 +409,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get stateNoMatchFound => 'No matches found';
 
   @override
-  String get stateTryDifferentKeyword =>
-      'Try a different keyword or loosen your filters to discover more APIs.';
+  String get stateTryDifferentKeyword => 'Try a different keyword or loosen your filters to discover more APIs.';
 
   @override
   String get stateSearchingApis => 'Searching APIs';
@@ -424,15 +423,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get stateNoRecommendationsYet => 'No recommendations yet';
 
   @override
-  String get stateRecommendationsWillAppear =>
-      'Recommendations will appear as you use the catalog.';
+  String get stateRecommendationsWillAppear => 'Recommendations will appear as you use the catalog.';
 
   @override
   String get stateNoRecentApis => 'No recent APIs';
 
   @override
-  String get stateNewCatalogAdditions =>
-      'New catalog additions will appear here.';
+  String get stateNewCatalogAdditions => 'New catalog additions will appear here.';
 
   @override
   String get stateUnavailable => 'Unavailable';
@@ -450,15 +447,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get stateFailedToLoadApi => 'Failed to load this API';
 
   @override
-  String get stateNoRecentHealthResult =>
-      'No recent health result is available';
+  String get stateNoRecentHealthResult => 'No recent health result is available';
 
   @override
   String get stateCreateYourFirstProject => 'Create your first project';
 
   @override
-  String get stateOrganizeApisMessage =>
-      'Organize APIs you discover into projects to keep them handy.';
+  String get stateOrganizeApisMessage => 'Organize APIs you discover into projects to keep them handy.';
 
   @override
   String get stateSearchFailed => 'Search failed';
@@ -479,8 +474,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dialogDeleteAccountTitle => 'DELETE ACCOUNT';
 
   @override
-  String get dialogDeleteAccountMessage =>
-      'This will permanently delete your account and all associated data including bookmarks, projects, and FCM tokens. This action is irreversible.';
+  String get dialogDeleteAccountMessage => 'This will permanently delete your account and all associated data including bookmarks, projects, and FCM tokens. This action is irreversible.';
 
   @override
   String get dialogRenameProjectTitle => 'RENAME PROJECT';
@@ -503,8 +497,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dialogClearLocalDataTitle => 'Clear local data';
 
   @override
-  String get dialogClearLocalDataMessage =>
-      'Remove local cache, settings, tokens, and saved state.';
+  String get dialogClearLocalDataMessage => 'Remove local cache, settings, tokens, and saved state.';
 
   @override
   String get dialogLinkAccountTitle => 'LINK ACCOUNT';
@@ -516,8 +509,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get snackbarNoInternetTitle => 'NO INTERNET';
 
   @override
-  String get snackbarNoInternetMessage =>
-      'You are offline. Check your connection and try again.';
+  String get snackbarNoInternetMessage => 'You are offline. Check your connection and try again.';
 
   @override
   String get snackbarBackOnlineTitle => 'BACK ONLINE';
@@ -529,8 +521,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get snackbarRequestFailedTitle => 'REQUEST FAILED';
 
   @override
-  String get snackbarRequestFailedMessage =>
-      'The request could not be completed. Please try again.';
+  String get snackbarRequestFailedMessage => 'The request could not be completed. Please try again.';
 
   @override
   String get snackbarBookmarkedTitle => 'Bookmarked';
@@ -539,8 +530,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get snackbarBookmarkErrorTitle => 'Error';
 
   @override
-  String get snackbarBookmarkErrorMessage =>
-      'This API cannot be bookmarked yet.';
+  String get snackbarBookmarkErrorMessage => 'This API cannot be bookmarked yet.';
 
   @override
   String get snackbarFailedToBookmark => 'Failed to bookmark API';
@@ -600,26 +590,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get snackbarApiRemovedFromProject => 'API removed from project';
 
   @override
-  String get snackbarFailedToRemoveFromProject =>
-      'Failed to remove API from project';
+  String get snackbarFailedToRemoveFromProject => 'Failed to remove API from project';
 
   @override
-  String get snackbarCannotAddToProject =>
-      'This API cannot be added to a project yet.';
+  String get snackbarCannotAddToProject => 'This API cannot be added to a project yet.';
 
   @override
   String get snackbarSubmissionReceivedTitle => 'Submission received';
 
   @override
-  String get snackbarSubmissionReceivedMessage =>
-      'Thank you! Your API was submitted for review.';
+  String get snackbarSubmissionReceivedMessage => 'Thank you! Your API was submitted for review.';
 
   @override
   String get snackbarSubmissionFailedTitle => 'Submission failed';
 
   @override
-  String get snackbarSubmissionFailedMessage =>
-      'Unable to submit right now. Please try again.';
+  String get snackbarSubmissionFailedMessage => 'Unable to submit right now. Please try again.';
 
   @override
   String get snackbarSearchErrorTitle => 'Search Error';
@@ -655,8 +641,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get snackbarClearFailedTitle => 'Clear failed';
 
   @override
-  String get snackbarClearFailedMessage =>
-      'Unable to clear local data right now.';
+  String get snackbarClearFailedMessage => 'Unable to clear local data right now.';
 
   @override
   String get snackbarStartupUpdatedTitle => 'Startup updated';
@@ -689,22 +674,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get snackbarReportSubmittedTitle => 'Report submitted';
 
   @override
-  String get snackbarReportSubmittedMessage =>
-      'Thanks. Reqistry will review this information.';
+  String get snackbarReportSubmittedMessage => 'Thanks. Reqistry will review this information.';
 
   @override
   String get snackbarBookmarkUnavailable => 'Bookmark unavailable';
 
   @override
-  String get snackbarBookmarkUnavailableMessage =>
-      'This API is missing a backend ID.';
+  String get snackbarBookmarkUnavailableMessage => 'This API is missing a backend ID.';
 
   @override
   String get snackbarSaveUnavailable => 'Save unavailable';
 
   @override
-  String get snackbarSaveUnavailableMessage =>
-      'This alternative has no backend ID.';
+  String get snackbarSaveUnavailableMessage => 'This alternative has no backend ID.';
 
   @override
   String get snackbarOpenedTitle => 'Opened';
@@ -729,8 +711,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get snackbarNameRequiredTitle => 'Name required';
 
   @override
-  String get snackbarNameRequiredMessage =>
-      'Enter a name to update your profile.';
+  String get snackbarNameRequiredMessage => 'Enter a name to update your profile.';
 
   @override
   String get snackbarNameTooLongTitle => 'Name too long';
@@ -748,8 +729,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get snackbarFillAllFields => 'Please fill in all fields';
 
   @override
-  String get snackbarCouldNotLoadDeveloperWebsite =>
-      'Could not open developer website.';
+  String get snackbarCouldNotLoadDeveloperWebsite => 'Could not open developer website.';
 
   @override
   String get snackbarFailedToLoadProjects => 'Failed to load projects';
@@ -826,8 +806,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get apiDetailOperational => 'Operational';
 
   @override
-  String get apiDetailReachableAuthRequired =>
-      'Reachable - authentication required';
+  String get apiDetailReachableAuthRequired => 'Reachable - authentication required';
 
   @override
   String get apiDetailReachableRateLimited => 'Reachable - rate limited';
@@ -913,8 +892,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get intelligenceCompareTitle => 'Compare APIs';
 
   @override
-  String get intelligenceCompareSubtitle =>
-      'Side-by-side trust, pricing and health for up to 4 APIs.';
+  String get intelligenceCompareSubtitle => 'Side-by-side trust, pricing and health for up to 4 APIs.';
 
   @override
   String get intelligenceChooseApis => 'Choose APIs';
@@ -942,8 +920,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get pickerNoSavedApis =>
-      'No saved APIs yet. Search to pick APIs to compare.';
+  String get pickerNoSavedApis => 'No saved APIs yet. Search to pick APIs to compare.';
 
   @override
   String get changeTypeTrustScore => 'TRUST SCORE';
@@ -964,64 +941,55 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingSearchFabTitle => 'SEARCH ANYTHING';
 
   @override
-  String get onboardingSearchFabDesc =>
-      'Tap the search button to find APIs across the whole registry.';
+  String get onboardingSearchFabDesc => 'Tap the search button to find APIs across the whole registry.';
 
   @override
   String get onboardingNavBarTitle => 'NAVIGATION';
 
   @override
-  String get onboardingNavBarDesc =>
-      'Switch between Home, Explore, Intelligence, Saved and You.';
+  String get onboardingNavBarDesc => 'Switch between Home, Explore, Intelligence, Saved and You.';
 
   @override
   String get onboardingSubmitApiTitle => 'KNOW AN API?';
 
   @override
-  String get onboardingSubmitApiDesc =>
-      'Submit missing APIs and help the registry grow.';
+  String get onboardingSubmitApiDesc => 'Submit missing APIs and help the registry grow.';
 
   @override
   String get onboardingCompareTitle => 'COMPARE APIS';
 
   @override
-  String get onboardingCompareDesc =>
-      'Pick up to 4 APIs and compare trust, pricing and health side by side.';
+  String get onboardingCompareDesc => 'Pick up to 4 APIs and compare trust, pricing and health side by side.';
 
   @override
   String get onboardingStatsTitle => 'YOUR ACTIVITY';
 
   @override
-  String get onboardingStatsDesc =>
-      'Keep track of your bookmarked APIs and projects at a glance.';
+  String get onboardingStatsDesc => 'Keep track of your bookmarked APIs and projects at a glance.';
 
   @override
   String get onboardingProjectsTitle => 'YOUR PROJECTS';
 
   @override
-  String get onboardingProjectsDesc =>
-      'Group APIs into projects to compare and share them with your team.';
+  String get onboardingProjectsDesc => 'Group APIs into projects to compare and share them with your team.';
 
   @override
   String get onboardingApiMetaTitle => 'API OVERVIEW';
 
   @override
-  String get onboardingApiMetaDesc =>
-      'Everything about this API: description, category, pricing, auth type and live health.';
+  String get onboardingApiMetaDesc => 'Everything about this API: description, category, pricing, auth type and live health.';
 
   @override
   String get onboardingSaveProjectTitle => 'SAVE TO PROJECT';
 
   @override
-  String get onboardingSaveProjectDesc =>
-      'Add this API to one of your projects, or create a new one.';
+  String get onboardingSaveProjectDesc => 'Add this API to one of your projects, or create a new one.';
 
   @override
   String get onboardingBookmarkTitle => 'BOOKMARK IT';
 
   @override
-  String get onboardingBookmarkDesc =>
-      'Save the API to your bookmarks for quick access anytime.';
+  String get onboardingBookmarkDesc => 'Save the API to your bookmarks for quick access anytime.';
 
   @override
   String get settingsReplayIntro => 'Replay intro';
@@ -1039,8 +1007,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nudgeSubmitApiTitle => 'KNOW AN API WE\'RE MISSING?';
 
   @override
-  String get nudgeSubmitApiMessage =>
-      'You\'ve explored 5 APIs. Help the registry grow by submitting one you love.';
+  String get nudgeSubmitApiMessage => 'You\'ve explored 5 APIs. Help the registry grow by submitting one you love.';
 
   @override
   String compareTrustScoreValue(int score, String grade) {
@@ -1075,24 +1042,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get intelligenceSideBySideComparison => 'Side-by-side API comparison';
 
   @override
-  String get intelligenceContextualScores =>
-      'Contextual trust and agent scores';
+  String get intelligenceContextualScores => 'Contextual trust and agent scores';
 
   @override
-  String get intelligenceEvidenceBackedRecommendations =>
-      'Evidence-backed recommendations';
+  String get intelligenceEvidenceBackedRecommendations => 'Evidence-backed recommendations';
 
   @override
-  String get intelligenceMcpServerToolDiscovery =>
-      'MCP server and tool discovery';
+  String get intelligenceMcpServerToolDiscovery => 'MCP server and tool discovery';
 
   @override
-  String get intelligenceNaturalLanguageMatching =>
-      'Natural-language requirement matching';
+  String get intelligenceNaturalLanguageMatching => 'Natural-language requirement matching';
 
   @override
-  String get intelligenceAiPoweredDecisions =>
-      'AI-powered API decisions, coming soon.';
+  String get intelligenceAiPoweredDecisions => 'AI-powered API decisions, coming soon.';
 
   @override
   String get settingsProjects => 'Projects';
@@ -1128,8 +1090,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsClearLocalData => 'Clear local data';
 
   @override
-  String get settingsClearLocalDataSubtitle =>
-      'Remove local cache, settings, tokens, and saved state.';
+  String get settingsClearLocalDataSubtitle => 'Remove local cache, settings, tokens, and saved state.';
 
   @override
   String get settingsSavedStat => 'Saved';
@@ -1192,12 +1153,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsCreatePermanentAccount => 'Create a permanent account';
 
   @override
-  String get settingsLinkAccountDescription =>
-      'Save your favorites and notes by linking to an account';
+  String get settingsLinkAccountDescription => 'Save your favorites and notes by linking to an account';
 
   @override
-  String get settingsLinkAccountCreateDescription =>
-      'Create a permanent account to save your data';
+  String get settingsLinkAccountCreateDescription => 'Create a permanent account to save your data';
 
   @override
   String get settingsPrivacyPolicy => 'PRIVACY POLICY';
@@ -1218,8 +1177,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsNotificationUpdating => 'Updating notification status.';
 
   @override
-  String get settingsNotificationEnabled =>
-      'Enabled. Push token is registered.';
+  String get settingsNotificationEnabled => 'Enabled. Push token is registered.';
 
   @override
   String get settingsNotificationDisabled => 'Disabled. Push token is revoked.';
@@ -1228,47 +1186,40 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notificationSavedApiHealth => 'Saved API health';
 
   @override
-  String get notificationSavedApiHealthSubtitle =>
-      'Alerts when an API you saved goes down or recovers.';
+  String get notificationSavedApiHealthSubtitle => 'Alerts when an API you saved goes down or recovers.';
 
   @override
   String get notificationNewMatchingApis => 'Matching APIs';
 
   @override
-  String get notificationNewMatchingApisSubtitle =>
-      'New APIs matching categories you follow.';
+  String get notificationNewMatchingApisSubtitle => 'New APIs matching categories you follow.';
 
   @override
   String get notificationWeeklyDigest => 'Weekly digest and reminders';
 
   @override
-  String get notificationWeeklyDigestSubtitle =>
-      'Weekly discoveries and community reminders.';
+  String get notificationWeeklyDigestSubtitle => 'Weekly discoveries and community reminders.';
 
   @override
   String get notificationLifecycleUpdates => 'Submission and report updates';
 
   @override
-  String get notificationLifecycleUpdatesSubtitle =>
-      'Results for APIs you submit or report.';
+  String get notificationLifecycleUpdatesSubtitle => 'Results for APIs you submit or report.';
 
   @override
   String get notificationPricingChanges => 'Pricing changes';
 
   @override
-  String get notificationPricingChangesSubtitle =>
-      'Alerts when pricing changes for saved APIs.';
+  String get notificationPricingChangesSubtitle => 'Alerts when pricing changes for saved APIs.';
 
   @override
   String get notificationTrustAlerts => 'Trust alerts';
 
   @override
-  String get notificationTrustAlertsSubtitle =>
-      'Warnings when trust scores drop for saved APIs.';
+  String get notificationTrustAlertsSubtitle => 'Warnings when trust scores drop for saved APIs.';
 
   @override
-  String get settingsExportFavoritesSubtitle =>
-      'Export a list of your favorite APIs (name, description, link).';
+  String get settingsExportFavoritesSubtitle => 'Export a list of your favorite APIs (name, description, link).';
 
   @override
   String dialogClearLocalDataConfirmMessage(String appName) {
@@ -1324,29 +1275,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingSkip => 'Skip';
 
   @override
-  String get onboardingSubtitle =>
-      'Find the right API. Give your agents the right tools.';
+  String get onboardingSubtitle => 'Find the right API. Give your agents the right tools.';
 
   @override
   String get onboardingDiscoverTitle => 'Discover';
 
   @override
-  String get onboardingDiscoverText =>
-      'Browse a trusted catalog of 1,400+ APIs organized by category.';
+  String get onboardingDiscoverText => 'Browse a trusted catalog of 1,400+ APIs organized by category.';
 
   @override
   String get onboardingEvaluateTitle => 'Evaluate';
 
   @override
-  String get onboardingEvaluateText =>
-      'Check health, auth, pricing, and docs before you build.';
+  String get onboardingEvaluateText => 'Check health, auth, pricing, and docs before you build.';
 
   @override
   String get onboardingConnectTitle => 'Connect';
 
   @override
-  String get onboardingConnectText =>
-      'Bookmark APIs and organize them into projects for your next build.';
+  String get onboardingConnectText => 'Bookmark APIs and organize them into projects for your next build.';
 
   @override
   String get onboardingExploreApis => 'Explore APIs';
@@ -1405,8 +1352,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get formInvalidUrl => 'Enter a valid http(s) URL';
 
   @override
-  String get emptyCreateProjectMessage =>
-      'Create a project, then add APIs you discover to keep them organized.';
+  String get emptyCreateProjectMessage => 'Create a project, then add APIs you discover to keep them organized.';
 
   @override
   String get apiDetailPlatformObservedHealth => 'PLATFORM-OBSERVED HEALTH';
@@ -1448,8 +1394,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get apiDetailNo => 'No';
 
   @override
-  String get formReportNoticeBanner =>
-      'Reports are sent to Reqistry for review.';
+  String get formReportNoticeBanner => 'Reports are sent to Reqistry for review.';
 
   @override
   String get reportOther => 'Other';
@@ -1474,8 +1419,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get stateLoadingBookmarks => 'Loading bookmarks';
 
   @override
-  String get stateBookmarksEmptyMessage =>
-      'Tap the bookmark icon on any API in the Discover tab to save it here.';
+  String get stateBookmarksEmptyMessage => 'Tap the bookmark icon on any API in the Discover tab to save it here.';
 
   @override
   String get tooltipRenameProject => 'Rename project';
@@ -1484,8 +1428,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tooltipDeleteProject => 'Delete project';
 
   @override
-  String get stateNoApisInProjectMessage =>
-      'Browse the Discover tab and add the APIs you want to keep here.';
+  String get stateNoApisInProjectMessage => 'Browse the Discover tab and add the APIs you want to keep here.';
 
   @override
   String get actionBrowseApis => 'Browse APIs';
@@ -1508,8 +1451,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get stateNoApisAvailable => 'No APIs available';
 
   @override
-  String get stateCategoryEmptyMessage =>
-      'This category is empty right now. Try another category in the Discover tab.';
+  String get stateCategoryEmptyMessage => 'This category is empty right now. Try another category in the Discover tab.';
 
   @override
   String get miscNA => 'N/A';
@@ -1553,24 +1495,19 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get errorBadCertificate =>
-      'The connection could not be verified securely.';
+  String get errorBadCertificate => 'The connection could not be verified securely.';
 
   @override
-  String get errorTooManyRequests =>
-      'Too many requests. Please wait a moment and try again.';
+  String get errorTooManyRequests => 'Too many requests. Please wait a moment and try again.';
 
   @override
-  String get errorServerError =>
-      'The server is having trouble. Please try again later.';
+  String get errorServerError => 'The server is having trouble. Please try again later.';
 
   @override
-  String get errorSomethingWentWrong =>
-      'Something went wrong. Please try again.';
+  String get errorSomethingWentWrong => 'Something went wrong. Please try again.';
 
   @override
-  String get discoverCatalogLoadingMessage =>
-      'The Discover catalog is loading. Pull to refresh and try again.';
+  String get discoverCatalogLoadingMessage => 'The Discover catalog is loading. Pull to refresh and try again.';
 
   @override
   String get privacyNoInternetConnection => 'No internet connection';
@@ -1608,8 +1545,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get apiDetailCouldNotBeLoaded => 'This API could not be loaded.';
 
   @override
-  String get apiDetailFreshInfoUnavailable =>
-      'Fresh API information is temporarily unavailable.';
+  String get apiDetailFreshInfoUnavailable => 'Fresh API information is temporarily unavailable.';
 
   @override
   String get apiDetailSimilarApisUnavailable => 'Similar APIs are unavailable.';
@@ -1629,8 +1565,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get categoryApisUnexpectedError => 'An unexpected error occurred';
 
   @override
-  String get submitApiTipMessage =>
-      'Submit an API for review. Provide the API name and URL.';
+  String get submitApiTipMessage => 'Submit an API for review. Provide the API name and URL.';
 
   @override
   String get apiDetailNoDescription => 'No reviewed description is available.';
@@ -1681,8 +1616,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get apiDetailWarningCorsNotVerified => 'CORS support is not verified';
 
   @override
-  String get apiDetailWarningNoHealthResult =>
-      'No recent platform health result is available';
+  String get apiDetailWarningNoHealthResult => 'No recent platform health result is available';
 
   @override
   String apiDetailWarningAuthRequired(String authType) {
@@ -1693,8 +1627,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get apiDetailSearchFallback => 'Search';
 
   @override
-  String get apiDetailPlatformObservedHealthLabel =>
-      'Platform-observed health.';
+  String get apiDetailPlatformObservedHealthLabel => 'Platform-observed health.';
 
   @override
   String get errorEmptyResponse => 'Empty response';
@@ -1739,15 +1672,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get intelligenceCollections => 'CURATED COLLECTIONS';
 
   @override
-  String get intelligenceCollectionsSubtitle =>
-      'Task-fit starters. Pick a job, compare the shortlist.';
+  String get intelligenceCollectionsSubtitle => 'Task-fit starters. Pick a job, compare the shortlist.';
 
   @override
   String get intelligenceHeroTitle => 'DECIDE WITH EVIDENCE.';
 
   @override
-  String get intelligenceHeroSubtitle =>
-      'Compare APIs side by side, backed by live trust evidence.';
+  String get intelligenceHeroSubtitle => 'Compare APIs side by side, backed by live trust evidence.';
 
   @override
   String get intelligenceRecent => 'RECENT';
@@ -1806,8 +1737,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get contactFormTitle => 'SEND A MESSAGE';
 
   @override
-  String get contactFormSubtitle =>
-      'Questions, feedback or broken data. The team reads everything.';
+  String get contactFormSubtitle => 'Questions, feedback or broken data. The team reads everything.';
 
   @override
   String get formSubject => 'SUBJECT (OPTIONAL)';
@@ -1825,8 +1755,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get snackbarContactSentMessage => 'Your message has been sent.';
 
   @override
-  String get snackbarContactFailedMessage =>
-      'Unable to send right now. Please try again.';
+  String get snackbarContactFailedMessage => 'Unable to send right now. Please try again.';
 
   @override
   String get notifFeedTitle => 'Notifications';
@@ -1838,15 +1767,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notifFeedEmptyTitle => 'No notifications yet';
 
   @override
-  String get notifFeedEmptyMessage =>
-      'Health, price, and trust alerts for your saved APIs will appear here.';
+  String get notifFeedEmptyMessage => 'Health, price, and trust alerts for your saved APIs will appear here.';
 
   @override
   String get notifFeedClearTitle => 'Clear all notifications?';
 
   @override
-  String get notifFeedClearMessage =>
-      'This removes your local notification history. This cannot be undone.';
+  String get notifFeedClearMessage => 'This removes your local notification history. This cannot be undone.';
 
   @override
   String get submissionsTitle => 'My submissions';
@@ -1855,8 +1782,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get submissionsEmptyTitle => 'No submissions yet';
 
   @override
-  String get submissionsEmptyMessage =>
-      'APIs you submit for review will appear here with their review status.';
+  String get submissionsEmptyMessage => 'APIs you submit for review will appear here with their review status.';
 
   @override
   String get submissionsOpenApi => 'Open API';
@@ -1907,8 +1833,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get watchEmptyTitle => 'No watches yet';
 
   @override
-  String get watchEmptyMessage =>
-      'Watch a keyword to get push alerts on new, price or trust changes.';
+  String get watchEmptyMessage => 'Watch a keyword to get push alerts on new, price or trust changes.';
 
   @override
   String get watchAction => 'Watch this search';
@@ -1923,8 +1848,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get agentKeysTitle => 'Agent API keys';
 
   @override
-  String get agentKeysEmpty =>
-      'No keys yet. Create one so your agents can query Reqistry.';
+  String get agentKeysEmpty => 'No keys yet. Create one so your agents can query Reqistry.';
 
   @override
   String get agentKeyCreate => 'Create key';
@@ -1947,8 +1871,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get agentKeyRevokeTitle => 'Revoke this key?';
 
   @override
-  String get agentKeyRevokeMessage =>
-      'Agents using it stop working immediately.';
+  String get agentKeyRevokeMessage => 'Agents using it stop working immediately.';
 
   @override
   String get shipReportTitle => 'Ship-check report';
@@ -1972,8 +1895,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get stackHistoryTitle => 'Stack history';
 
   @override
-  String get stackHistoryEmpty =>
-      'Snapshots appear after the first daily digest.';
+  String get stackHistoryEmpty => 'Snapshots appear after the first daily digest.';
 
   @override
   String get stackHistoryDown => 'DOWN';
@@ -1988,9 +1910,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shipCheckRowTitle => 'Production safety check';
 
   @override
-  String get shipCheckRowBody =>
-      'Trust, health, docs and auth signals for this API.';
+  String get shipCheckRowBody => 'Trust, health, docs and auth signals for this API.';
 
   @override
   String get adBadgeLabel => 'Ad';
+
+  @override
+  String get settingsPrivacyChoices => 'Privacy choices';
+
+  @override
+  String get settingsPrivacyChoicesSubtitle => 'Control personalized ads';
 }

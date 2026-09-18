@@ -16,7 +16,8 @@ class UmpConsentGateway implements ConsentGateway {
       },
       (error) {
         if (!completer.isCompleted) {
-          completer.completeError(StateError('UMP ${error.errorCode}: ${error.message}'));
+          completer.completeError(
+              StateError('UMP ${error.errorCode}: ${error.message}'));
         }
       },
     );
@@ -30,7 +31,8 @@ class UmpConsentGateway implements ConsentGateway {
       (formError) {
         if (formError != null) {
           if (!completer.isCompleted) {
-            completer.completeError(StateError('UMP form ${formError.errorCode}: ${formError.message}'));
+            completer.completeError(StateError(
+                'UMP form ${formError.errorCode}: ${formError.message}'));
           }
           return;
         }
@@ -41,13 +43,12 @@ class UmpConsentGateway implements ConsentGateway {
   }
 
   @override
-  Future<bool> canRequestAds() =>
-      ConsentInformation.instance.canRequestAds();
+  Future<bool> canRequestAds() => ConsentInformation.instance.canRequestAds();
 
   @override
   Future<bool> privacyOptionsRequired() async {
-    final status = await ConsentInformation.instance
-        .getPrivacyOptionsRequirementStatus();
+    final status =
+        await ConsentInformation.instance.getPrivacyOptionsRequirementStatus();
     return status == PrivacyOptionsRequirementStatus.required;
   }
 
@@ -63,7 +64,8 @@ class UmpConsentGateway implements ConsentGateway {
       (formError) {
         if (formError != null) {
           if (!completer.isCompleted) {
-            completer.completeError(StateError('UMP form ${formError.errorCode}: ${formError.message}'));
+            completer.completeError(StateError(
+                'UMP form ${formError.errorCode}: ${formError.message}'));
           }
           return;
         }

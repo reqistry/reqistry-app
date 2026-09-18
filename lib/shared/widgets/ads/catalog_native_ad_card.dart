@@ -31,7 +31,7 @@ class CatalogNativeAdCard extends StatefulWidget {
 
 class _CatalogNativeAdCardState extends State<CatalogNativeAdCard> {
   late final AdsController _controller =
-      widget.controller ?? AdsController();
+      widget.controller ?? AdsController.shared;
   NativeAd? _ad;
   bool _loaded = false;
   bool _reported = false;

@@ -2589,5 +2589,13 @@
   "adBadgeLabel": "Anuncio",
   "@adBadgeLabel": {
     "description": "Etiqueta de anuncio en tarjetas nativas"
+  },
+  "settingsPrivacyChoices": "Opciones de privacidad",
+  "@settingsPrivacyChoices": {
+    "description": "Entrada de opciones de privacidad de UMP"
+  },
+  "settingsPrivacyChoicesSubtitle": "Controlar anuncios personalizados",
+  "@settingsPrivacyChoicesSubtitle": {
+    "description": "Subtítulo de opciones de privacidad"
   }
 }

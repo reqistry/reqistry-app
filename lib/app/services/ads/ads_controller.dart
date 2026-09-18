@@ -17,12 +17,19 @@ class AdsController extends ChangeNotifier {
     ConsentGateway? gateway,
     AdUnits? units,
   })  : _gateway = gateway ?? UmpConsentGateway(),
-        _units = units ??
-            const AdUnits(
-              appId: AdConfig.testAppId,
-              bannerUnitId: AdConfig.testBannerUnitId,
-              nativeUnitId: AdConfig.testNativeUnitId,
-            );
+        _units = units ?? AdUnits.test;
+
+  /// Process-wide controller configured by the app entrypoint. Widgets
+  /// default to this; tests inject their own instances.
+  static AdsController? _shared;
+
+  static AdsController get shared => _shared ??= AdsController();
+
+  /// Installs the process-wide controller (app entrypoint only).
+  static void configureShared(AdsController controller) {
+    _shared?.dispose();
+    _shared = controller;
+  }
 
   final ConsentGateway _gateway;
   final AdUnits _units;

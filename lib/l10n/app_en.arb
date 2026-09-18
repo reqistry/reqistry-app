@@ -2589,5 +2589,13 @@
   "adBadgeLabel": "Ad",
   "@adBadgeLabel": {
     "description": "Disclosure chip on native ad cards"
+  },
+  "settingsPrivacyChoices": "Privacy choices",
+  "@settingsPrivacyChoices": {
+    "description": "UMP privacy options entry"
+  },
+  "settingsPrivacyChoicesSubtitle": "Control personalized ads",
+  "@settingsPrivacyChoicesSubtitle": {
+    "description": "Privacy options subtitle"
   }
 }

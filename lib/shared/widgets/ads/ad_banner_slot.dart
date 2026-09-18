@@ -19,7 +19,7 @@ class AdBannerSlot extends StatefulWidget {
 
 class _AdBannerSlotState extends State<AdBannerSlot> {
   late final AdsController _controller =
-      widget.controller ?? AdsController();
+      widget.controller ?? AdsController.shared;
   BannerAd? _banner;
   AnchoredAdaptiveBannerAdSize? _size;
   bool _failed = false;

@@ -6,6 +6,13 @@ class AdUnits {
     required this.nativeUnitId,
   });
 
+  /// Official Google sample IDs (debug/profile/tests).
+  static const test = AdUnits(
+    appId: AdConfig.testAppId,
+    bannerUnitId: AdConfig.testBannerUnitId,
+    nativeUnitId: AdConfig.testNativeUnitId,
+  );
+
   final String appId;
   final String bannerUnitId;
   final String nativeUnitId;

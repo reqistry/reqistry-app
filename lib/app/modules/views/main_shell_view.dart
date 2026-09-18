@@ -13,6 +13,7 @@ import 'discover_view.dart';
 import 'settings_view/settings_view.dart';
 import 'favorites_view/favorites_view.dart';
 import 'package:api_scout/l10n/app_localizations.dart';
+import 'package:api_scout/shared/widgets/ads/ad_banner_slot.dart';
 import 'intelligence_view/intelligence_view.dart';
 import 'main_shell_view/widgets/nav_item.dart';
 import 'main_shell_view/widgets/root_showcase.dart';
@@ -44,7 +45,9 @@ class _MainShellViewState extends State<MainShellView> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       context.read<FavoritesCubit>().loadBookmarks();
-      context.read<ProjectsCubit>().loadProjects(l10n: AppLocalizations.of(context)!);
+      context
+          .read<ProjectsCubit>()
+          .loadProjects(l10n: AppLocalizations.of(context)!);
       context.read<UserActivityCubit>().refresh();
       RootShowcase.maybeStart(context);
     });
@@ -92,64 +95,74 @@ class _MainShellViewState extends State<MainShellView> {
                 ),
             ],
           ),
-          bottomNavigationBar: RootShowcase.scope(
-            context: context,
-            showcaseKey: RootShowcase.navBarKey,
-            title: l10n.onboardingNavBarTitle,
-            description: l10n.onboardingNavBarDesc,
-            child: SafeArea(
-              top: false,
-              child: Container(
-                height: 64,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: AppSpacing.s12),
-                decoration: BoxDecoration(
-                  color: c.surface,
-                  border: Border(
-                    top: BorderSide(color: c.outlineVariant, width: 1),
+          bottomNavigationBar: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Ad-supported placement: anchored banner above the bottom
+              // navigation on Home (0) and Discover (1) only. The slot
+              // collapses when ads are unavailable — never a gap.
+              if (state.selectedTabIndex == 0 || state.selectedTabIndex == 1)
+                const AdBannerSlot(),
+              RootShowcase.scope(
+                context: context,
+                showcaseKey: RootShowcase.navBarKey,
+                title: l10n.onboardingNavBarTitle,
+                description: l10n.onboardingNavBarDesc,
+                child: SafeArea(
+                  top: false,
+                  child: Container(
+                    height: 64,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: AppSpacing.s12),
+                    decoration: BoxDecoration(
+                      color: c.surface,
+                      border: Border(
+                        top: BorderSide(color: c.outlineVariant, width: 1),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        NavItem(
+                          icon: PhosphorIconsRegular.house,
+                          selectedIcon: PhosphorIconsFill.house,
+                          label: l10n.navHome,
+                          selected: state.selectedTabIndex == 0,
+                          onTap: () => _onNavTap(0),
+                        ),
+                        NavItem(
+                          icon: PhosphorIconsRegular.compass,
+                          selectedIcon: PhosphorIconsFill.compass,
+                          label: l10n.navExplore,
+                          selected: state.selectedTabIndex == 1,
+                          onTap: () => _onNavTap(1),
+                        ),
+                        NavItem(
+                          icon: PhosphorIconsRegular.brain,
+                          selectedIcon: PhosphorIconsFill.brain,
+                          label: l10n.navIntelligence,
+                          selected: state.selectedTabIndex == 2,
+                          onTap: () => _onNavTap(2),
+                        ),
+                        NavItem(
+                          icon: PhosphorIconsRegular.bookmarkSimple,
+                          selectedIcon: PhosphorIconsFill.bookmarkSimple,
+                          label: l10n.navSaved,
+                          selected: state.selectedTabIndex == 3,
+                          onTap: () => _onNavTap(3),
+                        ),
+                        NavItem(
+                          icon: PhosphorIconsRegular.user,
+                          selectedIcon: PhosphorIconsFill.user,
+                          label: l10n.navYou,
+                          selected: state.selectedTabIndex == 4,
+                          onTap: () => _onNavTap(4),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                child: Row(
-                  children: [
-                    NavItem(
-                      icon: PhosphorIconsRegular.house,
-                      selectedIcon: PhosphorIconsFill.house,
-                      label: l10n.navHome,
-                      selected: state.selectedTabIndex == 0,
-                      onTap: () => _onNavTap(0),
-                    ),
-                    NavItem(
-                      icon: PhosphorIconsRegular.compass,
-                      selectedIcon: PhosphorIconsFill.compass,
-                      label: l10n.navExplore,
-                      selected: state.selectedTabIndex == 1,
-                      onTap: () => _onNavTap(1),
-                    ),
-                    NavItem(
-                      icon: PhosphorIconsRegular.brain,
-                      selectedIcon: PhosphorIconsFill.brain,
-                      label: l10n.navIntelligence,
-                      selected: state.selectedTabIndex == 2,
-                      onTap: () => _onNavTap(2),
-                    ),
-                    NavItem(
-                      icon: PhosphorIconsRegular.bookmarkSimple,
-                      selectedIcon: PhosphorIconsFill.bookmarkSimple,
-                      label: l10n.navSaved,
-                      selected: state.selectedTabIndex == 3,
-                      onTap: () => _onNavTap(3),
-                    ),
-                    NavItem(
-                      icon: PhosphorIconsRegular.user,
-                      selectedIcon: PhosphorIconsFill.user,
-                      label: l10n.navYou,
-                      selected: state.selectedTabIndex == 4,
-                      onTap: () => _onNavTap(4),
-                    ),
-                  ],
-                ),
               ),
-            ),
+            ],
           ),
         );
       },

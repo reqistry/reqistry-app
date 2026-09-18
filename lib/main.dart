@@ -29,10 +29,6 @@ import 'app/utils/theme_provider.dart';
 import 'app/utils/themes.dart';
 import 'app/widgets/app_overlay_host.dart';
 
-/// Consent-gated ads owner. Resolved once at startup; ad widgets read
-/// [ads] to decide whether they may request and render ads.
-late final AdsController ads;
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Release without production IDs (or with sample IDs): ads stay off.
@@ -54,7 +50,10 @@ Future<void> main() async {
       nativeUnitId: AdConfig.testNativeUnitId,
     );
   }
-  ads = AdsController(units: units);
+  // Consent-gated ads owner. Resolved once at startup; ad widgets read
+  // the shared controller to decide whether they may request and render.
+  final ads = AdsController(units: units);
+  AdsController.configureShared(ads);
   if (adsEnabled) {
     // Fire-and-forget: consent/SDK failure degrades to no-ads internally.
     unawaited(ads.ensureInitialized());
