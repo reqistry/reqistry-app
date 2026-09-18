@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:api_scout/app/blocs/paywall/paywall_cubit.dart';
 import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:api_scout/app/services/fetch_api/remote_service.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
@@ -43,13 +41,10 @@ class _ContactViewState extends State<ContactView> {
     if (!(_formKey.currentState?.validate() ?? false)) return;
     setState(() => _sending = true);
     try {
-      // Pro priority lane: support triages PRO-tagged subjects first.
-      final proTag =
-          context.read<PaywallCubit>().isPro ? '[PRO] ' : '';
       final confirmation = await RemoteService.sendContactMessage(
         name: _nameController.text,
         email: _emailController.text,
-        subject: '$proTag${_subjectController.text}',
+        subject: _subjectController.text,
         message: _messageController.text,
         l10n: l10n,
       );

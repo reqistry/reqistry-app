@@ -2248,7 +2248,7 @@
           }
         },
         "operationId": "compareApis",
-        "description": "Side-by-side comparison of 2 to 4 APIs (up to 8 for Pro, by tier)."
+        "description": "Side-by-side comparison of 2 to 8 APIs."
       }
     },
     "/v1/change-feed": {
@@ -2818,213 +2818,13 @@
         }
       }
     },
-    "/v1/billing/entitlements": {
-      "get": {
-        "tags": [
-          "Billing"
-        ],
-        "summary": "Get entitlements",
-        "description": "Tier, expiry, trial state and limits for the current device.",
-        "operationId": "getEntitlements",
-        "parameters": [{ "name": "X-Reqistry-App-Build", "in": "header", "required": false, "schema": { "type": "integer", "minimum": 1 }, "description": "Missing, malformed or old builds receive purchasesEnabled=false." }],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Entitlements",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "required": [
-                    "data"
-                  ],
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/Entitlements"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Not authenticated",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/billing/verify": {
-      "post": {
-        "tags": [
-          "Billing"
-        ],
-        "summary": "Verify Play purchase",
-        "description": "Verifies a Play purchase token server-side and activates Pro. Email-linked accounts only.",
-        "operationId": "verifyPlayPurchase",
-        "parameters": [{ "name": "X-Reqistry-App-Build", "in": "header", "required": true, "schema": { "type": "integer", "minimum": 1 }, "description": "Missing, malformed or old builds return upgrade_required. PLAY_PURCHASES_ENABLED does not block verification." }],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "purchaseToken"
-                ],
-                "properties": {
-                  "purchaseToken": {
-                    "type": "string"
-                  },
-                  "productId": {
-                    "type": "string"
-                  },
-                  "orderId": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Entitlements",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "required": [
-                    "data"
-                  ],
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/Entitlements"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Validation error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Not authenticated",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "402": {
-            "description": "email_required, inactive_subscription, or upgrade_required; machine-readable code accompanies error.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Purchase belongs to another account (code: token_owned)",
-            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
-          },
-          "501": {
-            "description": "Billing verification unavailable",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "502": {
-            "description": "Could not verify purchase",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/billing/rtdn": {
-      "post": {
-        "tags": [
-          "Billing"
-        ],
-        "summary": "Play RTDN webhook",
-        "description": "Google Pub/Sub push for subscription lifecycle. No user auth; optional ?token shared secret.",
-        "operationId": "playRtdn",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "message": {
-                    "type": "object"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Acknowledged"
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/v1/ship-check": {
       "post": {
         "tags": [
           "Growth"
         ],
         "summary": "Ship-check verdict",
-        "description": "Pro production-safety verdict for one API by id or slug. Accepts a Bearer session or an X-Agent-Key header.",
+        "description": "Production-safety verdict for one API by id or slug. Accepts a Bearer session or an X-Agent-Key header.",
         "operationId": "shipCheck",
         "security": [
           {
@@ -3088,16 +2888,6 @@
               }
             }
           },
-          "402": {
-            "description": "Pro required",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
           "404": {
             "description": "API not found",
             "content": {
@@ -3117,7 +2907,7 @@
           "Watchlists"
         ],
         "summary": "List watchlists",
-        "description": "Pro keyword/category/project watches.",
+        "description": "Keyword/category/project watches with change alerts.",
         "operationId": "listWatchlists",
         "security": [
           {
@@ -3148,16 +2938,6 @@
           },
           "401": {
             "description": "Not authenticated",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "402": {
-            "description": "Pro required",
             "content": {
               "application/json": {
                 "schema": {
@@ -3247,16 +3027,6 @@
               }
             }
           },
-          "402": {
-            "description": "Pro required",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Duplicate or limit reached",
             "content": {
@@ -3307,16 +3077,6 @@
               }
             }
           },
-          "402": {
-            "description": "Pro required",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
           "404": {
             "description": "Not found",
             "content": {
@@ -3336,7 +3096,7 @@
           "AgentKeys"
         ],
         "summary": "List agent keys",
-        "description": "Pro personal agent keys (prefixes only).",
+        "description": "Personal agent keys (prefixes only).",
         "operationId": "listAgentKeys",
         "security": [
           {
@@ -3367,16 +3127,6 @@
           },
           "401": {
             "description": "Not authenticated",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "402": {
-            "description": "Pro required",
             "content": {
               "application/json": {
                 "schema": {
@@ -3444,16 +3194,6 @@
               }
             }
           },
-          "402": {
-            "description": "Pro required",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Key limit reached",
             "content": {
@@ -3504,16 +3244,6 @@
               }
             }
           },
-          "402": {
-            "description": "Pro required",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
           "404": {
             "description": "Not found",
             "content": {
@@ -3533,7 +3263,7 @@
           "Growth"
         ],
         "summary": "Stack history",
-        "description": "Pro daily stack snapshots, newest first.",
+        "description": "Daily stack snapshots, newest first.",
         "operationId": "getStackHistory",
         "security": [
           {
@@ -3564,16 +3294,6 @@
           },
           "401": {
             "description": "Not authenticated",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "402": {
-            "description": "Pro required",
             "content": {
               "application/json": {
                 "schema": {
@@ -5866,74 +5586,6 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/CompareApi"
-            }
-          }
-        }
-      },
-      "Entitlements": {
-        "type": "object",
-        "required": [
-          "tier",
-          "isPro",
-          "trialUsed",
-          "emailLinked",
-          "limits",
-          "billingAccountId",
-          "purchasesEnabled"
-        ],
-        "properties": {
-          "tier": {
-            "type": "string",
-            "enum": [
-              "free",
-              "pro"
-            ]
-          },
-          "isPro": {
-            "type": "boolean"
-          },
-          "proExpiresAt": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "date-time"
-          },
-          "trialUsed": {
-            "type": "boolean"
-          },
-          "emailLinked": {
-            "type": "boolean"
-          },
-          "billingAccountId": {
-            "type": "string",
-            "description": "Server-issued opaque billing account id. Never a fingerprint, email, purchase token, or order id."
-          },
-          "purchasesEnabled": {
-            "type": "boolean",
-            "description": "Server-derived gate: whether this client build may launch a new billing sheet."
-          },
-          "limits": {
-            "type": "object",
-            "properties": {
-              "healthCooldownSeconds": {
-                "type": "integer"
-              },
-              "healthRateLimitPerMinute": {
-                "type": "integer"
-              },
-              "compareMax": {
-                "type": "integer"
-              },
-              "watchlistsMax": {
-                "type": "integer"
-              },
-              "agentKeysMax": {
-                "type": "integer"
-              },
-              "stackHistoryDays": {
-                "type": "integer"
-              }
             }
           }
         }

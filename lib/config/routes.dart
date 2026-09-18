@@ -19,8 +19,6 @@ import 'package:api_scout/app/modules/views/category_apis_view/category_apis_vie
 import 'package:api_scout/app/modules/views/api_collection_view/api_collection_view.dart';
 import 'package:api_scout/app/modules/views/home_view/widgets/all_projects_view.dart';
 import 'package:api_scout/app/modules/views/project_apis_view/project_apis_view.dart';
-import 'package:api_scout/app/blocs/paywall/paywall_cubit.dart';
-import 'package:api_scout/app/modules/views/paywall_view/paywall_view.dart';
 import 'package:api_scout/app/modules/views/submit_api_view/submit_api_view.dart';
 import 'package:api_scout/app/modules/views/submissions_view/submissions_view.dart';
 import 'package:api_scout/app/modules/views/watchlists_view/watchlists_view.dart';
@@ -322,15 +320,6 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.submissions,
         builder: (context, state) => const SubmissionsView(),
-      ),
-      GoRoute(
-        // Reuses the global PaywallCubit: single purchase-stream listener,
-        // shared entitlement state.
-        path: AppRoutes.pro,
-        builder: (context, state) => BlocProvider.value(
-          value: context.read<PaywallCubit>(),
-          child: const PaywallView(),
-        ),
       ),
       GoRoute(
         path: AppRoutes.watchlists,

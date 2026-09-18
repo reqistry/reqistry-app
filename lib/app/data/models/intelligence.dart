@@ -148,7 +148,7 @@ class CompareApi {
     );
   }
 
-  /// Full-fidelity payload for Pro evidence-pack exports.
+  /// Full-fidelity payload for evidence-pack exports.
   Map<String, dynamic> toJson() => {
         'id': id,
         'slug': slug,

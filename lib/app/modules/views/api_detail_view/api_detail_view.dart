@@ -11,7 +11,7 @@ import 'package:api_scout/app/modules/views/api_detail_view/widgets/api_detail_a
 import 'package:api_scout/app/modules/views/api_detail_view/widgets/api_detail_sections.dart';
 import 'package:api_scout/app/modules/views/api_detail_view/widgets/api_detail_showcase.dart';
 import 'package:api_scout/app/modules/views/api_detail_view/widgets/api_trust_section.dart';
-import 'package:api_scout/app/modules/views/api_detail_view/widgets/pro_teaser_row.dart';
+import 'package:api_scout/app/modules/views/api_detail_view/widgets/ship_check_row.dart';
 import 'package:api_scout/app/modules/views/api_detail_view/widgets/core_state_scaffold.dart';
 import 'package:api_scout/app/modules/views/api_detail_view/widgets/detail_menu_item.dart';
 import 'package:api_scout/app/modules/views/api_detail_view/widgets/sheet_label.dart';
@@ -264,7 +264,7 @@ class _ApiDetailViewState extends State<ApiDetailView> {
                       previous.detail?.id != current.detail?.id,
                   builder: (context, state) {
                     final detail = state.detail ?? initialDetail;
-                    return ProTeaserRow(
+                    return ShipCheckRow(
                       apiId: detail.id,
                       slug: detail.slug,
                     );

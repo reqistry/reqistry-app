@@ -9,7 +9,6 @@ import 'package:requests_inspector/requests_inspector.dart';
 
 import 'app/blocs/auth/auth_cubit.dart';
 import 'app/blocs/auth/auth_state.dart';
-import 'app/blocs/paywall/paywall_cubit.dart';
 import 'app/blocs/projects/projects_cubit.dart';
 import 'app/blocs/home_categories/home_categories_cubit.dart';
 import 'app/blocs/main_shell/main_shell_cubit.dart';
@@ -18,6 +17,8 @@ import 'app/blocs/search/search_bloc.dart';
 import 'app/blocs/favorites/favorites_cubit.dart';
 import 'app/blocs/user_activity/user_activity_cubit.dart';
 import 'app/blocs/language/language_cubit.dart';
+import 'app/services/ads/ad_config.dart';
+import 'app/services/ads/ads_controller.dart';
 import 'app/services/connectivity/connectivity_service.dart';
 import 'app/services/notification/fcm_service.dart';
 import 'config/env.dart';
@@ -30,6 +31,33 @@ import 'app/widgets/app_overlay_host.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Release without production IDs (or with sample IDs): ads stay off.
+  // Every feature keeps working; the controller never initializes.
+  var adsEnabled = true;
+  AdUnits units;
+  try {
+    units = AdConfig.resolve(
+      isRelease: kReleaseMode,
+      appId: Env.admobAndroidAppId,
+      bannerUnitId: Env.admobAndroidBannerUnitId,
+      nativeUnitId: Env.admobAndroidNativeUnitId,
+    );
+  } catch (_) {
+    adsEnabled = false;
+    units = const AdUnits(
+      appId: AdConfig.testAppId,
+      bannerUnitId: AdConfig.testBannerUnitId,
+      nativeUnitId: AdConfig.testNativeUnitId,
+    );
+  }
+  // Consent-gated ads owner. Resolved once at startup; ad widgets read
+  // the shared controller to decide whether they may request and render.
+  final ads = AdsController(units: units);
+  AdsController.configureShared(ads);
+  if (adsEnabled) {
+    // Fire-and-forget: consent/SDK failure degrades to no-ads internally.
+    unawaited(ads.ensureInitialized());
+  }
   await MainInit().init();
   ThemeProvider.instance.init();
   ConnectivityService.instance.init();
@@ -76,9 +104,6 @@ class ApiScoutApp extends StatelessWidget {
         BlocProvider(create: (_) => ProjectsCubit()),
         BlocProvider(create: (_) => NotificationCubit()),
         BlocProvider(
-          create: (_) => PaywallCubit(),
-        ),
-        BlocProvider(
           create: (context) => UserActivityCubit(
             authCubit: context.read<AuthCubit>(),
             favoritesCubit: context.read<FavoritesCubit>(),
@@ -89,17 +114,14 @@ class ApiScoutApp extends StatelessWidget {
         listenWhen: (_, current) =>
             current is Unauthenticated || current is Authenticated,
         listener: (context, state) async {
-          final paywall = context.read<PaywallCubit>();
           if (state is Authenticated) {
-            await paywall.syncEntitlement();
             return;
           }
-          // Identity change: never leak the previous account's data or Pro
-          // grant into the new session. Cubits reload lazily on demand.
+          // Identity change: never leak the previous account's data into
+          // the new session. Cubits reload lazily on demand.
           context.read<FavoritesCubit>().clear();
           context.read<ProjectsCubit>().clear();
           context.read<UserActivityCubit>().clear();
-          await paywall.clearEntitlement();
         },
         child: Builder(
           builder: (context) {

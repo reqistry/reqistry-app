@@ -1,60 +1,6 @@
-// Pro billing + power-feature models. All payloads defensive: server nulls
-// are common and unknown enum strings must not throw.
-
-class Entitlements {
-  final bool isPro;
-  final String tier;
-  final DateTime? proExpiresAt;
-  final bool trialUsed;
-  final bool emailLinked;
-  final int compareMax;
-  final int watchlistsMax;
-  final int agentKeysMax;
-  final int stackHistoryDays;
-  final String billingAccountId;
-  final bool purchasesEnabled;
-
-  const Entitlements({
-    required this.isPro,
-    required this.tier,
-    this.proExpiresAt,
-    this.trialUsed = false,
-    this.emailLinked = false,
-    this.compareMax = 4,
-    this.watchlistsMax = 0,
-    this.agentKeysMax = 0,
-    this.stackHistoryDays = 0,
-    this.billingAccountId = '',
-    this.purchasesEnabled = false,
-  });
-
-  factory Entitlements.fromJson(Map<String, dynamic> json) {
-    final data = json['data'] is Map<String, dynamic>
-        ? json['data'] as Map<String, dynamic>
-        : json;
-    final limits =
-        data['limits'] is Map<String, dynamic> ? data['limits'] as Map<String, dynamic> : const <String, dynamic>{};
-    int limit(String key, int fallback) =>
-        (limits[key] as num?)?.toInt() ?? fallback;
-    DateTime? expires;
-    if (data['proExpiresAt'] != null) {
-      expires = DateTime.tryParse(data['proExpiresAt'].toString());
-    }
-    return Entitlements(
-      isPro: data['isPro'] == true || data['tier']?.toString() == 'pro',
-      tier: data['tier']?.toString() ?? 'free',
-      proExpiresAt: expires,
-      trialUsed: data['trialUsed'] == true,
-      emailLinked: data['emailLinked'] == true,
-      compareMax: limit('compareMax', 4),
-      watchlistsMax: limit('watchlistsMax', 0),
-      agentKeysMax: limit('agentKeysMax', 0),
-      stackHistoryDays: limit('stackHistoryDays', 0),
-      billingAccountId: data['billingAccountId']?.toString() ?? '',
-      purchasesEnabled: data['purchasesEnabled'] == true,
-    );
-  }
-}
+// Feature models: ship-check, watchlists, agent keys, stack history.
+// All payloads defensive: server nulls are common and unknown enum
+// strings must not throw.
 
 class ShipCheckReport {
   final String apiId;

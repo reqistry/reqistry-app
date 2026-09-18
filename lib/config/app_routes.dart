@@ -11,7 +11,6 @@ abstract class AppRoutes {
   static const recommendedApis = '/recommended-apis';
   static const submitApi = '/submit-api';
   static const submissions = '/submissions';
-  static const pro = '/pro';
   static const watchlists = '/watchlists';
   static const privacy = '/privacy';
   static const contact = '/contact';

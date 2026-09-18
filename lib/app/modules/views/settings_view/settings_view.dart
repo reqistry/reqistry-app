@@ -12,9 +12,8 @@ import 'package:api_scout/app/blocs/projects/projects_cubit.dart';
 import 'package:api_scout/app/blocs/main_shell/main_shell_cubit.dart';
 import 'package:api_scout/app/blocs/user_activity/user_activity_cubit.dart';
 import 'package:api_scout/app/blocs/user_activity/user_activity_state.dart';
+import 'package:api_scout/app/services/ads/ads_controller.dart';
 import 'package:api_scout/app/blocs/language/language_cubit.dart';
-import 'package:api_scout/app/blocs/paywall/paywall_cubit.dart';
-import 'package:api_scout/app/blocs/paywall/paywall_state.dart';
 import 'package:api_scout/app/modules/views/main_shell_view/widgets/root_showcase.dart';
 import 'package:api_scout/app/modules/views/api_detail_view/widgets/api_detail_showcase.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
@@ -45,7 +44,9 @@ class _SettingsViewState extends State<SettingsView> {
       context.read<AuthCubit>().refreshProfile(),
       context.read<UserActivityCubit>().loadStats(),
       context.read<FavoritesCubit>().loadBookmarks(),
-      context.read<ProjectsCubit>().loadProjects(l10n: AppLocalizations.of(context)!),
+      context
+          .read<ProjectsCubit>()
+          .loadProjects(l10n: AppLocalizations.of(context)!),
     ]);
   }
 
@@ -104,7 +105,9 @@ class _SettingsViewState extends State<SettingsView> {
                 return ListTile(
                   title: Text(lang.value),
                   trailing: isSelected
-                      ? Icon(Icons.check, color: AppColors.of(Theme.of(context).brightness).primary)
+                      ? Icon(Icons.check,
+                          color: AppColors.of(Theme.of(context).brightness)
+                              .primary)
                       : null,
                   onTap: () {
                     langCubit.setLanguage(lang.key);
@@ -126,7 +129,8 @@ class _SettingsViewState extends State<SettingsView> {
 
     return SettingsEntryTile(
       icon: PhosphorIconsRegular.globe,
-      title: '${AppLocalizations.of(context)!.settingsLanguage} · $languageName',
+      title:
+          '${AppLocalizations.of(context)!.settingsLanguage} · $languageName',
       onTap: () => _showLanguagePicker(context),
     );
   }
@@ -138,7 +142,8 @@ class _SettingsViewState extends State<SettingsView> {
     return Scaffold(
       backgroundColor: c.background,
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.tabYou, style: AppTextStyles.headlineSm),
+        title: Text(AppLocalizations.of(context)!.tabYou,
+            style: AppTextStyles.headlineSm),
         centerTitle: false,
         backgroundColor: c.surface,
         elevation: 0,
@@ -165,15 +170,14 @@ class _SettingsViewState extends State<SettingsView> {
             BlocBuilder<AuthCubit, AuthState>(
               builder: (context, state) {
                 final cubit = context.read<AuthCubit>();
-                return BlocBuilder<PaywallCubit, PaywallState>(
-                  builder: (context, paywall) => ProfilePanel(
-                    name: _name(cubit),
-                    email: cubit.userEmail,
-                    accountType: cubit.isGuestUser ? AppLocalizations.of(context)!.settingsGuestAccountType : AppLocalizations.of(context)!.settingsEmailAccountType,
-                    profile: cubit.currentUserProfile,
-                    onModify: () => context.push(AppRoutes.accountSettings),
-                    isPro: paywall.isPro,
-                  ),
+                return ProfilePanel(
+                  name: _name(cubit),
+                  email: cubit.userEmail,
+                  accountType: cubit.isGuestUser
+                      ? AppLocalizations.of(context)!.settingsGuestAccountType
+                      : AppLocalizations.of(context)!.settingsEmailAccountType,
+                  profile: cubit.currentUserProfile,
+                  onModify: () => context.push(AppRoutes.accountSettings),
                 );
               },
             ),
@@ -190,23 +194,6 @@ class _SettingsViewState extends State<SettingsView> {
             SettingsSection(
               title: AppLocalizations.of(context)!.sectionMy,
               children: [
-                BlocBuilder<PaywallCubit, PaywallState>(
-                  builder: (context, paywall) {
-                    final l10n = AppLocalizations.of(context)!;
-                    return SettingsEntryTile(
-                      icon: paywall.isPro
-                          ? PhosphorIconsFill.crown
-                          : PhosphorIconsRegular.crown,
-                      title: paywall.isPro
-                          ? l10n.settingsProActive
-                          : l10n.settingsGoPro,
-                      subtitle: paywall.isPro
-                          ? null
-                          : l10n.settingsGoProSubtitle,
-                      onTap: () => context.push(AppRoutes.pro),
-                    );
-                  },
-                ),
                 SettingsEntryTile(
                   icon: PhosphorIconsRegular.folder,
                   title: AppLocalizations.of(context)!.settingsProjects,
@@ -224,26 +211,13 @@ class _SettingsViewState extends State<SettingsView> {
                 ),
                 SettingsEntryTile(
                   icon: PhosphorIconsRegular.tray,
-                  title:
-                      AppLocalizations.of(context)!.settingsMySubmissions,
+                  title: AppLocalizations.of(context)!.settingsMySubmissions,
                   onTap: () => context.push(AppRoutes.submissions),
                 ),
                 SettingsEntryTile(
                   icon: PhosphorIconsRegular.bellRinging,
                   title: AppLocalizations.of(context)!.watchTitle,
                   onTap: () => context.push(AppRoutes.watchlists),
-                ),
-                BlocBuilder<PaywallCubit, PaywallState>(
-                  builder: (context, paywall) {
-                    if (paywall.isPro) return const SizedBox.shrink();
-                    return SettingsEntryTile(
-                      icon: PhosphorIconsRegular.key,
-                      title: AppLocalizations.of(context)!.agentKeysTitle,
-                      subtitle:
-                          AppLocalizations.of(context)!.settingsGoProSubtitle,
-                      onTap: () => context.push(AppRoutes.pro),
-                    );
-                  },
                 ),
               ],
             ),
@@ -297,9 +271,26 @@ class _SettingsViewState extends State<SettingsView> {
                   title: AppLocalizations.of(context)!.settingsPrivacyAndPolicy,
                   onTap: () => context.push(AppRoutes.privacy),
                 ),
+                ListenableBuilder(
+                  listenable: AdsController.shared,
+                  builder: (context, _) {
+                    if (!AdsController.shared.privacyOptionsRequired) {
+                      return const SizedBox.shrink();
+                    }
+                    return SettingsEntryTile(
+                      icon: PhosphorIconsRegular.cookie,
+                      title:
+                          AppLocalizations.of(context)!.settingsPrivacyChoices,
+                      subtitle: AppLocalizations.of(context)!
+                          .settingsPrivacyChoicesSubtitle,
+                      onTap: () => AdsController.shared.openPrivacyOptions(),
+                    );
+                  },
+                ),
                 SettingsEntryTile(
                   icon: PhosphorIconsRegular.info,
-                  title: AppLocalizations.of(context)!.settingsAboutAppAndDeveloper,
+                  title: AppLocalizations.of(context)!
+                      .settingsAboutAppAndDeveloper,
                   onTap: _openDeveloperSite,
                 ),
               ],

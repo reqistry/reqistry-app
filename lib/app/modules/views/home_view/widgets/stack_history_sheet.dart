@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
-import 'package:api_scout/app/data/models/pro.dart';
+import 'package:api_scout/app/data/models/feature_models.dart';
 import 'package:api_scout/app/services/fetch_api/remote_service.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
@@ -11,8 +11,8 @@ import 'package:api_scout/shared/widgets/app_empty_state.dart';
 import 'package:api_scout/shared/widgets/app_error_state.dart';
 import 'package:api_scout/shared/widgets/app_loading.dart';
 
-/// Pro stack history: daily down-count / trust snapshots written by the
-/// pro-digest worker. Plain mono rows, newest first.
+/// Stack history: daily down-count / trust snapshots written by the
+/// stack-digest worker. Plain mono rows, newest first.
 class StackHistorySheet extends StatefulWidget {
   const StackHistorySheet({super.key});
 
