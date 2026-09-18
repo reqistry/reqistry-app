@@ -1,14 +1,22 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:api_scout/app/blocs/favorites/favorites_state.dart';
 import 'package:api_scout/app/data/models/bookmark_item.dart';
 import 'package:api_scout/app/services/auth/dio_client.dart';
+import 'package:api_scout/app/services/fetch_api/remote_service.dart';
+import 'package:api_scout/app/services/in_app_review/in_app_review.dart';
 import 'package:api_scout/app/utils/snackbar_helper.dart';
 import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:dio/dio.dart';
 
 class FavoritesCubit extends Cubit<FavoritesState> {
-  FavoritesCubit() : super(const FavoritesState());
+  FavoritesCubit({Dio? dio})
+      : _dio = dio ?? DioClient().dio,
+        super(const FavoritesState());
+
+  final Dio _dio;
 
   /// Fires whenever bookmarks are added or removed so other tabs (home stats,
   /// settings saved count) can refresh accordingly.
@@ -16,24 +24,20 @@ class FavoritesCubit extends Cubit<FavoritesState> {
 
   void _notifyChanged() => changed.value++;
 
-  Future<void> loadBookmarks({int page = 1, int limit = 50}) async {
+  Future<void> loadBookmarks({AppLocalizations? l10n}) async {
     try {
-      emit(state.copyWith(isLoading: true));
-      final response = await DioClient().dio.get(
-        '/v1/bookmarks',
-        queryParameters: {'page': page, 'limit': limit},
-      );
-      final data = response.data;
-      final bookmarks = (data['bookmarks'] as List)
-          .whereType<Map<String, dynamic>>()
-          .map((b) => BookmarkItem.fromJson(b))
-          .toList();
+      emit(state.copyWith(isLoading: true, errorMessage: ''));
+      final bookmarks = await RemoteService.getAllBookmarks(l10n: l10n);
       emit(state.copyWith(
         bookmarks: bookmarks,
         isLoading: false,
+        errorMessage: '',
       ));
-    } catch (e) {
-      emit(state.copyWith(isLoading: false));
+    } catch (_) {
+      emit(state.copyWith(
+        isLoading: false,
+        errorMessage: l10n?.stateSomethingWentWrong ?? 'Something went wrong',
+      ));
     }
   }
 
@@ -43,21 +47,7 @@ class FavoritesCubit extends Cubit<FavoritesState> {
     BookmarkApi? optimisticApi,
     required AppLocalizations l10n,
   }) async {
-    final previous = state.bookmarks;
-    final temporaryId = 'optimistic-$apiId';
-    if (optimisticApi != null &&
-        !state.bookmarks.any((item) => item.api.id == apiId)) {
-      emit(state.copyWith(bookmarks: [
-        ...state.bookmarks,
-        BookmarkItem(
-          id: temporaryId,
-          api: optimisticApi,
-          createdAt: DateTime.now(),
-        ),
-      ]));
-    }
     if (apiId.trim().isEmpty) {
-      emit(state.copyWith(bookmarks: previous));
       AppSnackBarHelper.show(
         title: l10n.snackbarBookmarkErrorTitle,
         message: l10n.snackbarBookmarkErrorMessage,
@@ -66,33 +56,34 @@ class FavoritesCubit extends Cubit<FavoritesState> {
       return false;
     }
     try {
-      final response = await DioClient().dio.post(
-            '/v1/bookmarks',
-            data: {'apiId': apiId},
-            options: Options(extra: const {
-              'silentLoader': true,
-              RequestErrorNotifierInterceptor.silentKey: true,
-            }),
-          );
+      final response = await _dio.post(
+        '/v1/bookmarks',
+        data: {'apiId': apiId},
+        options: Options(extra: const {
+          'silentLoader': true,
+          RequestErrorNotifierInterceptor.silentKey: true,
+        }),
+      );
       if (response.data is Map) {
         final bookmark = BookmarkItem.fromJson(
           Map<String, dynamic>.from(response.data as Map),
         );
         final withoutTemporary = state.bookmarks
-            .where((item) => item.id != temporaryId && item.id != bookmark.id)
+            .where((item) => item.id != bookmark.id && item.api.id != apiId)
             .toList();
         emit(state.copyWith(bookmarks: [...withoutTemporary, bookmark]));
       } else {
-        await loadBookmarks();
+        await loadBookmarks(l10n: l10n);
       }
       _notifyChanged();
       AppSnackBarHelper.show(
         title: l10n.snackbarBookmarkedTitle,
         message: l10n.snackbarAddedToBookmarks(apiName ?? ''),
       );
+      // Best-effort review prompt; never blocks the save flow.
+      unawaited(InAppReview().recordWinAndMaybePrompt());
       return true;
     } catch (e) {
-      emit(state.copyWith(bookmarks: previous));
       AppSnackBarHelper.show(
         title: l10n.snackbarBookmarkErrorTitle,
         message: l10n.snackbarFailedToBookmark,
@@ -102,19 +93,19 @@ class FavoritesCubit extends Cubit<FavoritesState> {
     }
   }
 
-  Future<bool> removeBookmark(String bookmarkId, {required AppLocalizations l10n}) async {
-    final previous = state.bookmarks;
-    emit(state.copyWith(
-      bookmarks: state.bookmarks.where((b) => b.id != bookmarkId).toList(),
-    ));
+  Future<bool> removeBookmark(String bookmarkId,
+      {required AppLocalizations l10n}) async {
     try {
-      await DioClient().dio.delete(
-            '/v1/bookmarks/$bookmarkId',
-            options: Options(extra: const {
-              'silentLoader': true,
-              RequestErrorNotifierInterceptor.silentKey: true,
-            }),
-          );
+      await _dio.delete(
+        '/v1/bookmarks/$bookmarkId',
+        options: Options(extra: const {
+          'silentLoader': true,
+          RequestErrorNotifierInterceptor.silentKey: true,
+        }),
+      );
+      emit(state.copyWith(
+        bookmarks: state.bookmarks.where((b) => b.id != bookmarkId).toList(),
+      ));
       _notifyChanged();
       AppSnackBarHelper.show(
         title: l10n.snackbarRemovedTitle,
@@ -122,7 +113,6 @@ class FavoritesCubit extends Cubit<FavoritesState> {
       );
       return true;
     } catch (e) {
-      emit(state.copyWith(bookmarks: previous));
       AppSnackBarHelper.show(
         title: l10n.snackbarBookmarkErrorTitle,
         message: l10n.snackbarFailedToRemoveBookmark,
@@ -130,6 +120,11 @@ class FavoritesCubit extends Cubit<FavoritesState> {
       );
       return false;
     }
+  }
+
+  /// Drops all user data on sign-out/account switch. Never fetches.
+  void clear() {
+    if (!isClosed) emit(const FavoritesState());
   }
 
   bool isFavorited(String apiLink) {

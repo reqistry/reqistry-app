@@ -10,13 +10,16 @@ import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
 import 'package:api_scout/shared/widgets/app_empty_state.dart';
+import 'package:api_scout/shared/widgets/app_error_state.dart';
 import 'package:api_scout/shared/widgets/app_loading.dart';
 
 class FavoritesView extends StatelessWidget {
   const FavoritesView({super.key});
 
   Future<void> _refresh(BuildContext context) {
-    return context.read<FavoritesCubit>().loadBookmarks();
+    return context.read<FavoritesCubit>().loadBookmarks(
+          l10n: AppLocalizations.of(context)!,
+        );
   }
 
   @override
@@ -40,9 +43,19 @@ class FavoritesView extends StatelessWidget {
         onRefresh: () => _refresh(context),
         child: BlocBuilder<FavoritesCubit, FavoritesState>(
           builder: (context, state) {
-            if (state.isLoading) {
+            final l10n = AppLocalizations.of(context)!;
+            if (state.isLoading && state.bookmarks.isEmpty) {
               return AppLoading(
-                message: AppLocalizations.of(context)!.stateLoadingBookmarks,
+                message: l10n.stateLoadingBookmarks,
+                scrollable: true,
+              );
+            }
+            if (state.bookmarks.isEmpty &&
+                state.errorMessage.isNotEmpty) {
+              return AppErrorState(
+                title: l10n.stateCouldNotLoadApis,
+                message: state.errorMessage,
+                onRetry: () => _refresh(context),
                 scrollable: true,
               );
             }

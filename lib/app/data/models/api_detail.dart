@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'category_apis.dart' show ApiItem;
+import 'intelligence.dart' show TrustFactor;
 import 'package:api_scout/l10n/app_localizations.dart';
 
 
@@ -387,6 +388,43 @@ class ApiAlternative extends Equatable {
   List<Object?> get props => [id, slug, name, link];
 }
 
+/// Trust breakdown served inline on the API detail payload
+/// (`trustScore: {score, grade, summary, factors, computedAt}`).
+/// Absent on seed objects built from list rows (see [ApiDetail.fromApi]).
+class ApiTrustScore extends Equatable {
+  final int? score;
+  final String? grade;
+  final String? summary;
+  final Map<String, TrustFactor> factors;
+  final DateTime? computedAt;
+
+  const ApiTrustScore({
+    this.score,
+    this.grade,
+    this.summary,
+    this.factors = const {},
+    this.computedAt,
+  });
+
+  factory ApiTrustScore.fromJson(Map<String, dynamic> json) => ApiTrustScore(
+        score: json['score'] is num ? (json['score'] as num).round() : null,
+        grade: json['grade']?.toString(),
+        summary: json['summary']?.toString(),
+        factors: TrustFactor.parseFactors(json['factors']),
+        computedAt: DateTime.tryParse(json['computedAt']?.toString() ?? ''),
+      );
+
+  Map<String, dynamic> toJson() => {
+        'score': score,
+        'grade': grade,
+        'summary': summary,
+        'computedAt': computedAt?.toIso8601String(),
+      };
+
+  @override
+  List<Object?> get props => [score, grade, summary, factors, computedAt];
+}
+
 class ApiDetail extends Equatable {
   final String id;
   final String slug;
@@ -399,6 +437,7 @@ class ApiDetail extends Equatable {
   final ApiLinks links;
   final ApiCapabilities capabilities;
   final ApiHealthSummary health;
+  final ApiTrustScore? trustScore;
   final List<FieldVerification> verification;
   final List<ApiWarning> warnings;
   final List<ApiAlternative> alternatives;
@@ -418,6 +457,7 @@ class ApiDetail extends Equatable {
     required this.links,
     required this.capabilities,
     required this.health,
+    this.trustScore,
     this.verification = const [],
     this.warnings = const [],
     this.alternatives = const [],
@@ -443,6 +483,7 @@ class ApiDetail extends Equatable {
     String? fullDescription,
     String? imageUrl,
     ApiHealthSummary? health,
+    ApiTrustScore? trustScore,
     List<FieldVerification>? verification,
     List<ApiWarning>? warnings,
     List<ApiAlternative>? alternatives,
@@ -462,6 +503,7 @@ class ApiDetail extends Equatable {
       links: links,
       capabilities: capabilities,
       health: health ?? this.health,
+      trustScore: trustScore ?? this.trustScore,
       verification: verification ?? this.verification,
       warnings: warnings ?? this.warnings,
       alternatives: alternatives ?? this.alternatives,
@@ -577,6 +619,7 @@ class ApiDetail extends Equatable {
         'links': links.toJson(),
         'capabilities': capabilities.toJson(),
         'health': health.toJson(),
+        'trustScore': trustScore?.toJson(),
         'verification': verification.map((item) => item.toJson()).toList(),
         'warnings': warnings.map((item) => item.toJson()).toList(),
         'alternatives': alternatives.map((item) => item.toJson()).toList(),
@@ -607,6 +650,11 @@ class ApiDetail extends Equatable {
         health: ApiHealthSummary.fromJson(
           Map<String, dynamic>.from(json['health'] ?? const {}),
         ),
+        trustScore: json['trustScore'] is Map
+            ? ApiTrustScore.fromJson(
+                Map<String, dynamic>.from(json['trustScore'] as Map),
+              )
+            : null,
         verification: parseVerification(json['verification']),
         warnings: (json['warnings'] as List? ?? const [])
             .whereType<Map>()
@@ -638,6 +686,7 @@ class ApiDetail extends Equatable {
         links,
         capabilities,
         health,
+        trustScore,
         verification,
         warnings,
         alternatives,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
@@ -16,9 +17,14 @@ class DiscoverCategoryCard extends StatelessWidget {
     final c = AppColors.of(Theme.of(context).brightness);
     final imageUrl = category.imageUrl;
 
+    final l10n = AppLocalizations.of(context)!;
+    final trending = category.hasTrendyBorder;
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: c.surfaceVariant, width: 1),
+        border: Border.all(
+          color: trending ? c.primary : c.surfaceVariant,
+          width: 1,
+        ),
       ),
       clipBehavior: Clip.antiAlias,
       child: Stack(
@@ -38,6 +44,51 @@ class DiscoverCategoryCard extends StatelessWidget {
             ),
           ),
           Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.s12,
+                vertical: AppSpacing.s6,
+              ),
+              color: Colors.black.withValues(alpha: 0.55),
+              child: Row(
+                children: [
+                  if (trending) ...[
+                    const Icon(
+                      PhosphorIconsRegular.trendUp,
+                      size: 12,
+                      color: Colors.white,
+                    ),
+                    const SizedBox(width: AppSpacing.s4),
+                    Expanded(
+                      child: Text(
+                        l10n.stateTrending,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTextStyles.labelSmUpper.copyWith(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ] else
+                    const Spacer(),
+                  Text(
+                    '${category.apiCount} ${l10n.miscApis}'.toUpperCase(),
+                    maxLines: 1,
+                    style: AppTextStyles.withTabular(
+                      AppTextStyles.codeMd.copyWith(
+                        fontSize: 12,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Positioned(
             bottom: 0,
             left: 0,
             right: 0,
@@ -53,39 +104,33 @@ class DiscoverCategoryCard extends StatelessWidget {
                   ],
                 ),
               ),
-              child: Text(
-                category.name,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: AppTextStyles.headlineSm.fontFamily,
-                  height: 1.2,
-                ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  if (trending) ...[
+                    Container(
+                      width: 3,
+                      height: 28,
+                      color: Colors.white,
+                    ),
+                    const SizedBox(width: AppSpacing.s8),
+                  ],
+                  Expanded(
+                    child: Text(
+                      category.name,
+                      style: AppTextStyles.bodyMd.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        height: 1.2,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
-          if (category.hasTrendyBorder)
-            Positioned(
-              top: AppSpacing.s8,
-              right: AppSpacing.s8,
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.s6,
-                  vertical: AppSpacing.s2,
-                ),
-                decoration: BoxDecoration(color: c.primary),
-                child: Text(
-                  AppLocalizations.of(context)!.stateTrending,
-                  style: AppTextStyles.labelSmUpper.copyWith(
-                    color: c.onPrimary,
-                    fontSize: 9,
-                  ),
-                ),
-              ),
-            ),
         ],
       ),
     );

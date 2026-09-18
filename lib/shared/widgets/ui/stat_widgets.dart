@@ -58,18 +58,22 @@ class StatCard extends StatelessWidget {
   final String label;
   final String value;
   final String? sublabel;
+  final Color? valueColor;
+  final VoidCallback? onTap;
 
   const StatCard({
     super.key,
     required this.label,
     required this.value,
     this.sublabel,
+    this.valueColor,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(Theme.of(context).brightness);
-    return Container(
+    final body = Container(
       padding: const EdgeInsets.all(AppSpacing.s16),
       decoration: BoxDecoration(
         color: c.surface,
@@ -82,14 +86,13 @@ class StatCard extends StatelessWidget {
             label,
             style: AppTextStyles.labelSmUpper.copyWith(
               color: c.onSurfaceVariant,
-              fontSize: 10,
             ),
           ),
           const SizedBox(height: AppSpacing.s8),
           Text(
             value,
             style: AppTextStyles.headlineLg.copyWith(
-              color: c.onBackground,
+              color: valueColor ?? c.onBackground,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -99,11 +102,20 @@ class StatCard extends StatelessWidget {
               sublabel!,
               style: AppTextStyles.labelSmUpper.copyWith(
                 color: c.onSurfaceVariant,
-                fontSize: 10,
               ),
             ),
           ],
         ],
+      ),
+    );
+    final tap = onTap;
+    if (tap == null) return body;
+    return Semantics(
+      button: true,
+      label: '$label, $value',
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(onTap: tap, child: body),
       ),
     );
   }

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'dart:convert';
 
 import 'package:api_scout/app/blocs/auth/auth_cubit.dart';
+import 'package:api_scout/app/blocs/main_shell/main_shell_cubit.dart';
 import 'package:api_scout/app/blocs/api_detail/api_detail_cubit.dart';
 import 'package:api_scout/app/blocs/category_apis/category_apis_cubit.dart';
 import 'package:api_scout/app/blocs/submit_api/submit_api_cubit.dart';
@@ -15,16 +17,21 @@ import 'package:api_scout/app/modules/views/main_shell_view.dart';
 import 'package:api_scout/app/modules/views/api_detail_view/api_detail_view.dart';
 import 'package:api_scout/app/modules/views/category_apis_view/category_apis_view.dart';
 import 'package:api_scout/app/modules/views/api_collection_view/api_collection_view.dart';
+import 'package:api_scout/app/modules/views/home_view/widgets/all_projects_view.dart';
 import 'package:api_scout/app/modules/views/project_apis_view/project_apis_view.dart';
 import 'package:api_scout/app/modules/views/submit_api_view/submit_api_view.dart';
+import 'package:api_scout/app/modules/views/submissions_view/submissions_view.dart';
+import 'package:api_scout/app/modules/views/watchlists_view/watchlists_view.dart';
 import 'package:api_scout/app/modules/views/privacy_view/privacy_view.dart';
 import 'package:api_scout/app/modules/views/contact_view/contact_view.dart';
 import 'package:api_scout/app/modules/views/account_settings_view/account_settings_view.dart';
 import 'package:api_scout/app/modules/views/app_settings_view/app_settings_view.dart';
 import 'package:api_scout/app/modules/views/notifications_view/notifications_view.dart';
 import 'package:api_scout/app/modules/views/intelligence_view/widgets/compare_result_view.dart';
+import 'package:api_scout/app/modules/views/change_feed_view/change_feed_view.dart';
 import 'package:api_scout/app/modules/views/search_screen/search_screen.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
+import 'package:api_scout/app/widgets/app_snackbar.dart';
 import 'package:api_scout/shared/widgets/app_error_state.dart';
 import 'package:api_scout/l10n/app_localizations.dart';
 
@@ -32,35 +39,185 @@ import 'app_routes.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 
-/// Route a notification data payload to the right screen.
-void routeNotificationTap(Map<String, dynamic> data) {
-  final type = data['type'] as String?;
-  final slug = data['apiSlug'] as String?;
-  switch (type) {
+/// Destination decoded from a push data payload.
+///
+/// Pure decision logic lives in [parseNotificationAction] (unit-tested);
+/// [routeNotificationTap] executes navigation plus an optional alert.
+/// Payload shapes come from the backend worker (`apps/worker/src/notifications.ts`):
+/// every value arrives as a string, unknown keys must fall through to [feed].
+enum NotificationKind {
+  apiDetail,
+  compare,
+  recommended,
+  submitApi,
+  exploreTab,
+  homeTab,
+  feed,
+}
+
+class NotificationAction {
+  final NotificationKind kind;
+
+  /// API slug for [NotificationKind.apiDetail].
+  final String slug;
+
+  /// API ids for [NotificationKind.compare].
+  final List<String> apiIds;
+
+  /// Show the notification title/body as an in-app alert after navigating.
+  final bool alert;
+
+  /// Error styling for the alert (trust drops). Info otherwise.
+  final bool urgent;
+
+  const NotificationAction({
+    required this.kind,
+    this.slug = '',
+    this.apiIds = const [],
+    this.alert = false,
+    this.urgent = false,
+  });
+}
+
+/// Pure decoder: FCM data map -> navigation action. Never throws.
+@visibleForTesting
+NotificationAction parseNotificationAction(Map<String, dynamic> data) {
+  String text(Object? value) => value?.toString().trim() ?? '';
+  const feed = NotificationAction(kind: NotificationKind.feed);
+
+  switch (text(data['type'])) {
     case 'api_health':
     case 'new_api':
     case 'price_change':
     case 'trust_alert':
-      if (slug != null && slug.isNotEmpty) {
-        AppRouter.router.push(AppRoutes.apiDetailPath(slug));
-        return;
+      final slug = text(data['apiSlug']);
+      if (slug.isEmpty) return feed;
+      final type = text(data['type']);
+      return NotificationAction(
+        kind: NotificationKind.apiDetail,
+        slug: slug,
+        alert: type == 'price_change' || type == 'trust_alert',
+        urgent: type == 'trust_alert',
+      );
+    case 'weekly_digest':
+      final ids = _parseIdList(data['apiIds']);
+      if (ids.length >= 2) {
+        return NotificationAction(
+          kind: NotificationKind.compare,
+          apiIds: ids,
+          alert: true,
+        );
       }
-      break;
+      return const NotificationAction(
+        kind: NotificationKind.recommended,
+        alert: true,
+      );
+    case 'community_reminder':
+      switch (text(data['action'])) {
+        case 'submit_api':
+          return const NotificationAction(kind: NotificationKind.submitApi);
+        case 'browse_apis':
+          return const NotificationAction(kind: NotificationKind.exploreTab);
+        default:
+          // report_api and unknown actions carry no target context.
+          return const NotificationAction(kind: NotificationKind.homeTab);
+      }
     case 'report_update':
     case 'submission_update':
-      break;
-    case 'weekly_digest':
-      AppRouter.router.push(AppRoutes.recommendedApis);
-      return;
-    case 'community_reminder':
-      if (data['action'] == 'submit_api') {
-        AppRouter.router.push(AppRoutes.submitApi);
-      } else {
-        AppRouter.router.go(AppRoutes.home);
+      final slug = text(data['apiSlug']);
+      if (slug.isNotEmpty) {
+        return NotificationAction(
+          kind: NotificationKind.apiDetail,
+          slug: slug,
+          alert: true,
+        );
       }
-      return;
+      return const NotificationAction(
+        kind: NotificationKind.feed,
+        alert: true,
+      );
+    default:
+      return feed;
   }
-  AppRouter.router.push(AppRoutes.notifications);
+}
+
+/// Parses the backend's JSON-encoded id array, tolerating a bare
+/// comma-separated string and non-string entries.
+@visibleForTesting
+List<String> parseNotificationIds(Object? raw) => _parseIdList(raw);
+
+List<String> _parseIdList(Object? raw) {
+  if (raw is List) {
+    return [
+      for (final e in raw)
+        if (e.toString().trim().isNotEmpty) e.toString().trim(),
+    ];
+  }
+  if (raw is String && raw.trim().isNotEmpty) {
+    try {
+      final decoded = jsonDecode(raw);
+      if (decoded is List) return _parseIdList(decoded);
+    } catch (_) {}
+    return [
+      for (final part in raw.split(','))
+        if (part.trim().isNotEmpty) part.trim(),
+    ];
+  }
+  return const [];
+}
+
+/// Route a notification data payload to the right screen.
+///
+/// [title]/[body] surface as an in-app alert for alertable types
+/// (price, trust, digest, lifecycle updates). System-tray taps, local
+/// taps and feed taps all funnel here.
+void routeNotificationTap(
+  Map<String, dynamic> data, {
+  String? title,
+  String? body,
+}) {
+  final action = parseNotificationAction(data);
+  switch (action.kind) {
+    case NotificationKind.apiDetail:
+      AppRouter.router.push(
+        AppRoutes.apiDetailPath(action.slug, source: 'notification'),
+      );
+    case NotificationKind.compare:
+      AppRouter.router.push(AppRoutes.comparePath(action.apiIds));
+    case NotificationKind.recommended:
+      AppRouter.router.push(AppRoutes.recommendedApis);
+    case NotificationKind.submitApi:
+      AppRouter.router.push(AppRoutes.submitApi);
+    case NotificationKind.exploreTab:
+      _selectShellTab(AppRoutes.tabIndexSearch);
+    case NotificationKind.homeTab:
+      AppRouter.router.go(AppRoutes.home);
+    case NotificationKind.feed:
+      AppRouter.router.push(AppRoutes.notifications);
+  }
+  if (action.alert &&
+      title?.trim().isNotEmpty == true &&
+      body?.trim().isNotEmpty == true) {
+    AppSnackbarManager.showGlobal(
+      title: title!.trim(),
+      message: body!.trim(),
+      type: action.urgent ? AppSnackbarType.error : AppSnackbarType.info,
+    );
+  }
+}
+
+void _selectShellTab(int index) {
+  final context = rootNavigatorKey.currentContext;
+  if (context == null) {
+    AppRouter.router.go(AppRoutes.home);
+    return;
+  }
+  // Notifications can arrive on top of pushed routes (detail, feed).
+  // Land on the shell first so the tab change is visible.
+  if (AppRouter.router.state.matchedLocation != AppRoutes.home) {
+    AppRouter.router.go(AppRoutes.home);
+  }
+  context.read<MainShellCubit>().selectTab(index);
 }
 
 class AppRouter {
@@ -128,13 +285,17 @@ class AppRouter {
         },
       ),
       GoRoute(
+        path: AppRoutes.allProjects,
+        builder: (context, state) => const AllProjectsView(),
+      ),
+      GoRoute(
         path: AppRoutes.projectApis,
         builder: (context, state) {
           final extra = state.extra;
-          if (extra is! Project) {
-            return const _ErrorPage(messageKey: 'errorProjectDataNotFound');
-          }
-          return ProjectApisView(project: extra);
+          return ProjectApisView(
+            projectId: state.pathParameters['id'] ?? '',
+            project: extra is Project ? extra : null,
+          );
         },
       ),
       GoRoute(
@@ -155,6 +316,14 @@ class AppRouter {
           create: (_) => SubmitApiCubit(),
           child: const SubmitApiView(),
         ),
+      ),
+      GoRoute(
+        path: AppRoutes.submissions,
+        builder: (context, state) => const SubmissionsView(),
+      ),
+      GoRoute(
+        path: AppRoutes.watchlists,
+        builder: (context, state) => const WatchlistsView(),
       ),
       GoRoute(
         path: AppRoutes.privacy,
@@ -186,11 +355,17 @@ class AppRouter {
         path: AppRoutes.compare,
         builder: (context, state) {
           final extra = state.extra;
-          if (extra is! List<String> || extra.length < 2) {
+          final apiIds =
+              extra is List<String> ? extra : AppRoutes.compareIds(state.uri);
+          if (apiIds.length < 2) {
             return const _ErrorPage(messageKey: 'errorApiDataNotFound');
           }
-          return CompareResultView(apiIds: extra);
+          return CompareResultView(apiIds: apiIds);
         },
+      ),
+      GoRoute(
+        path: AppRoutes.changeFeed,
+        builder: (context, state) => const ChangeFeedView(),
       ),
       GoRoute(
         path: AppRoutes.search,

@@ -11,27 +11,33 @@ class StatusDot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(Theme.of(context).brightness);
+    final label = isAlive
+        ? AppLocalizations.of(context)!.apiDetailAlive
+        : AppLocalizations.of(context)!.apiDetailDown;
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: 8,
-          height: 8,
-          decoration: BoxDecoration(
-            color: isAlive ? c.success : c.danger,
-            shape: BoxShape.circle,
+    return Semantics(
+      label: label,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(
+              color: isAlive ? c.success : c.danger,
+              shape: BoxShape.circle,
+            ),
           ),
-        ),
-        const SizedBox(width: AppSpacing.s4),
-        Text(
-          isAlive ? AppLocalizations.of(context)!.apiDetailAlive : AppLocalizations.of(context)!.apiDetailDown,
-          style: AppTextStyles.labelSmUpper.copyWith(
-            color: isAlive ? c.successText : c.dangerText,
-            fontSize: 9,
+          const SizedBox(width: AppSpacing.s4),
+          Text(
+            label,
+            style: AppTextStyles.labelSmUpper.copyWith(
+              color: isAlive ? c.successText : c.dangerText,
+              fontSize: 11,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

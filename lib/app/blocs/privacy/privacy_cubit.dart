@@ -44,21 +44,27 @@ class PrivacyCubit extends Cubit<PrivacyState> {
               },
             ),
           );
-      final content = response.data?.toString() ?? '';
+      final content = response.data?.toString().trim() ?? '';
       if (content.isNotEmpty) {
         await PrivacyCacheDB.instance.saveContent(content);
-        emit(state.copyWith(
-          isLoading: false,
-          content: content,
-          errorMessage: '',
-        ));
+        if (!isClosed) {
+          emit(state.copyWith(
+            isLoading: false,
+            content: content,
+            errorMessage: '',
+          ));
+        }
+        return;
+      }
+      if (state.content.isEmpty && !isClosed) {
+        await _loadBundledFallback(l10n: l10n);
       }
     } on DioException catch (e) {
-      if (state.content.isEmpty) {
+      if (state.content.isEmpty && !isClosed) {
         await _loadBundledFallback(l10n: l10n, error: e);
       }
     } catch (_) {
-      if (state.content.isEmpty) {
+      if (state.content.isEmpty && !isClosed) {
         await _loadBundledFallback(l10n: l10n);
       }
     }
@@ -68,15 +74,23 @@ class PrivacyCubit extends Cubit<PrivacyState> {
     try {
       final content =
           await rootBundle.loadString('assets/md_content/privacy.md');
-      if (content.isNotEmpty) {
+      if (isClosed) return;
+      if (content.trim().isNotEmpty) {
         await PrivacyCacheDB.instance.saveContent(content);
         emit(state.copyWith(
           isLoading: false,
           content: content,
           errorMessage: '',
         ));
+        return;
       }
+      emit(state.copyWith(
+        isLoading: false,
+        errorMessage: l10n?.privacyFailedToLoadContent ??
+            'Failed to load privacy content',
+      ));
     } catch (_) {
+      if (isClosed) return;
       emit(state.copyWith(
         isLoading: false,
         errorMessage: error != null && error.isConnectivityError

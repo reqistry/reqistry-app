@@ -75,10 +75,6 @@ class CategoryApisCubit extends Cubit<CategoryApisState> {
       final match =
           await RemoteService.getCategoryApis(categoryId: _categoryId, l10n: loc);
 
-      if (match.apis.isEmpty) {
-        throw Failure('Not found', 'No APIs found for this category');
-      }
-
       emit(state.copyWith(
         isLoading: false,
         apis: match.apis,

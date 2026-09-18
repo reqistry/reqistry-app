@@ -62,5 +62,17 @@ void main() {
         isFalse,
       );
     });
+
+    test('server 5xx with stored identity does not wipe the session', () {
+      expect(
+        AuthCubit.shouldResetIdentity(
+          statusCode: 503,
+          hasDeviceFingerprint: true,
+          hasRefreshToken: true,
+          alreadyRetried: false,
+        ),
+        isFalse,
+      );
+    });
   });
 }

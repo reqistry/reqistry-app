@@ -27,6 +27,7 @@ class SearchHeader extends StatelessWidget {
           TextField(
             controller: searchController,
             autofocus: true,
+            textInputAction: TextInputAction.search,
             style: AppTextStyles.bodyMd.copyWith(
               decoration: TextDecoration.none,
             ),
@@ -38,6 +39,16 @@ class SearchHeader extends StatelessWidget {
               ),
               prefixIcon: Icon(PhosphorIconsRegular.magnifyingGlass,
                   color: c.onSurface),
+              suffixIcon: IconButton(
+                tooltip: MaterialLocalizations.of(context).deleteButtonTooltip,
+                icon: const Icon(PhosphorIconsRegular.x, size: 18),
+                onPressed: () {
+                  searchController.clear();
+                  context
+                      .read<SearchBloc>()
+                      .add(const SearchQueryChanged(query: ''));
+                },
+              ),
               border: OutlineInputBorder(
                   borderRadius: BorderRadius.zero,
                   borderSide: BorderSide(color: c.surfaceVariant)),
@@ -53,8 +64,9 @@ class SearchHeader extends StatelessWidget {
             onSubmitted: (_) {
               final q = searchController.text.trim();
               if (q.length >= 3) {
+                final l10n = AppLocalizations.of(context)!;
                 context.read<SearchBloc>().add(SearchQueryChanged(query: q));
-                context.read<SearchBloc>().add(SearchPerformed());
+                context.read<SearchBloc>().add(SearchPerformed(l10n: l10n));
               }
             },
           ),
@@ -62,19 +74,20 @@ class SearchHeader extends StatelessWidget {
           BlocBuilder<SearchBloc, SearchState>(
             builder: (context, state) {
               final filterCount = _getActiveFilterCount(state);
-              return GestureDetector(
-                onTap: () => _showAdvancedFilters(context),
-                behavior: HitTestBehavior.opaque,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.s16,
-                    vertical: AppSpacing.s12,
-                  ),
-                  decoration: BoxDecoration(
-                    border: Border(
-                        bottom: BorderSide(
-                            color: c.surfaceVariant, width: 1)),
-                  ),
+              return Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () => _showAdvancedFilters(context),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.s16,
+                      vertical: AppSpacing.s12,
+                    ),
+                    decoration: BoxDecoration(
+                      border: Border(
+                          bottom: BorderSide(
+                              color: c.surfaceVariant, width: 1)),
+                    ),
                   child: Row(
                     children: [
                       Icon(PhosphorIconsRegular.slidersHorizontal,
@@ -103,6 +116,7 @@ class SearchHeader extends StatelessWidget {
                       Icon(PhosphorIconsRegular.caretRight,
                           size: 20, color: c.outline),
                     ],
+                  ),
                   ),
                 ),
               );

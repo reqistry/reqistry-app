@@ -49,6 +49,10 @@ android {
         versionCode = flutter.versionCode
         versionName = flutter.versionName
         manifestPlaceholders["appName"] = envProperties.getProperty("APP_NAME", "Reqistry")
+        // Sample App ID default keeps debug builds working without secrets.
+        // Release lanes must set ADMOB_ANDROID_APP_ID; Dart fails ad
+        // initialization fast when production IDs are absent or sample IDs.
+        manifestPlaceholders["admobAppId"] = envProperties.getProperty("ADMOB_ANDROID_APP_ID", "ca-app-pub-3940256099942544~3347511713")
     }
 
     signingConfigs {

@@ -1,0 +1,14 @@
+{
+  "schema_version": 2,
+  "active_work_id": "google-play-subscriptions-production",
+  "works": {
+    "google-play-subscriptions-production": {
+      "work_id": "google-play-subscriptions-production",
+      "active_plan": ".omo/plans/google-play-subscriptions-production.md",
+      "plan_name": "google-play-subscriptions-production",
+      "session_ids": ["codex:ses_f82ca4510ffeEK1sJdQkFL75RQ"],
+      "status": "active",
+      "worktree_path": "/home/gwhyyy/Downloads/projects/real_projects/reqistry/reqistry-app-wt/gpsp-w1-t1"
+    }
+  }
+}

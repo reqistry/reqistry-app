@@ -14,7 +14,7 @@ import 'package:api_scout/config/env.dart';
 import 'package:api_scout/shared/widgets/ui/section_header.dart';
 import 'package:api_scout/shared/widgets/ui/action_card.dart';
 import 'package:api_scout/app/modules/views/app_settings_view/widgets/theme_row.dart';
-import 'package:api_scout/app/modules/views/app_settings_view/widgets/toggle_row.dart';
+import 'package:api_scout/app/modules/views/app_settings_view/widgets/notification_settings_group.dart';
 import 'package:api_scout/app/modules/views/app_settings_view/widgets/initial_tab_row.dart';
 import 'package:api_scout/l10n/app_localizations.dart';
 
@@ -66,95 +66,7 @@ class _AppSettingsViewState extends State<AppSettingsView> {
           const SizedBox(height: AppSpacing.itemGap),
 
           // ── Notifications ──────────────────────────────────────
-          BlocBuilder<NotificationCubit, NotificationState>(
-            builder: (context, state) {
-              final enabled = state is NotificationEnabled;
-              return ToggleRow(
-                icon: PhosphorIconsRegular.bellSimple,
-                title: AppLocalizations.of(context)!.settingsNotifications,
-                subtitle: state is NotificationLoading
-                    ? AppLocalizations.of(context)!.settingsNotificationUpdating
-                    : enabled
-                        ? AppLocalizations.of(context)!
-                            .settingsNotificationEnabled
-                        : AppLocalizations.of(context)!
-                            .settingsNotificationDisabled,
-                value: enabled,
-                onChanged: state is NotificationLoading
-                    ? null
-                    : (value) {
-                        final cubit = context.read<NotificationCubit>();
-                        if (value) {
-                          cubit.enableNotifications();
-                        } else {
-                          cubit.disableNotifications();
-                        }
-                      },
-              );
-            },
-          ),
-          BlocBuilder<NotificationCubit, NotificationState>(
-            builder: (context, state) {
-              if (state is! NotificationEnabled || state.preferences == null) {
-                return const SizedBox.shrink();
-              }
-              final preferences = state.preferences!;
-              final cubit = context.read<NotificationCubit>();
-              final l10n = AppLocalizations.of(context)!;
-              return Column(
-                children: [
-                  ToggleRow(
-                    icon: PhosphorIconsRegular.heartbeat,
-                    title: l10n.notificationSavedApiHealth,
-                    subtitle: l10n.notificationSavedApiHealthSubtitle,
-                    value: preferences.savedApiHealth,
-                    onChanged: (value) =>
-                        cubit.updatePreference('savedApiHealth', value),
-                  ),
-                  ToggleRow(
-                    icon: PhosphorIconsRegular.sparkle,
-                    title: l10n.notificationNewMatchingApis,
-                    subtitle: l10n.notificationNewMatchingApisSubtitle,
-                    value: preferences.newMatchingApis,
-                    onChanged: (value) =>
-                        cubit.updatePreference('newMatchingApis', value),
-                  ),
-                  ToggleRow(
-                    icon: PhosphorIconsRegular.calendarBlank,
-                    title: l10n.notificationWeeklyDigest,
-                    subtitle: l10n.notificationWeeklyDigestSubtitle,
-                    value: preferences.weeklyDigest,
-                    onChanged: (value) =>
-                        cubit.updatePreference('weeklyDigest', value),
-                  ),
-                  ToggleRow(
-                    icon: PhosphorIconsRegular.arrowsClockwise,
-                    title: l10n.notificationLifecycleUpdates,
-                    subtitle: l10n.notificationLifecycleUpdatesSubtitle,
-                    value: preferences.lifecycleUpdates,
-                    onChanged: (value) =>
-                        cubit.updatePreference('lifecycleUpdates', value),
-                  ),
-                  ToggleRow(
-                    icon: PhosphorIconsRegular.currencyDollar,
-                    title: l10n.notificationPricingChanges,
-                    subtitle: l10n.notificationPricingChangesSubtitle,
-                    value: preferences.pricingChanges,
-                    onChanged: (value) =>
-                        cubit.updatePreference('pricingChanges', value),
-                  ),
-                  ToggleRow(
-                    icon: PhosphorIconsRegular.shieldCheck,
-                    title: l10n.notificationTrustAlerts,
-                    subtitle: l10n.notificationTrustAlertsSubtitle,
-                    value: preferences.trustAlerts,
-                    onChanged: (value) =>
-                        cubit.updatePreference('trustAlerts', value),
-                  ),
-                ],
-              );
-            },
-          ),
+          const NotificationSettingsGroup(),
 
           // ── Initial tab ────────────────────────────────────────
           BlocBuilder<AppSettingsCubit, AppSettingsState>(

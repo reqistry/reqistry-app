@@ -52,11 +52,13 @@ class ApiDetailSource {
     String? note,
   }) async {
     final normalizedId = apiId.trim();
-    if (normalizedId.isEmpty) return;
+    if (normalizedId.isEmpty) {
+      throw ArgumentError.value(apiId, 'apiId', 'API ID cannot be empty');
+    }
     await _authDio.post(
       '/v1/apis/$normalizedId/reports',
       data: {
-        'reason': _reportReason(reason),
+        'reason': reason,
         if (note?.trim().isNotEmpty == true) 'note': note!.trim(),
       },
       options: Options(extra: const {
@@ -118,15 +120,4 @@ class ApiDetailSource {
     return null;
   }
 
-  String _reportReason(String reason) {
-    return switch (reason) {
-      'API is unavailable' => 'API_UNAVAILABLE',
-      'Link is broken' => 'LINK_BROKEN',
-      'Pricing is incorrect' => 'PRICING_INCORRECT',
-      'Authentication is incorrect' => 'AUTHENTICATION_INCORRECT',
-      'Description is incorrect' => 'DESCRIPTION_INCORRECT',
-      'API is discontinued' => 'DISCONTINUED',
-      _ => 'OTHER',
-    };
-  }
 }

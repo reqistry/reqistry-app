@@ -63,9 +63,6 @@ class CachedApiDetailRepository implements ApiDetailRepository {
         if (!forceRefresh) {
           if (cached != null && cached.isCoreFresh) {
             if (cached.isMetadataFresh) return cached;
-            final enriched = cached.copyWith(metadataUpdatedAt: DateTime.now());
-            await _save(enriched);
-            return enriched;
           }
         }
 
@@ -103,12 +100,12 @@ class CachedApiDetailRepository implements ApiDetailRepository {
         DateTime.now().difference(lastRequest) < const Duration(seconds: 30)) {
       return Future.value(detail.health);
     }
-    _healthRefreshRequestedAt[detail.slug] = DateTime.now();
     return _healthRequests.putIfAbsent(detail.slug, () async {
       try {
         final health = await _source.refreshHealth(detail);
         final current = readCached(detail.slug) ?? detail;
         await _save(current.copyWith(health: health));
+        _healthRefreshRequestedAt[detail.slug] = DateTime.now();
         return health;
       } finally {
         _healthRequests.remove(detail.slug);

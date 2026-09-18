@@ -6,13 +6,23 @@ part 'main_shell_state.dart';
 
 class MainShellCubit extends Cubit<MainShellState> {
   static const initialTabKey = 'initialOpenTab';
+  static const tabCount = 5;
 
   MainShellCubit()
       : super(MainShellState(
-          selectedTabIndex: LocalsDB.instance.getWithKey(initialTabKey) ?? 0,
+          selectedTabIndex: _sanitizeTab(
+            LocalsDB.instance.getWithKey(initialTabKey),
+          ),
         ));
 
+  static int _sanitizeTab(Object? raw) {
+    if (raw is! int) return 0;
+    if (raw < 0 || raw >= tabCount) return 0;
+    return raw;
+  }
+
   void selectTab(int index) {
+    if (index < 0 || index >= tabCount) return;
     emit(state.copyWith(selectedTabIndex: index));
   }
 

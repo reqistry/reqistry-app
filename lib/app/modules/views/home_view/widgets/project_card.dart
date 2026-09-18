@@ -22,7 +22,8 @@ class ProjectCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = AppColors.of(Theme.of(context).brightness);
     return GestureDetector(
-      onTap: onTap ?? () => context.push(AppRoutes.projectApis, extra: project),
+      onTap: onTap ??
+          () => context.push(AppRoutes.projectPath(project.id), extra: project),
       child: Container(
         width: 140,
         padding: const EdgeInsets.all(AppSpacing.s12),

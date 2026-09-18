@@ -30,6 +30,7 @@ class _CreateProjectBottomSheetState extends State<CreateProjectBottomSheet> {
   final _titleController = TextEditingController();
   IconData _selectedIcon = PhosphorIconsRegular.folder;
   bool _submitted = false;
+  bool _saving = false;
 
   static const _projectIconChoices = [
     PhosphorIconsRegular.folder,
@@ -71,13 +72,24 @@ class _CreateProjectBottomSheetState extends State<CreateProjectBottomSheet> {
     super.dispose();
   }
 
-  void _submit() {
+  Future<void> _submit() async {
+    if (_saving) return;
     setState(() => _submitted = true);
     final title = _titleController.text.trim();
     if (title.isEmpty) return;
 
-    context.read<ProjectsCubit>().createProject(title, icon: _selectedIcon, l10n: AppLocalizations.of(context)!);
-    dismissTextInputRoute(context);
+    setState(() => _saving = true);
+    final saved = await context.read<ProjectsCubit>().createProject(
+          title,
+          icon: _selectedIcon,
+          l10n: AppLocalizations.of(context)!,
+        );
+    if (!mounted) return;
+    if (saved) {
+      dismissTextInputRoute(context);
+    } else {
+      setState(() => _saving = false);
+    }
   }
 
   @override
@@ -88,6 +100,7 @@ class _CreateProjectBottomSheetState extends State<CreateProjectBottomSheet> {
       title: AppLocalizations.of(context)!.dialogCreateProjectTitle,
       submitLabel: AppLocalizations.of(context)!.actionCreate,
       onSubmit: _submit,
+      isSubmitLoading: _saving,
       content: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.s20),
         child: Column(
@@ -119,9 +132,11 @@ class _CreateProjectBottomSheetState extends State<CreateProjectBottomSheet> {
             SizedBox(
               height: 240,
               child: GridView.builder(
-                gridDelegate:
-                    const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 6,
+                // Fewer columns on narrow phones so each icon cell keeps a
+                // 48dp minimum touch target.
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount:
+                      MediaQuery.sizeOf(context).width < 380 ? 5 : 6,
                   mainAxisSpacing: AppSpacing.s8,
                   crossAxisSpacing: AppSpacing.s8,
                 ),
@@ -130,26 +145,32 @@ class _CreateProjectBottomSheetState extends State<CreateProjectBottomSheet> {
                   final icon = _projectIconChoices[index];
                   final isSelected = icon == _selectedIcon;
 
-                  return GestureDetector(
-                    onTap: () => setState(() => _selectedIcon = icon),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 150),
-                      decoration: BoxDecoration(
-                        color: isSelected
-                            ? c.primary
-                            : c.surfaceContainerLow,
-                        border: Border.all(
-                          color: isSelected
-                              ? c.primary
-                              : c.surfaceVariant,
-                          width: isSelected ? 2 : 1,
+                  return Semantics(
+                    button: true,
+                    selected: isSelected,
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () => setState(() => _selectedIcon = icon),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 150),
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? c.primary
+                                : c.surfaceContainerLow,
+                            border: Border.all(
+                              color: isSelected
+                                  ? c.primary
+                                  : c.surfaceVariant,
+                              width: isSelected ? 2 : 1,
+                            ),
+                          ),
+                          child: Icon(
+                            icon,
+                            size: 22,
+                            color: isSelected ? c.onPrimary : c.onSurface,
+                          ),
                         ),
-                      ),
-                      child: Icon(
-                        icon,
-                        size: 22,
-                        color:
-                            isSelected ? c.onPrimary : c.onSurface,
                       ),
                     ),
                   );

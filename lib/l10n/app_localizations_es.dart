@@ -441,9 +441,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get stateUnavailable => 'No disponible';
 
   @override
-  String get stateComingSoon => 'PRÓXIMAMENTE';
-
-  @override
   String get stateTrending => 'TENDENCIA';
 
   @override
@@ -960,6 +957,103 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get pickerNoSavedApis =>
       'Aún no hay APIs guardadas. Busca APIs para comparar.';
+
+  @override
+  String get changeTypeTrustScore => 'PUNTUACIÓN DE CONFIANZA';
+
+  @override
+  String get changeTypePricing => 'PRECIOS';
+
+  @override
+  String get changeTypeHealth => 'SALUD';
+
+  @override
+  String get changeTypeUpdate => 'ACTUALIZACIÓN';
+
+  @override
+  String get compareOpenApi => 'Especificación OpenAPI';
+
+  @override
+  String get onboardingSearchFabTitle => 'BUSCA CUALQUIER COSA';
+
+  @override
+  String get onboardingSearchFabDesc =>
+      'Toca el botón de búsqueda para encontrar APIs en todo el registro.';
+
+  @override
+  String get onboardingNavBarTitle => 'NAVEGACIÓN';
+
+  @override
+  String get onboardingNavBarDesc =>
+      'Cambia entre Inicio, Explorar, Inteligencia, Guardadas y Tú.';
+
+  @override
+  String get onboardingSubmitApiTitle => '¿CONOCES UNA API?';
+
+  @override
+  String get onboardingSubmitApiDesc =>
+      'Envía las APIs que falten y ayuda a crecer el registro.';
+
+  @override
+  String get onboardingCompareTitle => 'COMPARAR APIS';
+
+  @override
+  String get onboardingCompareDesc =>
+      'Elige hasta 4 APIs y compara confianza, precios y salud lado a lado.';
+
+  @override
+  String get onboardingStatsTitle => 'TU ACTIVIDAD';
+
+  @override
+  String get onboardingStatsDesc =>
+      'Controla tus APIs guardadas y proyectos de un vistazo.';
+
+  @override
+  String get onboardingProjectsTitle => 'TUS PROYECTOS';
+
+  @override
+  String get onboardingProjectsDesc =>
+      'Agrupa APIs en proyectos para compararlos y compartirlos con tu equipo.';
+
+  @override
+  String get onboardingApiMetaTitle => 'RESUMEN DE LA API';
+
+  @override
+  String get onboardingApiMetaDesc =>
+      'Todo sobre esta API: descripción, categoría, precios, autenticación y salud en vivo.';
+
+  @override
+  String get onboardingSaveProjectTitle => 'GUARDAR EN PROYECTO';
+
+  @override
+  String get onboardingSaveProjectDesc =>
+      'Añade esta API a uno de tus proyectos o crea uno nuevo.';
+
+  @override
+  String get onboardingBookmarkTitle => 'GUÁRDALA';
+
+  @override
+  String get onboardingBookmarkDesc =>
+      'Guarda la API en tus marcadores para acceder rápido cuando quieras.';
+
+  @override
+  String get settingsReplayIntro => 'Repetir introducción';
+
+  @override
+  String get actionSkip => 'SALTAR';
+
+  @override
+  String get actionPrevious => 'ANTERIOR';
+
+  @override
+  String get actionNext => 'SIGUIENTE';
+
+  @override
+  String get nudgeSubmitApiTitle => '¿CONOCES UNA API QUE FALTE?';
+
+  @override
+  String get nudgeSubmitApiMessage =>
+      'Has explorado 5 APIs. Ayuda a crecer el registro enviando una que te encante.';
 
   @override
   String compareTrustScoreValue(int score, String grade) {
@@ -1672,4 +1766,271 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settingsLanguage => 'Idioma';
+
+  @override
+  String get intelligenceCollections => 'COLECCIONES CURADAS';
+
+  @override
+  String get intelligenceCollectionsSubtitle =>
+      'Puntos de partida por tarea. Elige un caso y compara la selección.';
+
+  @override
+  String get intelligenceHeroTitle => 'DECIDE CON EVIDENCIA.';
+
+  @override
+  String get intelligenceHeroSubtitle =>
+      'Compara APIs lado a lado, con evidencia de confianza en vivo.';
+
+  @override
+  String get intelligenceRecent => 'RECIENTES';
+
+  @override
+  String collectionApisCount(Object count) {
+    return '$count APIs';
+  }
+
+  @override
+  String get compareTrust => 'Confianza';
+
+  @override
+  String get compareTopPick => 'ELECCIÓN';
+
+  @override
+  String get compareBest => 'MEJOR';
+
+  @override
+  String compareVerdictFastest(Object ms, Object name) {
+    return 'Respuesta más rápida: $name en $ms ms';
+  }
+
+  @override
+  String compareVerdictUptime(Object name, Object uptime) {
+    return 'Mejor disponibilidad: $name con $uptime';
+  }
+
+  @override
+  String get compareVerdictAlsoFastest => 'También la opción más rápida';
+
+  @override
+  String get compareShareHeader => 'Comparativa de APIs vía Reqistry';
+
+  @override
+  String get trustEvidenceTitle => 'EVIDENCIA DE CONFIANZA';
+
+  @override
+  String trustEvidenceVerifiedOn(Object date) {
+    return 'Verificado el $date';
+  }
+
+  @override
+  String get trustEvidenceLiveScore => 'Nota en vivo, recién calculada';
+
+  @override
+  String get statsAvgTrust => 'CONFIANZA MEDIA';
+
+  @override
+  String get statsDownNow => 'CAÍDAS';
+
+  @override
+  String get sectionTrendingCategories => 'TENDENCIA';
+
+  @override
+  String get contactFormTitle => 'ENVÍA UN MENSAJE';
+
+  @override
+  String get contactFormSubtitle =>
+      'Preguntas, comentarios o datos rotos. El equipo lo lee todo.';
+
+  @override
+  String get formSubject => 'ASUNTO (OPCIONAL)';
+
+  @override
+  String get formMessage => 'MENSAJE';
+
+  @override
+  String get formInvalidEmail => 'Introduce un correo válido';
+
+  @override
+  String get snackbarContactSentTitle => 'Mensaje enviado';
+
+  @override
+  String get snackbarContactSentMessage => 'Tu mensaje ha sido enviado.';
+
+  @override
+  String get snackbarContactFailedMessage =>
+      'No se pudo enviar. Inténtalo de nuevo.';
+
+  @override
+  String get notifFeedTitle => 'Notificaciones';
+
+  @override
+  String get notifFeedClearTooltip => 'Borrar todo';
+
+  @override
+  String get notifFeedEmptyTitle => 'Sin notificaciones todavía';
+
+  @override
+  String get notifFeedEmptyMessage =>
+      'Aquí aparecerán alertas de salud, precios y confianza de tus APIs guardadas.';
+
+  @override
+  String get notifFeedClearTitle => '¿Borrar todas las notificaciones?';
+
+  @override
+  String get notifFeedClearMessage =>
+      'Esto elimina tu historial local de notificaciones. No se puede deshacer.';
+
+  @override
+  String get submissionsTitle => 'Mis envíos';
+
+  @override
+  String get submissionsEmptyTitle => 'Sin envíos todavía';
+
+  @override
+  String get submissionsEmptyMessage =>
+      'Las APIs que envíes para revisión aparecerán aquí con su estado.';
+
+  @override
+  String get submissionsOpenApi => 'Abrir API';
+
+  @override
+  String submissionsSubmittedOn(String date) {
+    return 'Enviado el $date';
+  }
+
+  @override
+  String submissionsReviewedOn(String date) {
+    return 'Revisado el $date';
+  }
+
+  @override
+  String submissionsRejectionReason(String reason) {
+    return 'Motivo: $reason';
+  }
+
+  @override
+  String get submissionStatusPending => 'Pendiente';
+
+  @override
+  String get submissionStatusApproved => 'Aprobado';
+
+  @override
+  String get submissionStatusRejected => 'Rechazado';
+
+  @override
+  String get submissionStatusDuplicate => 'Duplicado';
+
+  @override
+  String get submissionStatusSpam => 'Spam';
+
+  @override
+  String get settingsMySubmissions => 'Mis envíos';
+
+  @override
+  String get actionUndo => 'Deshacer';
+
+  @override
+  String get actionDone => 'Listo';
+
+  @override
+  String get watchTitle => 'Seguimientos';
+
+  @override
+  String get watchEmptyTitle => 'Sin seguimientos';
+
+  @override
+  String get watchEmptyMessage =>
+      'Vigila una palabra para recibir alertas de novedades, precios o confianza.';
+
+  @override
+  String get watchAction => 'Vigilar esta búsqueda';
+
+  @override
+  String get watchAdded => 'Seguimiento añadido';
+
+  @override
+  String get watchLimitReached => 'Límite de seguimientos';
+
+  @override
+  String get agentKeysTitle => 'Claves de agente';
+
+  @override
+  String get agentKeysEmpty =>
+      'Sin claves. Crea una para que tus agentes consulten Reqistry.';
+
+  @override
+  String get agentKeyCreate => 'Crear clave';
+
+  @override
+  String get agentKeyNameHint => 'Nombre de clave (opcional)';
+
+  @override
+  String get agentKeyOnceWarning =>
+      'Copia ahora — la clave completa solo se muestra una vez.';
+
+  @override
+  String get agentKeyCopied => 'Clave copiada';
+
+  @override
+  String agentKeyUsageToday(int used) {
+    return '$used llamadas hoy';
+  }
+
+  @override
+  String get agentKeyRevokeTitle => '¿Revocar esta clave?';
+
+  @override
+  String get agentKeyRevokeMessage =>
+      'Los agentes que la usen dejarán de funcionar.';
+
+  @override
+  String get shipReportTitle => 'Informe de lanzamiento';
+
+  @override
+  String get shipVerdictShip => 'Seguro para lanzar';
+
+  @override
+  String get shipVerdictCaution => 'Lanza con precaución';
+
+  @override
+  String get shipVerdictAvoid => 'No lanzar';
+
+  @override
+  String get monitorTitle => 'Monitorizar proyecto';
+
+  @override
+  String get monitorSubtitle => 'Digest diario de salud de este proyecto';
+
+  @override
+  String get stackHistoryTitle => 'Historial del stack';
+
+  @override
+  String get stackHistoryEmpty =>
+      'Las snapshots aparecen tras el primer digest diario.';
+
+  @override
+  String get stackHistoryDown => 'CAÍDAS';
+
+  @override
+  String get stackHistoryTrust => 'CONFIANZA';
+
+  @override
+  String get notifFeedRemovedMessage => 'Notificación eliminada.';
+
+  @override
+  String get shipCheckRowTitle => 'Verificación de seguridad';
+
+  @override
+  String get shipCheckRowBody =>
+      'Señales de confianza, salud, documentación y autenticación de esta API.';
+
+  @override
+  String get adBadgeLabel => 'Anuncio';
+
+  @override
+  String get settingsPrivacyChoices => 'Opciones de privacidad';
+
+  @override
+  String get settingsPrivacyChoicesSubtitle =>
+      'Controlar anuncios personalizados';
 }

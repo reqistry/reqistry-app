@@ -44,11 +44,12 @@ class SearchQuickFilterApplied extends SearchEvent {
 class SearchPerformed extends SearchEvent {
   final bool reset;
   final AppLocalizations? l10n;
+  final int? page;
 
-  const SearchPerformed({this.reset = true, this.l10n});
+  const SearchPerformed({this.reset = true, this.l10n, this.page});
 
   @override
-  List<Object?> get props => [reset];
+  List<Object?> get props => [reset, page];
 }
 
 class SearchLoadMore extends SearchEvent {

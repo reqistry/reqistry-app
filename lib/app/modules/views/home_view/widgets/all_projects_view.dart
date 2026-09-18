@@ -12,6 +12,7 @@ import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
 import 'package:api_scout/app/widgets/app_dialog.dart';
 import 'package:api_scout/config/app_routes.dart';
 import 'package:api_scout/shared/widgets/app_empty_state.dart';
+import 'package:api_scout/shared/widgets/app_error_state.dart';
 import 'package:api_scout/shared/widgets/app_loading.dart';
 
 import 'create_project_bottom_sheet.dart';
@@ -35,7 +36,7 @@ class AllProjectsView extends StatelessWidget {
         backgroundColor: c.surface,
         leading: IconButton(
           icon: const Icon(PhosphorIconsRegular.arrowLeft),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => context.pop(),
         ),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
@@ -50,15 +51,26 @@ class AllProjectsView extends StatelessWidget {
       ),
       body: BlocBuilder<ProjectsCubit, ProjectsState>(
         builder: (context, state) {
-          if (state.isLoading) {
-            return AppLoading(message: AppLocalizations.of(context)!.stateLoadingProjects);
+          if (state.isLoading && state.projects.isEmpty) {
+            return AppLoading(
+                message: AppLocalizations.of(context)!.stateLoadingProjects);
+          }
+
+          if (state.projects.isEmpty && state.errorMessage.isNotEmpty) {
+            return AppErrorState(
+              title: AppLocalizations.of(context)!.stateError,
+              message: state.errorMessage,
+              onRetry: () => context.read<ProjectsCubit>().loadProjects(
+                    l10n: AppLocalizations.of(context)!,
+                  ),
+              scrollable: true,
+            );
           }
 
           if (state.isEmpty) {
             return AppEmptyState(
               title: AppLocalizations.of(context)!.stateNoProjectsYet,
-              message:
-                  AppLocalizations.of(context)!.emptyCreateProjectMessage,
+              message: AppLocalizations.of(context)!.emptyCreateProjectMessage,
               icon: PhosphorIconsRegular.folderOpen,
               actionLabel: AppLocalizations.of(context)!.actionCreateProject,
               onAction: () => CreateProjectBottomSheet.show(context),
@@ -95,7 +107,8 @@ class _ProjectListTile extends StatelessWidget {
     return Material(
       color: c.surface,
       child: InkWell(
-        onTap: () => context.push(AppRoutes.projectApis, extra: project),
+        onTap: () =>
+            context.push(AppRoutes.projectPath(project.id), extra: project),
         child: Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.s16,
@@ -131,7 +144,6 @@ class _ProjectListTile extends StatelessWidget {
                       '${project.apiCount} ${project.apiCount == 1 ? AppLocalizations.of(context)!.miscApi : AppLocalizations.of(context)!.miscApis}',
                       style: AppTextStyles.labelSmUpper.copyWith(
                         color: c.onSurfaceVariant,
-                        fontSize: 10,
                       ),
                     ),
                   ],
@@ -150,8 +162,13 @@ class _ProjectListTile extends StatelessWidget {
                   }
                 },
                 itemBuilder: (context) => [
-                  PopupMenuItem(value: 'rename', child: Text(AppLocalizations.of(context)!.actionRename)),
-                  PopupMenuItem(value: 'delete', child: Text(AppLocalizations.of(context)!.actionDeleteProject)),
+                  PopupMenuItem(
+                      value: 'rename',
+                      child: Text(AppLocalizations.of(context)!.actionRename)),
+                  PopupMenuItem(
+                      value: 'delete',
+                      child: Text(
+                          AppLocalizations.of(context)!.actionDeleteProject)),
                 ],
               ),
               Icon(
@@ -175,19 +192,23 @@ class _ProjectListTile extends StatelessWidget {
       confirmLabel: AppLocalizations.of(context)!.actionSave,
     );
     if (title == null || title.isEmpty || !context.mounted) return;
-    await context.read<ProjectsCubit>().updateProject(project.id, title: title, l10n: AppLocalizations.of(context)!);
+    await context.read<ProjectsCubit>().updateProject(project.id,
+        title: title, l10n: AppLocalizations.of(context)!);
   }
 
   Future<void> _delete(BuildContext context) async {
     final confirmed = await AppDialog.showConfirm(
       context: context,
       title: AppLocalizations.of(context)!.dialogDeleteProjectTitle,
-      message: AppLocalizations.of(context)!.dialogDeleteProjectMessage(project.title),
+      message: AppLocalizations.of(context)!
+          .dialogDeleteProjectMessage(project.title),
       confirmLabel: AppLocalizations.of(context)!.actionDelete,
       cancelLabel: AppLocalizations.of(context)!.actionCancel,
       isDestructive: true,
     );
     if (!confirmed || !context.mounted) return;
-    await context.read<ProjectsCubit>().deleteProject(project.id, l10n: AppLocalizations.of(context)!);
+    await context
+        .read<ProjectsCubit>()
+        .deleteProject(project.id, l10n: AppLocalizations.of(context)!);
   }
 }

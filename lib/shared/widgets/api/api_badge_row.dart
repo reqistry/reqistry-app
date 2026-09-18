@@ -23,18 +23,28 @@ class ApiBadgeRow extends StatelessWidget {
         bottom: AppSpacing.s12,
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          PricingBadge(pricing: api.pricing),
-          const SizedBox(width: AppSpacing.s6),
-          TypeBadge(type: api.apiType),
-          const SizedBox(width: AppSpacing.s6),
-          HttpsBadge(isHttps: api.supportsHttps),
-          const Spacer(),
+          Expanded(
+            child: Wrap(
+              spacing: AppSpacing.s6,
+              runSpacing: AppSpacing.s6,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                PricingBadge(pricing: api.pricing),
+                TypeBadge(type: api.apiType),
+                HttpsBadge(isHttps: api.supportsHttps),
+              ],
+            ),
+          ),
+          const SizedBox(width: AppSpacing.s8),
           Text(
             api.responseTimeFormatted,
-            style: AppTextStyles.labelSmUpper.copyWith(
-              color: c.onSurfaceVariant,
-              fontSize: 9,
+            style: AppTextStyles.withTabular(
+              AppTextStyles.labelSmUpper.copyWith(
+                color: c.onSurfaceVariant,
+                fontSize: 11,
+              ),
             ),
           ),
         ],

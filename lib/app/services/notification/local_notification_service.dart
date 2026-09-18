@@ -60,7 +60,21 @@ class LocalNotificationService {
     Map<String, dynamic> data = {};
     try {
       final decoded = jsonDecode(response.payload ?? '');
-      if (decoded is Map) data = Map<String, dynamic>.from(decoded);
+      if (decoded is Map) {
+        final envelope = Map<String, dynamic>.from(decoded);
+        // New envelope shape carries title/body alongside data.
+        if (envelope['data'] is Map &&
+            (envelope.containsKey('title') ||
+                envelope.containsKey('body'))) {
+          data = {
+            'data': Map<String, dynamic>.from(envelope['data'] as Map),
+            'title': envelope['title'],
+            'body': envelope['body'],
+          };
+        } else {
+          data = envelope;
+        }
+      }
     } catch (_) {}
     _notificationTapStreamController.add(data);
     debugPrint('[LocalNotification] Tapped: $data');
@@ -102,7 +116,15 @@ class LocalNotificationService {
       title: notification.title,
       body: notification.body,
       notificationDetails: details,
-      payload: message.data.isNotEmpty ? jsonEncode(message.data) : null,
+      // Envelope keeps title/body for the in-app alert; the router only
+      // reads `data`. Old data-only payloads still decode (see below).
+      payload: message.data.isNotEmpty
+          ? jsonEncode({
+              'data': message.data,
+              'title': notification.title,
+              'body': notification.body,
+            })
+          : null,
     );
   }
 

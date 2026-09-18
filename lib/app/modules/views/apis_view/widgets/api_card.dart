@@ -78,70 +78,86 @@ class _ApiCardState extends State<ApiCard> {
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(Theme.of(context).brightness);
-    return GestureDetector(
-      onTap: _navigateToDetail,
-      child: Container(
-        margin: const EdgeInsets.only(bottom: AppSpacing.s8),
-        decoration: BoxDecoration(
-          color: c.surface,
-          border: Border.all(color: c.surfaceVariant, width: 1),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(AppSpacing.s12),
-              child: Row(
-                children: [
-                  CategoryImagePlaceholder(
-                    name: widget.api.name,
-                    imageUrl: widget.api.imageUrl,
-                    size: 40,
-                  ),
-                  const SizedBox(width: AppSpacing.s12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.api.name,
-                          style: AppTextStyles.bodyMd.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: AppSpacing.s2),
-                        Text(
-                          widget.api.category.isNotEmpty
-                              ? widget.api.category
-                              : widget.category,
-                          style: AppTextStyles.labelSmUpper.copyWith(
-                            color: c.onSurfaceVariant,
-                            fontSize: 10,
-                          ),
-                        ),
-                      ],
+    final l10n = AppLocalizations.of(context)!;
+    return Container(
+      margin: const EdgeInsets.only(bottom: AppSpacing.s8),
+      decoration: BoxDecoration(
+        color: c.surface,
+        border: Border.all(color: c.surfaceVariant, width: 1),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: _navigateToDetail,
+          highlightColor: c.surfaceContainerHigh,
+          splashColor: c.surfaceContainerHighest,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.s12,
+                  AppSpacing.s4,
+                  AppSpacing.s4,
+                  AppSpacing.s4,
+                ),
+                child: Row(
+                  children: [
+                    CategoryImagePlaceholder(
+                      name: widget.api.name,
+                      imageUrl: widget.api.imageUrl,
+                      size: 40,
                     ),
-                  ),
-                  const SizedBox(width: AppSpacing.s8),
-                  StatusDot(isAlive: widget.api.isAlive),
-                  const SizedBox(width: AppSpacing.s8),
-                  GestureDetector(
-                    onTap: _toggleFavorite,
-                    child: Icon(
-                      _isFavorited
-                          ? PhosphorIconsFill.bookmarkSimple
-                          : PhosphorIconsRegular.bookmarkSimple,
-                      size: 20,
-                      color: _isFavorited ? c.primary : c.onSurfaceVariant,
+                    const SizedBox(width: AppSpacing.s12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.api.name,
+                            style: AppTextStyles.bodyMd.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: AppSpacing.s2),
+                          Text(
+                            widget.api.category.isNotEmpty
+                                ? widget.api.category
+                                : widget.category,
+                            style: AppTextStyles.labelSmUpper.copyWith(
+                              color: c.onSurfaceVariant,
+                              fontSize: 11,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                    const SizedBox(width: AppSpacing.s4),
+                    StatusDot(isAlive: widget.api.isAlive),
+                    IconButton(
+                      onPressed: _toggleFavorite,
+                      tooltip: _isFavorited
+                          ? l10n.apiDetailRemoveBookmark
+                          : l10n.apiDetailBookmarkApi,
+                      constraints:
+                          const BoxConstraints.tightFor(width: 48, height: 48),
+                      iconSize: 20,
+                      icon: Icon(
+                        _isFavorited
+                            ? PhosphorIconsFill.bookmarkSimple
+                            : PhosphorIconsRegular.bookmarkSimple,
+                        color: _isFavorited ? c.primary : c.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            ApiBadgeRow(api: widget.api),
-          ],
+              ApiBadgeRow(api: widget.api),
+            ],
+          ),
         ),
       ),
     );

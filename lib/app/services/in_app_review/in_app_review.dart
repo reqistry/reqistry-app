@@ -1,13 +1,82 @@
-import 'in_app_review_show_interface.dart';
+import 'package:flutter/foundation.dart';
 
-class InAppReview extends InAppReviewShowLogicInterface {
-  void handleShowingTheReviewRequest() {
-    if (isFirstTimeOpenedTheApp()) {
-      saveDateOfFirstAppOpen();
-      initializeApisOpensCounterIfFirstTime();
+import 'package:api_scout/app/services/in_app_review/in_app_review_service.dart';
+import 'package:api_scout/app/services/local_db/hive/locals_box.dart';
+
+/// Single owner of the in-app-review policy (see package docs: prompt after
+/// real value moments, sparingly, never via button or mid-task).
+///
+/// Call [recordWinAndMaybePrompt] after genuine wins (bookmark saved,
+/// project created). Never blocks or throws — review must not break UX.
+class InAppReview {
+  InAppReview({InAppReviewService? service, LocalsDB? locals})
+      : _service = service ?? InAppReviewService(),
+        _locals = locals ?? LocalsDB.instance;
+
+  final InAppReviewService _service;
+  final LocalsDB _locals;
+
+  static const winsKey = 'reviewWinsCount';
+  static const firstWinAtKey = 'reviewFirstWinAt';
+  static const lastPromptedAtKey = 'reviewLastPromptedAt';
+
+  static const minWins = 3;
+  static const minDaysSinceFirstWin = 3;
+  static const cooldownDays = 90;
+
+  Future<void> recordWinAndMaybePrompt({DateTime? now}) async {
+    try {
+      final current = DateTime.now();
+      final wins = ((_locals.getWithKey(winsKey) as num?)?.toInt() ?? 0) + 1;
+      await _locals.putWithKey(winsKey, wins);
+
+      var firstWinAt = _parseDate(_locals.getWithKey(firstWinAtKey));
+      firstWinAt ??= current;
+      if (_locals.getWithKey(firstWinAtKey) == null) {
+        await _locals.putWithKey(
+            firstWinAtKey, firstWinAt.toIso8601String());
+      }
+
+      final lastPromptedAt = _parseDate(_locals.getWithKey(lastPromptedAtKey));
+      if (!shouldPromptForReview(
+        wins: wins,
+        firstWinAt: firstWinAt,
+        lastPromptedAt: lastPromptedAt,
+        now: now ?? current,
+      )) {
+        return;
+      }
+      await _service.request();
+      await _locals.putWithKey(
+          lastPromptedAtKey, (now ?? current).toIso8601String());
+    } catch (_) {
+      // Review prompts are best-effort; never surface failures.
     }
+  }
 
-    handleFirstShowingOfAppRequestReview();
-    handleShowingReviewAppRequestAfterFirstTime();
+  /// Pure prompt decision, extracted for testing.
+  @visibleForTesting
+  static bool shouldPromptForReview({
+    required int wins,
+    required DateTime? firstWinAt,
+    required DateTime? lastPromptedAt,
+    required DateTime now,
+  }) {
+    if (wins < minWins) return false;
+    if (firstWinAt == null) return false;
+    if (now.difference(firstWinAt).inDays < minDaysSinceFirstWin) {
+      return false;
+    }
+    if (lastPromptedAt != null &&
+        now.difference(lastPromptedAt).inDays < cooldownDays) {
+      return false;
+    }
+    return true;
+  }
+
+  static DateTime? _parseDate(Object? value) {
+    if (value is DateTime) return value;
+    if (value is String) return DateTime.tryParse(value);
+    return null;
   }
 }

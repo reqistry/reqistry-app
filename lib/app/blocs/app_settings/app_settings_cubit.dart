@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:api_scout/app/services/auth/dio_client.dart';
+import 'package:api_scout/app/services/fetch_api/remote_service.dart';
 import 'package:api_scout/app/services/local_db/hive/initializer.dart';
 import 'package:api_scout/app/services/local_db/hive/locals_box.dart';
 import 'package:api_scout/app/services/share/share_plus/share_plus.dart';
@@ -22,10 +23,7 @@ class AppSettingsCubit extends Cubit<AppSettingsState> {
 
   Future<void> exportBookmarks({AppLocalizations? l10n}) async {
     try {
-      final dio = DioClient().dio;
-      final response =
-          await dio.get('/v1/bookmarks', queryParameters: {'limit': 100});
-      final bookmarks = (response.data['bookmarks'] as List?) ?? [];
+      final bookmarks = await RemoteService.getAllBookmarks(l10n: l10n);
       if (bookmarks.isEmpty) {
         AppSnackBarHelper.show(
           title: l10n?.snackbarNoBookmarksTitle ?? 'No bookmarks',
@@ -39,11 +37,10 @@ class AppSettingsCubit extends Cubit<AppSettingsState> {
         ..writeln('--------------------');
 
       for (final b in bookmarks) {
-        final api = b['api'] ?? {};
         buffer
-          ..writeln('- ${api['name']}')
-          ..writeln('  ${api['description']}')
-          ..writeln('  ${api['link']}')
+          ..writeln('- ${b.api.name}')
+          ..writeln('  ${b.api.description}')
+          ..writeln('  ${b.api.link}')
           ..writeln();
       }
 

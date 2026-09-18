@@ -24,7 +24,7 @@ class ApiChip extends StatelessWidget {
       decoration: BoxDecoration(color: bg),
       child: Text(
         label,
-        style: AppTextStyles.labelSmUpper.copyWith(color: fg, fontSize: 9),
+        style: AppTextStyles.labelSmUpper.copyWith(color: fg, fontSize: 11),
       ),
     );
   }

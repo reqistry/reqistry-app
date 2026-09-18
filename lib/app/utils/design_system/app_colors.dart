@@ -49,7 +49,7 @@ class AppColors {
   static const Color dangerBg = Color(0xFFFEE2E2);
   static const Color dangerText = Color(0xFF991B1B);
 
-  static const Color activeBlue = Color(0xFF0070F3);
+  static const Color activeBlue = Color(0xFF000000);
 
   // ── Dark Palette ──────────────────────────────────────────────
   static const Color darkPrimary = Color(0xFFFFFFFF);
@@ -92,7 +92,7 @@ class AppColors {
   static const Color darkDangerBg = Color(0xFF450A0A);
   static const Color darkDangerText = Color(0xFFFCA5A5);
 
-  static const Color darkActiveBlue = Color(0xFF3291FF);
+  static const Color darkActiveBlue = Color(0xFFFFFFFF);
 
   // ── Theme-Aware Accessor ──────────────────────────────────────
 

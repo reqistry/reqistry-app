@@ -12,6 +12,7 @@ class SubmitApiCubit extends Cubit<SubmitApiState> {
     required String link,
     required AppLocalizations l10n,
   }) async {
+    if (state.isSubmitting) return;
     emit(state.copyWith(isSubmitting: true));
 
     try {

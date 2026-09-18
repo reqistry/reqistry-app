@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:api_scout/app/blocs/home_categories/home_categories_cubit.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
@@ -9,6 +10,7 @@ import 'package:api_scout/shared/widgets/app_error_state.dart';
 import 'package:api_scout/shared/widgets/app_loading.dart';
 import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:api_scout/app/modules/views/discover_view/widgets/browse_by_category.dart';
+import 'package:api_scout/config/app_routes.dart';
 
 class DiscoverView extends StatelessWidget {
   const DiscoverView({super.key});
@@ -29,6 +31,15 @@ class DiscoverView extends StatelessWidget {
         centerTitle: false,
         backgroundColor: c.surface,
         scrolledUnderElevation: 0,
+        actions: [
+          IconButton(
+            tooltip: AppLocalizations.of(context)!.formSearchHint,
+            constraints:
+                const BoxConstraints.tightFor(width: 48, height: 48),
+            onPressed: () => context.push(AppRoutes.search),
+            icon: const Icon(PhosphorIconsRegular.magnifyingGlass),
+          ),
+        ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
           child: SizedBox(

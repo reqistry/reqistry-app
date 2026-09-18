@@ -24,7 +24,7 @@ class ApiHealthSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final c = AppColors.of(Theme.of(context).brightness);
-    final presentation = _healthPresentation(health.status, l10n);
+    final presentation = _healthPresentation(health.status, l10n, c);
     final facts = <String>[
       if (health.checkedAt != null)
         l10n.apiDetailCheckedAgo(relativeTime(health.checkedAt!, l10n)),
@@ -120,37 +120,38 @@ class _HealthPresentation {
   const _HealthPresentation(this.label, this.icon, this.color);
 }
 
-_HealthPresentation _healthPresentation(ApiHealthStatus status, AppLocalizations l10n) =>
+_HealthPresentation _healthPresentation(
+        ApiHealthStatus status, AppLocalizations l10n, AppColorScheme c) =>
     switch (status) {
       ApiHealthStatus.operational => _HealthPresentation(
           l10n.apiDetailOperational,
           PhosphorIconsFill.checkCircle,
-          AppColors.successText,
+          c.successText,
         ),
       ApiHealthStatus.authenticationRequired => _HealthPresentation(
           l10n.apiDetailReachableAuthRequired,
           PhosphorIconsFill.shieldWarning,
-          AppColors.warningText,
+          c.warningText,
         ),
       ApiHealthStatus.rateLimited => _HealthPresentation(
           l10n.apiDetailReachableRateLimited,
           PhosphorIconsFill.warning,
-          AppColors.warningText,
+          c.warningText,
         ),
       ApiHealthStatus.degraded => _HealthPresentation(
           l10n.apiDetailSlowResponse,
           PhosphorIconsFill.gauge,
-          AppColors.warningText,
+          c.warningText,
         ),
       ApiHealthStatus.unavailable => _HealthPresentation(
           l10n.apiDetailCurrentlyUnavailable,
           PhosphorIconsFill.xSquare,
-          AppColors.dangerText,
+          c.dangerText,
         ),
       ApiHealthStatus.unknown => _HealthPresentation(
           l10n.apiDetailStatusNotVerified,
           PhosphorIconsRegular.circle,
-          AppColors.onSurfaceVariant,
+          c.onSurfaceVariant,
         ),
     };
 

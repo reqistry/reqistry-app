@@ -8,6 +8,7 @@ import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:requests_inspector/requests_inspector.dart';
 
 import 'app/blocs/auth/auth_cubit.dart';
+import 'app/blocs/auth/auth_state.dart';
 import 'app/blocs/projects/projects_cubit.dart';
 import 'app/blocs/home_categories/home_categories_cubit.dart';
 import 'app/blocs/main_shell/main_shell_cubit.dart';
@@ -16,6 +17,8 @@ import 'app/blocs/search/search_bloc.dart';
 import 'app/blocs/favorites/favorites_cubit.dart';
 import 'app/blocs/user_activity/user_activity_cubit.dart';
 import 'app/blocs/language/language_cubit.dart';
+import 'app/services/ads/ad_config.dart';
+import 'app/services/ads/ads_controller.dart';
 import 'app/services/connectivity/connectivity_service.dart';
 import 'app/services/notification/fcm_service.dart';
 import 'config/env.dart';
@@ -28,6 +31,33 @@ import 'app/widgets/app_overlay_host.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Release without production IDs (or with sample IDs): ads stay off.
+  // Every feature keeps working; the controller never initializes.
+  var adsEnabled = true;
+  AdUnits units;
+  try {
+    units = AdConfig.resolve(
+      isRelease: kReleaseMode,
+      appId: Env.admobAndroidAppId,
+      bannerUnitId: Env.admobAndroidBannerUnitId,
+      nativeUnitId: Env.admobAndroidNativeUnitId,
+    );
+  } catch (_) {
+    adsEnabled = false;
+    units = const AdUnits(
+      appId: AdConfig.testAppId,
+      bannerUnitId: AdConfig.testBannerUnitId,
+      nativeUnitId: AdConfig.testNativeUnitId,
+    );
+  }
+  // Consent-gated ads owner. Resolved once at startup; ad widgets read
+  // the shared controller to decide whether they may request and render.
+  final ads = AdsController(units: units);
+  AdsController.configureShared(ads);
+  if (adsEnabled) {
+    // Fire-and-forget: consent/SDK failure degrades to no-ads internally.
+    unawaited(ads.ensureInitialized());
+  }
   await MainInit().init();
   ThemeProvider.instance.init();
   ConnectivityService.instance.init();
@@ -80,43 +110,58 @@ class ApiScoutApp extends StatelessWidget {
           ),
         ),
       ],
-      child: Builder(
-        builder: (context) {
-          return BlocBuilder<LanguageCubit, LanguageState>(
-            builder: (context, langState) {
-              return ValueListenableBuilder<ThemeMode>(
-                valueListenable: ThemeProvider.instance.themeNotifier,
-                builder: (context, themeMode, _) {
-                  return MaterialApp.router(
-                    debugShowCheckedModeBanner: false,
-                    restorationScopeId: 'api_scout',
-                    title: Env.appName,
-                    theme: AppThemes.lightTheme,
-                    darkTheme: AppThemes.darkTheme,
-                    themeMode: themeMode,
-                    routerConfig: AppRouter.router,
-                    locale: langState.locale,
-                    supportedLocales: AppLocalizations.supportedLocales,
-                    localizationsDelegates: AppLocalizations.localizationsDelegates,
-                    builder: (context, child) {
-                      child = DevicePreview.appBuilder(
-                        context,
-                        child ?? const SizedBox.shrink(),
-                      );
-
-                      final l10n = AppLocalizations.of(context);
-                      if (l10n != null) {
-                        ConnectivityService.instance.setLocalizations(l10n);
-                      }
-
-                      return AppOverlayHost(child: child);
-                    },
-                  );
-                },
-              );
-            },
-          );
+      child: BlocListener<AuthCubit, AuthState>(
+        listenWhen: (_, current) =>
+            current is Unauthenticated || current is Authenticated,
+        listener: (context, state) async {
+          if (state is Authenticated) {
+            return;
+          }
+          // Identity change: never leak the previous account's data into
+          // the new session. Cubits reload lazily on demand.
+          context.read<FavoritesCubit>().clear();
+          context.read<ProjectsCubit>().clear();
+          context.read<UserActivityCubit>().clear();
         },
+        child: Builder(
+          builder: (context) {
+            return BlocBuilder<LanguageCubit, LanguageState>(
+              builder: (context, langState) {
+                return ValueListenableBuilder<ThemeMode>(
+                  valueListenable: ThemeProvider.instance.themeNotifier,
+                  builder: (context, themeMode, _) {
+                    return MaterialApp.router(
+                      debugShowCheckedModeBanner: false,
+                      restorationScopeId: 'api_scout',
+                      title: Env.appName,
+                      theme: AppThemes.lightTheme,
+                      darkTheme: AppThemes.darkTheme,
+                      themeMode: themeMode,
+                      routerConfig: AppRouter.router,
+                      locale: langState.locale,
+                      supportedLocales: AppLocalizations.supportedLocales,
+                      localizationsDelegates:
+                          AppLocalizations.localizationsDelegates,
+                      builder: (context, child) {
+                        child = DevicePreview.appBuilder(
+                          context,
+                          child ?? const SizedBox.shrink(),
+                        );
+
+                        final l10n = AppLocalizations.of(context);
+                        if (l10n != null) {
+                          ConnectivityService.instance.setLocalizations(l10n);
+                        }
+
+                        return AppOverlayHost(child: child);
+                      },
+                    );
+                  },
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }
