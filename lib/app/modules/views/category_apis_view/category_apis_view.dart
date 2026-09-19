@@ -12,6 +12,7 @@ import 'package:api_scout/shared/widgets/ads/catalog_native_ad_card.dart';
 import 'package:api_scout/shared/widgets/app_cached_image.dart';
 import 'package:api_scout/shared/widgets/ui/stat_widgets.dart';
 import 'package:api_scout/shared/widgets/ui/async_state_handler.dart';
+import 'package:api_scout/app/modules/views/category_apis_view/widgets/category_watch_button.dart';
 import '../apis_view/widgets/api_card.dart';
 
 class CategoryApisView extends StatefulWidget {
@@ -244,6 +245,10 @@ class _CategorySummary extends StatelessWidget {
                     }).toList(),
                   ),
                 ],
+                const SizedBox(height: AppSpacing.s16),
+                CategoryWatchButton(
+                  category: meta?.name ?? state.categoryTitle,
+                ),
                 const SizedBox(height: AppSpacing.sectionGap),
                 GridView.count(
                   crossAxisCount: 2,

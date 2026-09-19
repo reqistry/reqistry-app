@@ -66,7 +66,7 @@ class _IntelligenceViewState extends State<IntelligenceView> {
   Future<void> _openPicker() async {
     final chosen = await ApiPickerSheet.show(
       context,
-      initiallySelected: _selected.map((c) => c.id).toSet(),
+      initiallySelected: List.of(_selected),
     );
     if (chosen == null || !mounted) return;
     setState(() {
@@ -165,134 +165,284 @@ class _IntelligenceViewState extends State<IntelligenceView> {
   }
 
   Widget _compareCard(AppColorScheme c, AppLocalizations l10n) {
+    final count = _selected.length;
+    final canCompare = count >= 2;
     return Container(
       decoration: BoxDecoration(
         color: c.surface,
-        border: Border.fromBorderSide(BorderSide(color: c.surfaceVariant)),
+        border: Border.fromBorderSide(
+          BorderSide(color: canCompare ? c.primary : c.surfaceVariant),
+        ),
       ),
-      padding: const EdgeInsets.all(AppSpacing.s16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 40,
-                height: 40,
-                color: c.surfaceContainerHighest,
-                child: Icon(PhosphorIconsRegular.scales,
-                    size: 20, color: c.primary),
-              ),
-              const SizedBox(width: AppSpacing.s12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      l10n.intelligenceCompareTitle.toUpperCase(),
-                      style: AppTextStyles.labelSmUpper.copyWith(
-                        color: c.onSurface,
+          Padding(
+            padding: const EdgeInsets.all(AppSpacing.s16),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  color: c.surfaceContainerHighest,
+                  child: Icon(
+                    PhosphorIconsRegular.scales,
+                    size: 22,
+                    color: c.primary,
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.s12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.intelligenceCompareTitle.toUpperCase(),
+                        style: AppTextStyles.labelSmUpper.copyWith(
+                          color: c.onSurface,
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.s4),
+                      Text(
+                        l10n.intelligenceCompareSubtitle,
+                        style: AppTextStyles.bodySm.copyWith(
+                          color: c.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.s8),
+                Container(
+                  constraints:
+                      const BoxConstraints(minWidth: 44, minHeight: 32),
+                  alignment: Alignment.center,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: AppSpacing.s8),
+                  color: canCompare ? c.primary : c.surfaceContainerHighest,
+                  child: Text(
+                    '$count/${ApiPickerSheet.maxSelection}',
+                    style: AppTextStyles.withTabular(
+                      AppTextStyles.labelSm.copyWith(
+                        color: canCompare ? c.onPrimary : c.onSurfaceVariant,
+                        letterSpacing: 0,
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.s4),
-                    Text(
-                      l10n.intelligenceCompareSubtitle,
-                      style: AppTextStyles.labelSm.copyWith(
-                        fontWeight: FontWeight.w400,
-                        letterSpacing: 0,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Divider(height: 1, thickness: 1, color: c.surfaceVariant),
+          Padding(
+            padding: const EdgeInsets.all(AppSpacing.s16),
+            child: Column(
+              children: [
+                for (var index = 0; index < _selected.length; index++) ...[
+                  _candidateRow(c, _selected[index], index),
+                  if (index != _selected.length - 1 || count < 2)
+                    const SizedBox(height: AppSpacing.s8),
+                ],
+                for (var index = count; index < 2; index++) ...[
+                  _emptyCandidateRow(c, l10n, index),
+                  if (index == 0) const SizedBox(height: AppSpacing.s8),
+                ],
+              ],
+            ),
+          ),
+          if (!canCompare && count > 0) ...[
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.s16,
+                0,
+                AppSpacing.s16,
+                AppSpacing.s12,
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    PhosphorIconsRegular.info,
+                    size: 16,
+                    color: c.onSurfaceVariant,
+                  ),
+                  const SizedBox(width: AppSpacing.s8),
+                  Expanded(
+                    child: Text(
+                      l10n.compareSelectAtLeastTwo,
+                      style: AppTextStyles.bodySm.copyWith(
                         color: c.onSurfaceVariant,
                       ),
                     ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          if (_selected.isNotEmpty) ...[
-            const SizedBox(height: AppSpacing.s16),
-            Wrap(
-              spacing: AppSpacing.s8,
-              runSpacing: AppSpacing.s8,
-              children: [
-                for (final candidate in _selected) _candidateChip(c, candidate),
-              ],
-            ),
-          ],
-          if (_selected.length == 1) ...[
-            const SizedBox(height: AppSpacing.s12),
-            Text(
-              l10n.compareSelectAtLeastTwo,
-              style: AppTextStyles.labelSm.copyWith(
-                fontWeight: FontWeight.w400,
-                letterSpacing: 0,
-                color: c.onSurfaceVariant,
-              ),
-            ),
-          ],
-          const SizedBox(height: AppSpacing.s16),
-          Row(
-            children: [
-              Expanded(
-                child: SizedBox(
-                  height: 48,
-                  child: OutlinedButton.icon(
-                    onPressed: _openPicker,
-                    icon: const Icon(PhosphorIconsRegular.plus, size: 16),
-                    label: Text(l10n.intelligenceChooseApis),
                   ),
-                ),
+                ],
               ),
-              const SizedBox(width: AppSpacing.s8),
-              Expanded(
-                child: SizedBox(
+            ),
+          ],
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(AppSpacing.s16),
+            decoration: BoxDecoration(
+              color: c.surfaceContainerLow,
+              border: Border(
+                top: BorderSide(color: c.surfaceVariant),
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                SizedBox(
                   height: 48,
-                  child: FilledButton(
-                    onPressed: _selected.length >= 2 ? _openCompare : null,
-                    child: Text(
-                      _selected.length >= 2
-                          ? l10n.pickerDone(_selected.length)
-                          : l10n.intelligenceCompareNow,
+                  child: canCompare
+                      ? OutlinedButton.icon(
+                          onPressed: _openPicker,
+                          icon: const Icon(
+                            PhosphorIconsRegular.slidersHorizontal,
+                            size: 18,
+                          ),
+                          label: Text(l10n.intelligenceEditSelection),
+                        )
+                      : FilledButton.icon(
+                          onPressed: _openPicker,
+                          icon: const Icon(PhosphorIconsRegular.plus, size: 18),
+                          label: Text(l10n.intelligenceChooseApis),
+                        ),
+                ),
+                if (canCompare) ...[
+                  const SizedBox(height: AppSpacing.s8),
+                  SizedBox(
+                    height: 52,
+                    child: FilledButton.icon(
+                      onPressed: _openCompare,
+                      icon:
+                          const Icon(PhosphorIconsRegular.arrowRight, size: 18),
+                      label: Text(l10n.pickerDone(count)),
                     ),
                   ),
-                ),
-              ),
-            ],
+                ],
+              ],
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _candidateChip(AppColorScheme c, CompareCandidate candidate) {
+  Widget _emptyCandidateRow(
+    AppColorScheme c,
+    AppLocalizations l10n,
+    int index,
+  ) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: _openPicker,
+        child: Container(
+          constraints: const BoxConstraints(minHeight: 64),
+          decoration: BoxDecoration(
+            border: Border.all(color: c.surfaceVariant),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 48,
+                constraints: const BoxConstraints(minHeight: 64),
+                alignment: Alignment.center,
+                color: c.surfaceContainerLow,
+                child: Text(
+                  '${index + 1}'.padLeft(2, '0'),
+                  style: AppTextStyles.withTabular(
+                    AppTextStyles.codeMd.copyWith(color: c.onSurfaceVariant),
+                  ),
+                ),
+              ),
+              const SizedBox(width: AppSpacing.s12),
+              Expanded(
+                child: Text(
+                  '${l10n.miscApi} ${index + 1}',
+                  style: AppTextStyles.bodyMd.copyWith(
+                    color: c.onSurfaceVariant,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(AppSpacing.s12),
+                child: Icon(
+                  PhosphorIconsRegular.plus,
+                  size: 20,
+                  color: c.primary,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _candidateRow(
+    AppColorScheme c,
+    CompareCandidate candidate,
+    int index,
+  ) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(
-          AppSpacing.s10, AppSpacing.s6, AppSpacing.s4, AppSpacing.s6),
+      constraints: const BoxConstraints(minHeight: 64),
       decoration: BoxDecoration(
-        color: c.surfaceContainerLow,
-        border: Border.all(color: c.surfaceVariant, width: 1),
+        color: c.surface,
+        border: Border.all(color: c.outlineVariant),
       ),
       child: Row(
-        mainAxisSize: MainAxisSize.min,
         children: [
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 140),
+          Container(
+            width: 48,
+            constraints: const BoxConstraints(minHeight: 64),
+            alignment: Alignment.center,
+            color: c.surfaceContainerHighest,
             child: Text(
-              candidate.name,
-              style: AppTextStyles.labelSm.copyWith(color: c.onSurface),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+              '${index + 1}'.padLeft(2, '0'),
+              style: AppTextStyles.withTabular(
+                AppTextStyles.codeMd.copyWith(color: c.primary),
+              ),
             ),
           ),
-          const SizedBox(width: AppSpacing.s4),
+          const SizedBox(width: AppSpacing.s12),
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  candidate.name,
+                  style: AppTextStyles.bodyMd.copyWith(
+                    color: c.onSurface,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                if (candidate.category.isNotEmpty) ...[
+                  const SizedBox(height: AppSpacing.s2),
+                  Text(
+                    candidate.category.toUpperCase(),
+                    style: AppTextStyles.labelSmUpper.copyWith(
+                      color: c.onSurfaceVariant,
+                      fontSize: 9,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ],
+            ),
+          ),
           IconButton(
             tooltip: MaterialLocalizations.of(context).deleteButtonTooltip,
-            constraints: const BoxConstraints.tightFor(width: 44, height: 44),
-            iconSize: 16,
-            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints.tightFor(width: 48, height: 48),
             onPressed: () => _removeCandidate(candidate),
             icon: Icon(
               PhosphorIconsRegular.x,
+              size: 18,
               color: c.onSurfaceVariant,
             ),
           ),

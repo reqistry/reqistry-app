@@ -1210,7 +1210,7 @@
   "@intelligenceCompareTitle": {
     "description": "Compare card title"
   },
-  "intelligenceCompareSubtitle": "Side-by-side trust, pricing and health for up to 4 APIs.",
+  "intelligenceCompareSubtitle": "Choose 2–8 APIs. Compare trust, pricing, speed, and uptime.",
   "@intelligenceCompareSubtitle": {
     "description": "Compare card subtitle"
   },
@@ -1234,7 +1234,7 @@
   "@pickerSearchHint": {
     "description": "API picker search hint"
   },
-  "pickerSelectedCount": "{count} of 4 selected",
+  "pickerSelectedCount": "{count} of 8 selected",
   "@pickerSelectedCount": {
     "description": "Selected count in API picker",
     "placeholders": {
@@ -2485,6 +2485,10 @@
   "@watchAction": {
     "description": "Create keyword watch action"
   },
+  "watchSearchActive": "Watching this search",
+  "@watchSearchActive": {
+    "description": "Active keyword search watch label"
+  },
   "watchAdded": "Watch added",
   "@watchAdded": {
     "description": "Watch added message"
@@ -2492,6 +2496,50 @@
   "watchLimitReached": "Watchlist limit reached",
   "@watchLimitReached": {
     "description": "Watchlist limit message"
+  },
+  "watchEntrySubtitle": "Track keywords, categories, and projects",
+  "@watchEntrySubtitle": {
+    "description": "Watchlists entry subtitle"
+  },
+  "watchCreateTitle": "Create keyword watch",
+  "@watchCreateTitle": {
+    "description": "Create keyword watch sheet title"
+  },
+  "watchCreateDescription": "Get alerts when matching APIs are added or change.",
+  "@watchCreateDescription": {
+    "description": "Create keyword watch explanation"
+  },
+  "watchKeywordHint": "Keyword, provider, or API name",
+  "@watchKeywordHint": {
+    "description": "Keyword watch input hint"
+  },
+  "watchCreateAction": "Create watch",
+  "@watchCreateAction": {
+    "description": "Create watch action"
+  },
+  "watchAlreadyExists": "You're already watching this keyword.",
+  "@watchAlreadyExists": {
+    "description": "Duplicate watch message"
+  },
+  "watchCategoryAction": "Watch category",
+  "@watchCategoryAction": {
+    "description": "Create category watch action"
+  },
+  "watchCategoryActive": "Watching category",
+  "@watchCategoryActive": {
+    "description": "Active category watch action"
+  },
+  "watchKindKeyword": "Keyword",
+  "@watchKindKeyword": {
+    "description": "Keyword watch type label"
+  },
+  "watchKindCategory": "Category",
+  "@watchKindCategory": {
+    "description": "Category watch type label"
+  },
+  "watchKindProject": "Project",
+  "@watchKindProject": {
+    "description": "Project watch type label"
   },
   "agentKeysTitle": "Agent API keys",
   "@agentKeysTitle": {
@@ -2597,5 +2645,9 @@
   "settingsPrivacyChoicesSubtitle": "Control personalized ads",
   "@settingsPrivacyChoicesSubtitle": {
     "description": "Privacy options subtitle"
+  },
+  "intelligenceEditSelection": "Edit selection",
+  "@intelligenceEditSelection": {
+    "description": "Button label for editing selected APIs before comparison"
   }
 }

@@ -914,7 +914,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get intelligenceCompareSubtitle =>
-      'Side-by-side trust, pricing and health for up to 4 APIs.';
+      'Choose 2–8 APIs. Compare trust, pricing, speed, and uptime.';
 
   @override
   String get intelligenceChooseApis => 'Choose APIs';
@@ -933,7 +933,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String pickerSelectedCount(int count) {
-    return '$count of 4 selected';
+    return '$count of 8 selected';
   }
 
   @override
@@ -1914,10 +1914,47 @@ class AppLocalizationsEn extends AppLocalizations {
   String get watchAction => 'Watch this search';
 
   @override
+  String get watchSearchActive => 'Watching this search';
+
+  @override
   String get watchAdded => 'Watch added';
 
   @override
   String get watchLimitReached => 'Watchlist limit reached';
+
+  @override
+  String get watchEntrySubtitle => 'Track keywords, categories, and projects';
+
+  @override
+  String get watchCreateTitle => 'Create keyword watch';
+
+  @override
+  String get watchCreateDescription =>
+      'Get alerts when matching APIs are added or change.';
+
+  @override
+  String get watchKeywordHint => 'Keyword, provider, or API name';
+
+  @override
+  String get watchCreateAction => 'Create watch';
+
+  @override
+  String get watchAlreadyExists => 'You\'re already watching this keyword.';
+
+  @override
+  String get watchCategoryAction => 'Watch category';
+
+  @override
+  String get watchCategoryActive => 'Watching category';
+
+  @override
+  String get watchKindKeyword => 'Keyword';
+
+  @override
+  String get watchKindCategory => 'Category';
+
+  @override
+  String get watchKindProject => 'Project';
 
   @override
   String get agentKeysTitle => 'Agent API keys';
@@ -1999,4 +2036,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsPrivacyChoicesSubtitle => 'Control personalized ads';
+
+  @override
+  String get intelligenceEditSelection => 'Edit selection';
 }

@@ -56,15 +56,17 @@ class _SearchBodyState extends State<SearchBody> {
       appBar: AppBar(
         title: Text(
           AppLocalizations.of(context)!.tabSearch,
-          style:
-              AppTextStyles.headlineSm.copyWith(color: c.onSurface),
+          style: AppTextStyles.headlineSm.copyWith(color: c.onSurface),
         ),
         elevation: 0,
         centerTitle: false,
         backgroundColor: c.surface,
         leading: IconButton(
           icon: const Icon(PhosphorIconsRegular.arrowLeft),
-          onPressed: () => context.pop(),
+          onPressed: () {
+            FocusManager.instance.primaryFocus?.unfocus();
+            context.pop();
+          },
         ),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
@@ -119,14 +121,47 @@ class _SearchBodyState extends State<SearchBody> {
 
 /// Keyword watch entry. Visible after a real search; watches the query
 /// directly.
-class _WatchSearchRow extends StatelessWidget {
+class _WatchSearchRow extends StatefulWidget {
   const _WatchSearchRow();
 
+  @override
+  State<_WatchSearchRow> createState() => _WatchSearchRowState();
+}
+
+class _WatchSearchRowState extends State<_WatchSearchRow> {
+  String? _watchedQuery;
+  bool _busy = false;
+
   Future<void> _watch(BuildContext context, String query) async {
+    if (_busy) return;
     final l10n = AppLocalizations.of(context)!;
+    setState(() => _busy = true);
     try {
+      final watches = await RemoteService.getWatchlists(l10n: l10n);
+      final normalized = query.toLowerCase();
+      if (watches.any((watch) =>
+          watch.kind == 'keyword' &&
+          watch.value.trim().toLowerCase() == normalized)) {
+        if (!context.mounted) return;
+        setState(() => _watchedQuery = normalized);
+        AppSnackBarHelper.show(
+          title: l10n.watchAlreadyExists,
+          message: query,
+        );
+        return;
+      }
+      if (watches.length >= 10) {
+        if (!context.mounted) return;
+        AppSnackBarHelper.show(
+          title: l10n.watchLimitReached,
+          message: query,
+          isError: true,
+        );
+        return;
+      }
       await RemoteService.addWatch(kind: 'keyword', value: query, l10n: l10n);
       if (!context.mounted) return;
+      setState(() => _watchedQuery = normalized);
       AppSnackBarHelper.show(
         title: l10n.watchAdded,
         message: query,
@@ -138,6 +173,8 @@ class _WatchSearchRow extends StatelessWidget {
         message: l10n.stateSomethingWentWrong,
         isError: true,
       );
+    } finally {
+      if (mounted) setState(() => _busy = false);
     }
   }
 
@@ -150,10 +187,12 @@ class _WatchSearchRow extends StatelessWidget {
         }
         final c = AppColors.of(Theme.of(context).brightness);
         final l10n = AppLocalizations.of(context)!;
+        final query = state.query.trim();
+        final watching = _watchedQuery == query.toLowerCase();
         return Material(
           color: Colors.transparent,
           child: InkWell(
-            onTap: () => _watch(context, state.query.trim()),
+            onTap: watching || _busy ? null : () => _watch(context, query),
             child: Container(
               padding: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.s16,
@@ -168,24 +207,35 @@ class _WatchSearchRow extends StatelessWidget {
               child: Row(
                 children: [
                   Icon(
-                    PhosphorIconsRegular.bellRinging,
+                    watching
+                        ? PhosphorIconsFill.bellRinging
+                        : PhosphorIconsRegular.bellRinging,
                     size: 18,
                     color: c.onSurface,
                   ),
                   const SizedBox(width: AppSpacing.s12),
                   Expanded(
                     child: Text(
-                      l10n.watchAction,
+                      watching ? l10n.watchSearchActive : l10n.watchAction,
                       style: AppTextStyles.bodyMd.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
-                  Icon(
-                    PhosphorIconsRegular.caretRight,
-                    size: 18,
-                    color: c.outline,
-                  ),
+                  if (_busy)
+                    const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  else
+                    Icon(
+                      watching
+                          ? PhosphorIconsRegular.check
+                          : PhosphorIconsRegular.caretRight,
+                      size: 18,
+                      color: c.outline,
+                    ),
                 ],
               ),
             ),

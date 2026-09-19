@@ -44,6 +44,9 @@ class AdsController extends ChangeNotifier {
   /// Whether ad widgets may request and render ads right now.
   bool get canShowAds => _initialized && _canShowAds;
 
+  /// Whether the launch-time consent check has finished.
+  bool get isInitialized => _initialized;
+
   /// Whether settings must show the "Privacy choices" action.
   bool get privacyOptionsRequired => _privacyOptionsRequired;
 
@@ -63,7 +66,8 @@ class AdsController extends ChangeNotifier {
         _canShowAds = false;
       }
       _privacyOptionsRequired = await _gateway.privacyOptionsRequired();
-    } catch (_) {
+    } catch (error) {
+      debugPrint('Ads initialization unavailable: $error');
       _canShowAds = false;
       _privacyOptionsRequired = false;
     }

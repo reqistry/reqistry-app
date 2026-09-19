@@ -19,14 +19,12 @@ class SearchHeader extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.s16),
       decoration: BoxDecoration(
         color: c.surface,
-        border: Border(
-            bottom: BorderSide(color: c.surfaceVariant, width: 1)),
+        border: Border(bottom: BorderSide(color: c.surfaceVariant, width: 1)),
       ),
       child: Column(
         children: [
           TextField(
             controller: searchController,
-            autofocus: true,
             textInputAction: TextInputAction.search,
             style: AppTextStyles.bodyMd.copyWith(
               decoration: TextDecoration.none,
@@ -64,6 +62,7 @@ class SearchHeader extends StatelessWidget {
             onSubmitted: (_) {
               final q = searchController.text.trim();
               if (q.length >= 3) {
+                FocusManager.instance.primaryFocus?.unfocus();
                 final l10n = AppLocalizations.of(context)!;
                 context.read<SearchBloc>().add(SearchQueryChanged(query: q));
                 context.read<SearchBloc>().add(SearchPerformed(l10n: l10n));
@@ -85,38 +84,38 @@ class SearchHeader extends StatelessWidget {
                     ),
                     decoration: BoxDecoration(
                       border: Border(
-                          bottom: BorderSide(
-                              color: c.surfaceVariant, width: 1)),
+                          bottom:
+                              BorderSide(color: c.surfaceVariant, width: 1)),
                     ),
-                  child: Row(
-                    children: [
-                      Icon(PhosphorIconsRegular.slidersHorizontal,
-                          size: 20, color: c.onSurface),
-                      const SizedBox(width: AppSpacing.s12),
-                      Expanded(
-                        child: Text(
-                          AppLocalizations.of(context)!.sectionFilters,
-                          style: AppTextStyles.headlineSm
-                              .copyWith(color: c.onSurface),
-                        ),
-                      ),
-                      if (filterCount > 0) ...[
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 2),
-                          color: c.primary,
+                    child: Row(
+                      children: [
+                        Icon(PhosphorIconsRegular.slidersHorizontal,
+                            size: 20, color: c.onSurface),
+                        const SizedBox(width: AppSpacing.s12),
+                        Expanded(
                           child: Text(
-                            '$filterCount',
-                            style: AppTextStyles.labelSm
-                                .copyWith(color: c.onPrimary),
+                            AppLocalizations.of(context)!.sectionFilters,
+                            style: AppTextStyles.headlineSm
+                                .copyWith(color: c.onSurface),
                           ),
                         ),
-                        const SizedBox(width: AppSpacing.s8),
+                        if (filterCount > 0) ...[
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 2),
+                            color: c.primary,
+                            child: Text(
+                              '$filterCount',
+                              style: AppTextStyles.labelSm
+                                  .copyWith(color: c.onPrimary),
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.s8),
+                        ],
+                        Icon(PhosphorIconsRegular.caretRight,
+                            size: 20, color: c.outline),
                       ],
-                      Icon(PhosphorIconsRegular.caretRight,
-                          size: 20, color: c.outline),
-                    ],
-                  ),
+                    ),
                   ),
                 ),
               );

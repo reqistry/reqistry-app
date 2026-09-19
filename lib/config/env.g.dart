@@ -10,7 +10,7 @@ part of 'env.dart';
 // ignore_for_file: type=lint
 // generated_from: .env.dev
 final class _Env {
-  static const String apiUrl = '';
+  static const String apiUrl = 'https://api.reqistry.dev';
 
   static const String appName = 'Reqistry';
 
@@ -31,9 +31,12 @@ final class _Env {
 
   static const String privacyMdUrl = '';
 
-  static const String admobAndroidAppId = '';
+  static const String admobAndroidAppId =
+      'ca-app-pub-2761860682313828~7460229138';
 
-  static const String admobAndroidBannerUnitId = '';
+  static const String admobAndroidBannerUnitId =
+      'ca-app-pub-2761860682313828/8907016056';
 
-  static const String admobAndroidNativeUnitId = '';
+  static const String admobAndroidNativeUnitId =
+      'ca-app-pub-2761860682313828/9948634986';
 }

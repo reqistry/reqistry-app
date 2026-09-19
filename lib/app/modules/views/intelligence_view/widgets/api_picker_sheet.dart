@@ -26,7 +26,7 @@ class CompareCandidate {
 
 /// Bottom sheet to select APIs for comparison (2–8).
 class ApiPickerSheet extends StatefulWidget {
-  final Set<String> initiallySelected;
+  final List<CompareCandidate> initiallySelected;
   static const maxSelection = 8;
 
   const ApiPickerSheet({super.key, required this.initiallySelected});
@@ -34,7 +34,7 @@ class ApiPickerSheet extends StatefulWidget {
   /// Returns the chosen candidates, or null if dismissed.
   static Future<List<CompareCandidate>?> show(
     BuildContext context, {
-    required Set<String> initiallySelected,
+    required List<CompareCandidate> initiallySelected,
   }) {
     return showModalBottomSheet<List<CompareCandidate>>(
       context: context,
@@ -65,7 +65,11 @@ class _ApiPickerSheetState extends State<ApiPickerSheet> {
   @override
   void initState() {
     super.initState();
-    _selected = Set.of(widget.initiallySelected);
+    _selected =
+        widget.initiallySelected.map((candidate) => candidate.id).toSet();
+    for (final candidate in widget.initiallySelected) {
+      _candidates[candidate.id] = candidate;
+    }
     for (final b in context.read<FavoritesCubit>().state.bookmarks) {
       if (b.api.id.isNotEmpty) {
         _candidates[b.api.id] = CompareCandidate(
@@ -170,12 +174,10 @@ class _ApiPickerSheetState extends State<ApiPickerSheet> {
               color: c.outlineVariant,
             ),
             Padding(
-              padding:
-                  const EdgeInsets.fromLTRB(16, 0, 16, AppSpacing.s12),
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, AppSpacing.s12),
               child: Row(
                 children: [
-                  Icon(PhosphorIconsRegular.scales,
-                      size: 20, color: c.primary),
+                  Icon(PhosphorIconsRegular.scales, size: 20, color: c.primary),
                   const SizedBox(width: AppSpacing.s8),
                   Expanded(
                     child: Text(
@@ -269,12 +271,12 @@ class _ApiPickerSheetState extends State<ApiPickerSheet> {
             children: [
               Text(
                 l10n.stateSomethingWentWrong,
-                style: AppTextStyles.labelSm.copyWith(color: c.onSurfaceVariant),
+                style:
+                    AppTextStyles.labelSm.copyWith(color: c.onSurfaceVariant),
               ),
               const SizedBox(height: AppSpacing.s8),
               TextButton(
-                onPressed: () =>
-                    _runSearch(_searchController.text.trim()),
+                onPressed: () => _runSearch(_searchController.text.trim()),
                 child: Text(l10n.actionRetry),
               ),
             ],
@@ -293,7 +295,9 @@ class _ApiPickerSheetState extends State<ApiPickerSheet> {
     final visible = searching
         ? _results
         : _candidates.values
-            .where((candidate) => savedIds.contains(candidate.id))
+            .where((candidate) =>
+                _selected.contains(candidate.id) ||
+                savedIds.contains(candidate.id))
             .toList();
 
     if (visible.isEmpty) {
@@ -303,8 +307,7 @@ class _ApiPickerSheetState extends State<ApiPickerSheet> {
           child: Text(
             searching ? l10n.stateNoApis : l10n.pickerNoSavedApis,
             textAlign: TextAlign.center,
-            style:
-                AppTextStyles.bodyMd.copyWith(color: c.onSurfaceVariant),
+            style: AppTextStyles.bodyMd.copyWith(color: c.onSurfaceVariant),
           ),
         ),
       );

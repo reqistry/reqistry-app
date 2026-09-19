@@ -34,6 +34,7 @@ class ApiCard extends StatefulWidget {
 
 class _ApiCardState extends State<ApiCard> {
   void _navigateToDetail() {
+    FocusManager.instance.primaryFocus?.unfocus();
     final slug = widget.api.slug.isNotEmpty
         ? widget.api.slug
         : slugifyApiName(widget.api.name);

@@ -34,23 +34,42 @@ class _CatalogNativeAdCardState extends State<CatalogNativeAdCard> {
       widget.controller ?? AdsController.shared;
   NativeAd? _ad;
   bool _loaded = false;
+  bool _loading = false;
   bool _reported = false;
 
   @override
   void initState() {
     super.initState();
+    _controller.addListener(_handleAdsChanged);
+    _handleAdsChanged();
+  }
+
+  void _handleAdsChanged() {
+    if (!_controller.isInitialized) return;
     if (!_controller.canShowAds) {
       _reportUnavailable();
       return;
     }
+    _loadIfEligible();
+  }
+
+  void _loadIfEligible() {
+    if (_ad != null || _loading || _reported) return;
+    _loading = true;
     final ad = NativeAd(
       adUnitId: _controller.units.nativeUnitId,
       request: const AdRequest(),
       listener: NativeAdListener(
         onAdLoaded: (_) {
-          if (mounted) setState(() => _loaded = true);
+          if (mounted) {
+            setState(() {
+              _loading = false;
+              _loaded = true;
+            });
+          }
         },
-        onAdFailedToLoad: (adToDispose, _) {
+        onAdFailedToLoad: (adToDispose, error) {
+          debugPrint('Native ad unavailable: $error');
           adToDispose.dispose();
           _fail();
         },
@@ -65,13 +84,17 @@ class _CatalogNativeAdCardState extends State<CatalogNativeAdCard> {
     _ad = ad;
     try {
       ad.load();
-    } catch (_) {
+    } catch (error) {
+      debugPrint('Native ad load failed: $error');
+      ad.dispose();
       _fail();
     }
   }
 
   void _fail() {
     _ad = null;
+    _loading = false;
+    _loaded = false;
     _reportUnavailable();
     if (mounted) setState(() {});
   }
@@ -84,6 +107,7 @@ class _CatalogNativeAdCardState extends State<CatalogNativeAdCard> {
 
   @override
   void dispose() {
+    _controller.removeListener(_handleAdsChanged);
     _ad?.dispose();
     _ad = null;
     super.dispose();

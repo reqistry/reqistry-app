@@ -22,16 +22,41 @@ class _AdBannerSlotState extends State<AdBannerSlot> {
       widget.controller ?? AdsController.shared;
   BannerAd? _banner;
   AnchoredAdaptiveBannerAdSize? _size;
+  bool _loading = false;
   bool _failed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(_handleAdsChanged);
+  }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (_banner != null || _failed) return;
-    if (!_controller.canShowAds) {
-      _failed = true;
+    _loadIfEligible();
+  }
+
+  void _handleAdsChanged() {
+    if (!mounted) return;
+    if (_controller.canShowAds) {
+      _loadIfEligible();
       return;
     }
+    if (_banner != null || _size != null) {
+      _banner?.dispose();
+      setState(() {
+        _banner = null;
+        _size = null;
+      });
+    }
+  }
+
+  void _loadIfEligible() {
+    if (!_controller.canShowAds || _banner != null || _loading || _failed) {
+      return;
+    }
+    _loading = true;
     _resolveAndLoad();
   }
 
@@ -44,7 +69,12 @@ class _AdBannerSlotState extends State<AdBannerSlot> {
       size = null;
     }
     if (!mounted || size == null) {
-      if (mounted) setState(() => _failed = true);
+      if (mounted) {
+        setState(() {
+          _loading = false;
+          _failed = true;
+        });
+      }
       return;
     }
     // Reserve the exact height before the creative arrives.
@@ -57,10 +87,12 @@ class _AdBannerSlotState extends State<AdBannerSlot> {
         onAdLoaded: (_) {
           if (mounted) setState(() {});
         },
-        onAdFailedToLoad: (ad, _) {
+        onAdFailedToLoad: (ad, error) {
+          debugPrint('Banner ad unavailable: $error');
           ad.dispose();
           if (mounted) {
             setState(() {
+              _loading = false;
               _failed = true;
               _banner = null;
             });
@@ -70,13 +102,22 @@ class _AdBannerSlotState extends State<AdBannerSlot> {
     );
     try {
       await banner.load();
-    } catch (_) {
+    } catch (error) {
+      debugPrint('Banner ad load failed: $error');
       banner.dispose();
-      if (mounted) setState(() => _failed = true);
+      if (mounted) {
+        setState(() {
+          _loading = false;
+          _failed = true;
+        });
+      }
       return;
     }
     if (mounted) {
-      setState(() => _banner = banner);
+      setState(() {
+        _loading = false;
+        _banner = banner;
+      });
     } else {
       banner.dispose();
     }
@@ -84,6 +125,7 @@ class _AdBannerSlotState extends State<AdBannerSlot> {
 
   @override
   void dispose() {
+    _controller.removeListener(_handleAdsChanged);
     _banner?.dispose();
     _banner = null;
     super.dispose();
@@ -94,7 +136,7 @@ class _AdBannerSlotState extends State<AdBannerSlot> {
     final banner = _banner;
     final size = _size;
     // Definitive failure (or ads not allowed): no gap, no error UI.
-    if (_failed || size == null) {
+    if (!_controller.canShowAds || _failed || size == null) {
       return const SizedBox.shrink();
     }
     return SafeArea(

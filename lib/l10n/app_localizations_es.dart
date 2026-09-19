@@ -927,7 +927,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get intelligenceCompareSubtitle =>
-      'Confianza, precios y salud lado a lado para hasta 4 APIs.';
+      'Elige entre 2 y 8 APIs. Compara confianza, precios, velocidad y disponibilidad.';
 
   @override
   String get intelligenceChooseApis => 'Elegir APIs';
@@ -946,7 +946,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String pickerSelectedCount(int count) {
-    return '$count de 4 seleccionadas';
+    return '$count de 8 seleccionadas';
   }
 
   @override
@@ -1946,10 +1946,48 @@ class AppLocalizationsEs extends AppLocalizations {
   String get watchAction => 'Vigilar esta búsqueda';
 
   @override
+  String get watchSearchActive => 'Siguiendo esta búsqueda';
+
+  @override
   String get watchAdded => 'Seguimiento añadido';
 
   @override
   String get watchLimitReached => 'Límite de seguimientos';
+
+  @override
+  String get watchEntrySubtitle =>
+      'Sigue palabras clave, categorías y proyectos';
+
+  @override
+  String get watchCreateTitle => 'Crear seguimiento por palabra clave';
+
+  @override
+  String get watchCreateDescription =>
+      'Recibe alertas cuando se añadan o cambien APIs coincidentes.';
+
+  @override
+  String get watchKeywordHint => 'Palabra clave, proveedor o nombre de API';
+
+  @override
+  String get watchCreateAction => 'Crear seguimiento';
+
+  @override
+  String get watchAlreadyExists => 'Ya sigues esta palabra clave.';
+
+  @override
+  String get watchCategoryAction => 'Seguir categoría';
+
+  @override
+  String get watchCategoryActive => 'Siguiendo categoría';
+
+  @override
+  String get watchKindKeyword => 'Palabra clave';
+
+  @override
+  String get watchKindCategory => 'Categoría';
+
+  @override
+  String get watchKindProject => 'Proyecto';
 
   @override
   String get agentKeysTitle => 'Claves de agente';
@@ -2033,4 +2071,7 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get settingsPrivacyChoicesSubtitle =>
       'Controlar anuncios personalizados';
+
+  @override
+  String get intelligenceEditSelection => 'Editar selección';
 }

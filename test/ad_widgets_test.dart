@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:api_scout/app/services/ads/ads_controller.dart';
 import 'package:api_scout/app/services/ads/consent_gateway.dart';
 import 'package:api_scout/shared/widgets/ads/ad_banner_slot.dart';
@@ -26,6 +28,13 @@ class _DeniedGateway implements ConsentGateway {
   Future<void> showPrivacyOptions() async {}
 }
 
+class _DelayedDeniedGateway extends _DeniedGateway {
+  final ready = Completer<void>();
+
+  @override
+  Future<void> requestUpdate() => ready.future;
+}
+
 Future<AdsController> _deniedController() async {
   final controller = AdsController(gateway: _DeniedGateway());
   await controller.ensureInitialized();
@@ -42,8 +51,7 @@ void main() {
       );
       await tester.pump();
       expect(find.byType(AdWidget), findsNothing);
-      final slot =
-          tester.widget<AdBannerSlot>(find.byType(AdBannerSlot));
+      final slot = tester.widget<AdBannerSlot>(find.byType(AdBannerSlot));
       expect(slot, isNotNull);
     });
 
@@ -58,6 +66,29 @@ void main() {
   });
 
   group('CatalogNativeAdCard', () {
+    testWidgets('waits for consent initialization before reporting unavailable',
+        (tester) async {
+      final gateway = _DelayedDeniedGateway();
+      final controller = AdsController(gateway: gateway);
+      final initialization = controller.ensureInitialized();
+      var reported = false;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: CatalogNativeAdCard(
+            controller: controller,
+            onUnavailable: () => reported = true,
+          ),
+        ),
+      );
+      expect(reported, isFalse);
+
+      gateway.ready.complete();
+      await initialization;
+      await tester.pump();
+      expect(reported, isTrue);
+    });
+
     testWidgets('collapses and reports when ads are not allowed',
         (tester) async {
       final controller = await _deniedController();

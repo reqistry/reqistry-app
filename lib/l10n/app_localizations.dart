@@ -1811,7 +1811,7 @@ abstract class AppLocalizations {
   /// Compare card subtitle
   ///
   /// In en, this message translates to:
-  /// **'Side-by-side trust, pricing and health for up to 4 APIs.'**
+  /// **'Choose 2–8 APIs. Compare trust, pricing, speed, and uptime.'**
   String get intelligenceCompareSubtitle;
 
   /// Open API picker button
@@ -1847,7 +1847,7 @@ abstract class AppLocalizations {
   /// Selected count in API picker
   ///
   /// In en, this message translates to:
-  /// **'{count} of 4 selected'**
+  /// **'{count} of 8 selected'**
   String pickerSelectedCount(int count);
 
   /// Confirm button in API picker
@@ -3590,6 +3590,12 @@ abstract class AppLocalizations {
   /// **'Watch this search'**
   String get watchAction;
 
+  /// Active keyword search watch label
+  ///
+  /// In en, this message translates to:
+  /// **'Watching this search'**
+  String get watchSearchActive;
+
   /// Watch added message
   ///
   /// In en, this message translates to:
@@ -3601,6 +3607,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Watchlist limit reached'**
   String get watchLimitReached;
+
+  /// Watchlists entry subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Track keywords, categories, and projects'**
+  String get watchEntrySubtitle;
+
+  /// Create keyword watch sheet title
+  ///
+  /// In en, this message translates to:
+  /// **'Create keyword watch'**
+  String get watchCreateTitle;
+
+  /// Create keyword watch explanation
+  ///
+  /// In en, this message translates to:
+  /// **'Get alerts when matching APIs are added or change.'**
+  String get watchCreateDescription;
+
+  /// Keyword watch input hint
+  ///
+  /// In en, this message translates to:
+  /// **'Keyword, provider, or API name'**
+  String get watchKeywordHint;
+
+  /// Create watch action
+  ///
+  /// In en, this message translates to:
+  /// **'Create watch'**
+  String get watchCreateAction;
+
+  /// Duplicate watch message
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re already watching this keyword.'**
+  String get watchAlreadyExists;
+
+  /// Create category watch action
+  ///
+  /// In en, this message translates to:
+  /// **'Watch category'**
+  String get watchCategoryAction;
+
+  /// Active category watch action
+  ///
+  /// In en, this message translates to:
+  /// **'Watching category'**
+  String get watchCategoryActive;
+
+  /// Keyword watch type label
+  ///
+  /// In en, this message translates to:
+  /// **'Keyword'**
+  String get watchKindKeyword;
+
+  /// Category watch type label
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get watchKindCategory;
+
+  /// Project watch type label
+  ///
+  /// In en, this message translates to:
+  /// **'Project'**
+  String get watchKindProject;
 
   /// Agent keys title
   ///
@@ -3751,6 +3823,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Control personalized ads'**
   String get settingsPrivacyChoicesSubtitle;
+
+  /// Button label for editing selected APIs before comparison
+  ///
+  /// In en, this message translates to:
+  /// **'Edit selection'**
+  String get intelligenceEditSelection;
 }
 
 class _AppLocalizationsDelegate

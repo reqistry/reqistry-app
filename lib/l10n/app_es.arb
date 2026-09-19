@@ -1210,7 +1210,7 @@
   "@intelligenceCompareTitle": {
     "description": "Compare card title"
   },
-  "intelligenceCompareSubtitle": "Confianza, precios y salud lado a lado para hasta 4 APIs.",
+  "intelligenceCompareSubtitle": "Elige entre 2 y 8 APIs. Compara confianza, precios, velocidad y disponibilidad.",
   "@intelligenceCompareSubtitle": {
     "description": "Compare card subtitle"
   },
@@ -1234,7 +1234,7 @@
   "@pickerSearchHint": {
     "description": "API picker search hint"
   },
-  "pickerSelectedCount": "{count} de 4 seleccionadas",
+  "pickerSelectedCount": "{count} de 8 seleccionadas",
   "@pickerSelectedCount": {
     "description": "Selected count in API picker",
     "placeholders": {
@@ -2485,6 +2485,10 @@
   "@watchAction": {
     "description": "Create keyword watch action"
   },
+  "watchSearchActive": "Siguiendo esta búsqueda",
+  "@watchSearchActive": {
+    "description": "Etiqueta de seguimiento de búsqueda activo"
+  },
   "watchAdded": "Seguimiento añadido",
   "@watchAdded": {
     "description": "Watch added message"
@@ -2492,6 +2496,50 @@
   "watchLimitReached": "Límite de seguimientos",
   "@watchLimitReached": {
     "description": "Watchlist limit message"
+  },
+  "watchEntrySubtitle": "Sigue palabras clave, categorías y proyectos",
+  "@watchEntrySubtitle": {
+    "description": "Subtítulo de acceso a seguimientos"
+  },
+  "watchCreateTitle": "Crear seguimiento por palabra clave",
+  "@watchCreateTitle": {
+    "description": "Título para crear seguimiento por palabra clave"
+  },
+  "watchCreateDescription": "Recibe alertas cuando se añadan o cambien APIs coincidentes.",
+  "@watchCreateDescription": {
+    "description": "Explicación para crear seguimiento por palabra clave"
+  },
+  "watchKeywordHint": "Palabra clave, proveedor o nombre de API",
+  "@watchKeywordHint": {
+    "description": "Sugerencia del campo de palabra clave"
+  },
+  "watchCreateAction": "Crear seguimiento",
+  "@watchCreateAction": {
+    "description": "Acción para crear un seguimiento"
+  },
+  "watchAlreadyExists": "Ya sigues esta palabra clave.",
+  "@watchAlreadyExists": {
+    "description": "Mensaje de seguimiento duplicado"
+  },
+  "watchCategoryAction": "Seguir categoría",
+  "@watchCategoryAction": {
+    "description": "Acción para seguir una categoría"
+  },
+  "watchCategoryActive": "Siguiendo categoría",
+  "@watchCategoryActive": {
+    "description": "Acción de seguimiento de categoría activo"
+  },
+  "watchKindKeyword": "Palabra clave",
+  "@watchKindKeyword": {
+    "description": "Etiqueta de seguimiento por palabra clave"
+  },
+  "watchKindCategory": "Categoría",
+  "@watchKindCategory": {
+    "description": "Etiqueta de seguimiento por categoría"
+  },
+  "watchKindProject": "Proyecto",
+  "@watchKindProject": {
+    "description": "Etiqueta de seguimiento por proyecto"
   },
   "agentKeysTitle": "Claves de agente",
   "@agentKeysTitle": {
@@ -2597,5 +2645,9 @@
   "settingsPrivacyChoicesSubtitle": "Controlar anuncios personalizados",
   "@settingsPrivacyChoicesSubtitle": {
     "description": "Subtítulo de opciones de privacidad"
+  },
+  "intelligenceEditSelection": "Editar selección",
+  "@intelligenceEditSelection": {
+    "description": "Etiqueta del botón para editar las APIs seleccionadas antes de comparar"
   }
 }
