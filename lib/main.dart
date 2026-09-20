@@ -1,11 +1,9 @@
 import 'dart:async';
 
-import 'package:device_preview_plus/device_preview_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:api_scout/l10n/app_localizations.dart';
-import 'package:requests_inspector/requests_inspector.dart';
 
 import 'app/blocs/auth/auth_cubit.dart';
 import 'app/blocs/auth/auth_state.dart';
@@ -76,16 +74,7 @@ Future<void> main() async {
     };
   }
 
-  runApp(
-    DevicePreview(
-      enabled: kDebugMode,
-      builder: (_) => kDebugMode
-          ? RequestsInspector(
-              child: const ApiScoutApp(),
-            )
-          : const ApiScoutApp(),
-    ),
-  );
+  runApp(const ApiScoutApp());
 }
 
 class ApiScoutApp extends StatelessWidget {
@@ -143,17 +132,14 @@ class ApiScoutApp extends StatelessWidget {
                       localizationsDelegates:
                           AppLocalizations.localizationsDelegates,
                       builder: (context, child) {
-                        child = DevicePreview.appBuilder(
-                          context,
-                          child ?? const SizedBox.shrink(),
-                        );
-
                         final l10n = AppLocalizations.of(context);
                         if (l10n != null) {
                           ConnectivityService.instance.setLocalizations(l10n);
                         }
 
-                        return AppOverlayHost(child: child);
+                        return AppOverlayHost(
+                          child: child ?? const SizedBox.shrink(),
+                        );
                       },
                     );
                   },

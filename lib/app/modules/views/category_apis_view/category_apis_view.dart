@@ -9,6 +9,7 @@ import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
 import 'package:api_scout/shared/widgets/ads/catalog_native_ad_card.dart';
+import 'package:api_scout/shared/widgets/ads/ad_banner_slot.dart';
 import 'package:api_scout/shared/widgets/app_cached_image.dart';
 import 'package:api_scout/shared/widgets/ui/stat_widgets.dart';
 import 'package:api_scout/shared/widgets/ui/async_state_handler.dart';
@@ -51,6 +52,10 @@ class _CategoryApisViewState extends State<CategoryApisView> {
         backgroundColor: c.surface,
         elevation: 0,
         scrolledUnderElevation: 0,
+      ),
+      bottomNavigationBar: const SafeArea(
+        top: false,
+        child: AdBannerSlot(),
       ),
       body: BlocBuilder<CategoryApisCubit, CategoryApisState>(
         builder: (context, state) {

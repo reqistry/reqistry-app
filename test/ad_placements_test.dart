@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 
 // Regression: ads appear only on approved surfaces. The banner slot may
-// only be instantiated in the main shell; native cards only in the search
+// only be instantiated in the category list; native cards only in the search
 // and category result lists (plus the widget files themselves).
 const _bannerAllowlist = {
-  'lib/app/modules/views/main_shell_view.dart',
+  'lib/app/modules/views/category_apis_view/category_apis_view.dart',
   'lib/shared/widgets/ads/ad_banner_slot.dart',
 };
 

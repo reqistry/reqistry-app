@@ -64,7 +64,11 @@ class _AdBannerSlotState extends State<AdBannerSlot> {
     final width = MediaQuery.sizeOf(context).width.truncate();
     AnchoredAdaptiveBannerAdSize? size;
     try {
-      size = await AdSize.getLargeAnchoredAdaptiveBannerAdSize(width);
+      // Large adaptive banners may reserve an empty band above 50dp ads.
+      // ignore: deprecated_member_use
+      size = await AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(
+        width,
+      );
     } catch (_) {
       size = null;
     }
@@ -139,14 +143,13 @@ class _AdBannerSlotState extends State<AdBannerSlot> {
     if (!_controller.canShowAds || _failed || size == null) {
       return const SizedBox.shrink();
     }
-    return SafeArea(
-      top: false,
-      child: SizedBox(
-        width: size.width.toDouble(),
-        height: size.height.toDouble(),
-        // Empty reserved box while the creative loads.
-        child: banner == null ? const SizedBox.shrink() : AdWidget(ad: banner),
-      ),
+    // No SafeArea here: the host bottom bar owns the single system inset,
+    // so the creative sits flush with zero surrounding space.
+    return SizedBox(
+      width: size.width.toDouble(),
+      height: size.height.toDouble(),
+      // Empty reserved box while the creative loads.
+      child: banner == null ? const SizedBox.shrink() : AdWidget(ad: banner),
     );
   }
 }

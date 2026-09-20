@@ -34,7 +34,6 @@ dependencies:
   flutter_svg:
   phosphoricons_flutter: ^1.0.0
   package_info_plus:
-  device_preview_plus: 2.8.2
   requests_inspector: ^5.4.0
 
 dev_dependencies:
