@@ -3,8 +3,6 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:timezone/timezone.dart' as tz;
-import 'package:timezone/data/latest.dart' as tz;
 
 /// Local notification service for displaying notifications when app is in foreground
 class LocalNotificationService {
@@ -26,9 +24,6 @@ class LocalNotificationService {
   /// Initialize local notifications
   Future<void> init() async {
     if (_isInitialized) return;
-
-    // Initialize timezone
-    tz.initializeTimeZones();
 
     // Android initialization settings
     const androidSettings =
@@ -165,42 +160,6 @@ class LocalNotificationService {
         body: body,
         notificationDetails: details,
         payload: payload);
-  }
-
-  /// Schedule a notification
-  Future<void> scheduleNotification({
-    required int id,
-    required String title,
-    required String body,
-    required DateTime scheduledDate,
-    String? payload,
-  }) async {
-    if (!_isInitialized) await init();
-
-    final androidDetails = AndroidNotificationDetails(
-      'reqistry_scheduled',
-      'Reqistry Scheduled Notifications',
-      channelDescription: 'Scheduled notifications from Reqistry',
-      importance: Importance.high,
-      priority: Priority.high,
-    );
-
-    const iosDetails = DarwinNotificationDetails();
-
-    final details = NotificationDetails(
-      android: androidDetails,
-      iOS: iosDetails,
-    );
-
-    await _plugin.zonedSchedule(
-      id: id,
-      title: title,
-      body: body,
-      scheduledDate: tz.TZDateTime.from(scheduledDate, tz.local),
-      notificationDetails: details,
-      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
-      payload: payload,
-    );
   }
 
   /// Cancel a notification

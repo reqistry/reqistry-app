@@ -2,7 +2,7 @@ import 'package:envied/envied.dart';
 
 part 'env.g.dart';
 
-@Envied(path: '.env.dev')
+@Envied(path: '.env.prod')
 abstract class Env {
   @EnviedField(varName: 'API_BASE_URL')
   static const String apiUrl = _Env.apiUrl;

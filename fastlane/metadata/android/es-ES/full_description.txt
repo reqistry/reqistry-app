@@ -1,0 +1,66 @@
+Crear algo nuevo debería ser emocionante, no una tarea tediosa de buscar entre listas de APIs desactualizadas y documentación confusa.
+
+Reqistry te ayuda a encontrar APIs públicas útiles para tu próxima app, web, automatización, experimento o proyecto de IA.
+
+Explora APIs de inteligencia artificial, finanzas, meteorología, música, seguridad, productividad, juegos, salud, educación y muchas otras categorías, todo desde una app sencilla y fácil de usar.
+
+Tanto si eres un estudiante aprendiendo a programar, un desarrollador independiente creando tu primer producto, o un ingeniero experimentado explorando nuevas herramientas, Reqistry te ofrece una forma más sencilla de encontrar las APIs que encajan con lo que estás desarrollando.
+
+Encuentra APIs más rápido
+
+Navega por una colección de APIs en constante crecimiento, organizadas en categorías claras. Descubre servicios interesantes sin tener que saltar entre decenas de webs y repositorios.
+
+Busca lo que necesitas
+
+Busca por nombre de API, categoría, característica o caso de uso para acotar rápidamente las opciones adecuadas para tu proyecto.
+
+Entiende las APIs de un vistazo
+
+Consulta información útil como:
+
+• Descripción y propósito de la API
+• Endpoints y enlaces disponibles
+• Requisitos de autenticación
+• Soporte para HTTPS y CORS
+• Información de precios o acceso
+• Categoría y detalles técnicos
+
+Guarda APIs para más tarde
+
+¿Has encontrado algo útil? Guárdalo en favoritos para poder volver fácilmente a ello cuando estés listo para empezar a desarrollar.
+
+Organiza la investigación de tu proyecto
+
+Mantén las APIs útiles juntas y dedica menos tiempo a intentar recordar dónde las encontraste.
+
+Explora nuevas ideas de proyectos
+
+¿No sabes qué construir a continuación? Explora diferentes categorías, descubre APIs interesantes y conviértelas en apps móviles, webs, automatizaciones, dashboards, bots o herramientas con IA.
+
+Diseñada para desarrolladores de todos los niveles
+
+Reqistry es ideal para:
+
+• Desarrolladores móviles y web
+• Estudiantes y programadores principiantes
+• Indie hackers y fundadores de startups
+• Participantes de hackatones
+• Creadores de no-code y automatizaciones
+• Desarrolladores de aplicaciones de IA
+• Cualquiera con curiosidad por lo que las APIs pueden hacer
+
+¿Por qué usar Reqistry?
+
+• Sencilla y fácil de explorar
+• Amplia variedad de categorías de APIs
+• Información útil en un solo lugar
+• Investigación de proyectos más rápida
+• Gestión de favoritos y organización
+• Colección de APIs en constante expansión
+• Experiencia limpia y sin complicaciones innecesarias
+
+Reqistry es más que una lista de APIs. Es el punto de partida para tu próxima idea.
+
+Descubre una API, imagina lo que puedes crear con ella y da el primer paso para hacer realidad tu proyecto.
+
+Empieza a explorar con Reqistry hoy mismo.

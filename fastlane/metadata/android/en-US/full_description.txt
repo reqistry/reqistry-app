@@ -1,0 +1,66 @@
+Building something new should feel exciting—not like hours of searching through outdated API lists and confusing documentation.
+
+Reqistry helps you discover useful public APIs for your next app, website, automation, experiment, or AI project.
+
+Explore APIs across artificial intelligence, finance, weather, music, security, productivity, games, health, education, and many other categories—all from one simple and welcoming app.
+
+Whether you are a student learning to code, an indie developer building your first product, or an experienced engineer exploring new tools, Reqistry gives you an easier way to find APIs that match what you are working on.
+
+Discover APIs faster
+
+Browse a growing collection of APIs organized into clear categories. Find interesting services without jumping between dozens of websites and repositories.
+
+Search for what you need
+
+Search by API name, category, feature, or use case to quickly narrow down the right options for your project.
+
+Understand APIs at a glance
+
+View helpful information such as:
+
+• API description and purpose
+• Available endpoints and links
+• Authentication requirements
+• HTTPS and CORS support
+• Pricing or access information
+• Category and technical details
+
+Save APIs for later
+
+Found something useful? Bookmark it so you can easily return to it when you are ready to start building.
+
+Organize your project research
+
+Keep useful APIs together and spend less time trying to remember where you found them.
+
+Explore new project ideas
+
+Not sure what to build next? Browse different categories, discover interesting APIs, and turn them into mobile apps, websites, automations, dashboards, bots, or AI-powered tools.
+
+Built for developers at every level
+
+Reqistry is designed for:
+
+• Mobile and web developers
+• Students and beginner programmers
+• Indie hackers and startup founders
+• Hackathon participants
+• No-code and automation builders
+• AI application developers
+• Anyone curious about what APIs can do
+
+Why use Reqistry?
+
+• Simple and easy to explore
+• Wide range of API categories
+• Useful information in one place
+• Faster project research
+• Bookmarking and organization
+• Regularly expanding API collection
+• Clean experience without unnecessary complexity
+
+Reqistry is more than an API list. It is a starting point for your next idea.
+
+Discover an API, imagine what you can build with it, and take the first step toward making your project real.
+
+Start exploring with Reqistry today.

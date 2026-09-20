@@ -8,7 +8,7 @@ part of 'env.dart';
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
-// generated_from: .env.dev
+// generated_from: .env.prod
 final class _Env {
   static const String apiUrl = 'https://api.reqistry.dev';
 
@@ -24,12 +24,13 @@ final class _Env {
 
   static const String contactEmail = 'work@gwhyyy.com';
 
-  static const String privacyPolicyUrl = 'https://gwhyyy.com/privacy';
+  static const String privacyPolicyUrl = 'https://reqistry.dev/privacy';
 
   static const String metadataUserAgent =
       'Mozilla/5.0 (compatible; Reqistry/1.0; +https://gwhyyy.com)';
 
-  static const String privacyMdUrl = '';
+  static const String privacyMdUrl =
+      'https://api.reqistry.dev/static/privacy.md';
 
   static const String admobAndroidAppId =
       'ca-app-pub-2761860682313828~7460229138';

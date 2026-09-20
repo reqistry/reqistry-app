@@ -1,0 +1,175 @@
+opt_out_usage
+default_platform(:android)
+
+PACKAGE_NAME = "com.gwhyyy.publicApis"
+AAB_PATH = File.expand_path(
+  "../build/app/outputs/bundle/release/app-release.aab",
+  __dir__
+)
+METADATA_PATH = File.expand_path("metadata/android", __dir__)
+
+def play_json_key
+  ENV.fetch(
+    "GOOGLE_PLAY_JSON_KEY",
+    File.expand_path("~/.config/opencode/secrets/google-play.json")
+  )
+end
+
+platform :android do
+  desc "Validate Google Play service-account access"
+  lane :validate_play do
+    validate_play_store_json_key(json_key: play_json_key)
+  end
+
+  private_lane :build_aab do
+    sh("flutter", "build", "appbundle", "--release", "--no-tree-shake-icons")
+  end
+
+  desc "Build and publish to the internal testing track"
+  lane :internal do
+    build_aab
+    upload_to_play_store(
+      json_key: play_json_key,
+      package_name: PACKAGE_NAME,
+      aab: AAB_PATH,
+      track: "internal",
+      release_status: "completed",
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      skip_upload_changelogs: true
+    )
+  end
+
+  desc "Upload localized Play Store listings and images only"
+  lane :metadata do
+    upload_to_play_store(
+      json_key: play_json_key,
+      package_name: PACKAGE_NAME,
+      metadata_path: METADATA_PATH,
+      skip_upload_apk: true,
+      skip_upload_aab: true,
+      skip_upload_changelogs: true
+    )
+  end
+
+  desc "Build and upload production release (draft by default)"
+  lane :production do |options|
+    build_aab
+    supply_options = {
+      json_key: play_json_key,
+      package_name: PACKAGE_NAME,
+      aab: AAB_PATH,
+      track: "production",
+      release_status: options[:status] || "draft",
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      skip_upload_changelogs: true
+    }
+    supply_options[:rollout] = options[:rollout] if options[:rollout]
+    upload_to_play_store(**supply_options)
+  end
+
+  desc "Read-only Play track/release/tester inventory (no changes)"
+  lane :status do
+    require "google/apis/androidpublisher_v3"
+    require "googleauth"
+    auth = Google::Auth::ServiceAccountCredentials.make_creds(
+      json_key_io: File.open(play_json_key),
+      scope: Google::Apis::AndroidpublisherV3::AUTH_ANDROIDPUBLISHER
+    )
+    auth.fetch_access_token!
+    service = Google::Apis::AndroidpublisherV3::AndroidPublisherService.new
+    service.authorization = auth
+    edit = service.insert_edit(PACKAGE_NAME)
+    begin
+      tracks = service.list_edit_tracks(PACKAGE_NAME, edit.id).tracks || []
+      UI.message("TRACKS: #{tracks.map(&:track).join(", ")}")
+      tracks.each do |t|
+        full = service.get_edit_track(PACKAGE_NAME, edit.id, t.track)
+        (full.releases || []).each do |r|
+          UI.message(
+            "#{t.track}: name=#{r.name.inspect} " \
+            "status=#{r.status} codes=#{(r.version_codes || []).join(",")}"
+          )
+        end
+        UI.message("#{t.track}: releases: none") if (full.releases || []).empty?
+        unless t.track == "production"
+          begin
+            testers = service.get_edit_tester(PACKAGE_NAME, edit.id, t.track)
+            groups = testers.google_groups || []
+            UI.message(
+              "#{t.track}: tester groups: #{groups.empty? ? "none" : groups.join(", ")}"
+            )
+          rescue Google::Apis::ClientError => e
+            UI.message("#{t.track}: tester lookup error: #{e.message[0, 160]}")
+          end
+        end
+      rescue Google::Apis::ClientError => e
+        UI.message("#{t.track}: lookup error: #{e.message[0, 160]}")
+      end
+    ensure
+      service.delete_edit(PACKAGE_NAME, edit.id)
+    end
+  end
+
+  desc "Delete remote Play listings except en-US + es-ES (backup in /tmp/opencode/play-backup-20260920)"
+  lane :retire_locales do
+    require "google/apis/androidpublisher_v3"
+    require "googleauth"
+    keep = %w[en-US es-ES]
+    auth = Google::Auth::ServiceAccountCredentials.make_creds(
+      json_key_io: File.open(play_json_key),
+      scope: Google::Apis::AndroidpublisherV3::AUTH_ANDROIDPUBLISHER
+    )
+    auth.fetch_access_token!
+    service = Google::Apis::AndroidpublisherV3::AndroidPublisherService.new
+    service.authorization = auth
+    edit = service.insert_edit(PACKAGE_NAME)
+    begin
+      remote = service.list_edit_listings(PACKAGE_NAME, edit.id).listings || []
+      UI.message("Remote listings: #{remote.map(&:language).join(", ")}")
+      remote.each do |listing|
+        next if keep.include?(listing.language)
+        service.delete_edit_listing(PACKAGE_NAME, edit.id, listing.language)
+        UI.message("Deleted listing: #{listing.language}")
+      end
+      service.commit_edit(PACKAGE_NAME, edit.id)
+      UI.success("Kept #{keep.join(" + ")}; deleted the rest")
+    rescue StandardError
+      service.delete_edit(PACKAGE_NAME, edit.id)
+      raise
+    end
+  end
+
+  desc "Empty obsolete beta/alpha test tracks (keeps internal QA + production)"
+  lane :retire_test_tracks do
+    require "google/apis/androidpublisher_v3"
+    require "googleauth"
+    auth = Google::Auth::ServiceAccountCredentials.make_creds(
+      json_key_io: File.open(play_json_key),
+      scope: Google::Apis::AndroidpublisherV3::AUTH_ANDROIDPUBLISHER
+    )
+    auth.fetch_access_token!
+    service = Google::Apis::AndroidpublisherV3::AndroidPublisherService.new
+    service.authorization = auth
+    edit = service.insert_edit(PACKAGE_NAME)
+    begin
+      %w[beta alpha].each do |track_name|
+        service.update_edit_track(
+          PACKAGE_NAME,
+          edit.id,
+          track_name,
+          Google::Apis::AndroidpublisherV3::Track.new(releases: [])
+        )
+        UI.message("Emptied track: #{track_name}")
+      end
+      service.commit_edit(PACKAGE_NAME, edit.id)
+      UI.success("Retired beta/alpha tracks; internal + production untouched")
+    rescue StandardError
+      service.delete_edit(PACKAGE_NAME, edit.id)
+      raise
+    end
+  end
+end

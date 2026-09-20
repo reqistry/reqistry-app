@@ -213,8 +213,7 @@ class FcmService {
       // Fold notifications received while terminated into the in-app feed.
       await _mergePendingNotifications();
 
-      debugPrint(
-          '[FCM] Initialized with token: ${_currentToken?.substring(0, 20)}...');
+      debugPrint('[FCM] Initialized');
     } catch (e) {
       debugPrint('[FCM] Initialization error: $e');
       _state = FcmTokenState.error;
@@ -492,7 +491,7 @@ class FcmService {
       _currentToken = newToken;
       _tokenStreamController.add(newToken);
 
-      debugPrint('[FCM] Token rotated: ${newToken?.substring(0, 20)}...');
+      debugPrint('[FCM] Token rotated');
       return newToken;
     } catch (e) {
       debugPrint('[FCM] Failed to rotate token: $e');

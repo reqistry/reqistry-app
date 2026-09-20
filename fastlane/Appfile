@@ -1,0 +1,7 @@
+json_key_file(
+  ENV.fetch(
+    "GOOGLE_PLAY_JSON_KEY",
+    File.expand_path("~/.config/opencode/secrets/google-play.json")
+  )
+)
+package_name("com.gwhyyy.publicApis")

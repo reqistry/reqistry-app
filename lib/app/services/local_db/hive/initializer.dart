@@ -16,7 +16,6 @@ class LocalDatabase {
     await Future.wait(
       <Future>[
         Hive.openBox(BoxesConstants.locals),
-        Hive.openBox(BoxesConstants.authTokens),
         Hive.openBox(fcmCache),
         Hive.openBox(apiDetailCache),
         Hive.openBox(BoxesConstants.privacyCache),

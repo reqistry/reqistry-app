@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class AuthTokenService {
@@ -11,11 +14,48 @@ class AuthTokenService {
   static const String _expiresAtKey = 'expires_at';
   static const String _deviceIdKey = 'device_id';
   static const String _deviceFingerprintKey = 'device_fingerprint';
+  static const String _encryptionKeyName = 'auth_tokens_hive_key';
+
+  static const FlutterSecureStorage _secureStorage = FlutterSecureStorage(
+    aOptions: AndroidOptions(migrateWithBackup: true),
+  );
 
   late Box _box;
 
   Future<void> init() async {
-    _box = await Hive.openBox(_boxName);
+    final storedKey = await _secureStorage.read(key: _encryptionKeyName);
+    if (storedKey != null) {
+      try {
+        final cipher = HiveAesCipher(base64Url.decode(storedKey));
+        _box = await Hive.openBox(_boxName, encryptionCipher: cipher);
+        return;
+      } catch (_) {
+        // Corrupt key or interrupted first migration: drop local credentials
+        // rather than weakening encryption. Force logout, keep encryption.
+        await Hive.deleteBoxFromDisk(_boxName);
+        await _secureStorage.delete(key: _encryptionKeyName);
+      }
+    }
+
+    // First migration: persist the new key BEFORE deleting legacy data so a
+    // crash/write failure retries instead of logging the user out.
+    final legacyBox = await Hive.openBox(_boxName);
+    final legacyData = Map<dynamic, dynamic>.from(legacyBox.toMap());
+    await legacyBox.close();
+
+    final key = Hive.generateSecureKey();
+    await _secureStorage.write(
+      key: _encryptionKeyName,
+      value: base64UrlEncode(key),
+    );
+    await Hive.deleteBoxFromDisk(_boxName);
+    _box = await Hive.openBox(
+      _boxName,
+      encryptionCipher: HiveAesCipher(key),
+    );
+    if (legacyData.isNotEmpty) {
+      await _box.putAll(legacyData);
+    }
   }
 
   String? get accessToken => _box.get(_accessTokenKey);

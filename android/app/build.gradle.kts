@@ -19,7 +19,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 val envProperties = Properties()
-val envPropertiesFile = rootProject.file("../.env.dev")
+val envPropertiesFile = rootProject.file("../.env.prod")
 if (envPropertiesFile.exists()) {
     FileInputStream(envPropertiesFile).use { envProperties.load(it) }
 }
@@ -68,9 +68,9 @@ android {
 
     buildTypes {
         release {
-            // Use release keystore when provided; otherwise fall back to debug for local runs.
+            // Never produce a release artifact signed with the debug key.
             signingConfig = signingConfigs.findByName("release")
-                ?: signingConfigs.getByName("debug")
+                ?: throw GradleException("Missing release signing configuration")
         }
     }
 
