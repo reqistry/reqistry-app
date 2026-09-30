@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:api_scout/app/services/auth/dio_client.dart';
+import 'package:api_scout/app/services/analytics/posthog_service.dart';
 import 'package:dio/dio.dart';
 
 class ApiDetailAnalytics {
@@ -17,6 +18,11 @@ class ApiDetailAnalytics {
   }) {
     if ((query == null || query.trim().isEmpty) && !hasFilters) return;
     unawaited(_sendSearch(query, hasFilters, resultCount));
+    unawaited(PostHogService.instance.capture('api_search', {
+      if (query != null && query.trim().isNotEmpty) 'query': query.trim(),
+      'has_filters': hasFilters,
+      'result_count': resultCount,
+    }));
   }
 
   static void track(
@@ -33,6 +39,15 @@ class ApiDetailAnalytics {
     }
     unawaited(_send(event, apiId, categoryId, healthState, bookmarkState,
         projectCount, sourceScreen));
+    // Mirror into PostHog for funnels/replays; /track stays for warehouse.
+    unawaited(PostHogService.instance.capture(event, {
+      'api_id': apiId,
+      'category_id': categoryId,
+      'health_state': healthState,
+      'bookmark_state': bookmarkState,
+      'project_count': projectCount,
+      'source_screen': sourceScreen,
+    }));
     if ({'api_save', 'api_project_add', 'api_outbound_doc'}.contains(event) &&
         _evaluatedSearchApis.contains(apiId) &&
         _qualifiedSearchApis.add(apiId)) {

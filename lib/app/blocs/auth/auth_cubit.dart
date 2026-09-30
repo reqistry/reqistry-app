@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:api_scout/app/blocs/auth/auth_state.dart';
+import 'package:api_scout/app/services/analytics/posthog_service.dart';
 import 'package:api_scout/app/services/auth/auth_token_service.dart';
 import 'package:api_scout/app/services/auth/dio_client.dart';
 import 'package:api_scout/app/services/notification/fcm_service.dart';
@@ -279,6 +280,7 @@ class AuthCubit extends Cubit<AuthState> {
       }
       await _tokenService.clearTokens();
       DioClient().setAccessToken(null);
+      PostHogService.instance.reset();
       emit(const Unauthenticated());
     } catch (e) {
       _showError(l10n.snackbarSignOutFailed, l10n);
@@ -305,6 +307,7 @@ class AuthCubit extends Cubit<AuthState> {
       // Clear local state
       await _tokenService.clearTokens();
       DioClient().setAccessToken(null);
+      PostHogService.instance.reset();
       emit(const Unauthenticated());
       _showSuccess(l10n.snackbarAccountDeleted, l10n);
     } catch (e) {
@@ -316,6 +319,7 @@ class AuthCubit extends Cubit<AuthState> {
     await _disableFcm();
     await _tokenService.clearTokens();
     DioClient().setAccessToken(null);
+    PostHogService.instance.reset();
     emit(const Unauthenticated());
   }
 
@@ -358,6 +362,13 @@ class AuthCubit extends Cubit<AuthState> {
       final response = await _dio.get('/v1/auth/me');
       final profile = UserProfile.fromJson(response.data['user']);
       emit(Authenticated(profile: profile));
+      // Stable backend id joins mobile events with server events on one person.
+      PostHogService.instance.identify(
+        userId: profile.id,
+        email: profile.email,
+        name: profile.name,
+        authProvider: profile.authProvider,
+      );
     } catch (e) {
       if (state is! Authenticated) {
         emit(const Unauthenticated());

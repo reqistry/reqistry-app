@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:api_scout/app/services/connectivity/connectivity_service.dart';
+import 'package:api_scout/app/services/analytics/posthog_service.dart';
 import 'package:api_scout/app/utils/snackbar_helper.dart';
 import 'package:api_scout/app/widgets/app_busy_overlay.dart';
 import 'package:api_scout/config/env.dart';
@@ -67,6 +68,11 @@ class DioClient {
       client.interceptors.add(InterceptorsWrapper(onRequest: (options, handler) async {
         await buildReady;
         options.headers[buildHeader] = '$buildNumber';
+        // Links backend events/logs/exceptions to mobile session in replay.
+        final tracing = await PostHogService.instance.tracingHeaders();
+        for (final entry in tracing.entries) {
+          options.headers.putIfAbsent(entry.key, () => entry.value);
+        }
         handler.next(options);
       }));
     }

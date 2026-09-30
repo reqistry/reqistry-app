@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:api_scout/app/data/models/category_apis.dart';
 import 'package:api_scout/app/modules/views/apis_view/widgets/api_card.dart';
+import 'package:api_scout/app/services/ads/ad_insertion.dart';
+import 'package:api_scout/app/services/ads/ads_controller.dart';
 import 'package:api_scout/app/services/fetch_api/remote_service.dart';
+import 'package:api_scout/shared/widgets/ads/catalog_native_ad_card.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
@@ -27,6 +30,13 @@ class ApiCollectionView extends StatefulWidget {
 
 class _ApiCollectionViewState extends State<ApiCollectionView> {
   late Future<List<ApiItem>> _future;
+
+  /// Combined-list slots whose native fill failed; rendered as nothing.
+  final Set<int> _deadSlots = {};
+
+  void _dropSlot(int slot) {
+    if (_deadSlots.add(slot) && mounted) setState(() {});
+  }
 
   String _title(BuildContext context) => widget.kind == ApiCollectionKind.latest
       ? AppLocalizations.of(context)!.sectionLatestAdded
@@ -90,19 +100,56 @@ class _ApiCollectionViewState extends State<ApiCollectionView> {
                 scrollable: true,
               );
             }
-            return ListView.builder(
-              physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.all(AppSpacing.s16),
-              itemCount: apis.length,
-              itemBuilder: (context, index) {
-                final api = apis[index];
-                return ApiCard(
-                  api: api,
-                  category:
-                      api.category.isNotEmpty ? api.category : _title(context),
-                  sourceScreen: widget.kind == ApiCollectionKind.recommended
-                      ? 'recommendation'
-                      : 'latest',
+            return ListenableBuilder(
+              listenable: AdsController.shared,
+              builder: (context, _) {
+                // Native ads interleave among collection APIs only when UMP
+                // permits; otherwise the list is purely organic.
+                final adsOn = AdsController.shared.canShowAds;
+                final organic = apis.length;
+                final slots =
+                    adsOn ? AdInsertion.slotCount(organic) : organic;
+                return ListView.builder(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.all(AppSpacing.s16),
+                  itemCount: slots,
+                  itemBuilder: (context, index) {
+                    if (adsOn) {
+                      final organicIndex =
+                          AdInsertion.organicIndexForSlot(index, organic);
+                      if (organicIndex == -1) {
+                        if (_deadSlots.contains(index)) {
+                          return const SizedBox.shrink();
+                        }
+                        return CatalogNativeAdCard(
+                          key: ValueKey('native-ad-$index'),
+                          onUnavailable: () => _dropSlot(index),
+                        );
+                      }
+                      final api = apis[organicIndex];
+                      return ApiCard(
+                        key: ValueKey(api.id.isNotEmpty ? api.id : api.link),
+                        api: api,
+                        category: api.category.isNotEmpty
+                            ? api.category
+                            : _title(context),
+                        sourceScreen:
+                            widget.kind == ApiCollectionKind.recommended
+                                ? 'recommendation'
+                                : 'latest',
+                      );
+                    }
+                    final api = apis[index];
+                    return ApiCard(
+                      api: api,
+                      category: api.category.isNotEmpty
+                          ? api.category
+                          : _title(context),
+                      sourceScreen: widget.kind == ApiCollectionKind.recommended
+                          ? 'recommendation'
+                          : 'latest',
+                    );
+                  },
                 );
               },
             );

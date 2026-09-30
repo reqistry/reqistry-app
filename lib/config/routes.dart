@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:posthog_flutter/posthog_flutter.dart';
 import 'dart:convert';
 
 import 'package:api_scout/app/blocs/auth/auth_cubit.dart';
@@ -225,6 +226,7 @@ class AppRouter {
 
   static final GoRouter router = GoRouter(
     navigatorKey: rootNavigatorKey,
+    observers: [PosthogObserver()],
     initialLocation: AppRoutes.home,
     redirect: (context, state) {
       final authCubit = context.read<AuthCubit>();

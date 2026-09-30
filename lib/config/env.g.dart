@@ -40,4 +40,9 @@ final class _Env {
 
   static const String admobAndroidNativeUnitId =
       'ca-app-pub-2761860682313828/9948634986';
+
+  static const String posthogProjectToken =
+      'phc_srAQgpqKxATZvXdabBbkdmfWpgUGbU9DH624oe6MrWWm';
+
+  static const String posthogHost = 'https://us.i.posthog.com';
 }

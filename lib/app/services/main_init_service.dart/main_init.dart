@@ -4,6 +4,7 @@ import 'package:api_scout/firebase_options.dart';
 import '../local_db/hive/initializer.dart';
 import '../auth/auth_token_service.dart';
 import '../auth/dio_client.dart';
+import '../analytics/posthog_service.dart';
 import '../notification/fcm_service.dart';
 
 class MainInit {
@@ -29,6 +30,9 @@ class MainInit {
 
     // Initialize Dio client
     DioClient();
+
+    // Initialize PostHog mobile telemetry (no-op without token)
+    await PostHogService.instance.init();
 
     // Initialize FCM service
     await FcmService().init();

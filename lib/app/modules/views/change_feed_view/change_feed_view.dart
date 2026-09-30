@@ -12,6 +12,7 @@ import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:api_scout/shared/widgets/app_empty_state.dart';
 import 'package:api_scout/shared/widgets/app_error_state.dart';
 import 'package:api_scout/shared/widgets/app_loading.dart';
+import 'package:api_scout/shared/widgets/ads/ad_banner_slot.dart';
 import 'package:go_router/go_router.dart';
 
 /// Full registry change feed, opened from the home section "view all".
@@ -47,6 +48,10 @@ class _ChangeFeedViewState extends State<ChangeFeedView> {
         backgroundColor: c.surface,
         elevation: 0,
         scrolledUnderElevation: 0,
+      ),
+      bottomNavigationBar: const SafeArea(
+        top: false,
+        child: AdBannerSlot(),
       ),
       body: RefreshIndicator(
         onRefresh: () async => _reload(),

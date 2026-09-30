@@ -8,6 +8,7 @@ import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
 import 'package:api_scout/shared/widgets/app_empty_state.dart';
 import 'package:api_scout/shared/widgets/app_error_state.dart';
 import 'package:api_scout/shared/widgets/app_loading.dart';
+import 'package:api_scout/shared/widgets/ads/ad_banner_slot.dart';
 import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:api_scout/app/modules/views/discover_view/widgets/browse_by_category.dart';
 import 'package:api_scout/config/app_routes.dart';
@@ -47,6 +48,10 @@ class DiscoverView extends StatelessWidget {
             child: ColoredBox(color: c.surfaceVariant),
           ),
         ),
+      ),
+      bottomNavigationBar: const SafeArea(
+        top: false,
+        child: AdBannerSlot(),
       ),
       body: BlocBuilder<HomeCategoriesCubit, HomeCategoriesState>(
         builder: (context, state) {

@@ -11,6 +11,7 @@ List<String> _routePaths(List<RouteBase> routes) => [
     ];
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   test('router has no subscription paywall route', () {
     final paths = _routePaths(AppRouter.router.configuration.routes);
     expect(paths, isNot(contains('/pro')));

@@ -11,6 +11,7 @@ import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
 import 'package:api_scout/config/app_routes.dart' show AppRoutes;
 import 'package:api_scout/l10n/app_localizations.dart';
+import 'package:api_scout/shared/widgets/ads/ad_banner_slot.dart';
 
 /// Intelligence tab: side-by-side API comparison.
 class IntelligenceView extends StatefulWidget {
@@ -108,6 +109,10 @@ class _IntelligenceViewState extends State<IntelligenceView> {
           preferredSize: const Size.fromHeight(1),
           child: Container(height: 1, color: c.surfaceVariant),
         ),
+      ),
+      bottomNavigationBar: const SafeArea(
+        top: false,
+        child: AdBannerSlot(),
       ),
       body: ListView(
         physics: const AlwaysScrollableScrollPhysics(),

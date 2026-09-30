@@ -39,4 +39,10 @@ abstract class Env {
 
   @EnviedField(varName: 'ADMOB_ANDROID_NATIVE_UNIT_ID', defaultValue: '')
   static const String admobAndroidNativeUnitId = _Env.admobAndroidNativeUnitId;
+
+  @EnviedField(varName: 'POSTHOG_PROJECT_TOKEN', defaultValue: '')
+  static const String posthogProjectToken = _Env.posthogProjectToken;
+
+  @EnviedField(varName: 'POSTHOG_HOST', defaultValue: 'https://us.i.posthog.com')
+  static const String posthogHost = _Env.posthogHost;
 }

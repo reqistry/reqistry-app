@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:api_scout/l10n/app_localizations.dart';
 
 import 'app/blocs/auth/auth_cubit.dart';
@@ -21,6 +22,7 @@ import 'app/services/connectivity/connectivity_service.dart';
 import 'app/services/notification/fcm_service.dart';
 import 'config/env.dart';
 import 'config/routes.dart';
+import 'app/services/analytics/posthog_service.dart';
 import 'app/services/main_init_service.dart/main_init.dart';
 import 'app/utils/snackbar_helper.dart';
 import 'app/utils/theme_provider.dart';
@@ -64,12 +66,22 @@ Future<void> main() async {
 
   FlutterError.onError = (details) {
     FlutterError.presentError(details);
+    PostHogService.instance.captureError(
+      details.exception,
+      details.stack,
+      {'source': 'mobile', 'mechanism': 'flutter_error'},
+    );
   };
 
   if (kIsWeb == false) {
     final dispatcher = PlatformDispatcher.instance;
     dispatcher.onError = (error, stack) {
       debugPrint('Uncaught platform error: $error');
+      PostHogService.instance.captureError(
+        error,
+        stack,
+        {'source': 'mobile', 'mechanism': 'platform_dispatcher'},
+      );
       return true;
     };
   }
@@ -82,8 +94,9 @@ class ApiScoutApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
+    return PostHogWidget(
+      child: MultiBlocProvider(
+        providers: [
         BlocProvider(create: (_) => LanguageCubit()),
         BlocProvider(create: (_) => AuthCubit()),
         BlocProvider(create: (_) => MainShellCubit()),
@@ -100,15 +113,16 @@ class ApiScoutApp extends StatelessWidget {
         ),
       ],
       child: BlocListener<AuthCubit, AuthState>(
-        listenWhen: (_, current) =>
-            current is Unauthenticated || current is Authenticated,
-        listener: (context, state) async {
-          if (state is Authenticated) {
-            return;
-          }
-          // Identity change: never leak the previous account's data into
-          // the new session. Cubits reload lazily on demand.
-          context.read<FavoritesCubit>().clear();
+          listenWhen: (_, current) =>
+              current is Unauthenticated || current is Authenticated,
+          listener: (context, state) async {
+            if (state is Authenticated) {
+              return;
+            }
+            // Identity change: never leak the previous account's data into
+            // the new session. Cubits reload lazily on demand.
+            PostHogService.instance.reset();
+            context.read<FavoritesCubit>().clear();
           context.read<ProjectsCubit>().clear();
           context.read<UserActivityCubit>().clear();
         },
@@ -148,6 +162,7 @@ class ApiScoutApp extends StatelessWidget {
             );
           },
         ),
+      ),
       ),
     );
   }
