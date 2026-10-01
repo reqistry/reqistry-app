@@ -1,0 +1,4 @@
+• Smarter recommendations and improved API lists
+• New usage insights help us improve stability
+• Relevant ads on Explore, Intelligence, and Saved tabs
+• Bug fixes and performance improvements

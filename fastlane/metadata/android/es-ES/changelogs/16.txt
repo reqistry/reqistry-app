@@ -1,0 +1,4 @@
+• Recomendaciones más inteligentes y listas de API mejoradas
+• Nuevas estadísticas de uso para mejorar la estabilidad
+• Anuncios relevantes en las pestañas Explorar, Inteligencia y Guardados
+• Correcciones de errores y mejoras de rendimiento
