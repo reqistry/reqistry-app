@@ -1,66 +1,21 @@
-Building something new should feel exciting—not like hours of searching through outdated API lists and confusing documentation.
+Reqistry is API intelligence for you — and your AI agents.
 
-Reqistry helps you discover useful public APIs for your next app, website, automation, experiment, or AI project.
+Discover 3,500+ public APIs across AI, agent tools, finance, weather, music, security, productivity, games, health, education, and more. Don't just find APIs — evaluate them before you build. Every API shows trust signals: live platform-observed health, trust score, authentication requirements, pricing, HTTPS and CORS support.
 
-Explore APIs across artificial intelligence, finance, weather, music, security, productivity, games, health, education, and many other categories—all from one simple and welcoming app.
+COMPARE, DON'T GUESS
 
-Whether you are a student learning to code, an indie developer building your first product, or an experienced engineer exploring new tools, Reqistry gives you an easier way to find APIs that match what you are working on.
+Pick 2–8 APIs and compare trust, pricing, speed, and uptime side by side, backed by live evidence.
 
-Discover APIs faster
+MONITOR WHAT YOU SHIP
 
-Browse a growing collection of APIs organized into clear categories. Find interesting services without jumping between dozens of websites and repositories.
+Save APIs to watchlists with daily health digests and alerts when trust scores drop. The change feed tracks health, pricing, and trust events across the whole catalog.
 
-Search for what you need
+ORGANIZE AND CONTRIBUTE
 
-Search by API name, category, feature, or use case to quickly narrow down the right options for your project.
+Group APIs into projects, keep favorites in sync, and submit new APIs to grow the catalog.
 
-Understand APIs at a glance
+BUILT FOR AI AGENTS
 
-View helpful information such as:
+Create agent API keys in Settings and connect your agents through MCP (Settings → MCP), so your agents query the same trusted catalog you see.
 
-• API description and purpose
-• Available endpoints and links
-• Authentication requirements
-• HTTPS and CORS support
-• Pricing or access information
-• Category and technical details
-
-Save APIs for later
-
-Found something useful? Bookmark it so you can easily return to it when you are ready to start building.
-
-Organize your project research
-
-Keep useful APIs together and spend less time trying to remember where you found them.
-
-Explore new project ideas
-
-Not sure what to build next? Browse different categories, discover interesting APIs, and turn them into mobile apps, websites, automations, dashboards, bots, or AI-powered tools.
-
-Built for developers at every level
-
-Reqistry is designed for:
-
-• Mobile and web developers
-• Students and beginner programmers
-• Indie hackers and startup founders
-• Hackathon participants
-• No-code and automation builders
-• AI application developers
-• Anyone curious about what APIs can do
-
-Why use Reqistry?
-
-• Simple and easy to explore
-• Wide range of API categories
-• Useful information in one place
-• Faster project research
-• Bookmarking and organization
-• Regularly expanding API collection
-• Clean experience without unnecessary complexity
-
-Reqistry is more than an API list. It is a starting point for your next idea.
-
-Discover an API, imagine what you can build with it, and take the first step toward making your project real.
-
-Start exploring with Reqistry today.
+Free discovery, no subscriptions. The app is ad-supported with a banner and clearly labeled native ads. Your ad choices are collected before any ad loads (Google UMP) and can be revisited anytime in Settings → Privacy choices.

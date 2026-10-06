@@ -1,0 +1,4 @@
+• Reqistry is now API intelligence for you & your AI agents
+• Side-by-side compare, trust scores, and live health
+• Watchlists with health alerts, agent API keys + MCP
+• Bug fixes and performance improvements

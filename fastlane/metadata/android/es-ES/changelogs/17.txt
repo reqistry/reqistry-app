@@ -1,0 +1,4 @@
+• Reqistry ahora es inteligencia de APIs para ti y tus agentes IA
+• Comparación lado a lado, confianza y salud en vivo
+• Seguimiento con alertas, claves de agente + MCP
+• Correcciones y mejoras de rendimiento
