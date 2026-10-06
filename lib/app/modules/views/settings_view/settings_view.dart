@@ -254,6 +254,14 @@ class _SettingsViewState extends State<SettingsView> {
               title: AppLocalizations.of(context)!.sectionInfo,
               children: [
                 SettingsEntryTile(
+                  icon: PhosphorIconsRegular.star,
+                  title: AppLocalizations.of(context)!.settingsRateApp,
+                  onTap: () => launchUrl(
+                    Uri.parse(Env.appShareUrl),
+                    mode: LaunchMode.externalApplication,
+                  ),
+                ),
+                SettingsEntryTile(
                   icon: PhosphorIconsRegular.plugs,
                   title: 'MCP',
                   onTap: () => launchUrl(

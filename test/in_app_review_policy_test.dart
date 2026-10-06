@@ -2,8 +2,9 @@ import 'package:api_scout/app/services/in_app_review/in_app_review.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  final now = DateTime(2026, 9, 6);
+
   group('InAppReview.shouldPromptForReview', () {
-    final now = DateTime(2026, 9, 6);
 
     test('needs at least three wins', () {
       expect(
@@ -71,6 +72,46 @@ void main() {
           now: now,
         ),
         isFalse,
+      );
+    });
+  });
+
+  group('InAppReview.shouldPromptForDetailVisits', () {
+    test('needs at least three detail visits', () {
+      expect(
+        InAppReview.shouldPromptForDetailVisits(
+          visits: 2,
+          lastPromptedAt: null,
+          now: now,
+        ),
+        isFalse,
+      );
+      expect(
+        InAppReview.shouldPromptForDetailVisits(
+          visits: 3,
+          lastPromptedAt: null,
+          now: now,
+        ),
+        isTrue,
+      );
+    });
+
+    test('respects the shared cooldown after a prompt', () {
+      expect(
+        InAppReview.shouldPromptForDetailVisits(
+          visits: 30,
+          lastPromptedAt: now.subtract(const Duration(days: 10)),
+          now: now,
+        ),
+        isFalse,
+      );
+      expect(
+        InAppReview.shouldPromptForDetailVisits(
+          visits: 30,
+          lastPromptedAt: now.subtract(const Duration(days: 90)),
+          now: now,
+        ),
+        isTrue,
       );
     });
   });

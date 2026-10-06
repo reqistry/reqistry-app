@@ -2162,6 +2162,12 @@ abstract class AppLocalizations {
   /// **'Contact'**
   String get settingsContact;
 
+  /// Rate app settings item opening the Play Store listing
+  ///
+  /// In en, this message translates to:
+  /// **'Rate the app'**
+  String get settingsRateApp;
+
   /// Privacy policy item
   ///
   /// In en, this message translates to:

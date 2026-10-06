@@ -1464,6 +1464,10 @@
   "@settingsContact": {
     "description": "Contact settings item"
   },
+  "settingsRateApp": "Califica la app",
+  "@settingsRateApp": {
+    "description": "Rate app settings item opening the Play Store listing"
+  },
   "settingsPrivacyAndPolicy": "Privacidad y política",
   "@settingsPrivacyAndPolicy": {
     "description": "Privacy policy item"

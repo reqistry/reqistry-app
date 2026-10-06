@@ -1113,6 +1113,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsContact => 'Contact';
 
   @override
+  String get settingsRateApp => 'Rate the app';
+
+  @override
   String get settingsPrivacyAndPolicy => 'Privacy and policy';
 
   @override

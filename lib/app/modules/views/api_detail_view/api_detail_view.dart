@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:api_scout/app/blocs/api_detail/api_detail_cubit.dart';
 import 'package:api_scout/app/blocs/favorites/favorites_cubit.dart';
 import 'package:api_scout/app/blocs/favorites/favorites_state.dart';
@@ -20,6 +22,7 @@ import 'package:api_scout/app/modules/views/api_detail_view/widgets/report_issue
 import 'package:api_scout/app/modules/views/home_view/widgets/create_project_bottom_sheet.dart';
 import 'package:api_scout/app/modules/views/main_shell_view/widgets/root_showcase.dart';
 import 'package:api_scout/app/services/analytics/api_detail_analytics.dart';
+import 'package:api_scout/app/services/in_app_review/in_app_review.dart';
 import 'package:api_scout/app/services/local_db/hive/locals_box.dart';
 import 'package:api_scout/app/services/share/share_plus/share_plus.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
@@ -380,6 +383,7 @@ class _ApiDetailViewState extends State<ApiDetailView> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) _track('api_detail_view', detail);
       if (mounted) _maybeShowSubmitNudge();
+      unawaited(InAppReview().recordDetailVisitAndMaybePrompt());
     });
   }
 

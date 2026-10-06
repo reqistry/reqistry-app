@@ -1131,6 +1131,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settingsContact => 'Contacto';
 
   @override
+  String get settingsRateApp => 'Califica la app';
+
+  @override
   String get settingsPrivacyAndPolicy => 'Privacidad y política';
 
   @override
