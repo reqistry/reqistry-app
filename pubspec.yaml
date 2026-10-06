@@ -1,5 +1,5 @@
 name: api_scout
-version: 5.2.0+16
+version: 5.3.0+17
 publish_to: none
 description: Reqistry — API intelligence for builders and agents
 environment:
