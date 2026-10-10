@@ -59,3 +59,5 @@ key.properties
 opencode.json
 firepit-log.txt
 *.sksl.json
+
+.worktrees/
