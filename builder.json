@@ -2,8 +2,8 @@
   "project": "reqistry-app",
   "platform": "ios",
   "github": {
-    "owner": "API-Scout-App",
-    "repo": "api-scout-app"
+    "owner": "reqistry",
+    "repo": "reqistry-app"
   },
   "provider": "codemagic",
   "codemagic": {
