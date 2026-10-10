@@ -1,4 +1,6 @@
 import 'package:api_scout/app/blocs/favorites/favorites_cubit.dart';
+import 'package:api_scout/app/data/models/apis_search_response.dart';
+import 'package:api_scout/app/data/models/category_apis.dart';
 import 'package:api_scout/app/modules/views/intelligence_view/widgets/api_picker_sheet.dart';
 import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:dio/dio.dart';
@@ -46,5 +48,62 @@ void main() {
       find.widgetWithText(ElevatedButton, 'Compare 2'),
     );
     expect(compareButton.onPressed, isNotNull);
+  });
+
+  testWidgets('picker search records one logical search', (tester) async {
+    final cubit = FavoritesCubit(dio: Dio());
+    addTearDown(cubit.close);
+    final tracked = <(String, int)>[];
+
+    await tester.pumpWidget(
+      BlocProvider.value(
+        value: cubit,
+        child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(
+            body: ApiPickerSheet(
+              initiallySelected: const [],
+              search: (_) async => SearchResponse(
+                count: 1,
+                pagination: SearchPagination(
+                  page: 1,
+                  limit: 20,
+                  total: 1,
+                  totalPages: 1,
+                ),
+                data: [
+                  ApiItem(
+                    id: 'weather',
+                    name: 'Weather API',
+                    description: '',
+                    auth: 'None',
+                    https: 'true',
+                    cors: 'yes',
+                    link: 'https://weather.example',
+                    category: 'Weather',
+                    apiType: 'REST',
+                    pricing: 'Free',
+                    rateLimit: 'Unknown',
+                    documentation: '',
+                    isAlive: true,
+                    responseTime: 100,
+                    lastChecked: '',
+                  ),
+                ],
+              ),
+              trackSearch: (query, count) => tracked.add((query, count)),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.enterText(find.byType(TextField), 'weather');
+    await tester.pump(const Duration(milliseconds: 400));
+    await tester.pump();
+
+    expect(find.text('Weather API'), findsOneWidget);
+    expect(tracked, [('weather', 1)]);
   });
 }

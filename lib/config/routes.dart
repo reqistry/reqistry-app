@@ -1,8 +1,10 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
-import 'dart:convert';
 
 import 'package:api_scout/app/blocs/auth/auth_cubit.dart';
 import 'package:api_scout/app/blocs/main_shell/main_shell_cubit.dart';
@@ -13,6 +15,7 @@ import 'package:api_scout/app/blocs/app_settings/app_settings_cubit.dart';
 import 'package:api_scout/app/blocs/privacy/privacy_cubit.dart';
 import 'package:api_scout/app/data/models/category_apis.dart' show ApiItem;
 import 'package:api_scout/app/data/models/project.dart';
+import 'package:api_scout/app/services/analytics/posthog_service.dart';
 import 'package:api_scout/app/modules/views/auth/auth_view.dart';
 import 'package:api_scout/app/modules/views/main_shell_view.dart';
 import 'package:api_scout/app/modules/views/api_detail_view/api_detail_view.dart';
@@ -178,6 +181,7 @@ void routeNotificationTap(
   String? body,
 }) {
   final action = parseNotificationAction(data);
+  var routingResult = 'routed';
   switch (action.kind) {
     case NotificationKind.apiDetail:
       AppRouter.router.push(
@@ -190,12 +194,18 @@ void routeNotificationTap(
     case NotificationKind.submitApi:
       AppRouter.router.push(AppRoutes.submitApi);
     case NotificationKind.exploreTab:
-      _selectShellTab(AppRoutes.tabIndexSearch);
+      if (!_selectShellTab(AppRoutes.tabIndexSearch)) {
+        routingResult = 'fallback_home_no_navigator';
+      }
     case NotificationKind.homeTab:
       AppRouter.router.go(AppRoutes.home);
     case NotificationKind.feed:
       AppRouter.router.push(AppRoutes.notifications);
   }
+  unawaited(PostHogService.instance.capture(
+    'notification_open_routed',
+    notificationRoutingProperties(data, action, routingResult),
+  ));
   if (action.alert &&
       title?.trim().isNotEmpty == true &&
       body?.trim().isNotEmpty == true) {
@@ -207,11 +217,67 @@ void routeNotificationTap(
   }
 }
 
-void _selectShellTab(int index) {
+@visibleForTesting
+Map<String, Object> notificationRoutingProperties(
+  Map<String, dynamic> data,
+  NotificationAction action,
+  String routingResult,
+) {
+  const knownTypes = {
+    'api_health',
+    'new_api',
+    'price_change',
+    'trust_alert',
+    'weekly_digest',
+    'community_reminder',
+    'report_update',
+    'submission_update',
+  };
+  final rawType = data['type']?.toString().trim() ?? '';
+  final type = knownTypes.contains(rawType) ? rawType : 'unknown';
+  final hasSlug = data['apiSlug']?.toString().trim().isNotEmpty == true;
+  final hasIds = _parseIdList(data['apiIds']).isNotEmpty;
+  final targetPresent = hasSlug ||
+      hasIds ||
+      action.kind == NotificationKind.submitApi ||
+      action.kind == NotificationKind.exploreTab ||
+      action.kind == NotificationKind.homeTab;
+
+  String fallbackReason = 'none';
+  if (rawType.isEmpty) {
+    fallbackReason = 'missing_type';
+  } else if (type == 'unknown') {
+    fallbackReason = 'unknown_type';
+  } else if ({'api_health', 'new_api', 'price_change', 'trust_alert'}
+          .contains(type) &&
+      !hasSlug) {
+    fallbackReason = 'missing_api_slug';
+  } else if (type == 'weekly_digest' &&
+      _parseIdList(data['apiIds']).length < 2) {
+    fallbackReason = 'insufficient_compare_ids';
+  } else if ({'report_update', 'submission_update'}.contains(type) &&
+      !hasSlug) {
+    fallbackReason = 'missing_api_slug';
+  } else if (type == 'community_reminder' &&
+      !{'submit_api', 'browse_apis', 'report_api'}
+          .contains(data['action']?.toString().trim())) {
+    fallbackReason = 'unknown_action';
+  }
+
+  return {
+    'notification_type': type,
+    'destination_kind': action.kind.name,
+    'target_present': targetPresent,
+    'fallback_reason': fallbackReason,
+    'routing_result': routingResult,
+  };
+}
+
+bool _selectShellTab(int index) {
   final context = rootNavigatorKey.currentContext;
   if (context == null) {
     AppRouter.router.go(AppRoutes.home);
-    return;
+    return false;
   }
   // Notifications can arrive on top of pushed routes (detail, feed).
   // Land on the shell first so the tab change is visible.
@@ -219,6 +285,7 @@ void _selectShellTab(int index) {
     AppRouter.router.go(AppRoutes.home);
   }
   context.read<MainShellCubit>().selectTab(index);
+  return true;
 }
 
 class AppRouter {

@@ -819,6 +819,14 @@
   "@snackbarSearchErrorTitle": {
     "description": "Search error title"
   },
+  "snackbarSearchTooShortTitle": "Sigue escribiendo",
+  "@snackbarSearchTooShortTitle": {
+    "description": "Title shown when a submitted search is too short"
+  },
+  "snackbarSearchTooShortMessage": "Introduce al menos 3 caracteres para buscar.",
+  "@snackbarSearchTooShortMessage": {
+    "description": "Validation message for a search shorter than three characters"
+  },
   "snackbarSavedTitle": "Guardado",
   "@snackbarSavedTitle": {
     "description": "Saved success title"
@@ -1797,6 +1805,7 @@
   "@actionKnowAnApi": {
     "description": "Submit API button in home app bar"
   },
+
   "formTitleRequired": "El título es obligatorio",
   "@formTitleRequired": {
     "description": "Title field validation error"

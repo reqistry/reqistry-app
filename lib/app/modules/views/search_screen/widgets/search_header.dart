@@ -6,6 +6,7 @@ import 'package:api_scout/app/blocs/search/search_bloc.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
+import 'package:api_scout/app/widgets/app_snackbar.dart';
 import 'advanced_filters_sheet.dart';
 
 class SearchHeader extends StatelessWidget {
@@ -64,8 +65,17 @@ class SearchHeader extends StatelessWidget {
               if (q.length >= 3) {
                 FocusManager.instance.primaryFocus?.unfocus();
                 final l10n = AppLocalizations.of(context)!;
-                context.read<SearchBloc>().add(SearchQueryChanged(query: q));
-                context.read<SearchBloc>().add(SearchPerformed(l10n: l10n));
+                context
+                    .read<SearchBloc>()
+                    .add(SearchPerformed(l10n: l10n, query: q));
+              } else if (q.isNotEmpty) {
+                final l10n = AppLocalizations.of(context)!;
+                AppSnackbarManager.showSnackbar(
+                  context: context,
+                  title: l10n.snackbarSearchTooShortTitle,
+                  message: l10n.snackbarSearchTooShortMessage,
+                  type: AppSnackbarType.info,
+                );
               }
             },
           ),

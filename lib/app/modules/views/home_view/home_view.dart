@@ -44,10 +44,14 @@ class _HomeViewState extends State<HomeView> {
   Future<void> _refresh() async {
     await Future.wait([
       context.read<AuthCubit>().refreshProfile(),
-      context.read<HomeCategoriesCubit>().retryFetch(l10n: AppLocalizations.of(context)!),
+      context
+          .read<HomeCategoriesCubit>()
+          .retryFetch(l10n: AppLocalizations.of(context)!),
       context.read<UserActivityCubit>().loadStats(),
       context.read<FavoritesCubit>().loadBookmarks(),
-      context.read<ProjectsCubit>().loadProjects(l10n: AppLocalizations.of(context)!),
+      context
+          .read<ProjectsCubit>()
+          .loadProjects(l10n: AppLocalizations.of(context)!),
     ]);
     if (mounted) {
       setState(() => _refreshTick++);
@@ -72,8 +76,7 @@ class _HomeViewState extends State<HomeView> {
             child: RootShowcase.scope(
               context: context,
               showcaseKey: RootShowcase.submitApiKey,
-              title:
-                  AppLocalizations.of(context)!.onboardingSubmitApiTitle,
+              title: AppLocalizations.of(context)!.onboardingSubmitApiTitle,
               description:
                   AppLocalizations.of(context)!.onboardingSubmitApiDesc,
               child: ElevatedButton(
@@ -106,8 +109,7 @@ class _HomeViewState extends State<HomeView> {
                 button: true,
                 label: AppLocalizations.of(context)!.settingsNotifications,
                 child: IconButton(
-                  tooltip:
-                      AppLocalizations.of(context)!.settingsNotifications,
+                  tooltip: AppLocalizations.of(context)!.settingsNotifications,
                   constraints: const BoxConstraints.tightFor(
                     width: 48,
                     height: 48,
@@ -140,8 +142,8 @@ class _HomeViewState extends State<HomeView> {
         toolbarHeight: 72,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
-          child: SizedBox(
-              height: 1, child: ColoredBox(color: c.surfaceVariant)),
+          child:
+              SizedBox(height: 1, child: ColoredBox(color: c.surfaceVariant)),
         ),
       ),
       body: RefreshIndicator(

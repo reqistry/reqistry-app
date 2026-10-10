@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:api_scout/app/data/models/category_apis.dart';
 import 'package:api_scout/app/data/models/category.dart';
+import 'package:api_scout/app/data/models/categories_response.dart';
 import 'package:api_scout/app/data/models/api_detail.dart' show slugifyApiName;
 import 'package:api_scout/app/services/fetch_api/remote_service.dart';
 import 'package:api_scout/app/services/fetch_api/failure.dart';
@@ -13,9 +14,21 @@ class CategoryApisCubit extends Cubit<CategoryApisState> {
   late String _categoryTitle;
   late String _categoryId;
   AppLocalizations? _l10n;
+  final Future<CategoryDetail> Function(String, AppLocalizations?) _getCategory;
+  final Future<CategoryApis> Function(String, AppLocalizations?)
+      _getCategoryApis;
 
-  CategoryApisCubit({required Object argument, AppLocalizations? l10n})
-      : super(const CategoryApisState()) {
+  CategoryApisCubit({
+    required Object argument,
+    AppLocalizations? l10n,
+    Future<CategoryDetail> Function(String, AppLocalizations?)? getCategory,
+    Future<CategoryApis> Function(String, AppLocalizations?)? getCategoryApis,
+  })  : _getCategory = getCategory ??
+            ((id, loc) => RemoteService.getCategory(id, l10n: loc)),
+        _getCategoryApis = getCategoryApis ??
+            ((id, loc) =>
+                RemoteService.getCategoryApis(categoryId: id, l10n: loc)),
+        super(const CategoryApisState()) {
     _l10n = l10n;
     _resolveArgument(argument);
   }
@@ -45,7 +58,9 @@ class CategoryApisCubit extends Cubit<CategoryApisState> {
       ));
     } else {
       emit(state.copyWith(
-        errorMessage: _l10n?.categoryApisInvalidArgument(arg.runtimeType.toString()) ?? 'Invalid navigation argument: ${arg.runtimeType}',
+        errorMessage:
+            _l10n?.categoryApisInvalidArgument(arg.runtimeType.toString()) ??
+                'Invalid navigation argument: ${arg.runtimeType}',
       ));
       return;
     }
@@ -59,7 +74,8 @@ class CategoryApisCubit extends Cubit<CategoryApisState> {
       emit(state.copyWith(isLoading: true, errorMessage: ''));
       Category? meta = state.categoryMeta;
       try {
-        final detail = await RemoteService.getCategory(_categoryId, l10n: loc);
+        final detail = await _getCategory(_categoryId, loc);
+        if (isClosed) return;
         meta = Category(
           id: detail.id,
           name: detail.name,
@@ -71,9 +87,10 @@ class CategoryApisCubit extends Cubit<CategoryApisState> {
         );
         _categoryTitle = meta.name.isNotEmpty ? meta.name : _categoryTitle;
       } catch (_) {}
+      if (isClosed) return;
 
-      final match =
-          await RemoteService.getCategoryApis(categoryId: _categoryId, l10n: loc);
+      final match = await _getCategoryApis(_categoryId, loc);
+      if (isClosed) return;
 
       emit(state.copyWith(
         isLoading: false,
@@ -83,14 +100,17 @@ class CategoryApisCubit extends Cubit<CategoryApisState> {
         categoryTitle: _categoryTitle,
       ));
     } on Failure catch (e) {
+      if (isClosed) return;
       emit(state.copyWith(
         isLoading: false,
         errorMessage: '${e.title}: ${e.content}',
       ));
     } catch (e) {
+      if (isClosed) return;
       emit(state.copyWith(
         isLoading: false,
-        errorMessage: loc?.categoryApisUnexpectedError ?? 'An unexpected error occurred',
+        errorMessage:
+            loc?.categoryApisUnexpectedError ?? 'An unexpected error occurred',
       ));
     }
   }

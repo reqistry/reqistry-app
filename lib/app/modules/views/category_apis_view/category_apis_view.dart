@@ -60,9 +60,10 @@ class _CategoryApisViewState extends State<CategoryApisView> {
       body: BlocBuilder<CategoryApisCubit, CategoryApisState>(
         builder: (context, state) {
           return AsyncStateHandler(
-            isLoading: state.isLoading,
-            errorMessage:
-                state.errorMessage.isNotEmpty ? state.errorMessage : null,
+            isLoading: state.isLoading && state.apis.isEmpty,
+            errorMessage: state.apis.isEmpty && state.errorMessage.isNotEmpty
+                ? state.errorMessage
+                : null,
             isEmpty: state.apis.isEmpty,
             loadingMessage:
                 AppLocalizations.of(context)!.stateLoadingCategoryApis,
@@ -73,58 +74,80 @@ class _CategoryApisViewState extends State<CategoryApisView> {
             onRetry: () => context
                 .read<CategoryApisCubit>()
                 .retryFetch(l10n: AppLocalizations.of(context)),
-            child: RefreshIndicator(
-              onRefresh: () => context
-                  .read<CategoryApisCubit>()
-                  .retryFetch(l10n: AppLocalizations.of(context)),
-              child: ListenableBuilder(
-                listenable: AdsController.shared,
-                builder: (context, _) {
-                  // Slot 0 is the category summary header; native ads
-                  // interleave among the APIs only when UMP permits.
-                  final adsOn = AdsController.shared.canShowAds;
-                  final organic = state.apis.length;
-                  final slots =
-                      adsOn ? AdInsertion.slotCount(organic) : organic;
-                  return ListView.separated(
-                    itemCount: slots + 1,
-                    padding: const EdgeInsets.all(AppSpacing.pagePaddingH),
-                    separatorBuilder: (_, __) =>
-                        const SizedBox(height: AppSpacing.itemGap),
-                    itemBuilder: (context, index) {
-                      if (index == 0) {
-                        return _CategorySummary(state: state);
-                      }
-                      final slot = index - 1;
-                      if (adsOn) {
-                        final organicIndex =
-                            AdInsertion.organicIndexForSlot(slot, organic);
-                        if (organicIndex == -1) {
-                          if (_deadSlots.contains(slot)) {
-                            return const SizedBox.shrink();
-                          }
-                          return CatalogNativeAdCard(
-                            key: ValueKey('native-ad-$slot'),
-                            onUnavailable: () => _dropSlot(slot),
-                          );
-                        }
-                        final api = state.apis[organicIndex];
-                        return ApiCard(
-                          key: ValueKey(api.id.isNotEmpty ? api.id : api.link),
-                          api: api,
-                          category: state.categoryTitle,
-                        );
-                      }
+            child: Column(
+              children: [
+                if (state.errorMessage.isNotEmpty)
+                  Semantics(
+                    liveRegion: true,
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(AppSpacing.s12),
+                      color: c.dangerBg,
+                      child: Text(
+                        state.errorMessage,
+                        style: AppTextStyles.bodyMd.copyWith(color: c.danger),
+                      ),
+                    ),
+                  ),
+                Expanded(
+                  child: RefreshIndicator(
+                    onRefresh: () => context
+                        .read<CategoryApisCubit>()
+                        .retryFetch(l10n: AppLocalizations.of(context)),
+                    child: ListenableBuilder(
+                      listenable: AdsController.shared,
+                      builder: (context, _) {
+                        // Slot 0 is the category summary header; native ads
+                        // interleave among the APIs only when UMP permits.
+                        final adsOn = AdsController.shared.canShowAds;
+                        final organic = state.apis.length;
+                        final slots =
+                            adsOn ? AdInsertion.slotCount(organic) : organic;
+                        return ListView.separated(
+                          itemCount: slots + 1,
+                          padding:
+                              const EdgeInsets.all(AppSpacing.pagePaddingH),
+                          separatorBuilder: (_, __) =>
+                              const SizedBox(height: AppSpacing.itemGap),
+                          itemBuilder: (context, index) {
+                            if (index == 0) {
+                              return _CategorySummary(state: state);
+                            }
+                            final slot = index - 1;
+                            if (adsOn) {
+                              final organicIndex =
+                                  AdInsertion.organicIndexForSlot(
+                                      slot, organic);
+                              if (organicIndex == -1) {
+                                if (_deadSlots.contains(slot)) {
+                                  return const SizedBox.shrink();
+                                }
+                                return CatalogNativeAdCard(
+                                  key: ValueKey('native-ad-$slot'),
+                                  onUnavailable: () => _dropSlot(slot),
+                                );
+                              }
+                              final api = state.apis[organicIndex];
+                              return ApiCard(
+                                key: ValueKey(
+                                    api.id.isNotEmpty ? api.id : api.link),
+                                api: api,
+                                category: state.categoryTitle,
+                              );
+                            }
 
-                      final api = state.apis[slot];
-                      return ApiCard(
-                        api: api,
-                        category: state.categoryTitle,
-                      );
-                    },
-                  );
-                },
-              ),
+                            final api = state.apis[slot];
+                            return ApiCard(
+                              api: api,
+                              category: state.categoryTitle,
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ],
             ),
           );
         },

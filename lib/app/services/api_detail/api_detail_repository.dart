@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:api_scout/app/data/models/category_apis.dart' show ApiItem;
 import 'package:api_scout/app/data/models/api_detail.dart';
+import 'package:api_scout/app/data/models/api_report_result.dart';
 import 'package:api_scout/app/services/api_detail/api_detail_source.dart';
 import 'package:api_scout/app/services/local_db/hive/initializer.dart';
 import 'package:hive/hive.dart';
@@ -19,7 +20,7 @@ abstract class ApiDetailRepository {
 
   Future<ApiHealthSummary> refreshHealth(ApiDetail detail);
 
-  Future<void> submitReport({
+  Future<ApiReportResult> submitReport({
     required String apiId,
     required String slug,
     required String reason,
@@ -114,13 +115,13 @@ class CachedApiDetailRepository implements ApiDetailRepository {
   }
 
   @override
-  Future<void> submitReport({
+  Future<ApiReportResult> submitReport({
     required String apiId,
     required String slug,
     required String reason,
     String? note,
   }) async {
-    await _source.submitReport(apiId: apiId, reason: reason, note: note);
+    return _source.submitReport(apiId: apiId, reason: reason, note: note);
   }
 
   Future<void> _save(ApiDetail detail) =>

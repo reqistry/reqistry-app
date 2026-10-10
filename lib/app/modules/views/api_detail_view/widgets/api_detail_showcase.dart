@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:showcaseview/showcaseview.dart';
 
@@ -26,12 +28,16 @@ class ApiDetailShowcase {
 
   /// Clears completion so the Settings "replay intro" path replays
   /// this tour on the next detail visit.
-  static Future<void> resetForReplay() =>
-      LocalsDB.instance.putWithKey(_doneKey, false);
+  static Future<void> resetForReplay() {
+    return LocalsDB.instance.putWithKey(_doneKey, false);
+  }
 
-  /// Starts the tour on first detail visit; no-op while the root tour runs.
+  /// Starts the detail tour only after Settings requests an intro replay.
   static void maybeStart(BuildContext context) {
-    if (isDone || _running || RootShowcase.isRunning) return;
+    final replayRequested = LocalsDB.instance.getWithKey(_doneKey) == false;
+    if (!replayRequested || _running || RootShowcase.isRunning) {
+      return;
+    }
     _running = true;
     RootShowcase.ensureRegistered(context);
 
@@ -45,12 +51,17 @@ class ApiDetailShowcase {
 
     late final VoidCallback onFinishHandler;
     late final void Function(GlobalKey?) onDismissHandler;
+    var finished = false;
 
     void finish() {
-      showcaseView.removeOnFinishCallback(onFinishHandler);
-      showcaseView.removeOnDismissCallback(onDismissHandler);
+      if (finished) return;
+      finished = true;
       _running = false;
-      markDone();
+      unawaited(markDone());
+      scheduleMicrotask(() {
+        showcaseView.removeOnFinishCallback(onFinishHandler);
+        showcaseView.removeOnDismissCallback(onDismissHandler);
+      });
     }
 
     onFinishHandler = finish;

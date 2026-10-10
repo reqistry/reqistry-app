@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +8,7 @@ import '../../blocs/main_shell/main_shell_cubit.dart';
 import '../../blocs/favorites/favorites_cubit.dart';
 import '../../blocs/projects/projects_cubit.dart';
 import '../../blocs/user_activity/user_activity_cubit.dart';
+import '../../services/analytics/posthog_service.dart';
 import '../../utils/design_system/app_colors.dart';
 import '../../utils/design_system/app_spacing.dart';
 import 'home_view/home_view.dart';
@@ -41,6 +44,7 @@ class _MainShellViewState extends State<MainShellView> {
   @override
   void initState() {
     super.initState();
+    _trackTab(context.read<MainShellCubit>().state.selectedTabIndex);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       context.read<FavoritesCubit>().loadBookmarks();
@@ -48,7 +52,6 @@ class _MainShellViewState extends State<MainShellView> {
           .read<ProjectsCubit>()
           .loadProjects(l10n: AppLocalizations.of(context)!);
       context.read<UserActivityCubit>().refresh();
-      RootShowcase.maybeStart(context);
     });
   }
 
@@ -77,10 +80,20 @@ class _MainShellViewState extends State<MainShellView> {
     context.read<MainShellCubit>().selectTab(index);
   }
 
+  void _trackTab(int index) {
+    unawaited(PostHogService.instance.screen(
+      shellTabScreenName(index),
+      {'tab_index': index},
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return BlocBuilder<MainShellCubit, MainShellState>(
+    return BlocConsumer<MainShellCubit, MainShellState>(
+      listenWhen: (previous, current) =>
+          previous.selectedTabIndex != current.selectedTabIndex,
+      listener: (_, state) => _trackTab(state.selectedTabIndex),
       builder: (context, state) {
         final c = AppColors.of(Theme.of(context).brightness);
         return Scaffold(
@@ -157,3 +170,12 @@ class _MainShellViewState extends State<MainShellView> {
     );
   }
 }
+
+String shellTabScreenName(int index) => switch (index) {
+      0 => 'home',
+      1 => 'discover',
+      2 => 'intelligence',
+      3 => 'saved',
+      4 => 'settings',
+      _ => 'unknown',
+    };

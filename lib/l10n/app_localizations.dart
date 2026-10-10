@@ -1274,6 +1274,18 @@ abstract class AppLocalizations {
   /// **'Search Error'**
   String get snackbarSearchErrorTitle;
 
+  /// Title shown when a submitted search is too short
+  ///
+  /// In en, this message translates to:
+  /// **'Keep typing'**
+  String get snackbarSearchTooShortTitle;
+
+  /// Validation message for a search shorter than three characters
+  ///
+  /// In en, this message translates to:
+  /// **'Enter at least 3 characters to search.'**
+  String get snackbarSearchTooShortMessage;
+
   /// Saved success title
   ///
   /// In en, this message translates to:

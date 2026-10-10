@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:api_scout/app/data/models/apis_search_response.dart';
 import 'package:api_scout/app/data/models/category_apis.dart';
+import 'package:api_scout/app/services/analytics/api_detail_analytics.dart';
 import 'package:api_scout/app/services/fetch_api/failure.dart';
 import 'package:api_scout/app/services/fetch_api/remote_service.dart';
 import 'package:api_scout/app/services/local_db/hive/locals_box.dart';
@@ -19,13 +20,22 @@ typedef SearchPageLoader = Future<SearchResponse> Function(
   AppLocalizations? l10n,
 );
 
+typedef SearchTracker = void Function({
+  required String? query,
+  required bool hasFilters,
+  required int resultCount,
+});
+
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
   final int limit = 20;
   final SearchPageLoader _search;
+  final SearchTracker _trackSearch;
   int _requestId = 0;
+  String? _activeSearchKey;
 
-  SearchBloc({SearchPageLoader? search})
+  SearchBloc({SearchPageLoader? search, SearchTracker? trackSearch})
       : _search = search ?? _loadSearchPage,
+        _trackSearch = trackSearch ?? ApiDetailAnalytics.trackSearch,
         super(const SearchState()) {
     on<SearchFilterToggled>(_onFilterToggled);
     on<SearchFiltersReset>(_onFiltersReset);
@@ -222,10 +232,17 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
   Future<void> _onSearch(
       SearchPerformed event, Emitter<SearchState> emit) async {
+    if (event.query != null && event.query != state.query) {
+      emit(state.copyWith(query: event.query));
+    }
     if (!canSearch) return;
 
     final reset = event.reset;
+    final base = _buildRequestParams(state);
+    final searchKey = jsonEncode({...base, 'page': 1});
+    if (reset && state.isSearching && _activeSearchKey == searchKey) return;
     final requestId = ++_requestId;
+    if (reset) _activeSearchKey = searchKey;
     final targetPage = event.page ?? (reset ? 1 : state.currentPage);
 
     if (reset) {
@@ -243,7 +260,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         isSearching: targetPage == 1, isLoadingMore: targetPage > 1));
 
     try {
-      final base = _buildRequestParams(state);
       final requestParams = {...base, 'page': targetPage};
       String debugOutput = '';
       if (kDebugMode) {
@@ -289,19 +305,30 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           state.sortOrder,
         );
 
+        final resultCount =
+            state.apiType.isNotEmpty || state.maxResponseTime != null
+                ? sortedResults.length
+                : response.pagination.total;
         emit(state.copyWith(
           isSearching: false,
           isLoadingMore: false,
           currentPage: effectivePage,
           searchResults: sortedResults,
-          totalResults:
-              state.apiType.isNotEmpty || state.maxResponseTime != null
-                  ? sortedResults.length
-                  : response.pagination.total,
+          totalResults: resultCount,
           totalPages: response.pagination.totalPages,
           hasMore: response.pagination.hasMore,
           lastRequestDebug: debugOutput,
         ));
+        if (reset) {
+          _trackSearch(
+            query: base['q'] as String?,
+            hasFilters: base.entries.any((entry) =>
+                !{'q', 'page', 'limit', 'sortBy', 'sortOrder'}
+                    .contains(entry.key) &&
+                entry.value != null),
+            resultCount: resultCount,
+          );
+        }
       } else {
         throw Exception(response.message ?? 'Search failed');
       }
@@ -322,6 +349,8 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           isError: true,
         );
       }
+    } finally {
+      if (reset && requestId == _requestId) _activeSearchKey = null;
     }
   }
 

@@ -625,6 +625,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get snackbarSearchErrorTitle => 'Search Error';
 
   @override
+  String get snackbarSearchTooShortTitle => 'Keep typing';
+
+  @override
+  String get snackbarSearchTooShortMessage =>
+      'Enter at least 3 characters to search.';
+
+  @override
   String get snackbarSavedTitle => 'Saved';
 
   @override

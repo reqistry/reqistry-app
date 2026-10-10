@@ -1,9 +1,12 @@
 import 'package:api_scout/app/data/models/api_detail.dart';
+import 'package:api_scout/app/data/models/api_report_result.dart';
 import 'package:api_scout/app/services/auth/dio_client.dart';
 import 'package:dio/dio.dart';
 
 class ApiDetailSource {
-  final Dio _authDio = DioClient().dio;
+  ApiDetailSource({Dio? authDio}) : _authDio = authDio ?? DioClient().dio;
+
+  final Dio _authDio;
 
   Future<ApiDetail> getApiDetail(String slug) async {
     final response = await _authDio.get('/v1/apis/$slug');
@@ -46,7 +49,7 @@ class ApiDetailSource {
     return health;
   }
 
-  Future<void> submitReport({
+  Future<ApiReportResult> submitReport({
     required String apiId,
     required String reason,
     String? note,
@@ -55,7 +58,7 @@ class ApiDetailSource {
     if (normalizedId.isEmpty) {
       throw ArgumentError.value(apiId, 'apiId', 'API ID cannot be empty');
     }
-    await _authDio.post(
+    final response = await _authDio.post(
       '/v1/apis/$normalizedId/reports',
       data: {
         'reason': reason,
@@ -65,6 +68,13 @@ class ApiDetailSource {
         'silentLoader': true,
         RequestErrorNotifierInterceptor.silentKey: true,
       }),
+    );
+    final body = response.data is Map
+        ? Map<String, dynamic>.from(response.data as Map)
+        : const <String, dynamic>{};
+    return ApiReportResult(
+      reason: reason,
+      deduplicated: body['deduplicated'] == true,
     );
   }
 
@@ -119,5 +129,4 @@ class ApiDetailSource {
     }
     return null;
   }
-
 }

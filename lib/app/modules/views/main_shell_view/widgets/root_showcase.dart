@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:showcaseview/showcaseview.dart';
@@ -60,7 +62,6 @@ class RootShowcase {
 
     Future<void> complete() async {
       await markDone();
-      shell.selectTab(AppRoutes.tabIndexHome);
     }
 
     late final VoidCallback onFinishHandler;
@@ -69,10 +70,12 @@ class RootShowcase {
     void settle() {
       if (finished) return;
       finished = true;
-      showcaseView.removeOnFinishCallback(onFinishHandler);
-      showcaseView.removeOnDismissCallback(onDismissHandler);
       _running = false;
-      complete();
+      unawaited(complete());
+      scheduleMicrotask(() {
+        showcaseView.removeOnFinishCallback(onFinishHandler);
+        showcaseView.removeOnDismissCallback(onDismissHandler);
+      });
     }
 
     onFinishHandler = settle;

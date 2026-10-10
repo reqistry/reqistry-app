@@ -45,11 +45,12 @@ class SearchPerformed extends SearchEvent {
   final bool reset;
   final AppLocalizations? l10n;
   final int? page;
+  final String? query;
 
-  const SearchPerformed({this.reset = true, this.l10n, this.page});
+  const SearchPerformed({this.reset = true, this.l10n, this.page, this.query});
 
   @override
-  List<Object?> get props => [reset, page];
+  List<Object?> get props => [reset, page, query];
 }
 
 class SearchLoadMore extends SearchEvent {

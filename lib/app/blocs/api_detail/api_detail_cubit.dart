@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:api_scout/app/data/models/category_apis.dart' show ApiItem;
 import 'package:api_scout/app/data/models/api_detail.dart';
+import 'package:api_scout/app/data/models/api_report_result.dart';
 import 'package:api_scout/app/services/api_detail/api_detail_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -75,8 +76,10 @@ class ApiDetailCubit extends Cubit<ApiDetailState> {
         isLoadingCore: false,
         isRefreshingCore: false,
         coreError: state.detail == null
-            ? (l10n?.apiDetailCouldNotBeLoaded ?? 'This API could not be loaded.')
-            : (l10n?.apiDetailFreshInfoUnavailable ?? 'Fresh API information is temporarily unavailable.'),
+            ? (l10n?.apiDetailCouldNotBeLoaded ??
+                'This API could not be loaded.')
+            : (l10n?.apiDetailFreshInfoUnavailable ??
+                'Fresh API information is temporarily unavailable.'),
       ));
     }
   }
@@ -85,7 +88,8 @@ class ApiDetailCubit extends Cubit<ApiDetailState> {
     await load(forceRefresh: true, l10n: l10n);
   }
 
-  Future<void> loadAlternatives({bool forceRefresh = false, AppLocalizations? l10n}) async {
+  Future<void> loadAlternatives(
+      {bool forceRefresh = false, AppLocalizations? l10n}) async {
     final detail = state.detail;
     if (detail == null || state.isLoadingAlternatives) return;
     if (!forceRefresh && detail.areAlternativesFresh) return;
@@ -109,7 +113,8 @@ class ApiDetailCubit extends Cubit<ApiDetailState> {
       if (isClosed) return;
       emit(state.copyWith(
         isLoadingAlternatives: false,
-        alternativesError: l10n?.apiDetailSimilarApisUnavailable ?? 'Similar APIs are unavailable.',
+        alternativesError: l10n?.apiDetailSimilarApisUnavailable ??
+            'Similar APIs are unavailable.',
       ));
     }
   }
@@ -129,18 +134,21 @@ class ApiDetailCubit extends Cubit<ApiDetailState> {
       emit(state.copyWith(
         detail: current.copyWith(health: health),
         isRefreshingHealth: false,
-        transientMessage: l10n?.apiDetailHealthLoaded ?? 'Latest platform health result loaded.',
+        transientMessage: l10n?.apiDetailHealthLoaded ??
+            'Latest platform health result loaded.',
       ));
     } catch (_) {
       if (isClosed) return;
       emit(state.copyWith(
         isRefreshingHealth: false,
-        healthError: l10n?.apiDetailHealthRefreshFailed ?? 'Health could not be refreshed.',
+        healthError: l10n?.apiDetailHealthRefreshFailed ??
+            'Health could not be refreshed.',
       ));
     }
   }
 
-  Future<void> _refreshStaleHealth(ApiDetail detail, {AppLocalizations? l10n}) async {
+  Future<void> _refreshStaleHealth(ApiDetail detail,
+      {AppLocalizations? l10n}) async {
     if (state.isRefreshingHealth) return;
     emit(state.copyWith(isRefreshingHealth: true, clearHealthError: true));
     try {
@@ -155,31 +163,32 @@ class ApiDetailCubit extends Cubit<ApiDetailState> {
       if (!isClosed) {
         emit(state.copyWith(
           isRefreshingHealth: false,
-          healthError: l10n?.apiDetailHealthRefreshFailed ?? 'Health could not be refreshed.',
+          healthError: l10n?.apiDetailHealthRefreshFailed ??
+              'Health could not be refreshed.',
         ));
       }
     }
   }
 
-  Future<bool> reportIssue({
+  Future<ApiReportResult?> reportIssue({
     required String reason,
     String? note,
   }) async {
     final detail = state.detail;
-    if (detail == null || state.isReportingIssue) return false;
+    if (detail == null || state.isReportingIssue) return null;
     emit(state.copyWith(isReportingIssue: true));
     try {
-      await _repository.submitReport(
+      final result = await _repository.submitReport(
         apiId: detail.id,
         slug: detail.slug,
         reason: reason,
         note: note,
       );
       if (!isClosed) emit(state.copyWith(isReportingIssue: false));
-      return true;
+      return result;
     } catch (_) {
       if (!isClosed) emit(state.copyWith(isReportingIssue: false));
-      return false;
+      return null;
     }
   }
 }

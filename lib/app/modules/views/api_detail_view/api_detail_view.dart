@@ -8,6 +8,7 @@ import 'package:api_scout/app/blocs/projects/projects_state.dart';
 import 'package:api_scout/app/data/models/category_apis.dart';
 import 'package:api_scout/app/data/models/api_detail.dart';
 import 'package:api_scout/app/data/models/bookmark_item.dart';
+import 'package:api_scout/app/data/models/api_report_result.dart';
 import 'package:api_scout/app/data/models/project.dart';
 import 'package:api_scout/app/modules/views/api_detail_view/widgets/api_detail_actions.dart';
 import 'package:api_scout/app/modules/views/api_detail_view/widgets/api_detail_sections.dart';
@@ -153,11 +154,14 @@ class _ApiDetailViewState extends State<ApiDetailView> {
                     final isBookmarked = context
                         .read<FavoritesCubit>()
                         .isFavorited(detail.links.baseUrl?.toString() ?? '');
+                    final isPending =
+                        context.read<FavoritesCubit>().isPending(detail.id);
                     return IconButton(
-                      constraints: const BoxConstraints.tightFor(
-                          width: 48, height: 48),
-                      onPressed: () =>
-                          _toggleBookmark(detail, isBookmarked),
+                      constraints:
+                          const BoxConstraints.tightFor(width: 48, height: 48),
+                      onPressed: isPending
+                          ? null
+                          : () => _toggleBookmark(detail, isBookmarked),
                       tooltip: isBookmarked
                           ? l10n.apiDetailRemoveBookmark
                           : l10n.apiDetailBookmarkApi,
@@ -254,11 +258,9 @@ class _ApiDetailViewState extends State<ApiDetailView> {
                 ),
                 BlocBuilder<ApiDetailCubit, ApiDetailState>(
                   buildWhen: (previous, current) =>
-                      previous.detail?.trustScore !=
-                      current.detail?.trustScore,
+                      previous.detail?.trustScore != current.detail?.trustScore,
                   builder: (context, state) => ApiTrustSection(
-                    trustScore:
-                        (state.detail ?? initialDetail).trustScore,
+                    trustScore: (state.detail ?? initialDetail).trustScore,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.s8),
@@ -607,24 +609,47 @@ class _ApiDetailViewState extends State<ApiDetailView> {
   }
 
   Future<void> _showReportSheet(ApiDetail detail) async {
-    final result = await showModalBottomSheet<bool>(
+    final result = await showModalBottomSheet<ApiReportResult>(
       context: context,
       isScrollControlled: true,
       showDragHandle: true,
       builder: (_) => ReportIssueSheet(
-        onSubmit: (reason, note) => context.read<ApiDetailCubit>().reportIssue(
-              reason: reason,
-              note: note,
-            ),
+        onSubmit: (reason, note) =>
+            _submitReport(detail, reason: reason, note: note),
       ),
     );
-    if (result != true || !mounted) return;
+    if (result == null || !mounted) return;
     _message(
       AppLocalizations.of(context)!.snackbarReportSubmittedTitle,
       AppLocalizations.of(context)!.snackbarReportSubmittedMessage,
       false,
     );
-    _track('api_detail_issue_reported', detail);
+  }
+
+  Future<ApiReportResult?> _submitReport(
+    ApiDetail detail, {
+    required String reason,
+    required String note,
+  }) async {
+    final link = detail.links.baseUrl?.toString() ?? '';
+    final bookmarkState = context.read<FavoritesCubit>().isFavorited(link);
+    final projectCount = context.read<ProjectsCubit>().state.projects.length;
+    final result = await context.read<ApiDetailCubit>().reportIssue(
+          reason: reason,
+          note: note,
+        );
+    if (result == null) return null;
+    ApiDetailAnalytics.track(
+      'api_detail_issue_reported',
+      apiId: detail.id,
+      categoryId: detail.category.id,
+      healthState: detail.health.status.name,
+      bookmarkState: bookmarkState,
+      projectCount: projectCount,
+      sourceScreen: widget.sourceScreen,
+      extra: result.analyticsProperties,
+    );
+    return result;
   }
 
   void _openAlternative(ApiAlternative alternative) {
@@ -698,7 +723,12 @@ class _ApiDetailViewState extends State<ApiDetailView> {
         ),
       );
 
-  void _track(String event, ApiDetail detail) {
+  void _track(
+    String event,
+    ApiDetail detail, {
+    Map<String, Object>? extra,
+  }) {
+    if (!mounted) return;
     final link = detail.links.baseUrl?.toString() ?? '';
     ApiDetailAnalytics.track(
       event,
@@ -708,6 +738,7 @@ class _ApiDetailViewState extends State<ApiDetailView> {
       bookmarkState: context.read<FavoritesCubit>().isFavorited(link),
       projectCount: context.read<ProjectsCubit>().state.projects.length,
       sourceScreen: widget.sourceScreen,
+      extra: extra,
     );
   }
 

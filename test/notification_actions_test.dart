@@ -4,7 +4,12 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('parseNotificationAction', () {
     test('api types with slug route to detail', () {
-      for (final type in ['api_health', 'new_api', 'price_change', 'trust_alert']) {
+      for (final type in [
+        'api_health',
+        'new_api',
+        'price_change',
+        'trust_alert'
+      ]) {
         final action = parseNotificationAction({
           'type': type,
           'apiSlug': 'resend',
@@ -20,13 +25,13 @@ void main() {
       expect(price.alert, isTrue);
       expect(price.urgent, isFalse);
 
-      final trust = parseNotificationAction(
-          {'type': 'trust_alert', 'apiSlug': 'resend'});
+      final trust =
+          parseNotificationAction({'type': 'trust_alert', 'apiSlug': 'resend'});
       expect(trust.alert, isTrue);
       expect(trust.urgent, isTrue);
 
-      final health = parseNotificationAction(
-          {'type': 'api_health', 'apiSlug': 'resend'});
+      final health =
+          parseNotificationAction({'type': 'api_health', 'apiSlug': 'resend'});
       expect(health.alert, isFalse);
     });
 
@@ -117,6 +122,51 @@ void main() {
       expect(parseNotificationIds('not json ['), ['not json [']);
       expect(parseNotificationIds(null), isEmpty);
       expect(parseNotificationIds(42), isEmpty);
+    });
+  });
+
+  group('notificationRoutingProperties', () {
+    test('records a routed API target without notification content', () {
+      final data = {
+        'type': 'new_api',
+        'apiSlug': 'resend',
+        'title': 'private title',
+      };
+      final properties = notificationRoutingProperties(
+        data,
+        parseNotificationAction(data),
+        'routed',
+      );
+
+      expect(properties, {
+        'notification_type': 'new_api',
+        'destination_kind': 'apiDetail',
+        'target_present': true,
+        'fallback_reason': 'none',
+        'routing_result': 'routed',
+      });
+      expect(properties, isNot(contains('title')));
+    });
+
+    test('explains privacy-safe fallback reasons', () {
+      final missingSlug = {'type': 'trust_alert'};
+      expect(
+        notificationRoutingProperties(
+          missingSlug,
+          parseNotificationAction(missingSlug),
+          'routed',
+        )['fallback_reason'],
+        'missing_api_slug',
+      );
+
+      final unknown = {'type': 'custom_private_type'};
+      final properties = notificationRoutingProperties(
+        unknown,
+        parseNotificationAction(unknown),
+        'routed',
+      );
+      expect(properties['notification_type'], 'unknown');
+      expect(properties['fallback_reason'], 'unknown_type');
     });
   });
 }

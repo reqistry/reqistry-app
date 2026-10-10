@@ -9,7 +9,6 @@ import '../../data/models/intelligence.dart';
 import '../../data/models/feature_models.dart';
 import '../../data/models/submission.dart';
 import '../auth/dio_client.dart';
-import '../analytics/api_detail_analytics.dart';
 import 'failure.dart';
 
 class RemoteService {
@@ -134,20 +133,6 @@ class RemoteService {
             l10n?.errorServerReturnedEmptyData ?? 'Server returned empty data');
       }
       final result = SearchResponse.fromJson(response.data);
-      ApiDetailAnalytics.trackSearch(
-        query: q,
-        hasFilters: (pricing?.isNotEmpty ?? false) ||
-            (auth?.isNotEmpty ?? false) ||
-            (apiType?.isNotEmpty ?? false) ||
-            (category?.isNotEmpty ?? false) ||
-            cors != null ||
-            https != null ||
-            alive != null ||
-            maxResponseTime != null,
-        // count reflects the server page; apiType/maxResponseTime narrow
-        // further on the client (see SearchBloc).
-        resultCount: result.count,
-      );
       return result;
     } on DioException catch (e) {
       throw _handleDioError(e, 'Search failed', l10n);
@@ -553,14 +538,14 @@ class RemoteService {
         throw Failure(l10n?.errorEmptyResponse ?? 'Empty response',
             l10n?.errorServerReturnedEmptyData ?? 'Server returned empty data');
       }
-      return ShipCheckReport.fromJson(Map<String, dynamic>.from(response.data as Map));
+      return ShipCheckReport.fromJson(
+          Map<String, dynamic>.from(response.data as Map));
     } on DioException catch (e) {
       throw _handleDioError(e, 'Ship-check failed', l10n);
     } on Failure {
       rethrow;
     } catch (e) {
-      throw Failure(
-          l10n?.errorParseError ?? 'Parse error',
+      throw Failure(l10n?.errorParseError ?? 'Parse error',
           l10n?.errorFailedToProcessData ?? 'Failed to load ship-check');
     }
   }
@@ -570,7 +555,8 @@ class RemoteService {
       final response = await _authDio.get('/v1/watchlists');
       if (response.data == null) return [];
       final data = response.data;
-      final items = data is Map ? (data['data'] as List? ?? const []) : const [];
+      final items =
+          data is Map ? (data['data'] as List? ?? const []) : const [];
       return items
           .whereType<Map>()
           .map((e) => WatchItem.fromJson(Map<String, dynamic>.from(e)))
@@ -581,8 +567,7 @@ class RemoteService {
     } on Failure {
       rethrow;
     } catch (e) {
-      throw Failure(
-          l10n?.errorParseError ?? 'Parse error',
+      throw Failure(l10n?.errorParseError ?? 'Parse error',
           l10n?.errorFailedToProcessData ?? 'Failed to process watchlists');
     }
   }
@@ -613,8 +598,7 @@ class RemoteService {
     } on Failure {
       rethrow;
     } catch (e) {
-      throw Failure(
-          l10n?.errorParseError ?? 'Parse error',
+      throw Failure(l10n?.errorParseError ?? 'Parse error',
           l10n?.errorFailedToProcessData ?? 'Failed to process watchlist');
     }
   }
@@ -628,12 +612,14 @@ class RemoteService {
     );
   }
 
-  static Future<List<AgentKeyItem>> getAgentKeys({AppLocalizations? l10n}) async {
+  static Future<List<AgentKeyItem>> getAgentKeys(
+      {AppLocalizations? l10n}) async {
     try {
       final response = await _authDio.get('/v1/agent-keys');
       if (response.data == null) return [];
       final data = response.data;
-      final items = data is Map ? (data['data'] as List? ?? const []) : const [];
+      final items =
+          data is Map ? (data['data'] as List? ?? const []) : const [];
       return items
           .whereType<Map>()
           .map((e) => AgentKeyItem.fromJson(Map<String, dynamic>.from(e)))
@@ -644,8 +630,7 @@ class RemoteService {
     } on Failure {
       rethrow;
     } catch (e) {
-      throw Failure(
-          l10n?.errorParseError ?? 'Parse error',
+      throw Failure(l10n?.errorParseError ?? 'Parse error',
           l10n?.errorFailedToProcessData ?? 'Failed to process agent keys');
     }
   }
@@ -675,8 +660,7 @@ class RemoteService {
     } on Failure {
       rethrow;
     } catch (e) {
-      throw Failure(
-          l10n?.errorParseError ?? 'Parse error',
+      throw Failure(l10n?.errorParseError ?? 'Parse error',
           l10n?.errorFailedToProcessData ?? 'Failed to process agent key');
     }
   }
@@ -690,12 +674,14 @@ class RemoteService {
     );
   }
 
-  static Future<List<StackHistoryItem>> getStackHistory({AppLocalizations? l10n}) async {
+  static Future<List<StackHistoryItem>> getStackHistory(
+      {AppLocalizations? l10n}) async {
     try {
       final response = await _authDio.get('/v1/stack/history');
       if (response.data == null) return [];
       final data = response.data;
-      final items = data is Map ? (data['data'] as List? ?? const []) : const [];
+      final items =
+          data is Map ? (data['data'] as List? ?? const []) : const [];
       return items
           .whereType<Map>()
           .map((e) => StackHistoryItem.fromJson(Map<String, dynamic>.from(e)))
@@ -706,8 +692,7 @@ class RemoteService {
     } on Failure {
       rethrow;
     } catch (e) {
-      throw Failure(
-          l10n?.errorParseError ?? 'Parse error',
+      throw Failure(l10n?.errorParseError ?? 'Parse error',
           l10n?.errorFailedToProcessData ?? 'Failed to process stack history');
     }
   }

@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 import 'package:api_scout/app/blocs/favorites/favorites_cubit.dart';
+import 'package:api_scout/app/data/models/apis_search_response.dart';
+import 'package:api_scout/app/services/analytics/api_detail_analytics.dart';
 import 'package:api_scout/app/services/fetch_api/remote_service.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
@@ -27,9 +29,16 @@ class CompareCandidate {
 /// Bottom sheet to select APIs for comparison (2–8).
 class ApiPickerSheet extends StatefulWidget {
   final List<CompareCandidate> initiallySelected;
+  final Future<SearchResponse> Function(String query)? search;
+  final void Function(String query, int resultCount)? trackSearch;
   static const maxSelection = 8;
 
-  const ApiPickerSheet({super.key, required this.initiallySelected});
+  const ApiPickerSheet({
+    super.key,
+    required this.initiallySelected,
+    this.search,
+    this.trackSearch,
+  });
 
   /// Returns the chosen candidates, or null if dismissed.
   static Future<List<CompareCandidate>?> show(
@@ -98,8 +107,10 @@ class _ApiPickerSheetState extends State<ApiPickerSheet> {
   Future<void> _runSearch(String query) async {
     setState(() => _searching = true);
     try {
-      final response = await RemoteService.searchApis(q: query, limit: 20);
+      final response = await (widget.search?.call(query) ??
+          RemoteService.searchApis(q: query, limit: 20));
       final apis = response.data;
+      (widget.trackSearch ?? _trackSearch)(query, response.pagination.total);
       for (final api in apis.where((a) => a.id.isNotEmpty)) {
         _candidates[api.id] = CompareCandidate(
           id: api.id,
@@ -127,6 +138,14 @@ class _ApiPickerSheetState extends State<ApiPickerSheet> {
         _searching = false;
       });
     }
+  }
+
+  static void _trackSearch(String query, int resultCount) {
+    ApiDetailAnalytics.trackSearch(
+      query: query,
+      hasFilters: false,
+      resultCount: resultCount,
+    );
   }
 
   void _toggle(CompareCandidate candidate) {

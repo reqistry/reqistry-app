@@ -33,12 +33,14 @@ class ApiDetailAnalytics {
     required bool bookmarkState,
     required int projectCount,
     String sourceScreen = 'unknown',
+    Map<String, Object>? extra,
   }) {
     if (event == 'api_detail_view' && sourceScreen == 'search') {
       _evaluatedSearchApis.add(apiId);
     }
     unawaited(_send(event, apiId, categoryId, healthState, bookmarkState,
-        projectCount, sourceScreen));
+        projectCount, sourceScreen,
+        extra: extra));
     // Mirror into PostHog for funnels/replays; /track stays for warehouse.
     unawaited(PostHogService.instance.capture(event, {
       'api_id': apiId,
@@ -47,6 +49,7 @@ class ApiDetailAnalytics {
       'bookmark_state': bookmarkState,
       'project_count': projectCount,
       'source_screen': sourceScreen,
+      ...?extra,
     }));
     if ({'api_save', 'api_project_add', 'api_outbound_doc'}.contains(event) &&
         _evaluatedSearchApis.contains(apiId) &&
@@ -73,6 +76,7 @@ class ApiDetailAnalytics {
     int projectCount,
     String sourceScreen, {
     String? decisionType,
+    Map<String, Object>? extra,
   }) async {
     try {
       await DioClient().unauthDio.post(
@@ -93,6 +97,7 @@ class ApiDetailAnalytics {
                 'healthState': healthState,
                 'dataFreshness': 'client_cache_first',
                 if (decisionType != null) 'decisionType': decisionType,
+                ...?extra,
               },
             },
             options: Options(extra: const {

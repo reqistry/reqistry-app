@@ -78,8 +78,10 @@ class _ApiCardState extends State<ApiCard> {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<FavoritesCubit>();
     final c = AppColors.of(Theme.of(context).brightness);
     final l10n = AppLocalizations.of(context)!;
+    final isPending = context.read<FavoritesCubit>().isPending(widget.api.id);
     return Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.s8),
       decoration: BoxDecoration(
@@ -139,7 +141,7 @@ class _ApiCardState extends State<ApiCard> {
                     const SizedBox(width: AppSpacing.s4),
                     StatusDot(isAlive: widget.api.isAlive),
                     IconButton(
-                      onPressed: _toggleFavorite,
+                      onPressed: isPending ? null : _toggleFavorite,
                       tooltip: _isFavorited
                           ? l10n.apiDetailRemoveBookmark
                           : l10n.apiDetailBookmarkApi,

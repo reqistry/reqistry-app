@@ -3,11 +3,12 @@ import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
 import 'package:api_scout/app/modules/views/api_detail_view/widgets/notice_banner.dart';
+import 'package:api_scout/app/data/models/api_report_result.dart';
 
 class ReportIssueSheet extends StatefulWidget {
   const ReportIssueSheet({super.key, required this.onSubmit});
 
-  final Future<bool> Function(String reason, String note) onSubmit;
+  final Future<ApiReportResult?> Function(String reason, String note) onSubmit;
 
   @override
   State<ReportIssueSheet> createState() => _ReportIssueSheetState();
@@ -54,11 +55,11 @@ class _ReportIssueSheetState extends State<ReportIssueSheet> {
       _error = null;
     });
     final note = _noteController.text.trim();
-    final saved =
+    final result =
         await widget.onSubmit(_selectedCode, note.isEmpty ? '' : note);
     if (!mounted) return;
-    if (saved) {
-      Navigator.of(context).pop(true);
+    if (result != null) {
+      Navigator.of(context).pop(result);
       return;
     }
     final l10n = AppLocalizations.of(context)!;
@@ -111,10 +112,13 @@ class _ReportIssueSheetState extends State<ReportIssueSheet> {
             ),
             if (_error != null) ...[
               const SizedBox(height: AppSpacing.s8),
-              Text(
-                _error!,
-                style: AppTextStyles.bodyMd.copyWith(
-                  color: Theme.of(context).colorScheme.error,
+              Semantics(
+                liveRegion: true,
+                child: Text(
+                  _error!,
+                  style: AppTextStyles.bodyMd.copyWith(
+                    color: Theme.of(context).colorScheme.error,
+                  ),
                 ),
               ),
             ],
@@ -123,7 +127,16 @@ class _ReportIssueSheetState extends State<ReportIssueSheet> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: _submitting ? null : _submit,
-                child: Text(l10n.actionSubmitReport),
+                child: _submitting
+                    ? Semantics(
+                        liveRegion: true,
+                        label: l10n.stateLoading,
+                        child: const SizedBox.square(
+                          dimension: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      )
+                    : Text(l10n.actionSubmitReport),
               ),
             ),
           ],

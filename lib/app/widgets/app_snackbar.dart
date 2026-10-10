@@ -144,85 +144,88 @@ class _AppSnackbarState extends State<AppSnackbar>
     final c = AppColors.of(Theme.of(context).brightness);
     final iconColor = _iconColor(c);
 
-    return SlideTransition(
-      position: _slideAnimation,
-      child: FadeTransition(
-        opacity: _fadeAnimation,
-        child: Dismissible(
-          key: UniqueKey(),
-          direction: DismissDirection.horizontal,
-          confirmDismiss: (_) async {
-            dismiss();
-            return false;
-          },
-          child: Container(
-            width: 380,
-            constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width - 32,
-            ),
-            decoration: BoxDecoration(
-              color: c.surface,
-              border: Border.all(color: iconColor, width: 1),
-              boxShadow: AppShadows.modal,
-            ),
-            clipBehavior: Clip.hardEdge,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.s16,
-                    vertical: AppSpacing.s12,
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        width: 24,
-                        height: 24,
-                        alignment: Alignment.center,
-                        color: _bgColor(c),
-                        child: Icon(_icon, color: iconColor, size: 16),
-                      ),
-                      const SizedBox(width: AppSpacing.s12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              widget.title,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: AppTextStyles.bodyMd.copyWith(
-                                fontWeight: FontWeight.w700,
-                                color: c.onSurface,
-                                decoration: TextDecoration.none,
-                              ),
-                            ),
-                            const SizedBox(height: AppSpacing.s2),
-                            Text(
-                              widget.message,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: AppTextStyles.bodyMd.copyWith(
-                                color: c.onSurfaceVariant,
-                                decoration: TextDecoration.none,
-                              ),
-                            ),
-                          ],
+    return Semantics(
+      container: true,
+      liveRegion: true,
+      child: SlideTransition(
+        position: _slideAnimation,
+        child: FadeTransition(
+          opacity: _fadeAnimation,
+          child: Dismissible(
+            key: UniqueKey(),
+            direction: DismissDirection.horizontal,
+            confirmDismiss: (_) async {
+              dismiss();
+              return false;
+            },
+            child: Container(
+              width: 380,
+              constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width - 32,
+              ),
+              decoration: BoxDecoration(
+                color: c.surface,
+                border: Border.all(color: iconColor, width: 1),
+                boxShadow: AppShadows.modal,
+              ),
+              clipBehavior: Clip.hardEdge,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.s16,
+                      vertical: AppSpacing.s12,
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: 24,
+                          height: 24,
+                          alignment: Alignment.center,
+                          color: _bgColor(c),
+                          child: Icon(_icon, color: iconColor, size: 16),
                         ),
-                      ),
-                      const SizedBox(width: AppSpacing.s8),
-                      if (widget.actionLabel != null) ...[
-                        GestureDetector(
-                          onTap: () {
-                            widget.onAction?.call();
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: AppSpacing.s8,
-                              vertical: AppSpacing.s4,
+                        const SizedBox(width: AppSpacing.s12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                widget.title,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: AppTextStyles.bodyMd.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  color: c.onSurface,
+                                  decoration: TextDecoration.none,
+                                ),
+                              ),
+                              const SizedBox(height: AppSpacing.s2),
+                              Text(
+                                widget.message,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: AppTextStyles.bodyMd.copyWith(
+                                  color: c.onSurfaceVariant,
+                                  decoration: TextDecoration.none,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: AppSpacing.s8),
+                        if (widget.actionLabel != null) ...[
+                          TextButton(
+                            onPressed: widget.onAction,
+                            style: TextButton.styleFrom(
+                              foregroundColor: iconColor,
+                              minimumSize: const Size(48, 48),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: AppSpacing.s8,
+                              ),
                             ),
                             child: Text(
                               widget.actionLabel!,
@@ -233,36 +236,43 @@ class _AppSnackbarState extends State<AppSnackbar>
                               ),
                             ),
                           ),
-                        ),
-                        const SizedBox(width: AppSpacing.s4),
-                      ],
-                      GestureDetector(
-                        onTap: dismiss,
-                        child: Padding(
-                          padding: const EdgeInsets.all(AppSpacing.s2),
-                          child: Icon(
+                          const SizedBox(width: AppSpacing.s4),
+                        ],
+                        IconButton(
+                          onPressed: dismiss,
+                          tooltip: MaterialLocalizations.of(context)
+                              .closeButtonTooltip,
+                          constraints: const BoxConstraints.tightFor(
+                            width: 48,
+                            height: 48,
+                          ),
+                          padding: EdgeInsets.zero,
+                          icon: Icon(
                             PhosphorIconsRegular.x,
                             size: 16,
                             color: c.outline,
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                if (!widget.persistent)
-                  AnimatedBuilder(
-                    animation: _progressController,
-                    builder: (context, _) {
-                      return LinearProgressIndicator(
-                        value: 1 - _progressController.value,
-                        minHeight: 3,
-                        backgroundColor: c.surfaceContainer,
-                        valueColor: AlwaysStoppedAnimation<Color>(iconColor),
-                      );
-                    },
-                  ),
-              ],
+                  if (!widget.persistent)
+                    AnimatedBuilder(
+                      animation: _progressController,
+                      builder: (context, _) {
+                        return ExcludeSemantics(
+                          child: LinearProgressIndicator(
+                            value: 1 - _progressController.value,
+                            minHeight: 3,
+                            backgroundColor: c.surfaceContainer,
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(iconColor),
+                          ),
+                        );
+                      },
+                    ),
+                ],
+              ),
             ),
           ),
         ),
