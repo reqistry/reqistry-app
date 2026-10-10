@@ -2234,6 +2234,18 @@ abstract class AppLocalizations {
   /// **'Project APIs'**
   String get settingsProjectApisStat;
 
+  /// View action label
+  ///
+  /// In en, this message translates to:
+  /// **'VIEW'**
+  String get actionView;
+
+  /// Open action label
+  ///
+  /// In en, this message translates to:
+  /// **'OPEN'**
+  String get actionOpen;
+
   /// Profile saved label
   ///
   /// In en, this message translates to:

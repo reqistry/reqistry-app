@@ -8,11 +8,13 @@ class StatBox extends StatelessWidget {
     super.key,
     required this.label,
     required this.value,
+    required this.actionLabel,
     required this.onTap,
   });
 
   final String label;
   final String value;
+  final String actionLabel;
   final VoidCallback onTap;
 
   @override
@@ -39,14 +41,29 @@ class StatBox extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: AppTextStyles.headlineSm,
             ),
-            Text(
-              label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: AppTextStyles.labelSm.copyWith(
-                color: c.onSurfaceVariant,
-                letterSpacing: 0,
-              ),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTextStyles.labelSm.copyWith(
+                      color: c.onSurfaceVariant,
+                      letterSpacing: 0,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.s4),
+                Text(
+                  actionLabel,
+                  maxLines: 1,
+                  style: AppTextStyles.labelSmUpper.copyWith(
+                    color: c.primary,
+                    fontSize: 10,
+                  ),
+                ),
+              ],
             ),
           ],
         ),

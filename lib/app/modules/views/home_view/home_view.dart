@@ -4,6 +4,7 @@ import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:api_scout/app/blocs/auth/auth_cubit.dart';
 import 'package:api_scout/app/blocs/favorites/favorites_cubit.dart';
 import 'package:api_scout/app/blocs/projects/projects_cubit.dart';
@@ -13,6 +14,7 @@ import 'package:api_scout/app/blocs/user_activity/user_activity_cubit.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
+import 'package:api_scout/app/utils/snackbar_helper.dart';
 import 'package:api_scout/config/app_routes.dart';
 import 'package:api_scout/config/env.dart';
 import 'package:api_scout/app/modules/views/main_shell_view/widgets/root_showcase.dart';
@@ -59,6 +61,20 @@ class _HomeViewState extends State<HomeView> {
     }
   }
 
+  Future<void> _openReqistrySite() async {
+    final opened = await launchUrl(
+      Uri.parse('https://reqistry.dev'),
+      mode: LaunchMode.externalApplication,
+    );
+    if (!opened && mounted) {
+      final l10n = AppLocalizations.of(context)!;
+      AppSnackBarHelper.error(
+        title: l10n.snackbarUnavailableTitle,
+        message: l10n.snackbarCouldNotOpenLink,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(Theme.of(context).brightness);
@@ -67,13 +83,16 @@ class _HomeViewState extends State<HomeView> {
       appBar: AppBar(
         title: Row(
           children: [
-            SvgPicture.asset(
-              'assets/reqistry.svg',
-              width: 24,
-              height: 24,
-              colorFilter: ColorFilter.mode(c.onSurface, BlendMode.srcIn),
+            IconButton(
+              tooltip: AppLocalizations.of(context)!.actionOpenWebsite,
+              onPressed: _openReqistrySite,
+              icon: SvgPicture.asset(
+                'assets/reqistry.svg',
+                width: 24,
+                height: 24,
+                colorFilter: ColorFilter.mode(c.onSurface, BlendMode.srcIn),
+              ),
             ),
-            const SizedBox(width: AppSpacing.s8),
             Expanded(
               child: Text(
                 Env.appName,

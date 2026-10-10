@@ -31,6 +31,7 @@ class StatsGrid extends StatelessWidget {
                 child: StatBox(
                   label: l10n.settingsSavedStat,
                   value: state.totalBookmarks.toString(),
+                  actionLabel: l10n.actionView,
                   onTap: onSavedTap,
                 ),
               ),
@@ -39,6 +40,7 @@ class StatsGrid extends StatelessWidget {
                 child: StatBox(
                   label: l10n.settingsProjectsStat,
                   value: state.totalProjects.toString(),
+                  actionLabel: l10n.actionCreate,
                   onTap: onProjectsTap,
                 ),
               ),
@@ -47,6 +49,7 @@ class StatsGrid extends StatelessWidget {
                 child: StatBox(
                   label: l10n.settingsProjectApisStat,
                   value: state.totalProjectItems.toString(),
+                  actionLabel: l10n.actionOpen,
                   onTap: onProjectApisTap,
                 ),
               ),
@@ -62,6 +65,7 @@ class StatsGrid extends StatelessWidget {
               child: StatBox(
                 label: l10n.settingsSavedStat,
                 value: state.totalBookmarks.toString(),
+                actionLabel: l10n.actionView,
                 onTap: onSavedTap,
               ),
             ),
@@ -70,6 +74,7 @@ class StatsGrid extends StatelessWidget {
               child: StatBox(
                 label: l10n.settingsProjectsStat,
                 value: state.totalProjects.toString(),
+                actionLabel: l10n.actionCreate,
                 onTap: onProjectsTap,
               ),
             ),
@@ -78,6 +83,7 @@ class StatsGrid extends StatelessWidget {
               child: StatBox(
                 label: l10n.settingsProjectApisStat,
                 value: state.totalProjectItems.toString(),
+                actionLabel: l10n.actionOpen,
                 onTap: onProjectApisTap,
               ),
             ),

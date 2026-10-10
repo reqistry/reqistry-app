@@ -64,6 +64,16 @@ class _SettingsViewState extends State<SettingsView> {
     context.push(AppRoutes.allProjects);
   }
 
+  void _openDefaultProject() {
+    final projects = context.read<ProjectsCubit>().state.projects;
+    if (projects.isEmpty) {
+      _openAllProjects();
+      return;
+    }
+    final project = projects.first;
+    context.push(AppRoutes.projectPath(project.id), extra: project);
+  }
+
   Future<void> _openDeveloperSite() async {
     final uri = Uri.parse(Env.developerWebsiteUrl);
     final opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
@@ -187,7 +197,7 @@ class _SettingsViewState extends State<SettingsView> {
                 state: state,
                 onSavedTap: () => _switchTab(AppRoutes.tabIndexFavorites),
                 onProjectsTap: _openAllProjects,
-                onProjectApisTap: _openAllProjects,
+                onProjectApisTap: _openDefaultProject,
               ),
             ),
             const SizedBox(height: AppSpacing.s24),

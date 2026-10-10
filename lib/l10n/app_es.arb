@@ -1512,6 +1512,14 @@
   "@settingsProjectApisStat": {
     "description": "Project APIs stat label"
   },
+  "actionView": "VER",
+  "@actionView": {
+    "description": "View action label"
+  },
+  "actionOpen": "ABRIR",
+  "@actionOpen": {
+    "description": "Open action label"
+  },
   "settingsProfileSaved": "Has guardado",
   "@settingsProfileSaved": {
     "description": "Profile saved label"

@@ -1169,6 +1169,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settingsProjectApisStat => 'APIs del proyecto';
 
   @override
+  String get actionView => 'VER';
+
+  @override
+  String get actionOpen => 'ABRIR';
+
+  @override
   String get settingsProfileSaved => 'Has guardado';
 
   @override
