@@ -1,0 +1,26 @@
+{
+  "project": "reqistry-app",
+  "platform": "ios",
+  "github": {
+    "owner": "API-Scout-App",
+    "repo": "api-scout-app"
+  },
+  "provider": "codemagic",
+  "codemagic": {
+    "app_id": "PENDING_FROM_USER",
+    "branch": "main",
+    "build_workflow": "ios-build",
+    "share_workflow": "ios-share"
+  },
+  "bitrise": {},
+  "ios": {
+    "path": ".",
+    "configuration": "Debug"
+  },
+  "flutter": {
+    "watch": {}
+  },
+  "reactNative": {},
+  "kmp": {},
+  "mobai": {}
+}
