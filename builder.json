@@ -7,7 +7,7 @@
   },
   "provider": "codemagic",
   "codemagic": {
-    "app_id": "PENDING_FROM_USER",
+    "app_id": "6aca65863626fc1aa3e88f8d",
     "branch": "main",
     "build_workflow": "ios-build",
     "share_workflow": "ios-share"
