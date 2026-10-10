@@ -7,3 +7,8 @@ linter:
 analyzer:
   errors:
     avoid_print: warning
+  exclude:
+    - build/**
+    - android/**
+    - ios/**
+    - windows/**

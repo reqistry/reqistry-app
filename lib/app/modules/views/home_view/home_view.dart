@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -64,11 +65,24 @@ class _HomeViewState extends State<HomeView> {
     return Scaffold(
       backgroundColor: c.background,
       appBar: AppBar(
-        title: Text(
-          Env.appName,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: AppTextStyles.headlineSm,
+        title: Row(
+          children: [
+            SvgPicture.asset(
+              'assets/reqistry.svg',
+              width: 24,
+              height: 24,
+              colorFilter: ColorFilter.mode(c.onSurface, BlendMode.srcIn),
+            ),
+            const SizedBox(width: AppSpacing.s8),
+            Expanded(
+              child: Text(
+                Env.appName,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTextStyles.headlineSm,
+              ),
+            ),
+          ],
         ),
         actions: [
           Padding(
@@ -79,7 +93,7 @@ class _HomeViewState extends State<HomeView> {
               title: AppLocalizations.of(context)!.onboardingSubmitApiTitle,
               description:
                   AppLocalizations.of(context)!.onboardingSubmitApiDesc,
-              child: ElevatedButton(
+              child: ElevatedButton.icon(
                 onPressed: _showSubmitApiSheet,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: c.primary,
@@ -94,7 +108,8 @@ class _HomeViewState extends State<HomeView> {
                   ),
                   elevation: 0,
                 ),
-                child: Text(
+                icon: const Icon(PhosphorIconsRegular.plus, size: 18),
+                label: Text(
                   AppLocalizations.of(context)!.actionKnowAnApi,
                   style: AppTextStyles.labelSmUpper,
                 ),

@@ -185,7 +185,7 @@ abstract class AppLocalizations {
   /// Submit API tab title
   ///
   /// In en, this message translates to:
-  /// **'SUBMIT API'**
+  /// **'ADD API'**
   String get tabSubmitApi;
 
   /// Profile section header
@@ -1931,7 +1931,7 @@ abstract class AppLocalizations {
   /// Onboarding step title
   ///
   /// In en, this message translates to:
-  /// **'KNOW AN API?'**
+  /// **'ADD API'**
   String get onboardingSubmitApiTitle;
 
   /// Onboarding step description
@@ -2153,7 +2153,7 @@ abstract class AppLocalizations {
   /// Submit API settings item
   ///
   /// In en, this message translates to:
-  /// **'Submit an API'**
+  /// **'Add API'**
   String get settingsSubmitAnApi;
 
   /// App settings item
@@ -2687,7 +2687,7 @@ abstract class AppLocalizations {
   /// Submit API button in home app bar
   ///
   /// In en, this message translates to:
-  /// **'KNOW AN API?'**
+  /// **'ADD API'**
   String get actionKnowAnApi;
 
   /// Title field validation error

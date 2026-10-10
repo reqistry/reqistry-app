@@ -9,6 +9,12 @@
         android:icon="@mipmap/ic_launcher"
         android:allowBackup="false"
         android:enableOnBackInvokedCallback="true">
+        <!-- posthog_flutter is fully configured from Dart (PostHogService.init), so the
+             native manifest auto-init is redundant: without a manifest token it logs an
+             error and bails before the Dart path initialises the SDK. -->
+        <meta-data
+            android:name="com.posthog.posthog.AUTO_INIT"
+            android:value="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

@@ -205,7 +205,7 @@ class _SettingsViewState extends State<SettingsView> {
                   onTap: () => _switchTab(AppRoutes.tabIndexFavorites),
                 ),
                 SettingsEntryTile(
-                  icon: PhosphorIconsRegular.paperPlaneTilt,
+                  icon: PhosphorIconsRegular.plus,
                   title: AppLocalizations.of(context)!.settingsSubmitAnApi,
                   onTap: () => context.push(AppRoutes.submitApi),
                 ),

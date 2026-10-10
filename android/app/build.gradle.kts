@@ -69,8 +69,14 @@ android {
     buildTypes {
         release {
             // Never produce a release artifact signed with the debug key.
-            signingConfig = signingConfigs.findByName("release")
-                ?: throw GradleException("Missing release signing configuration")
+            // key.properties is kept out of VCS, so only enforce this when a
+            // release task is actually requested; debug builds must configure cleanly.
+            val releaseSigning = signingConfigs.findByName("release")
+            if (releaseSigning != null) {
+                signingConfig = releaseSigning
+            } else if (gradle.startParameter.taskNames.any { it.contains("Release", ignoreCase = true) }) {
+                throw GradleException("Missing release signing configuration")
+            }
         }
     }
 

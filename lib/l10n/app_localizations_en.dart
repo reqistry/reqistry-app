@@ -51,7 +51,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tabAppSettings => 'APP SETTINGS';
 
   @override
-  String get tabSubmitApi => 'SUBMIT API';
+  String get tabSubmitApi => 'ADD API';
 
   @override
   String get tabProfile => 'PROFILE';
@@ -982,7 +982,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Switch between Home, Explore, Intelligence, Saved and You.';
 
   @override
-  String get onboardingSubmitApiTitle => 'KNOW AN API?';
+  String get onboardingSubmitApiTitle => 'ADD API';
 
   @override
   String get onboardingSubmitApiDesc =>
@@ -1108,7 +1108,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsSavedApis => 'Saved APIs';
 
   @override
-  String get settingsSubmitAnApi => 'Submit an API';
+  String get settingsSubmitAnApi => 'Add API';
 
   @override
   String get settingsAppSettings => 'App settings';
@@ -1400,7 +1400,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tooltipEditName => 'Edit name';
 
   @override
-  String get actionKnowAnApi => 'KNOW AN API?';
+  String get actionKnowAnApi => 'ADD API';
 
   @override
   String get formTitleRequired => 'Title is required';

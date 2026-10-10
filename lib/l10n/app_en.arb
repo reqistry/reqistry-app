@@ -56,7 +56,7 @@
   "@tabAppSettings": {
     "description": "App settings tab title"
   },
-  "tabSubmitApi": "SUBMIT API",
+  "tabSubmitApi": "ADD API",
   "@tabSubmitApi": {
     "description": "Submit API tab title"
   },
@@ -1300,7 +1300,7 @@
   "@onboardingNavBarDesc": {
     "description": "Onboarding step description"
   },
-  "onboardingSubmitApiTitle": "KNOW AN API?",
+  "onboardingSubmitApiTitle": "ADD API",
   "@onboardingSubmitApiTitle": {
     "description": "Onboarding step title"
   },
@@ -1456,7 +1456,7 @@
   "@settingsSavedApis": {
     "description": "Saved APIs settings item"
   },
-  "settingsSubmitAnApi": "Submit an API",
+  "settingsSubmitAnApi": "Add API",
   "@settingsSubmitAnApi": {
     "description": "Submit API settings item"
   },
@@ -1801,7 +1801,7 @@
   "@tooltipEditName": {
     "description": "Edit name tooltip"
   },
-  "actionKnowAnApi": "KNOW AN API?",
+  "actionKnowAnApi": "ADD API",
   "@actionKnowAnApi": {
     "description": "Submit API button in home app bar"
   },

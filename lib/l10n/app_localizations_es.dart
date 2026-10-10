@@ -51,7 +51,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get tabAppSettings => 'CONFIGURACIÓN';
 
   @override
-  String get tabSubmitApi => 'ENVIAR API';
+  String get tabSubmitApi => 'AÑADIR API';
 
   @override
   String get tabProfile => 'PERFIL';
@@ -995,7 +995,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'Cambia entre Inicio, Explorar, Inteligencia, Guardadas y Tú.';
 
   @override
-  String get onboardingSubmitApiTitle => '¿CONOCES UNA API?';
+  String get onboardingSubmitApiTitle => 'AÑADIR API';
 
   @override
   String get onboardingSubmitApiDesc =>
@@ -1126,7 +1126,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settingsSavedApis => 'APIs guardadas';
 
   @override
-  String get settingsSubmitAnApi => 'Enviar una API';
+  String get settingsSubmitAnApi => 'Añadir API';
 
   @override
   String get settingsAppSettings => 'Configuración de la app';
@@ -1421,7 +1421,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get tooltipEditName => 'Editar nombre';
 
   @override
-  String get actionKnowAnApi => '¿CONOCES UNA API?';
+  String get actionKnowAnApi => 'AÑADIR API';
 
   @override
   String get formTitleRequired => 'El título es obligatorio';
