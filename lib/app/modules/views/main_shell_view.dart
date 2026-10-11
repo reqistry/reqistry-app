@@ -3,6 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+
+import 'package:api_scout/config/app_routes.dart';
 
 import '../../blocs/main_shell/main_shell_cubit.dart';
 import '../../blocs/favorites/favorites_cubit.dart';
@@ -106,6 +109,20 @@ class _MainShellViewState extends State<MainShellView> {
                   child: _tabTabs[i],
                 ),
             ],
+          ),
+          floatingActionButton: Padding(
+            padding: EdgeInsets.only(
+              bottom: switch (state.selectedTabIndex) {
+                1 || 2 || 3 => AppSpacing.s64,
+                _ => AppSpacing.s0,
+              },
+            ),
+            child: FloatingActionButton(
+              key: const Key('shell_search_fab'),
+              tooltip: l10n.formSearchHint,
+              onPressed: () => context.push(AppRoutes.search),
+              child: const Icon(PhosphorIconsRegular.magnifyingGlass),
+            ),
           ),
           bottomNavigationBar: RootShowcase.scope(
             context: context,
