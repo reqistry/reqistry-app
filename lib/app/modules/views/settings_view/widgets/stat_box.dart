@@ -58,6 +58,7 @@ class StatBox extends StatelessWidget {
                 Text(
                   actionLabel,
                   maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: AppTextStyles.labelSmUpper.copyWith(
                     color: c.primary,
                     fontSize: 10,
