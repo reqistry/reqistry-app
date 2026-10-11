@@ -3,6 +3,7 @@ import 'package:api_scout/app/data/models/project_detail.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
+import 'package:api_scout/app/utils/project_icons.dart';
 import 'package:api_scout/l10n/app_localizations.dart';
 
 class ProjectHeader extends StatelessWidget {
@@ -19,13 +20,6 @@ class ProjectHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = AppColors.of(Theme.of(context).brightness);
 
-    final iconData = IconData(
-      // ignore: non_const_argument_for_const_parameter
-      detail.iconCodePoint,
-      fontFamily: 'PhosphorRegular',
-      fontPackage: 'phosphoricons_flutter',
-    );
-
     return Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.s12),
       padding: const EdgeInsets.all(AppSpacing.cardPadding),
@@ -36,7 +30,7 @@ class ProjectHeader extends StatelessWidget {
       child: Row(
         children: [
           Icon(
-            iconData,
+            projectIconForCodePoint(detail.iconCodePoint),
             color: c.primary,
             size: 30,
           ),

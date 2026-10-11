@@ -6,6 +6,7 @@ import 'package:api_scout/app/blocs/projects/projects_cubit.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
+import 'package:api_scout/app/utils/project_icons.dart';
 import 'package:api_scout/app/utils/text_input_route.dart';
 import 'package:api_scout/shared/widgets/ui/bottom_sheet_scaffold.dart';
 
@@ -31,39 +32,6 @@ class _CreateProjectBottomSheetState extends State<CreateProjectBottomSheet> {
   IconData _selectedIcon = PhosphorIconsRegular.folder;
   bool _submitted = false;
   bool _saving = false;
-
-  static const _projectIconChoices = [
-    PhosphorIconsRegular.folder,
-    PhosphorIconsRegular.star,
-    PhosphorIconsRegular.code,
-    PhosphorIconsRegular.cloud,
-    PhosphorIconsRegular.lock,
-    PhosphorIconsRegular.database,
-    PhosphorIconsRegular.globeHemisphereWest,
-    PhosphorIconsRegular.envelope,
-    PhosphorIconsRegular.chatCircleText,
-    PhosphorIconsRegular.camera,
-    PhosphorIconsRegular.musicNote,
-    PhosphorIconsRegular.videoCamera,
-    PhosphorIconsRegular.shoppingCart,
-    PhosphorIconsRegular.creditCard,
-    PhosphorIconsRegular.bank,
-    PhosphorIconsRegular.truck,
-    PhosphorIconsRegular.forkKnife,
-    PhosphorIconsRegular.gameController,
-    PhosphorIconsRegular.airplaneTilt,
-    PhosphorIconsRegular.bed,
-    PhosphorIconsRegular.wrench,
-    PhosphorIconsRegular.graduationCap,
-    PhosphorIconsRegular.hospital,
-    PhosphorIconsRegular.pawPrint,
-    PhosphorIconsRegular.treeEvergreen,
-    PhosphorIconsRegular.sun,
-    PhosphorIconsRegular.robot,
-    PhosphorIconsRegular.currencyBtc,
-    PhosphorIconsRegular.chartBar,
-    PhosphorIconsRegular.bell,
-  ];
 
   @override
   void dispose() {
@@ -140,9 +108,9 @@ class _CreateProjectBottomSheetState extends State<CreateProjectBottomSheet> {
                   mainAxisSpacing: AppSpacing.s8,
                   crossAxisSpacing: AppSpacing.s8,
                 ),
-                itemCount: _projectIconChoices.length,
+                itemCount: projectIconChoices.length,
                 itemBuilder: (context, index) {
-                  final icon = _projectIconChoices[index];
+                  final icon = projectIconChoices[index];
                   final isSelected = icon == _selectedIcon;
 
                   return Semantics(

@@ -9,6 +9,7 @@ import 'package:api_scout/app/data/models/project.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
+import 'package:api_scout/app/utils/project_icons.dart';
 import 'package:api_scout/app/widgets/app_dialog.dart';
 import 'package:api_scout/config/app_routes.dart';
 import 'package:api_scout/shared/widgets/app_empty_state.dart';
@@ -117,13 +118,7 @@ class _ProjectListTile extends StatelessWidget {
           child: Row(
             children: [
               Icon(
-                IconData(
-                  // Icon codepoints are stored per-project at runtime.
-                  // ignore: non_const_argument_for_const_parameter
-                  project.iconCodePoint,
-                  fontFamily: 'PhosphorRegular',
-                  fontPackage: 'phosphoricons_flutter',
-                ),
+                projectIconForCodePoint(project.iconCodePoint),
                 size: 24,
                 color: c.primary,
               ),
