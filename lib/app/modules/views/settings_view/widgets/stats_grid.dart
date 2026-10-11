@@ -47,6 +47,7 @@ class StatsGrid extends StatelessWidget {
               const SizedBox(width: AppSpacing.s8),
               Expanded(
                 child: StatBox(
+                  key: const Key('settings_project_apis_stat'),
                   label: l10n.settingsProjectApisStat,
                   value: state.totalProjectItems.toString(),
                   actionLabel: l10n.actionOpen,
@@ -81,6 +82,7 @@ class StatsGrid extends StatelessWidget {
             SizedBox(
               width: (constraints.maxWidth - AppSpacing.s8) / 2,
               child: StatBox(
+                key: const Key('settings_project_apis_stat'),
                 label: l10n.settingsProjectApisStat,
                 value: state.totalProjectItems.toString(),
                 actionLabel: l10n.actionOpen,

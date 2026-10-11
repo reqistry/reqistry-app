@@ -25,8 +25,58 @@ import 'widgets/latest_apis_section.dart';
 import 'widgets/trendy_categories_section.dart';
 import 'widgets/user_activity_section.dart';
 
+typedef UrlLauncherCallback = Future<bool> Function(
+  Uri url, {
+  LaunchMode mode,
+});
+
+class ReqistryLogoButton extends StatelessWidget {
+  const ReqistryLogoButton({
+    super.key,
+    this.urlLauncher = launchUrl,
+  });
+
+  final UrlLauncherCallback urlLauncher;
+
+  Future<void> _open(BuildContext context) async {
+    var opened = false;
+    try {
+      opened = await urlLauncher(
+        Uri.parse('https://reqistry.dev'),
+        mode: LaunchMode.externalApplication,
+      );
+    } catch (_) {
+      opened = false;
+    }
+    if (!opened && context.mounted) {
+      final l10n = AppLocalizations.of(context)!;
+      AppSnackBarHelper.error(
+        title: l10n.snackbarUnavailableTitle,
+        message: l10n.snackbarCouldNotOpenLink,
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final c = AppColors.of(Theme.of(context).brightness);
+    return IconButton(
+      tooltip: AppLocalizations.of(context)!.actionOpenWebsite,
+      onPressed: () => _open(context),
+      icon: SvgPicture.asset(
+        'assets/reqistry.svg',
+        width: 24,
+        height: 24,
+        colorFilter: ColorFilter.mode(c.onSurface, BlendMode.srcIn),
+      ),
+    );
+  }
+}
+
 class HomeView extends StatefulWidget {
-  const HomeView({super.key});
+  const HomeView({super.key, this.urlLauncher = launchUrl});
+
+  final UrlLauncherCallback urlLauncher;
 
   @override
   State<HomeView> createState() => _HomeViewState();
@@ -61,20 +111,6 @@ class _HomeViewState extends State<HomeView> {
     }
   }
 
-  Future<void> _openReqistrySite() async {
-    final opened = await launchUrl(
-      Uri.parse('https://reqistry.dev'),
-      mode: LaunchMode.externalApplication,
-    );
-    if (!opened && mounted) {
-      final l10n = AppLocalizations.of(context)!;
-      AppSnackBarHelper.error(
-        title: l10n.snackbarUnavailableTitle,
-        message: l10n.snackbarCouldNotOpenLink,
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(Theme.of(context).brightness);
@@ -83,16 +119,7 @@ class _HomeViewState extends State<HomeView> {
       appBar: AppBar(
         title: Row(
           children: [
-            IconButton(
-              tooltip: AppLocalizations.of(context)!.actionOpenWebsite,
-              onPressed: _openReqistrySite,
-              icon: SvgPicture.asset(
-                'assets/reqistry.svg',
-                width: 24,
-                height: 24,
-                colorFilter: ColorFilter.mode(c.onSurface, BlendMode.srcIn),
-              ),
-            ),
+            ReqistryLogoButton(urlLauncher: widget.urlLauncher),
             Expanded(
               child: Text(
                 Env.appName,
