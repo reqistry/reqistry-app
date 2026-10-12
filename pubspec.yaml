@@ -1,5 +1,5 @@
 name: api_scout
-version: 5.3.0+17
+version: 5.4.0+18
 publish_to: none
 description: Reqistry — API intelligence for builders and agents
 environment:
@@ -37,8 +37,8 @@ dependencies:
   flutter_secure_storage: ^10.3.4
   posthog_flutter: ^5.50.12
 
-# Shortcut: pinned to the versions in release 5.3.0+17 so Shorebird patches
-# match the release's native DEX (path_provider_android >=2.3 adds a jni stack).
+# Shortcut: keep Shorebird releases and patches on the same native DEX;
+# path_provider_android >=2.3 adds a jni stack. Lift in a coordinated store release.
 dependency_overrides:
   path_provider_android: 2.2.22
   cached_network_image: 3.4.1

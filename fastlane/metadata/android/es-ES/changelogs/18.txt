@@ -1,0 +1,3 @@
+Busca APIs desde cualquier pestaña con el nuevo botón de búsqueda permanente.
+
+Esta versión también mejora la fiabilidad de las actualizaciones mediante Shorebird.

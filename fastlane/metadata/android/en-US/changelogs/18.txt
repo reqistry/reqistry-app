@@ -1,0 +1,3 @@
+Search APIs from any tab with the new persistent search button.
+
+This release also improves update reliability through Shorebird code push.
