@@ -12,18 +12,52 @@ Discover thousands of public APIs, compare health and trust signals, and monitor
 
 [![Reqistry app — find the right API, build your next idea](fastlane/metadata/android/en-US/images/phoneScreenshots/1_en-US.png)](https://play.google.com/store/apps/details?id=com.gwhyyy.publicApis&hl=en)
 
-## From API discovery to your next shipped feature
+## Features — discover, decide, and keep building
 
-Building a weekend prototype, choosing an integration, or giving an AI agent tools? Start with the questions that matter: **Does this API work? What does it cost? Can I use it from my app?**
+**Your API research, project stack, and monitoring in one place.** Go from “Which API should I use?” to a shortlist you can compare, save, and keep watching.
 
-| Your next step | How Reqistry helps |
+### Project management for your API stack
+
+Give each build its own project: a finance dashboard, a travel app, or your next AI tool. Group its APIs together, keep favorites synced, and turn on project monitoring for a **daily health digest and health-history snapshots**. Pick up your research with the context already organized.
+
+### Watchlists that bring changes to you
+
+Follow keywords that matter to your work. Get push alerts when matching APIs are added or change, including pricing and trust updates. Watch a topic such as **weather**, **payments**, or **AI** while you focus on building.
+
+### 24/7 API monitoring, even when the app is closed
+
+Reqistry's hosted service runs scheduled health checks around the clock. Inspect observed availability, response times, and uptime history; enable alerts for saved APIs when health, pricing, or trust changes. The registry change feed puts changes across the catalog in one place.
+
+Checks are periodic—roughly hourly according to the [monitoring documentation](https://docs.reqistry.dev/monitoring)—with verification timestamps on API profiles.
+
+### Intelligence that helps you choose
+
+Select **2–8 APIs inside the app** and compare trust, pricing, authentication, response time, 30-day uptime, rate limits, SDKs, and OpenAPI availability where recorded. Get an evidence-based **top pick**, see the fastest option and strongest uptime, and revisit recent comparisons without rebuilding your shortlist.
+
+### AI-assisted API research through MCP
+
+Bring Reqistry into Claude Code, Cursor, Codex, or another compatible AI client. Describe what you need, ask your agent to compare candidates, inspect their health evidence, and find alternatives using the hosted MCP tools. Manage agent keys from the app's Settings. [Connect your AI agent →](#built-for-developers-and-ai-agents)
+
+**In-app AI-powered decisions are marked “coming soon” in the current codebase.** The available in-app Intelligence workflow is evidence-based comparison; natural-language AI interaction with the catalog currently runs through connected MCP clients.
+
+### Curated collections: start with a ready-made shortlist
+
+Open **Intelligence → Curated collections**, pick a job, and jump straight into comparison. Current presets include:
+
+| Collection | What it helps you explore |
 | --- | --- |
-| **Find a fit** | Search public APIs across AI, finance, weather, maps, security, games, and more. Narrow your shortlist by pricing, authentication, and CORS support. |
-| **Check before integrating** | Inspect trust scores, observed health, response times, documentation, and verification signals where available. |
-| **Compare your options** | Compare 2–8 APIs side by side on trust, pricing, speed, and uptime. |
-| **Keep your stack organized** | Save favorites, group APIs into projects, and sync your shortlist. |
-| **Follow what changes** | Use watchlists, health digests, trust-drop alerts, and the catalog change feed. |
-| **Research with AI** | Connect an MCP-compatible coding agent to search the catalog, inspect API profiles, and compare alternatives. |
+| **Build a finance dashboard** | Finance and cryptocurrency APIs for market data and financial tools. |
+| **Best free AI APIs** | AI and machine-learning APIs with free or freemium access. |
+| **APIs for travel apps** | Weather, travel, transportation, and geocoding APIs. |
+| **No-auth APIs for prototypes** | Free APIs you can try without setting up an API key. |
+
+### Submit your own API and reach other builders
+
+Built an API—or found one worth sharing? **Submit it from the app for review**, then follow its review status under **My submissions**. Help developers and AI agents discover useful APIs through the same catalog.
+
+### Discovery with the details that matter
+
+Search thousands of APIs across AI, finance, weather, maps, security, games, and more. Filter by pricing, authentication, and CORS support, then inspect documentation and verification signals before adding an API to your stack.
 
 Health and trust signals help you evaluate an API using available evidence. Check the verification timestamp and provider documentation when making an integration decision. [How trust scoring works →](https://docs.reqistry.dev/trust)
 
