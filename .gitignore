@@ -55,6 +55,46 @@ key.properties
 .env.*
 !.env.example
 
+# Signing & credentials (never commit)
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.mobileprovision
+key.properties
+android/key.properties
+android/local.properties
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
+**/GoogleService-Info.plist
+**/google-services.json
+service-account*.json
+*-service-account.json
+firebase-service-account*.json
+firebase_service_account.json
+credentials*.json
+
+# iOS build artifacts
+Pods/
+*.xcuserdata/
+*.xcworkspace/xcuserdata/
+DerivedData/
+*.ipa
+*.dSYM.zip
+*.dSYM/
+
+# Local tooling, VPN installer & debug artifacts
+hide.me
+hide.me@.service
+.builder/
+replay-reports/
+fastlane/report.xml
+fastlane/Preview.html
+*.orig
+*.rej
+
 # Local tooling & debug artifacts
 opencode.json
 firepit-log.txt
