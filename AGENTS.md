@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Guidance for AI coding agents and engineers working on **Reqistry** (`api_scout`) — Flutter app for the Reqistry API catalog. Backend lives in the sibling repo `reqistry-web-api-mcp-admin`; its mobile contract is `openapi.mobile.json` at this repo root.
+Guidance for AI coding agents and engineers working on **Reqistry** (`api_scout`) — Flutter app for the Reqistry API catalog. Backend lives in the sibling repo `reqistry-backend` (its own `AGENTS.md` documents the API, deploy and gate procedures); the mobile contract is `openapi.mobile.json` at this repo root, which must stay byte-identical to the backend's copy.
 
 ## Commands
 
@@ -42,6 +42,7 @@ lib/
 - **State:** plain Cubit per feature. No new bloc/event libraries. One-shot page state may use FutureBuilder (see `api_collection_view.dart` for the pattern).
 - **Auth:** tokens live only in `AuthTokenService` (Hive). Refresh/recovery logic is centralized in `dio_client.dart` + `auth_cubit.dart` — see `shouldResetIdentity()` doc comment for the stale-identity contract with the backend.
 - **Backend contract changes:** when the backend repo changes endpoints/payloads, sync `openapi.mobile.json` and update affected models/services in the same change.
+- **Agent Console:** the MCP endpoint is server-driven (`GET /v1/agent-keys/config`) with the documented default as fallback — never hardcode the host, and keep the install snippets verbatim in sync with the backend's published docs.
 
 ## Conventions
 
