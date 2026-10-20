@@ -6,7 +6,7 @@ import 'package:api_scout/app/blocs/search/search_bloc.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
-import 'package:api_scout/shared/widgets/search/quick_filter_chip.dart';
+import 'package:api_scout/shared/widgets/search/filter_chips.dart';
 
 class AdvancedFiltersSheet extends StatelessWidget {
   const AdvancedFiltersSheet({super.key});

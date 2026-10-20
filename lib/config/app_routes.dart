@@ -10,6 +10,7 @@ abstract class AppRoutes {
   static const latestApis = '/latest-apis';
   static const recommendedApis = '/recommended-apis';
   static const submitApi = '/submit-api';
+  static const agentConsole = '/agent';
   static const submissions = '/submissions';
   static const watchlists = '/watchlists';
   static const privacy = '/privacy';

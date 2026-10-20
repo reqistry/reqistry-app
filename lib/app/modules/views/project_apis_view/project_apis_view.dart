@@ -57,7 +57,9 @@ class _ProjectApisViewState extends State<ProjectApisView> {
   }
 
   Future<void> _refresh() async {
-    setState(() => _future = _load());
+    setState(() {
+      _future = _load();
+    });
     // Error UI comes from the FutureBuilder; never let refresh itself throw.
     try {
       await _future;
@@ -75,7 +77,11 @@ class _ProjectApisViewState extends State<ProjectApisView> {
     if (title == null || title.isEmpty || !mounted) return;
     await context.read<ProjectsCubit>().updateProject(detail.id,
         title: title, l10n: AppLocalizations.of(context)!);
-    if (mounted) setState(() => _future = _load());
+    if (mounted) {
+      setState(() {
+        _future = _load();
+      });
+    }
   }
 
   Future<void> _delete(ProjectDetail detail) async {
@@ -111,7 +117,11 @@ class _ProjectApisViewState extends State<ProjectApisView> {
           apiId: apiId,
           l10n: AppLocalizations.of(context)!,
         );
-    if (mounted) setState(() => _future = _load());
+    if (mounted) {
+      setState(() {
+        _future = _load();
+      });
+    }
   }
 
   @override
@@ -165,7 +175,9 @@ class _ProjectApisViewState extends State<ProjectApisView> {
       return AppErrorState(
         title: AppLocalizations.of(context)!.stateCouldNotLoadProject,
         message: snapshot.error.toString(),
-        onRetry: () => setState(() => _future = _load()),
+        onRetry: () => setState(() {
+          _future = _load();
+        }),
         scrollable: true,
       );
     }

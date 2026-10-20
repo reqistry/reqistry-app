@@ -55,6 +55,7 @@ class _MainShellViewState extends State<MainShellView> {
           .read<ProjectsCubit>()
           .loadProjects(l10n: AppLocalizations.of(context)!);
       context.read<UserActivityCubit>().refresh();
+      RootShowcase.maybeStart(context);
     });
   }
 

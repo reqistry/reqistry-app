@@ -24,7 +24,7 @@
   "@navIntelligence": {
     "description": "Bottom navigation tab label"
   },
-  "navSaved": "Saved",
+  "navSaved": "Stack",
   "@navSaved": {
     "description": "Bottom navigation tab label"
   },
@@ -40,7 +40,7 @@
   "@tabSearch": {
     "description": "Search tab title"
   },
-  "tabBookmarks": "BOOKMARKS",
+  "tabBookmarks": "STACK",
   "@tabBookmarks": {
     "description": "Bookmarks/favorites tab title"
   },
@@ -514,7 +514,7 @@
   "@statePullToRefresh": {
     "description": "Pull to refresh message"
   },
-  "stateNoBookmarksYet": "No bookmarks yet",
+  "stateNoBookmarksYet": "Your Stack is empty",
   "@stateNoBookmarksYet": {
     "description": "No bookmarks state"
   },
@@ -696,7 +696,7 @@
   "@snackbarRequestFailedMessage": {
     "description": "Request failed message"
   },
-  "snackbarBookmarkedTitle": "Bookmarked",
+  "snackbarBookmarkedTitle": "Added to Stack",
   "@snackbarBookmarkedTitle": {
     "description": "Bookmark success title"
   },
@@ -704,11 +704,11 @@
   "@snackbarBookmarkErrorTitle": {
     "description": "Bookmark error title"
   },
-  "snackbarBookmarkErrorMessage": "This API cannot be bookmarked yet.",
+  "snackbarBookmarkErrorMessage": "This API cannot be added to your Stack yet.",
   "@snackbarBookmarkErrorMessage": {
     "description": "Bookmark error message"
   },
-  "snackbarFailedToBookmark": "Failed to bookmark API",
+  "snackbarFailedToBookmark": "Failed to add to Stack",
   "@snackbarFailedToBookmark": {
     "description": "Bookmark failure message"
   },
@@ -716,11 +716,11 @@
   "@snackbarRemovedTitle": {
     "description": "Removed success title"
   },
-  "snackbarBookmarkRemoved": "Bookmark removed",
+  "snackbarBookmarkRemoved": "Removed from your Stack",
   "@snackbarBookmarkRemoved": {
     "description": "Bookmark removed message"
   },
-  "snackbarFailedToRemoveBookmark": "Failed to remove bookmark",
+  "snackbarFailedToRemoveBookmark": "Failed to remove from Stack",
   "@snackbarFailedToRemoveBookmark": {
     "description": "Remove bookmark failure"
   },
@@ -843,11 +843,11 @@
   "@snackbarCouldNotSaveToken": {
     "description": "Save token failure"
   },
-  "snackbarNoBookmarksTitle": "No bookmarks",
+  "snackbarNoBookmarksTitle": "Nothing to export",
   "@snackbarNoBookmarksTitle": {
     "description": "No bookmarks title"
   },
-  "snackbarNoBookmarksMessage": "You have no bookmarks to export.",
+  "snackbarNoBookmarksMessage": "Your Stack is empty.",
   "@snackbarNoBookmarksMessage": {
     "description": "No bookmarks message"
   },
@@ -915,7 +915,7 @@
   "@snackbarReportSubmittedMessage": {
     "description": "Report submitted message"
   },
-  "snackbarBookmarkUnavailable": "Bookmark unavailable",
+  "snackbarBookmarkUnavailable": "Cannot add to Stack",
   "@snackbarBookmarkUnavailable": {
     "description": "Bookmark unavailable title"
   },
@@ -997,7 +997,7 @@
   "@snackbarFailedToLoadProjects": {
     "description": "Load projects failure"
   },
-  "snackbarAddedToBookmarks": "{name} added to bookmarks",
+  "snackbarAddedToBookmarks": "{name} added to your Stack",
   "@snackbarAddedToBookmarks": {
     "description": "Added to bookmarks message",
     "placeholders": {
@@ -1165,11 +1165,11 @@
   "@apiDetailTerms": {
     "description": "Terms link label"
   },
-  "apiDetailBookmarkApi": "Bookmark API",
+  "apiDetailBookmarkApi": "Add to Stack",
   "@apiDetailBookmarkApi": {
     "description": "Bookmark API tooltip"
   },
-  "apiDetailRemoveBookmark": "Remove bookmark",
+  "apiDetailRemoveBookmark": "Remove from Stack",
   "@apiDetailRemoveBookmark": {
     "description": "Remove bookmark tooltip"
   },
@@ -1242,11 +1242,14 @@
   "@pickerSearchHint": {
     "description": "API picker search hint"
   },
-  "pickerSelectedCount": "{count} of 8 selected",
+  "pickerSelectedCount": "{count} of {max} selected",
   "@pickerSelectedCount": {
     "description": "Selected count in API picker",
     "placeholders": {
       "count": {
+        "type": "int"
+      },
+      "max": {
         "type": "int"
       }
     }
@@ -1296,7 +1299,7 @@
   "@onboardingNavBarTitle": {
     "description": "Onboarding step title"
   },
-  "onboardingNavBarDesc": "Switch between Home, Explore, Intelligence, Saved and You.",
+  "onboardingNavBarDesc": "Switch between Home, Explore, Intelligence, Stack and You.",
   "@onboardingNavBarDesc": {
     "description": "Onboarding step description"
   },
@@ -1320,7 +1323,7 @@
   "@onboardingStatsTitle": {
     "description": "Onboarding step title"
   },
-  "onboardingStatsDesc": "Keep track of your bookmarked APIs and projects at a glance.",
+  "onboardingStatsDesc": "Keep track of your Stack and projects at a glance.",
   "@onboardingStatsDesc": {
     "description": "Onboarding step description"
   },
@@ -1348,11 +1351,11 @@
   "@onboardingSaveProjectDesc": {
     "description": "Onboarding step description"
   },
-  "onboardingBookmarkTitle": "BOOKMARK IT",
+  "onboardingBookmarkTitle": "SAVE TO STACK",
   "@onboardingBookmarkTitle": {
     "description": "Onboarding step title"
   },
-  "onboardingBookmarkDesc": "Save the API to your bookmarks for quick access anytime.",
+  "onboardingBookmarkDesc": "Save the API to your Stack for quick access anytime.",
   "@onboardingBookmarkDesc": {
     "description": "Onboarding step description"
   },
@@ -1452,7 +1455,7 @@
   "@settingsProjects": {
     "description": "Projects settings item"
   },
-  "settingsSavedApis": "Saved APIs",
+  "settingsSavedApis": "Stack",
   "@settingsSavedApis": {
     "description": "Saved APIs settings item"
   },
@@ -1488,7 +1491,7 @@
   "@settingsNotifications": {
     "description": "Notifications toggle"
   },
-  "settingsExportFavorites": "Export favorites",
+  "settingsExportFavorites": "Export Stack",
   "@settingsExportFavorites": {
     "description": "Export favorites action"
   },
@@ -1500,7 +1503,7 @@
   "@settingsClearLocalDataSubtitle": {
     "description": "Clear data subtitle"
   },
-  "settingsSavedStat": "Saved",
+  "settingsSavedStat": "Stack",
   "@settingsSavedStat": {
     "description": "Saved stat label"
   },
@@ -1520,7 +1523,7 @@
   "@actionOpen": {
     "description": "Open action label"
   },
-  "settingsProfileSaved": "You saved",
+  "settingsProfileSaved": "In your Stack",
   "@settingsProfileSaved": {
     "description": "Profile saved label"
   },
@@ -1635,8 +1638,8 @@
   "@settingsNotificationDisabled": {
     "description": "Notifications disabled status"
   },
-  "notificationSavedApiHealth": "Saved API health",
-  "notificationSavedApiHealthSubtitle": "Alerts when an API you saved goes down or recovers.",
+  "notificationSavedApiHealth": "API health",
+  "notificationSavedApiHealthSubtitle": "Alerts when an API in your Stack goes down or recovers.",
   "notificationNewMatchingApis": "Matching APIs",
   "notificationNewMatchingApisSubtitle": "New APIs matching categories you follow.",
   "notificationWeeklyDigest": "Weekly digest and reminders",
@@ -1647,7 +1650,7 @@
   "notificationPricingChangesSubtitle": "Alerts when pricing changes for saved APIs.",
   "notificationTrustAlerts": "Trust alerts",
   "notificationTrustAlertsSubtitle": "Warnings when trust scores drop for saved APIs.",
-  "settingsExportFavoritesSubtitle": "Export a list of your favorite APIs (name, description, link).",
+  "settingsExportFavoritesSubtitle": "Export a list of your Stack APIs (name, description, link).",
   "@settingsExportFavoritesSubtitle": {
     "description": "Export favorites subtitle"
   },
@@ -1920,11 +1923,11 @@
       }
     }
   },
-  "stateLoadingBookmarks": "Loading bookmarks",
+  "stateLoadingBookmarks": "Loading your Stack",
   "@stateLoadingBookmarks": {
     "description": "Loading bookmarks message"
   },
-  "stateBookmarksEmptyMessage": "Tap the bookmark icon on any API in the Discover tab to save it here.",
+  "stateBookmarksEmptyMessage": "Tap the bookmark icon on any API to add it to your Stack.",
   "@stateBookmarksEmptyMessage": {
     "description": "Empty bookmarks message"
   },
@@ -2514,6 +2517,10 @@
   "@watchAdded": {
     "description": "Watch added message"
   },
+  "watchRemoved": "Watch removed",
+  "@watchRemoved": {
+    "description": "Watch removed message"
+  },
   "watchLimitReached": "Watchlist limit reached",
   "@watchLimitReached": {
     "description": "Watchlist limit message"
@@ -2670,5 +2677,41 @@
   "intelligenceEditSelection": "Edit selection",
   "@intelligenceEditSelection": {
     "description": "Button label for editing selected APIs before comparison"
-  }
+  },
+  "trustScoreSemantics": "Trust score {score} out of 100, grade {grade}",
+  "@trustScoreSemantics": {
+    "description": "Screen-reader label for the trust score chip",
+    "placeholders": {
+      "score": {"type": "int"},
+      "grade": {"type": "String"}
+    }
+  },
+  "trustScoreLabel": "Trust score",
+  "@trustScoreLabel": {
+    "description": "Screen-reader label when only the trust grade is known"
+  },
+  "shipCheckGradeShort": "Grade {grade}",
+  "@shipCheckGradeShort": {
+    "description": "Short grade caption in the ship-check sheet",
+    "placeholders": {
+      "grade": {"type": "String"}
+    }
+  },
+  "agentConsoleTitle": "Agent console",
+  "agentConsoleSubtitle": "MCP endpoint, keys and usage",
+  "agentConnectTitle": "Connect your agent",
+  "agentConnectSubtitle": "Add the Reqistry MCP server to any MCP-compatible client. Read-only tools work without a key.",
+  "agentEndpointLabel": "Endpoint",
+  "agentTransportLabel": "Transport",
+  "agentKeyHeaderLabel": "Optional key header",
+  "agentConfigCopied": "Configuration copied",
+  "agentRestartHint": "Restart or refresh the client so it reloads the tools.",
+  "agentKeysDeviceNotice": "Keys are bound to this device. Link an account to keep them after a reinstall.",
+  "agentKeyNeverUsed": "No calls yet",
+  "agentKeyLastUsed": "Last used {when}",
+  "agentVerifyTitle": "Verify",
+  "agentVerifyAsk": "Ask your agent: “List Reqistry categories”",
+  "agentVerifyExpect": "A working agent answers with catalog categories, no key required.",
+  "@agentKeyLastUsed": {"description": "Key usage line: human readable timestamp of the last agent call", "placeholders": {"when": {"type": "String"}}},
+  "@agentVerifyAsk": {"description": "Verification instruction for the user to send to their agent"}
 }

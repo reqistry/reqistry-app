@@ -6,6 +6,7 @@ import '../../data/models/category_apis.dart';
 import '../../data/models/apis_search_response.dart';
 import '../../data/models/bookmark_item.dart';
 import '../../data/models/intelligence.dart';
+import '../../data/models/agent_client_config.dart';
 import '../../data/models/feature_models.dart';
 import '../../data/models/submission.dart';
 import '../auth/dio_client.dart';
@@ -662,6 +663,27 @@ class RemoteService {
     } catch (e) {
       throw Failure(l10n?.errorParseError ?? 'Parse error',
           l10n?.errorFailedToProcessData ?? 'Failed to process agent key');
+    }
+  }
+
+  /// Public MCP client metadata for the Agent Console. Falls back to the
+  /// documented default so the screen still shows usable config when offline.
+  static Future<AgentClientConfig> getAgentClientConfig() async {
+    try {
+      final response = await _dio.get(
+        '/v1/agent-keys/config',
+        options: Options(
+          extra: const {RequestErrorNotifierInterceptor.silentKey: true},
+        ),
+      );
+      final data = response.data;
+      if (data is Map && data['data'] is Map) {
+        return AgentClientConfig.fromJson(
+            Map<String, dynamic>.from(data['data'] as Map));
+      }
+      return AgentClientConfig.fallback;
+    } catch (_) {
+      return AgentClientConfig.fallback;
     }
   }
 

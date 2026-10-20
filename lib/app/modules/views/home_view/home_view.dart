@@ -22,6 +22,7 @@ import 'package:api_scout/app/modules/views/home_view/widgets/submit_api_sheet.d
 
 import 'widgets/continue_work_section.dart';
 import 'widgets/latest_apis_section.dart';
+import 'widgets/registry_changes_section.dart';
 import 'widgets/trendy_categories_section.dart';
 import 'widgets/user_activity_section.dart';
 
@@ -222,6 +223,8 @@ class _HomeViewState extends State<HomeView> {
               const TrendyCategoriesSection(),
               const SizedBox(height: AppSpacing.s24),
               RecommendedApisSection(refreshTick: _refreshTick),
+              const SizedBox(height: AppSpacing.s24),
+              RegistryChangesSection(refreshTick: _refreshTick),
               const SizedBox(height: AppSpacing.s24),
               LatestApisSection(refreshTick: _refreshTick),
               const SizedBox(height: AppSpacing.s24),

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
-import 'package:api_scout/app/modules/views/home_view/widgets/registry_changes_section.dart';
 import 'package:api_scout/app/modules/views/intelligence_view/widgets/api_picker_sheet.dart';
 import 'package:api_scout/app/modules/views/intelligence_view/widgets/collections_section.dart';
 import 'package:api_scout/app/services/local_db/hive/locals_box.dart';
@@ -138,8 +137,6 @@ class _IntelligenceViewState extends State<IntelligenceView> {
           ],
           const SizedBox(height: AppSpacing.s32),
           const CollectionsSection(),
-          const SizedBox(height: AppSpacing.s32),
-          const RegistryChangesSection(refreshTick: 0),
         ],
       ),
     );
@@ -480,7 +477,7 @@ class _HistoryChip extends StatelessWidget {
         highlightColor: c.surfaceContainerHigh,
         splashColor: c.surfaceContainerHighest,
         child: Container(
-          constraints: const BoxConstraints(minHeight: 44),
+          constraints: const BoxConstraints(minHeight: 48),
           alignment: Alignment.centerLeft,
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.s12,

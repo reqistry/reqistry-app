@@ -187,7 +187,7 @@ class _ReportBody extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      'Grade ${report.grade}',
+                      l10n.shipCheckGradeShort(report.grade),
                       style: AppTextStyles.bodySm.copyWith(
                         color: c.onSurfaceVariant,
                       ),

@@ -23,7 +23,6 @@ import 'package:api_scout/app/utils/snackbar_helper.dart';
 import 'package:api_scout/config/app_routes.dart';
 import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:api_scout/config/env.dart';
-import 'package:api_scout/app/modules/views/settings_view/widgets/agent_keys_section.dart';
 import 'package:api_scout/app/modules/views/settings_view/widgets/profile_panel.dart';
 import 'package:api_scout/app/modules/views/settings_view/widgets/stats_grid.dart';
 import 'package:api_scout/app/modules/views/settings_view/widgets/settings_section.dart';
@@ -232,11 +231,15 @@ class _SettingsViewState extends State<SettingsView> {
               ],
             ),
             const SizedBox(height: AppSpacing.s24),
-            const AgentKeysSection(),
-            const SizedBox(height: AppSpacing.s24),
             SettingsSection(
               title: AppLocalizations.of(context)!.sectionManage,
               children: [
+                SettingsEntryTile(
+                  icon: PhosphorIconsRegular.plugs,
+                  title: AppLocalizations.of(context)!.agentConsoleTitle,
+                  subtitle: AppLocalizations.of(context)!.agentConsoleSubtitle,
+                  onTap: () => context.push(AppRoutes.agentConsole),
+                ),
                 SettingsEntryTile(
                   icon: PhosphorIconsRegular.gearSix,
                   title: AppLocalizations.of(context)!.settingsAppSettings,
@@ -268,14 +271,6 @@ class _SettingsViewState extends State<SettingsView> {
                   title: AppLocalizations.of(context)!.settingsRateApp,
                   onTap: () => launchUrl(
                     Uri.parse(Env.appShareUrl),
-                    mode: LaunchMode.externalApplication,
-                  ),
-                ),
-                SettingsEntryTile(
-                  icon: PhosphorIconsRegular.plugs,
-                  title: 'MCP',
-                  onTap: () => launchUrl(
-                    Uri.parse('https://reqistry.dev/#mcp'),
                     mode: LaunchMode.externalApplication,
                   ),
                 ),

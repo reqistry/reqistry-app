@@ -22,7 +22,7 @@ class TabChoice extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: Container(
-        height: 44,
+        height: 48,
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: selected ? c.primary : c.surface,

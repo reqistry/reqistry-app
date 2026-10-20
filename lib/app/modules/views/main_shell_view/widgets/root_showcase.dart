@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:showcaseview/showcaseview.dart';
 
 import 'package:api_scout/app/blocs/main_shell/main_shell_cubit.dart';
+import 'package:api_scout/app/services/analytics/posthog_service.dart';
 import 'package:api_scout/app/services/local_db/hive/locals_box.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
@@ -21,6 +22,7 @@ class RootShowcase {
   RootShowcase._();
 
   static const _doneKey = 'rootOnboardingDone';
+  static const _pendingKey = 'rootOnboardingPending';
 
   static final GlobalKey navBarKey = GlobalKey();
   static final GlobalKey submitApiKey = GlobalKey();
@@ -34,17 +36,26 @@ class RootShowcase {
 
   static bool get isDone => LocalsDB.instance.getWithKey(_doneKey) == true;
 
-  static Future<void> markDone() =>
-      LocalsDB.instance.putWithKey(_doneKey, true);
+  static bool get isPending =>
+      LocalsDB.instance.getWithKey(_pendingKey) == true;
+
+  static Future<void> queueFirstRun() async {
+    if (!isDone) await LocalsDB.instance.putWithKey(_pendingKey, true);
+  }
+
+  static Future<void> markDone() async {
+    await LocalsDB.instance.putWithKey(_doneKey, true);
+    await LocalsDB.instance.deleteWithKey(_pendingKey);
+  }
 
   /// Starts the tour on first launch only.
   static void maybeStart(BuildContext context) {
-    if (isDone || _running) return;
-    start(context);
+    if (!isPending || isDone || _running) return;
+    start(context, trigger: 'first_run');
   }
 
   /// Runs the full tour. Also used by the Settings "replay intro" action.
-  static void start(BuildContext context) {
+  static void start(BuildContext context, {String trigger = 'replay'}) {
     if (_running) return;
     _running = true;
     ensureRegistered(context);
@@ -57,6 +68,12 @@ class RootShowcase {
       return;
     }
     final shell = context.read<MainShellCubit>();
+    unawaited(
+      PostHogService.instance.capture('onboarding_tour_started', {
+        'tour': 'root',
+        'trigger': trigger,
+      }),
+    );
 
     var finished = false;
 
@@ -67,10 +84,16 @@ class RootShowcase {
     late final VoidCallback onFinishHandler;
     late final void Function(GlobalKey?) onDismissHandler;
 
-    void settle() {
+    void settle({required bool completed}) {
       if (finished) return;
       finished = true;
       _running = false;
+      unawaited(
+        PostHogService.instance.capture(
+          completed ? 'onboarding_tour_completed' : 'onboarding_tour_skipped',
+          {'tour': 'root', 'trigger': trigger},
+        ),
+      );
       unawaited(complete());
       scheduleMicrotask(() {
         showcaseView.removeOnFinishCallback(onFinishHandler);
@@ -78,8 +101,8 @@ class RootShowcase {
       });
     }
 
-    onFinishHandler = settle;
-    onDismissHandler = (_) => settle();
+    onFinishHandler = () => settle(completed: true);
+    onDismissHandler = (_) => settle(completed: false);
 
     showcaseView.addOnFinishCallback(onFinishHandler);
     showcaseView.addOnDismissCallback(onDismissHandler);
@@ -95,7 +118,7 @@ class RootShowcase {
         delay: const Duration(milliseconds: 300),
       );
     } catch (_) {
-      settle();
+      settle(completed: false);
     }
   }
 
@@ -174,6 +197,7 @@ class RootShowcase {
   }
 
   static void dispose() {
+    _running = false;
     if (!_registered) return;
     ShowcaseView.get().unregister();
     _registered = false;

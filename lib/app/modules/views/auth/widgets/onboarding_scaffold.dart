@@ -6,6 +6,7 @@ import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
 import 'package:api_scout/app/modules/views/auth/widgets/onboarding.dart';
+import 'package:api_scout/app/modules/views/main_shell_view/widgets/root_showcase.dart';
 
 class OnboardingScaffold extends StatelessWidget {
   const OnboardingScaffold({super.key});
@@ -39,7 +40,13 @@ class OnboardingScaffold extends StatelessWidget {
         child: SizedBox(
           height: 52,
           child: ElevatedButton(
-            onPressed: () => context.read<AuthCubit>().continueAsGuest(l10n: AppLocalizations.of(context)!),
+            onPressed: () async {
+              await RootShowcase.queueFirstRun();
+              if (!context.mounted) return;
+              await context
+                  .read<AuthCubit>()
+                  .continueAsGuest(l10n: AppLocalizations.of(context)!);
+            },
             child: Text(
               AppLocalizations.of(context)!.onboardingExploreApis,
               style: AppTextStyles.labelSmUpper.copyWith(

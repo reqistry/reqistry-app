@@ -238,19 +238,24 @@ class _AppSnackbarState extends State<AppSnackbar>
                           ),
                           const SizedBox(width: AppSpacing.s4),
                         ],
-                        IconButton(
-                          onPressed: dismiss,
-                          tooltip: MaterialLocalizations.of(context)
+                        Semantics(
+                          // No Tooltip: AppOverlayHost lives above the
+                          // Navigator, so there is no Overlay ancestor.
+                          label: MaterialLocalizations.of(context)
                               .closeButtonTooltip,
-                          constraints: const BoxConstraints.tightFor(
-                            width: 48,
-                            height: 48,
-                          ),
-                          padding: EdgeInsets.zero,
-                          icon: Icon(
-                            PhosphorIconsRegular.x,
-                            size: 16,
-                            color: c.outline,
+                          button: true,
+                          child: IconButton(
+                            onPressed: dismiss,
+                            constraints: const BoxConstraints.tightFor(
+                              width: 48,
+                              height: 48,
+                            ),
+                            padding: EdgeInsets.zero,
+                            icon: Icon(
+                              PhosphorIconsRegular.x,
+                              size: 16,
+                              color: c.outline,
+                            ),
                           ),
                         ),
                       ],

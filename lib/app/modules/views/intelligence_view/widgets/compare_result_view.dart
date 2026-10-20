@@ -36,7 +36,9 @@ class _CompareResultViewState extends State<CompareResultView> {
   }
 
   void _reload() {
-    setState(() => _future = RemoteService.compareApis(ids: widget.apiIds));
+    setState(() {
+      _future = RemoteService.compareApis(ids: widget.apiIds);
+    });
   }
 
   @override

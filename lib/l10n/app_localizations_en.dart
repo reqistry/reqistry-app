@@ -27,7 +27,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navIntelligence => 'Intelligence';
 
   @override
-  String get navSaved => 'Saved';
+  String get navSaved => 'Stack';
 
   @override
   String get navYou => 'You';
@@ -39,7 +39,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tabSearch => 'SEARCH';
 
   @override
-  String get tabBookmarks => 'BOOKMARKS';
+  String get tabBookmarks => 'STACK';
 
   @override
   String get tabIntelligence => 'INTELLIGENCE';
@@ -391,7 +391,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statePullToRefresh => 'Pull to refresh and try again.';
 
   @override
-  String get stateNoBookmarksYet => 'No bookmarks yet';
+  String get stateNoBookmarksYet => 'Your Stack is empty';
 
   @override
   String get stateNoProjectsYet => 'No projects yet';
@@ -533,26 +533,26 @@ class AppLocalizationsEn extends AppLocalizations {
       'The request could not be completed. Please try again.';
 
   @override
-  String get snackbarBookmarkedTitle => 'Bookmarked';
+  String get snackbarBookmarkedTitle => 'Added to Stack';
 
   @override
   String get snackbarBookmarkErrorTitle => 'Error';
 
   @override
   String get snackbarBookmarkErrorMessage =>
-      'This API cannot be bookmarked yet.';
+      'This API cannot be added to your Stack yet.';
 
   @override
-  String get snackbarFailedToBookmark => 'Failed to bookmark API';
+  String get snackbarFailedToBookmark => 'Failed to add to Stack';
 
   @override
   String get snackbarRemovedTitle => 'Removed';
 
   @override
-  String get snackbarBookmarkRemoved => 'Bookmark removed';
+  String get snackbarBookmarkRemoved => 'Removed from your Stack';
 
   @override
-  String get snackbarFailedToRemoveBookmark => 'Failed to remove bookmark';
+  String get snackbarFailedToRemoveBookmark => 'Failed to remove from Stack';
 
   @override
   String get snackbarProjectCreatedTitle => 'Created';
@@ -644,10 +644,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get snackbarCouldNotSaveToken => 'Could not save token';
 
   @override
-  String get snackbarNoBookmarksTitle => 'No bookmarks';
+  String get snackbarNoBookmarksTitle => 'Nothing to export';
 
   @override
-  String get snackbarNoBookmarksMessage => 'You have no bookmarks to export.';
+  String get snackbarNoBookmarksMessage => 'Your Stack is empty.';
 
   @override
   String get snackbarExportFailedTitle => 'Export failed';
@@ -700,7 +700,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Thanks. Reqistry will review this information.';
 
   @override
-  String get snackbarBookmarkUnavailable => 'Bookmark unavailable';
+  String get snackbarBookmarkUnavailable => 'Cannot add to Stack';
 
   @override
   String get snackbarBookmarkUnavailableMessage =>
@@ -763,7 +763,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String snackbarAddedToBookmarks(String name) {
-    return '$name added to bookmarks';
+    return '$name added to your Stack';
   }
 
   @override
@@ -882,10 +882,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get apiDetailTerms => 'Terms';
 
   @override
-  String get apiDetailBookmarkApi => 'Bookmark API';
+  String get apiDetailBookmarkApi => 'Add to Stack';
 
   @override
-  String get apiDetailRemoveBookmark => 'Remove bookmark';
+  String get apiDetailRemoveBookmark => 'Remove from Stack';
 
   @override
   String get apiDetailMoreActions => 'More actions';
@@ -939,8 +939,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pickerSearchHint => 'Search APIs…';
 
   @override
-  String pickerSelectedCount(int count) {
-    return '$count of 8 selected';
+  String pickerSelectedCount(int count, int max) {
+    return '$count of $max selected';
   }
 
   @override
@@ -979,7 +979,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingNavBarDesc =>
-      'Switch between Home, Explore, Intelligence, Saved and You.';
+      'Switch between Home, Explore, Intelligence, Stack and You.';
 
   @override
   String get onboardingSubmitApiTitle => 'ADD API';
@@ -1000,7 +1000,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingStatsDesc =>
-      'Keep track of your bookmarked APIs and projects at a glance.';
+      'Keep track of your Stack and projects at a glance.';
 
   @override
   String get onboardingProjectsTitle => 'YOUR PROJECTS';
@@ -1024,11 +1024,11 @@ class AppLocalizationsEn extends AppLocalizations {
       'Add this API to one of your projects, or create a new one.';
 
   @override
-  String get onboardingBookmarkTitle => 'BOOKMARK IT';
+  String get onboardingBookmarkTitle => 'SAVE TO STACK';
 
   @override
   String get onboardingBookmarkDesc =>
-      'Save the API to your bookmarks for quick access anytime.';
+      'Save the API to your Stack for quick access anytime.';
 
   @override
   String get settingsReplayIntro => 'Replay intro';
@@ -1105,7 +1105,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsProjects => 'Projects';
 
   @override
-  String get settingsSavedApis => 'Saved APIs';
+  String get settingsSavedApis => 'Stack';
 
   @override
   String get settingsSubmitAnApi => 'Add API';
@@ -1132,7 +1132,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsNotifications => 'Notifications';
 
   @override
-  String get settingsExportFavorites => 'Export favorites';
+  String get settingsExportFavorites => 'Export Stack';
 
   @override
   String get settingsClearLocalData => 'Clear local data';
@@ -1142,7 +1142,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Remove local cache, settings, tokens, and saved state.';
 
   @override
-  String get settingsSavedStat => 'Saved';
+  String get settingsSavedStat => 'Stack';
 
   @override
   String get settingsProjectsStat => 'Projects';
@@ -1157,7 +1157,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get actionOpen => 'OPEN';
 
   @override
-  String get settingsProfileSaved => 'You saved';
+  String get settingsProfileSaved => 'In your Stack';
 
   @override
   String get settingsProfileHave => 'You have';
@@ -1241,11 +1241,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsNotificationDisabled => 'Disabled. Push token is revoked.';
 
   @override
-  String get notificationSavedApiHealth => 'Saved API health';
+  String get notificationSavedApiHealth => 'API health';
 
   @override
   String get notificationSavedApiHealthSubtitle =>
-      'Alerts when an API you saved goes down or recovers.';
+      'Alerts when an API in your Stack goes down or recovers.';
 
   @override
   String get notificationNewMatchingApis => 'Matching APIs';
@@ -1284,7 +1284,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsExportFavoritesSubtitle =>
-      'Export a list of your favorite APIs (name, description, link).';
+      'Export a list of your Stack APIs (name, description, link).';
 
   @override
   String dialogClearLocalDataConfirmMessage(String appName) {
@@ -1487,11 +1487,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get stateLoadingBookmarks => 'Loading bookmarks';
+  String get stateLoadingBookmarks => 'Loading your Stack';
 
   @override
   String get stateBookmarksEmptyMessage =>
-      'Tap the bookmark icon on any API in the Discover tab to save it here.';
+      'Tap the bookmark icon on any API to add it to your Stack.';
 
   @override
   String get tooltipRenameProject => 'Rename project';
@@ -1936,6 +1936,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get watchAdded => 'Watch added';
 
   @override
+  String get watchRemoved => 'Watch removed';
+
+  @override
   String get watchLimitReached => 'Watchlist limit reached';
 
   @override
@@ -2055,4 +2058,68 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get intelligenceEditSelection => 'Edit selection';
+
+  @override
+  String trustScoreSemantics(int score, String grade) {
+    return 'Trust score $score out of 100, grade $grade';
+  }
+
+  @override
+  String get trustScoreLabel => 'Trust score';
+
+  @override
+  String shipCheckGradeShort(String grade) {
+    return 'Grade $grade';
+  }
+
+  @override
+  String get agentConsoleTitle => 'Agent console';
+
+  @override
+  String get agentConsoleSubtitle => 'MCP endpoint, keys and usage';
+
+  @override
+  String get agentConnectTitle => 'Connect your agent';
+
+  @override
+  String get agentConnectSubtitle =>
+      'Add the Reqistry MCP server to any MCP-compatible client. Read-only tools work without a key.';
+
+  @override
+  String get agentEndpointLabel => 'Endpoint';
+
+  @override
+  String get agentTransportLabel => 'Transport';
+
+  @override
+  String get agentKeyHeaderLabel => 'Optional key header';
+
+  @override
+  String get agentConfigCopied => 'Configuration copied';
+
+  @override
+  String get agentRestartHint =>
+      'Restart or refresh the client so it reloads the tools.';
+
+  @override
+  String get agentKeysDeviceNotice =>
+      'Keys are bound to this device. Link an account to keep them after a reinstall.';
+
+  @override
+  String get agentKeyNeverUsed => 'No calls yet';
+
+  @override
+  String agentKeyLastUsed(String when) {
+    return 'Last used $when';
+  }
+
+  @override
+  String get agentVerifyTitle => 'Verify';
+
+  @override
+  String get agentVerifyAsk => 'Ask your agent: “List Reqistry categories”';
+
+  @override
+  String get agentVerifyExpect =>
+      'A working agent answers with catalog categories, no key required.';
 }

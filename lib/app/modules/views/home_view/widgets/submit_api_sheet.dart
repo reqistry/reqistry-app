@@ -4,6 +4,7 @@ import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/services/fetch_api/remote_service.dart';
 import 'package:api_scout/app/utils/snackbar_helper.dart';
 import 'package:api_scout/app/utils/text_input_route.dart';
+import 'package:api_scout/shared/widgets/submit/submit_api_form.dart';
 import 'package:api_scout/shared/widgets/ui/bottom_sheet_scaffold.dart';
 
 class SubmitApiSheet extends StatefulWidget {
@@ -66,43 +67,12 @@ class _SubmitApiSheetState extends State<SubmitApiSheet> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextFormField(
-                controller: _nameController,
-                autofocus: true,
-                decoration: InputDecoration(
-                  hintText: AppLocalizations.of(context)!.formApiName,
-                ),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return AppLocalizations.of(context)!.formFieldRequired;
-                  }
-                  if (value.trim().length < 3) {
-                    return AppLocalizations.of(context)!.formNameTooShort;
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: AppSpacing.s12),
-              TextFormField(
-                controller: _linkController,
-                keyboardType: TextInputType.url,
-                decoration: InputDecoration(
-                  hintText: AppLocalizations.of(context)!.formApiLink,
-                ),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return AppLocalizations.of(context)!.formFieldRequired;
-                  }
-                  final parsed = Uri.tryParse(value.trim());
-                  if (parsed == null ||
-                      !parsed.hasScheme ||
-                      !parsed.hasAuthority ||
-                      !(parsed.scheme.toLowerCase() == 'https' ||
-                          parsed.scheme.toLowerCase() == 'http')) {
-                    return AppLocalizations.of(context)!.formInvalidUrl;
-                  }
-                  return null;
-                },
+              SubmitApiFields(
+                nameController: _nameController,
+                linkController: _linkController,
+                autofocusName: true,
+                useHints: true,
+                fieldGap: AppSpacing.s12,
               ),
             ],
           ),

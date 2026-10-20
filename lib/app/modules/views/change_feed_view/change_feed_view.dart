@@ -33,7 +33,9 @@ class _ChangeFeedViewState extends State<ChangeFeedView> {
   }
 
   void _reload() {
-    setState(() => _future = RemoteService.getChangeFeed());
+    setState(() {
+      _future = RemoteService.getChangeFeed();
+    });
   }
 
   @override

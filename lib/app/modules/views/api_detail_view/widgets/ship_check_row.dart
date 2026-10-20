@@ -36,6 +36,7 @@ class ShipCheckRow extends StatelessWidget {
               );
             },
             child: Container(
+              constraints: const BoxConstraints(minHeight: 48),
               padding: const EdgeInsets.all(AppSpacing.s12),
               decoration: BoxDecoration(
                 color: c.surface,

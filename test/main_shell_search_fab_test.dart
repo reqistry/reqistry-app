@@ -13,7 +13,9 @@ import 'package:api_scout/app/blocs/projects/projects_state.dart';
 import 'package:api_scout/app/blocs/user_activity/user_activity_cubit.dart';
 import 'package:api_scout/app/blocs/user_activity/user_activity_state.dart';
 import 'package:api_scout/app/modules/views/main_shell_view.dart';
+import 'package:api_scout/app/modules/views/main_shell_view/widgets/root_showcase.dart';
 import 'package:api_scout/app/services/local_db/hive/constants/boxes.dart';
+import 'package:api_scout/app/services/local_db/hive/locals_box.dart';
 import 'package:api_scout/config/app_routes.dart';
 import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -30,6 +32,8 @@ void main() {
     Hive.init(hiveDirectory.path);
     await Hive.openBox(BoxesConstants.locals);
   });
+
+  setUp(() => LocalsDB.instance.clear());
 
   tearDownAll(() async {
     await Hive.close();
@@ -99,6 +103,52 @@ void main() {
     await tester.tap(find.byType(FloatingActionButton));
     await tester.pumpAndSettle();
     expect(find.text('API search route'), findsOneWidget);
+  });
+
+  testWidgets('pending first-run tour starts when the shell is ready',
+      (tester) async {
+    await tester.runAsync(
+      () => LocalsDB.instance.putWithKey('rootOnboardingPending', true),
+    );
+    final router = GoRouter(
+      routes: [
+        GoRoute(path: '/', builder: (_, __) => const MainShellView()),
+      ],
+    );
+    addTearDown(router.dispose);
+
+    await tester.pumpWidget(
+      MultiBlocProvider(
+        providers: [
+          BlocProvider<MainShellCubit>.value(value: _FakeMainShellCubit()),
+          BlocProvider<FavoritesCubit>.value(value: _FakeFavoritesCubit()),
+          BlocProvider<ProjectsCubit>.value(value: _FakeProjectsCubit()),
+          BlocProvider<UserActivityCubit>.value(
+            value: _FakeUserActivityCubit(),
+          ),
+          BlocProvider<HomeCategoriesCubit>.value(
+            value: _FakeHomeCategoriesCubit(),
+          ),
+          BlocProvider<AuthCubit>.value(value: _FakeAuthCubit()),
+          BlocProvider<NotificationCubit>.value(
+            value: _FakeNotificationCubit(),
+          ),
+          BlocProvider<LanguageCubit>.value(value: _FakeLanguageCubit()),
+        ],
+        child: MaterialApp.router(
+          routerConfig: router,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+        ),
+      ),
+    );
+    await tester.pump();
+
+    expect(RootShowcase.isRunning, isTrue);
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pump();
+    expect(RootShowcase.isRunning, isFalse);
   });
 }
 

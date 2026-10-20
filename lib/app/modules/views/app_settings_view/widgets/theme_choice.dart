@@ -27,7 +27,7 @@ class ThemeChoice extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 160),
         curve: Curves.easeOut,
-        height: 44,
+        height: 48,
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: selected ? c.primary : c.surface,

@@ -27,7 +27,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get navIntelligence => 'Inteligencia';
 
   @override
-  String get navSaved => 'Guardados';
+  String get navSaved => 'Stack';
 
   @override
   String get navYou => 'Tú';
@@ -39,7 +39,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get tabSearch => 'BUSCAR';
 
   @override
-  String get tabBookmarks => 'FAVORITOS';
+  String get tabBookmarks => 'STACK';
 
   @override
   String get tabIntelligence => 'INTELIGENCIA';
@@ -394,7 +394,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'Desliza para actualizar e intentar de nuevo.';
 
   @override
-  String get stateNoBookmarksYet => 'Sin favoritos todavía';
+  String get stateNoBookmarksYet => 'Tu Stack está vacío';
 
   @override
   String get stateNoProjectsYet => 'Sin proyectos todavía';
@@ -537,27 +537,26 @@ class AppLocalizationsEs extends AppLocalizations {
       'No se pudo completar la solicitud. Por favor, intenta de nuevo.';
 
   @override
-  String get snackbarBookmarkedTitle => 'Marcado';
+  String get snackbarBookmarkedTitle => 'Añadido al Stack';
 
   @override
   String get snackbarBookmarkErrorTitle => 'Error';
 
   @override
   String get snackbarBookmarkErrorMessage =>
-      'Esta API no se puede marcar todavía.';
+      'Esta API todavía no se puede añadir a tu Stack.';
 
   @override
-  String get snackbarFailedToBookmark => 'No se pudo marcar la API';
+  String get snackbarFailedToBookmark => 'No se pudo añadir al Stack';
 
   @override
   String get snackbarRemovedTitle => 'Eliminado';
 
   @override
-  String get snackbarBookmarkRemoved => 'Favorito eliminado';
+  String get snackbarBookmarkRemoved => 'Eliminado de tu Stack';
 
   @override
-  String get snackbarFailedToRemoveBookmark =>
-      'No se pudo eliminar el favorito';
+  String get snackbarFailedToRemoveBookmark => 'No se pudo quitar del Stack';
 
   @override
   String get snackbarProjectCreatedTitle => 'Creado';
@@ -650,10 +649,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get snackbarCouldNotSaveToken => 'No se pudo guardar el token';
 
   @override
-  String get snackbarNoBookmarksTitle => 'Sin favoritos';
+  String get snackbarNoBookmarksTitle => 'Nada que exportar';
 
   @override
-  String get snackbarNoBookmarksMessage => 'No tienes favoritos para exportar.';
+  String get snackbarNoBookmarksMessage => 'Tu Stack está vacío.';
 
   @override
   String get snackbarExportFailedTitle => 'Error de exportación';
@@ -708,7 +707,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'Gracias. Reqistry revisará esta información.';
 
   @override
-  String get snackbarBookmarkUnavailable => 'Favorito no disponible';
+  String get snackbarBookmarkUnavailable => 'No se puede añadir al Stack';
 
   @override
   String get snackbarBookmarkUnavailableMessage =>
@@ -773,7 +772,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String snackbarAddedToBookmarks(String name) {
-    return '$name añadido a favoritos';
+    return '$name añadido a tu Stack';
   }
 
   @override
@@ -895,10 +894,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get apiDetailTerms => 'Términos';
 
   @override
-  String get apiDetailBookmarkApi => 'Marcar API';
+  String get apiDetailBookmarkApi => 'Añadir al Stack';
 
   @override
-  String get apiDetailRemoveBookmark => 'Eliminar favorito';
+  String get apiDetailRemoveBookmark => 'Quitar del Stack';
 
   @override
   String get apiDetailMoreActions => 'Más acciones';
@@ -952,8 +951,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get pickerSearchHint => 'Buscar APIs…';
 
   @override
-  String pickerSelectedCount(int count) {
-    return '$count de 8 seleccionadas';
+  String pickerSelectedCount(int count, int max) {
+    return '$count de $max seleccionadas';
   }
 
   @override
@@ -992,7 +991,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get onboardingNavBarDesc =>
-      'Cambia entre Inicio, Explorar, Inteligencia, Guardadas y Tú.';
+      'Cambia entre Inicio, Explorar, Inteligencia, Stack y Tú.';
 
   @override
   String get onboardingSubmitApiTitle => 'AÑADIR API';
@@ -1013,7 +1012,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get onboardingStatsDesc =>
-      'Controla tus APIs guardadas y proyectos de un vistazo.';
+      'Controla tu Stack y tus proyectos de un vistazo.';
 
   @override
   String get onboardingProjectsTitle => 'TUS PROYECTOS';
@@ -1037,11 +1036,11 @@ class AppLocalizationsEs extends AppLocalizations {
       'Añade esta API a uno de tus proyectos o crea uno nuevo.';
 
   @override
-  String get onboardingBookmarkTitle => 'GUÁRDALA';
+  String get onboardingBookmarkTitle => 'GUARDAR EN EL STACK';
 
   @override
   String get onboardingBookmarkDesc =>
-      'Guarda la API en tus marcadores para acceder rápido cuando quieras.';
+      'Guarda la API en tu Stack para acceder rápido cuando quieras.';
 
   @override
   String get settingsReplayIntro => 'Repetir introducción';
@@ -1123,7 +1122,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settingsProjects => 'Proyectos';
 
   @override
-  String get settingsSavedApis => 'APIs guardadas';
+  String get settingsSavedApis => 'Stack';
 
   @override
   String get settingsSubmitAnApi => 'Añadir API';
@@ -1150,7 +1149,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settingsNotifications => 'Notificaciones';
 
   @override
-  String get settingsExportFavorites => 'Exportar favoritos';
+  String get settingsExportFavorites => 'Exportar Stack';
 
   @override
   String get settingsClearLocalData => 'Borrar datos locales';
@@ -1160,7 +1159,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'Eliminar la caché local, configuración, tokens y estado guardado.';
 
   @override
-  String get settingsSavedStat => 'Guardados';
+  String get settingsSavedStat => 'Stack';
 
   @override
   String get settingsProjectsStat => 'Proyectos';
@@ -1175,7 +1174,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get actionOpen => 'ABRIR';
 
   @override
-  String get settingsProfileSaved => 'Has guardado';
+  String get settingsProfileSaved => 'En tu Stack';
 
   @override
   String get settingsProfileHave => 'Tienes';
@@ -1261,11 +1260,11 @@ class AppLocalizationsEs extends AppLocalizations {
       'Deshabilitado. El token push está revocado.';
 
   @override
-  String get notificationSavedApiHealth => 'Estado de APIs guardadas';
+  String get notificationSavedApiHealth => 'Estado de las APIs';
 
   @override
   String get notificationSavedApiHealthSubtitle =>
-      'Alertas cuando una API guardada falla o se recupera.';
+      'Avisos cuando una API de tu Stack se cae o se recupera.';
 
   @override
   String get notificationNewMatchingApis => 'APIs relacionadas';
@@ -1305,7 +1304,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settingsExportFavoritesSubtitle =>
-      'Exporta una lista de tus APIs favoritas (nombre, descripción, enlace).';
+      'Exporta una lista de las APIs de tu Stack (nombre, descripción, enlace).';
 
   @override
   String dialogClearLocalDataConfirmMessage(String appName) {
@@ -1509,11 +1508,11 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get stateLoadingBookmarks => 'Cargando favoritos';
+  String get stateLoadingBookmarks => 'Cargando tu Stack';
 
   @override
   String get stateBookmarksEmptyMessage =>
-      'Toca el icono de favorito en cualquier API en la pestaña Descubrir para guardarla aquí.';
+      'Toca el icono de favorito en cualquier API para añadirla a tu Stack.';
 
   @override
   String get tooltipRenameProject => 'Renombrar proyecto';
@@ -1968,6 +1967,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get watchAdded => 'Seguimiento añadido';
 
   @override
+  String get watchRemoved => 'Seguimiento eliminado';
+
+  @override
   String get watchLimitReached => 'Límite de seguimientos';
 
   @override
@@ -2090,4 +2092,69 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get intelligenceEditSelection => 'Editar selección';
+
+  @override
+  String trustScoreSemantics(int score, String grade) {
+    return 'Puntuación de confianza $score de 100, grado $grade';
+  }
+
+  @override
+  String get trustScoreLabel => 'Puntuación de confianza';
+
+  @override
+  String shipCheckGradeShort(String grade) {
+    return 'Grado $grade';
+  }
+
+  @override
+  String get agentConsoleTitle => 'Consola de agente';
+
+  @override
+  String get agentConsoleSubtitle => 'Endpoint MCP, claves y uso';
+
+  @override
+  String get agentConnectTitle => 'Conecta tu agente';
+
+  @override
+  String get agentConnectSubtitle =>
+      'Añade el servidor MCP de Reqistry a cualquier cliente compatible. Las herramientas de solo lectura funcionan sin clave.';
+
+  @override
+  String get agentEndpointLabel => 'Endpoint';
+
+  @override
+  String get agentTransportLabel => 'Transporte';
+
+  @override
+  String get agentKeyHeaderLabel => 'Cabecera de clave opcional';
+
+  @override
+  String get agentConfigCopied => 'Configuración copiada';
+
+  @override
+  String get agentRestartHint =>
+      'Reinicia o actualiza el cliente para que recargue las herramientas.';
+
+  @override
+  String get agentKeysDeviceNotice =>
+      'Las claves están ligadas a este dispositivo. Vincula una cuenta para conservarlas si reinstalas.';
+
+  @override
+  String get agentKeyNeverUsed => 'Sin llamadas todavía';
+
+  @override
+  String agentKeyLastUsed(String when) {
+    return 'Último uso: $when';
+  }
+
+  @override
+  String get agentVerifyTitle => 'Verifica';
+
+  @override
+  String get agentVerifyAsk =>
+      'Pídele a tu agente: «Lista las categorías de Reqistry»';
+
+  @override
+  String get agentVerifyExpect =>
+      'Un agente en funcionamiento responde con las categorías del catálogo, sin clave.';
 }

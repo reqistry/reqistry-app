@@ -24,7 +24,7 @@ class SectionHeaderLink extends StatelessWidget {
         highlightColor: c.surfaceContainerHigh,
         splashColor: c.surfaceContainerHighest,
         child: Container(
-          constraints: const BoxConstraints(minHeight: 44),
+          constraints: const BoxConstraints(minHeight: 48),
           alignment: Alignment.centerLeft,
           padding:
               const EdgeInsets.symmetric(horizontal: AppSpacing.s16),

@@ -10,6 +10,7 @@ import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
 import 'package:api_scout/app/utils/design_system/app_text_styles.dart';
 import 'package:api_scout/app/modules/views/submit_api_view/widgets/tip_card.dart';
+import 'package:api_scout/shared/widgets/submit/submit_api_form.dart';
 
 class SubmitApiView extends StatefulWidget {
   const SubmitApiView({super.key});
@@ -74,17 +75,9 @@ class _SubmitApiViewState extends State<SubmitApiView> {
                 children: [
                   const TipCard(),
                   const SizedBox(height: AppSpacing.itemGap),
-                  _buildTextField(
-                    controller: _nameController,
-                    label: AppLocalizations.of(context)!.formApiName,
-                    validator: _validateName,
-                  ),
-                  const SizedBox(height: AppSpacing.itemGap),
-                  _buildTextField(
-                    controller: _linkController,
-                    label: AppLocalizations.of(context)!.formApiLink,
-                    keyboardType: TextInputType.url,
-                    validator: _validateRequiredUrl,
+                  SubmitApiFields(
+                    nameController: _nameController,
+                    linkController: _linkController,
                   ),
                   const SizedBox(height: AppSpacing.sectionGap),
                   BlocBuilder<SubmitApiCubit, SubmitApiState>(
@@ -139,54 +132,5 @@ class _SubmitApiViewState extends State<SubmitApiView> {
           link: _linkController.text.trim(),
           l10n: AppLocalizations.of(context)!,
         );
-  }
-
-  String? _validateName(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return AppLocalizations.of(context)!.formFieldRequired;
-    }
-    if (value.trim().length < 3) {
-      return AppLocalizations.of(context)!.formNameTooShort;
-    }
-    return null;
-  }
-
-  String? _validateRequiredUrl(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return AppLocalizations.of(context)!.formFieldRequired;
-    }
-    final parsed = Uri.tryParse(value.trim());
-    final isValid = parsed != null && parsed.hasScheme && parsed.hasAuthority;
-    if (!isValid ||
-        !(parsed.scheme.toLowerCase() == 'https' ||
-            parsed.scheme.toLowerCase() == 'http')) {
-      return AppLocalizations.of(context)!.formInvalidUrl;
-    }
-    return null;
-  }
-
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String label,
-    int maxLines = 1,
-    TextInputType? keyboardType,
-    String? Function(String?)? validator,
-  }) {
-    return TextFormField(
-      controller: controller,
-      maxLines: maxLines,
-      keyboardType: keyboardType,
-      style: AppTextStyles.bodyMd,
-      decoration: InputDecoration(
-        labelText: label,
-        labelStyle: AppTextStyles.labelSmUpper,
-        floatingLabelStyle: AppTextStyles.labelSmUpper,
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.s12,
-          vertical: AppSpacing.s12,
-        ),
-      ),
-      validator: validator,
-    );
   }
 }

@@ -88,6 +88,7 @@ class SearchHeader extends StatelessWidget {
                 child: InkWell(
                   onTap: () => _showAdvancedFilters(context),
                   child: Container(
+                    constraints: const BoxConstraints(minHeight: 48),
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.s16,
                       vertical: AppSpacing.s12,

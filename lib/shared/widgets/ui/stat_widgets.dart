@@ -19,8 +19,11 @@ class StatTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = AppColors.of(Theme.of(context).brightness);
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: Container(
+        constraints: const BoxConstraints(minHeight: 48),
+        alignment: Alignment.centerLeft,
         padding: const EdgeInsets.all(AppSpacing.s8),
         decoration: BoxDecoration(
           color: c.surface,

@@ -64,7 +64,7 @@ class _EditProfileTileState extends State<EditProfileTile> {
           Align(
             alignment: Alignment.centerRight,
             child: SizedBox(
-              height: 42,
+              height: 48,
               child: ElevatedButton.icon(
                 onPressed: () {
                   final name = _nameController.text.trim();
@@ -74,7 +74,7 @@ class _EditProfileTileState extends State<EditProfileTile> {
                 icon: const Icon(PhosphorIconsRegular.check, size: 18),
                 label: Text(AppLocalizations.of(context)!.actionSave),
                 style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(112, 42),
+                  minimumSize: const Size(112, 48),
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.s16,
                     vertical: AppSpacing.s10,

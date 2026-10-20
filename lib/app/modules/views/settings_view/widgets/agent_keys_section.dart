@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 import 'package:api_scout/app/data/models/feature_models.dart';
+import 'package:api_scout/app/services/analytics/agent_analytics.dart';
 import 'package:api_scout/app/services/fetch_api/remote_service.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
 import 'package:api_scout/app/utils/design_system/app_spacing.dart';
@@ -31,7 +32,9 @@ class _AgentKeysSectionState extends State<AgentKeysSection> {
   }
 
   void _reload() {
-    setState(() => _future = RemoteService.getAgentKeys());
+    setState(() {
+      _future = RemoteService.getAgentKeys();
+    });
   }
 
   Future<void> _create() async {
@@ -49,6 +52,7 @@ class _AgentKeysSectionState extends State<AgentKeysSection> {
         l10n: l10n,
       );
       if (!mounted) return;
+      AgentAnalytics.keyCreated();
       _reload();
       await showDialog<void>(
         context: context,
@@ -122,6 +126,7 @@ class _AgentKeysSectionState extends State<AgentKeysSection> {
     if (!confirmed || !mounted) return;
     try {
       await RemoteService.revokeAgentKey(key.id);
+      AgentAnalytics.keyRevoked();
       if (!mounted) return;
       _reload();
     } catch (_) {
@@ -227,6 +232,16 @@ class _AgentKeysSectionState extends State<AgentKeysSection> {
                                       ),
                                     ),
                                   ),
+                                  Text(
+                                    key.lastUsedAt == null
+                                        ? l10n.agentKeyNeverUsed
+                                        : l10n.agentKeyLastUsed(
+                                            formatKeyUsageWhen(
+                                                key.lastUsedAt!)),
+                                    style: AppTextStyles.bodySm.copyWith(
+                                      color: c.onSurfaceVariant,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
@@ -252,4 +267,13 @@ class _AgentKeysSectionState extends State<AgentKeysSection> {
       ],
     );
   }
+}
+
+/// Timestamp shown for a key's last agent call. Locale-neutral on purpose:
+/// no date-format dependency for one line of diagnostics.
+@visibleForTesting
+String formatKeyUsageWhen(DateTime when) {
+  final d = when.toLocal();
+  String two(int v) => v.toString().padLeft(2, '0');
+  return '${d.year}-${two(d.month)}-${two(d.day)} ${two(d.hour)}:${two(d.minute)}';
 }

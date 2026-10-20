@@ -194,6 +194,7 @@ class _WatchSearchRowState extends State<_WatchSearchRow> {
           child: InkWell(
             onTap: watching || _busy ? null : () => _watch(context, query),
             child: Container(
+              constraints: const BoxConstraints(minHeight: 48),
               padding: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.s16,
                 vertical: AppSpacing.s12,

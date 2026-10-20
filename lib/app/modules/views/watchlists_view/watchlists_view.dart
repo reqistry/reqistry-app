@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
@@ -34,7 +35,9 @@ class _WatchlistsViewState extends State<WatchlistsView> {
   }
 
   Future<void> _refresh() async {
-    setState(() => _future = RemoteService.getWatchlists());
+    setState(() {
+      _future = RemoteService.getWatchlists();
+    });
     try {
       await _future;
     } catch (_) {}
@@ -47,7 +50,9 @@ class _WatchlistsViewState extends State<WatchlistsView> {
       if (!mounted) return false;
       AppSnackBarHelper.show(
         title: l10n.snackbarRemovedTitle,
-        message: l10n.notifFeedRemovedMessage,
+        message: l10n.watchRemoved,
+        actionLabel: l10n.actionUndo,
+        onAction: () => _restore(item),
       );
       return true;
     } catch (_) {
@@ -59,6 +64,27 @@ class _WatchlistsViewState extends State<WatchlistsView> {
       );
       return false;
     }
+  }
+
+  /// Undo re-creates the watch; the server assigns a new id.
+  Future<void> _restore(WatchItem item) async {
+    final l10n = AppLocalizations.of(context)!;
+    try {
+      await RemoteService.addWatch(
+        kind: item.kind,
+        value: item.value,
+        l10n: l10n,
+      );
+    } catch (_) {
+      if (mounted) {
+        AppSnackBarHelper.show(
+          title: l10n.stateError,
+          message: l10n.stateSomethingWentWrong,
+          isError: true,
+        );
+      }
+    }
+    if (mounted) await _refresh();
   }
 
   Future<void> _createWatch() async {
@@ -166,49 +192,47 @@ class _WatchlistsViewState extends State<WatchlistsView> {
                       color: c.onPrimary,
                     ),
                   ),
-                  child: Container(
-                    padding: const EdgeInsets.all(AppSpacing.s12),
-                    decoration: BoxDecoration(
-                      color: c.surface,
-                      border: Border.all(color: c.outlineVariant),
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                _displayValue(context, item),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: AppTextStyles.bodyMd.copyWith(
-                                  fontWeight: FontWeight.w600,
+                  child: Semantics(
+                    customSemanticsActions: {
+                      CustomSemanticsAction(
+                        label: MaterialLocalizations.of(context)
+                            .deleteButtonTooltip,
+                      ): () async {
+                        if (await _remove(item)) await _refresh();
+                      },
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(AppSpacing.s12),
+                      decoration: BoxDecoration(
+                        color: c.surface,
+                        border: Border.all(color: c.outlineVariant),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  _displayValue(context, item),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: AppTextStyles.bodyMd.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                _kindLabel(l10n, item.kind).toUpperCase(),
-                                style: AppTextStyles.labelSm.copyWith(
-                                  color: c.onSurfaceVariant,
+                                Text(
+                                  _kindLabel(l10n, item.kind).toUpperCase(),
+                                  style: AppTextStyles.labelSm.copyWith(
+                                    color: c.onSurfaceVariant,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                        IconButton(
-                          tooltip: MaterialLocalizations.of(context)
-                              .deleteButtonTooltip,
-                          onPressed: () async {
-                            if (await _remove(item)) await _refresh();
-                          },
-                          icon: Icon(
-                            PhosphorIconsRegular.trash,
-                            size: 18,
-                            color: c.onSurfaceVariant,
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 );

@@ -122,6 +122,10 @@ class _CreateProjectBottomSheetState extends State<CreateProjectBottomSheet> {
                         onTap: () => setState(() => _selectedIcon = icon),
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 150),
+                          constraints: const BoxConstraints(
+                            minHeight: 48,
+                            minWidth: 48,
+                          ),
                           decoration: BoxDecoration(
                             color: isSelected
                                 ? c.primary

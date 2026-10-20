@@ -39,7 +39,9 @@ class _SubmissionsViewState extends State<SubmissionsView> {
   }
 
   Future<void> _refresh() async {
-    setState(() => _future = _load());
+    setState(() {
+      _future = _load();
+    });
     // Error UI comes from the FutureBuilder; never let refresh itself throw.
     try {
       await _future;

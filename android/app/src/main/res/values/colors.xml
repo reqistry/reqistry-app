@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="ic_launcher_background">#FFFFFF</color>
+    <!-- Matches AppColors.background so the native splash flows into the first frame. -->
+    <color name="splash_background">#F9F9F9</color>
 </resources>

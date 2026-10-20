@@ -42,7 +42,7 @@ void main() {
 
     expect(find.text('Stripe API'), findsOneWidget);
     expect(find.text('GitHub API'), findsOneWidget);
-    expect(find.text('2 of 8 selected'), findsOneWidget);
+    expect(find.text('2 of 4 selected'), findsOneWidget);
 
     final compareButton = tester.widget<ElevatedButton>(
       find.widgetWithText(ElevatedButton, 'Compare 2'),
@@ -105,5 +105,68 @@ void main() {
 
     expect(find.text('Weather API'), findsOneWidget);
     expect(tracked, [('weather', 1)]);
+  });
+
+  testWidgets('selection stops at the comparison cap', (tester) async {
+    final cubit = FavoritesCubit(dio: Dio());
+    addTearDown(cubit.close);
+
+    await tester.pumpWidget(
+      BlocProvider.value(
+        value: cubit,
+        child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(
+            body: ApiPickerSheet(
+              initiallySelected: const [],
+              search: (_) async => SearchResponse(
+                count: 5,
+                pagination: SearchPagination(
+                  page: 1,
+                  limit: 20,
+                  total: 5,
+                  totalPages: 1,
+                ),
+                data: [
+                  for (var i = 1; i <= 5; i++)
+                    ApiItem(
+                      id: 'api$i',
+                      name: 'API $i',
+                      description: '',
+                      auth: 'None',
+                      https: 'true',
+                      cors: 'yes',
+                      link: 'https://api$i.example',
+                      category: 'Testing',
+                      apiType: 'REST',
+                      pricing: 'Free',
+                      rateLimit: 'Unknown',
+                      documentation: '',
+                      isAlive: true,
+                      responseTime: 100,
+                      lastChecked: '',
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.enterText(find.byType(TextField), 'api');
+    await tester.pump(const Duration(milliseconds: 400));
+    await tester.pump();
+
+    for (var i = 1; i <= 4; i++) {
+      await tester.tap(find.text('API $i'));
+      await tester.pump();
+    }
+    expect(find.text('4 of 4 selected'), findsOneWidget);
+
+    await tester.tap(find.text('API 5'));
+    await tester.pump();
+    expect(find.text('4 of 4 selected'), findsOneWidget);
   });
 }

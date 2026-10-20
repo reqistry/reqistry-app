@@ -2552,7 +2552,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CategoriesResponse"
+                  "$ref": "#/components/schemas/V1CategoriesResponse"
                 }
               }
             }
@@ -3090,6 +3090,36 @@
         }
       }
     },
+    "/v1/agent-keys/config": {
+      "get": {
+        "tags": [
+          "AgentKeys"
+        ],
+        "summary": "Get agent client connection metadata",
+        "description": "Public, non-secret connection metadata for configuring an MCP client. No agent key is returned.",
+        "operationId": "getAgentClientConfig",
+        "responses": {
+          "200": {
+            "description": "MCP client configuration metadata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/AgentClientConfig"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/agent-keys": {
       "get": {
         "tags": [
@@ -3542,6 +3572,17 @@
         "type": "object",
         "properties": {
           "categories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CategoryDetail"
+            }
+          }
+        }
+      },
+      "V1CategoriesResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/CategoryDetail"
@@ -5713,6 +5754,36 @@
           "createdAt": {
             "type": "string",
             "format": "date-time"
+          }
+        }
+      },
+      "AgentClientConfig": {
+        "type": "object",
+        "required": [
+          "mcpUrl",
+          "transport",
+          "agentKeyHeader",
+          "agentKeyOptional"
+        ],
+        "properties": {
+          "mcpUrl": {
+            "type": "string",
+            "format": "uri"
+          },
+          "transport": {
+            "type": "string",
+            "enum": [
+              "streamable-http"
+            ]
+          },
+          "agentKeyHeader": {
+            "type": "string",
+            "enum": [
+              "X-Agent-Key"
+            ]
+          },
+          "agentKeyOptional": {
+            "type": "boolean"
           }
         }
       },

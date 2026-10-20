@@ -56,7 +56,9 @@ class _ApiCollectionViewState extends State<ApiCollectionView> {
 
   Future<void> _refresh() async {
     final l10n = AppLocalizations.of(context)!;
-    setState(() => _future = _load(l10n: l10n));
+    setState(() {
+      _future = _load(l10n: l10n);
+    });
     await _future;
   }
 

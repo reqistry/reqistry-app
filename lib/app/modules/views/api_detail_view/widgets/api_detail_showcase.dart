@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:showcaseview/showcaseview.dart';
 
 import 'package:api_scout/app/modules/views/main_shell_view/widgets/root_showcase.dart';
+import 'package:api_scout/app/services/analytics/posthog_service.dart';
 import 'package:api_scout/app/services/local_db/hive/locals_box.dart';
 
 /// One-time guided tour of the API detail page:
@@ -32,14 +33,33 @@ class ApiDetailShowcase {
     return LocalsDB.instance.putWithKey(_doneKey, false);
   }
 
-  /// Starts the detail tour only after Settings requests an intro replay.
+  /// A missing completion key (null) counts as not done; Settings replay
+  /// resets it to false.
+  @visibleForTesting
+  static bool shouldStart({
+    required bool detailDone,
+    required bool rootDone,
+    required bool running,
+    required bool rootRunning,
+  }) =>
+      !detailDone && rootDone && !running && !rootRunning;
+
+  /// Starts once after the root tour, or after Settings resets this tour.
   static void maybeStart(BuildContext context) {
-    final replayRequested = LocalsDB.instance.getWithKey(_doneKey) == false;
-    if (!replayRequested || _running || RootShowcase.isRunning) {
+    if (!shouldStart(
+      detailDone: isDone,
+      rootDone: RootShowcase.isDone,
+      running: _running,
+      rootRunning: RootShowcase.isRunning,
+    )) {
       return;
     }
     _running = true;
     RootShowcase.ensureRegistered(context);
+    unawaited(
+      PostHogService.instance
+          .capture('onboarding_tour_started', {'tour': 'api_detail'}),
+    );
 
     ShowcaseView showcaseView;
     try {
@@ -53,10 +73,16 @@ class ApiDetailShowcase {
     late final void Function(GlobalKey?) onDismissHandler;
     var finished = false;
 
-    void finish() {
+    void finish({required bool completed}) {
       if (finished) return;
       finished = true;
       _running = false;
+      unawaited(
+        PostHogService.instance.capture(
+          completed ? 'onboarding_tour_completed' : 'onboarding_tour_skipped',
+          {'tour': 'api_detail'},
+        ),
+      );
       unawaited(markDone());
       scheduleMicrotask(() {
         showcaseView.removeOnFinishCallback(onFinishHandler);
@@ -64,8 +90,8 @@ class ApiDetailShowcase {
       });
     }
 
-    onFinishHandler = finish;
-    onDismissHandler = (_) => finish();
+    onFinishHandler = () => finish(completed: true);
+    onDismissHandler = (_) => finish(completed: false);
 
     showcaseView.addOnFinishCallback(onFinishHandler);
     showcaseView.addOnDismissCallback(onDismissHandler);
@@ -76,7 +102,7 @@ class ApiDetailShowcase {
         delay: _startDelay,
       );
     } catch (_) {
-      finish();
+      finish(completed: false);
     }
   }
 }

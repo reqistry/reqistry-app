@@ -30,6 +30,8 @@ class TrustEvidenceBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = AppColors.of(Theme.of(context).brightness);
     final l10n = AppLocalizations.of(context)!;
+    final score = this.score;
+    final grade = this.grade;
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,8 +40,8 @@ class TrustEvidenceBody extends StatelessWidget {
           children: [
             Semantics(
               label: grade != null && score != null
-                  ? 'Trust score $score out of 100, grade $grade'
-                  : 'Trust score',
+                  ? l10n.trustScoreSemantics(score, grade)
+                  : l10n.trustScoreLabel,
               child: Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.s12,

@@ -24,6 +24,7 @@ import 'package:api_scout/app/modules/views/api_collection_view/api_collection_v
 import 'package:api_scout/app/modules/views/home_view/widgets/all_projects_view.dart';
 import 'package:api_scout/app/modules/views/project_apis_view/project_apis_view.dart';
 import 'package:api_scout/app/modules/views/submit_api_view/submit_api_view.dart';
+import 'package:api_scout/app/modules/views/agent_console_view/agent_console_view.dart';
 import 'package:api_scout/app/modules/views/submissions_view/submissions_view.dart';
 import 'package:api_scout/app/modules/views/watchlists_view/watchlists_view.dart';
 import 'package:api_scout/app/modules/views/privacy_view/privacy_view.dart';
@@ -385,6 +386,10 @@ class AppRouter {
           create: (_) => SubmitApiCubit(),
           child: const SubmitApiView(),
         ),
+      ),
+      GoRoute(
+        path: AppRoutes.agentConsole,
+        builder: (context, state) => const AgentConsoleView(),
       ),
       GoRoute(
         path: AppRoutes.submissions,

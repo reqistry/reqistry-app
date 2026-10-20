@@ -26,12 +26,12 @@ class CompareCandidate {
   });
 }
 
-/// Bottom sheet to select APIs for comparison (2–8).
+/// Bottom sheet to select APIs for comparison (2–4).
 class ApiPickerSheet extends StatefulWidget {
   final List<CompareCandidate> initiallySelected;
   final Future<SearchResponse> Function(String query)? search;
   final void Function(String query, int resultCount)? trackSearch;
-  static const maxSelection = 8;
+  static const maxSelection = 4;
 
   const ApiPickerSheet({
     super.key,
@@ -207,7 +207,10 @@ class _ApiPickerSheetState extends State<ApiPickerSheet> {
                     ),
                   ),
                   Text(
-                    l10n.pickerSelectedCount(_selected.length),
+                    l10n.pickerSelectedCount(
+                      _selected.length,
+                      ApiPickerSheet.maxSelection,
+                    ),
                     style: AppTextStyles.labelSmUpper.copyWith(
                       fontSize: 10,
                       color: c.onSurfaceVariant,

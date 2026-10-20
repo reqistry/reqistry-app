@@ -137,7 +137,7 @@ abstract class AppLocalizations {
   /// Bottom navigation tab label
   ///
   /// In en, this message translates to:
-  /// **'Saved'**
+  /// **'Stack'**
   String get navSaved;
 
   /// Bottom navigation tab label
@@ -161,7 +161,7 @@ abstract class AppLocalizations {
   /// Bookmarks/favorites tab title
   ///
   /// In en, this message translates to:
-  /// **'BOOKMARKS'**
+  /// **'STACK'**
   String get tabBookmarks;
 
   /// Intelligence tab title
@@ -857,7 +857,7 @@ abstract class AppLocalizations {
   /// No bookmarks state
   ///
   /// In en, this message translates to:
-  /// **'No bookmarks yet'**
+  /// **'Your Stack is empty'**
   String get stateNoBookmarksYet;
 
   /// No projects state
@@ -1115,7 +1115,7 @@ abstract class AppLocalizations {
   /// Bookmark success title
   ///
   /// In en, this message translates to:
-  /// **'Bookmarked'**
+  /// **'Added to Stack'**
   String get snackbarBookmarkedTitle;
 
   /// Bookmark error title
@@ -1127,13 +1127,13 @@ abstract class AppLocalizations {
   /// Bookmark error message
   ///
   /// In en, this message translates to:
-  /// **'This API cannot be bookmarked yet.'**
+  /// **'This API cannot be added to your Stack yet.'**
   String get snackbarBookmarkErrorMessage;
 
   /// Bookmark failure message
   ///
   /// In en, this message translates to:
-  /// **'Failed to bookmark API'**
+  /// **'Failed to add to Stack'**
   String get snackbarFailedToBookmark;
 
   /// Removed success title
@@ -1145,13 +1145,13 @@ abstract class AppLocalizations {
   /// Bookmark removed message
   ///
   /// In en, this message translates to:
-  /// **'Bookmark removed'**
+  /// **'Removed from your Stack'**
   String get snackbarBookmarkRemoved;
 
   /// Remove bookmark failure
   ///
   /// In en, this message translates to:
-  /// **'Failed to remove bookmark'**
+  /// **'Failed to remove from Stack'**
   String get snackbarFailedToRemoveBookmark;
 
   /// Project created title
@@ -1313,13 +1313,13 @@ abstract class AppLocalizations {
   /// No bookmarks title
   ///
   /// In en, this message translates to:
-  /// **'No bookmarks'**
+  /// **'Nothing to export'**
   String get snackbarNoBookmarksTitle;
 
   /// No bookmarks message
   ///
   /// In en, this message translates to:
-  /// **'You have no bookmarks to export.'**
+  /// **'Your Stack is empty.'**
   String get snackbarNoBookmarksMessage;
 
   /// Export failed title
@@ -1421,7 +1421,7 @@ abstract class AppLocalizations {
   /// Bookmark unavailable title
   ///
   /// In en, this message translates to:
-  /// **'Bookmark unavailable'**
+  /// **'Cannot add to Stack'**
   String get snackbarBookmarkUnavailable;
 
   /// Bookmark unavailable message
@@ -1529,7 +1529,7 @@ abstract class AppLocalizations {
   /// Added to bookmarks message
   ///
   /// In en, this message translates to:
-  /// **'{name} added to bookmarks'**
+  /// **'{name} added to your Stack'**
   String snackbarAddedToBookmarks(String name);
 
   /// Guest continue success
@@ -1751,13 +1751,13 @@ abstract class AppLocalizations {
   /// Bookmark API tooltip
   ///
   /// In en, this message translates to:
-  /// **'Bookmark API'**
+  /// **'Add to Stack'**
   String get apiDetailBookmarkApi;
 
   /// Remove bookmark tooltip
   ///
   /// In en, this message translates to:
-  /// **'Remove bookmark'**
+  /// **'Remove from Stack'**
   String get apiDetailRemoveBookmark;
 
   /// More actions tooltip
@@ -1859,8 +1859,8 @@ abstract class AppLocalizations {
   /// Selected count in API picker
   ///
   /// In en, this message translates to:
-  /// **'{count} of 8 selected'**
-  String pickerSelectedCount(int count);
+  /// **'{count} of {max} selected'**
+  String pickerSelectedCount(int count, int max);
 
   /// Confirm button in API picker
   ///
@@ -1925,7 +1925,7 @@ abstract class AppLocalizations {
   /// Onboarding step description
   ///
   /// In en, this message translates to:
-  /// **'Switch between Home, Explore, Intelligence, Saved and You.'**
+  /// **'Switch between Home, Explore, Intelligence, Stack and You.'**
   String get onboardingNavBarDesc;
 
   /// Onboarding step title
@@ -1961,7 +1961,7 @@ abstract class AppLocalizations {
   /// Onboarding step description
   ///
   /// In en, this message translates to:
-  /// **'Keep track of your bookmarked APIs and projects at a glance.'**
+  /// **'Keep track of your Stack and projects at a glance.'**
   String get onboardingStatsDesc;
 
   /// Onboarding step title
@@ -2003,13 +2003,13 @@ abstract class AppLocalizations {
   /// Onboarding step title
   ///
   /// In en, this message translates to:
-  /// **'BOOKMARK IT'**
+  /// **'SAVE TO STACK'**
   String get onboardingBookmarkTitle;
 
   /// Onboarding step description
   ///
   /// In en, this message translates to:
-  /// **'Save the API to your bookmarks for quick access anytime.'**
+  /// **'Save the API to your Stack for quick access anytime.'**
   String get onboardingBookmarkDesc;
 
   /// Replay onboarding tour entry
@@ -2147,7 +2147,7 @@ abstract class AppLocalizations {
   /// Saved APIs settings item
   ///
   /// In en, this message translates to:
-  /// **'Saved APIs'**
+  /// **'Stack'**
   String get settingsSavedApis;
 
   /// Submit API settings item
@@ -2201,7 +2201,7 @@ abstract class AppLocalizations {
   /// Export favorites action
   ///
   /// In en, this message translates to:
-  /// **'Export favorites'**
+  /// **'Export Stack'**
   String get settingsExportFavorites;
 
   /// Clear local data action
@@ -2219,7 +2219,7 @@ abstract class AppLocalizations {
   /// Saved stat label
   ///
   /// In en, this message translates to:
-  /// **'Saved'**
+  /// **'Stack'**
   String get settingsSavedStat;
 
   /// Projects stat label
@@ -2249,7 +2249,7 @@ abstract class AppLocalizations {
   /// Profile saved label
   ///
   /// In en, this message translates to:
-  /// **'You saved'**
+  /// **'In your Stack'**
   String get settingsProfileSaved;
 
   /// Profile have label
@@ -2399,13 +2399,13 @@ abstract class AppLocalizations {
   /// No description provided for @notificationSavedApiHealth.
   ///
   /// In en, this message translates to:
-  /// **'Saved API health'**
+  /// **'API health'**
   String get notificationSavedApiHealth;
 
   /// No description provided for @notificationSavedApiHealthSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Alerts when an API you saved goes down or recovers.'**
+  /// **'Alerts when an API in your Stack goes down or recovers.'**
   String get notificationSavedApiHealthSubtitle;
 
   /// No description provided for @notificationNewMatchingApis.
@@ -2471,7 +2471,7 @@ abstract class AppLocalizations {
   /// Export favorites subtitle
   ///
   /// In en, this message translates to:
-  /// **'Export a list of your favorite APIs (name, description, link).'**
+  /// **'Export a list of your Stack APIs (name, description, link).'**
   String get settingsExportFavoritesSubtitle;
 
   /// Clear local data confirmation message
@@ -2849,13 +2849,13 @@ abstract class AppLocalizations {
   /// Loading bookmarks message
   ///
   /// In en, this message translates to:
-  /// **'Loading bookmarks'**
+  /// **'Loading your Stack'**
   String get stateLoadingBookmarks;
 
   /// Empty bookmarks message
   ///
   /// In en, this message translates to:
-  /// **'Tap the bookmark icon on any API in the Discover tab to save it here.'**
+  /// **'Tap the bookmark icon on any API to add it to your Stack.'**
   String get stateBookmarksEmptyMessage;
 
   /// Rename project tooltip
@@ -3632,6 +3632,12 @@ abstract class AppLocalizations {
   /// **'Watch added'**
   String get watchAdded;
 
+  /// Watch removed message
+  ///
+  /// In en, this message translates to:
+  /// **'Watch removed'**
+  String get watchRemoved;
+
   /// Watchlist limit message
   ///
   /// In en, this message translates to:
@@ -3859,6 +3865,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Edit selection'**
   String get intelligenceEditSelection;
+
+  /// Screen-reader label for the trust score chip
+  ///
+  /// In en, this message translates to:
+  /// **'Trust score {score} out of 100, grade {grade}'**
+  String trustScoreSemantics(int score, String grade);
+
+  /// Screen-reader label when only the trust grade is known
+  ///
+  /// In en, this message translates to:
+  /// **'Trust score'**
+  String get trustScoreLabel;
+
+  /// Short grade caption in the ship-check sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Grade {grade}'**
+  String shipCheckGradeShort(String grade);
+
+  /// No description provided for @agentConsoleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Agent console'**
+  String get agentConsoleTitle;
+
+  /// No description provided for @agentConsoleSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'MCP endpoint, keys and usage'**
+  String get agentConsoleSubtitle;
+
+  /// No description provided for @agentConnectTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect your agent'**
+  String get agentConnectTitle;
+
+  /// No description provided for @agentConnectSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the Reqistry MCP server to any MCP-compatible client. Read-only tools work without a key.'**
+  String get agentConnectSubtitle;
+
+  /// No description provided for @agentEndpointLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Endpoint'**
+  String get agentEndpointLabel;
+
+  /// No description provided for @agentTransportLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Transport'**
+  String get agentTransportLabel;
+
+  /// No description provided for @agentKeyHeaderLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional key header'**
+  String get agentKeyHeaderLabel;
+
+  /// No description provided for @agentConfigCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Configuration copied'**
+  String get agentConfigCopied;
+
+  /// No description provided for @agentRestartHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Restart or refresh the client so it reloads the tools.'**
+  String get agentRestartHint;
+
+  /// No description provided for @agentKeysDeviceNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'Keys are bound to this device. Link an account to keep them after a reinstall.'**
+  String get agentKeysDeviceNotice;
+
+  /// No description provided for @agentKeyNeverUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'No calls yet'**
+  String get agentKeyNeverUsed;
+
+  /// Key usage line: human readable timestamp of the last agent call
+  ///
+  /// In en, this message translates to:
+  /// **'Last used {when}'**
+  String agentKeyLastUsed(String when);
+
+  /// No description provided for @agentVerifyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify'**
+  String get agentVerifyTitle;
+
+  /// Verification instruction for the user to send to their agent
+  ///
+  /// In en, this message translates to:
+  /// **'Ask your agent: “List Reqistry categories”'**
+  String get agentVerifyAsk;
+
+  /// No description provided for @agentVerifyExpect.
+  ///
+  /// In en, this message translates to:
+  /// **'A working agent answers with catalog categories, no key required.'**
+  String get agentVerifyExpect;
 }
 
 class _AppLocalizationsDelegate

@@ -152,7 +152,12 @@ class ApiScoutApp extends StatelessWidget {
                         }
 
                         return AppOverlayHost(
-                          child: child ?? const SizedBox.shrink(),
+                          // Layout backstop: 2.0 is the tested ceiling for the
+                          // app's fixed-height rows.
+                          child: MediaQuery.withClampedTextScaling(
+                            maxScaleFactor: 2.0,
+                            child: child ?? const SizedBox.shrink(),
+                          ),
                         );
                       },
                     );
