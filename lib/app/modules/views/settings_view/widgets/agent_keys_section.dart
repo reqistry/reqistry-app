@@ -16,7 +16,11 @@ import 'package:api_scout/shared/widgets/app_loading.dart';
 
 /// Agent API keys. Manage keys inline (create, copy-once, usage, revoke).
 class AgentKeysSection extends StatefulWidget {
-  const AgentKeysSection({super.key});
+  const AgentKeysSection({super.key, this.showTitle = true});
+
+  /// False when a parent (e.g. the Agent Console) already shows the section
+  /// title, so only the create action stays in the header row.
+  final bool showTitle;
 
   @override
   State<AgentKeysSection> createState() => _AgentKeysSectionState();
@@ -148,13 +152,16 @@ class _AgentKeysSectionState extends State<AgentKeysSection> {
       children: [
             Row(
               children: [
-                Expanded(
-                  child: Text(
-                    l10n.agentKeysTitle,
-                    style: AppTextStyles.labelSmUpper
-                        .copyWith(color: c.onSurface),
-                  ),
-                ),
+                if (widget.showTitle)
+                  Expanded(
+                    child: Text(
+                      l10n.agentKeysTitle,
+                      style: AppTextStyles.labelSmUpper
+                          .copyWith(color: c.onSurface),
+                    ),
+                  )
+                else
+                  const Spacer(),
                 TextButton.icon(
                   onPressed: _create,
                   icon: const Icon(PhosphorIconsRegular.plus, size: 18),

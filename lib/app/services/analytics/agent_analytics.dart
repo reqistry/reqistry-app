@@ -20,4 +20,20 @@ class AgentAnalytics {
   static void keyRevoked() {
     unawaited(PostHogService.instance.capture('agent_key_revoked', const {}));
   }
+
+  /// Task prompt actions only, never the prompt/endpoint content itself.
+  static void promptCopied({required String id}) {
+    unawaited(PostHogService.instance
+        .capture('agent_prompt_copied', {'task': id}));
+  }
+
+  static void promptShared({required String id}) {
+    unawaited(PostHogService.instance
+        .capture('agent_prompt_shared', {'task': id}));
+  }
+
+  static void handoffOpened() {
+    unawaited(PostHogService.instance
+        .capture('api_detail_agent_handoff', const {}));
+  }
 }

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 import 'package:api_scout/app/data/models/agent_client_config.dart';
+import 'package:api_scout/app/modules/views/agent_console_view/widgets/agent_task_card.dart';
 import 'package:api_scout/app/modules/views/settings_view/widgets/agent_keys_section.dart';
 import 'package:api_scout/app/services/analytics/agent_analytics.dart';
 import 'package:api_scout/app/services/fetch_api/remote_service.dart';
@@ -13,9 +14,15 @@ import 'package:api_scout/app/utils/snackbar_helper.dart';
 import 'package:api_scout/l10n/app_localizations.dart';
 import 'package:api_scout/shared/widgets/app_loading.dart';
 
-/// Agent Console: wire an MCP client to Reqistry, manage keys, verify it works.
+/// Agent Console: try a real task first, then wire a client, then keys.
 class AgentConsoleView extends StatefulWidget {
-  const AgentConsoleView({super.key});
+  const AgentConsoleView({super.key, this.configFuture, this.apiSlug});
+
+  /// Injectable for tests; defaults to the live server config request.
+  final Future<AgentClientConfig>? configFuture;
+
+  /// Optional API slug carried over from detail, personalizing a task prompt.
+  final String? apiSlug;
 
   @override
   State<AgentConsoleView> createState() => _AgentConsoleViewState();
@@ -23,11 +30,12 @@ class AgentConsoleView extends StatefulWidget {
 
 class _AgentConsoleViewState extends State<AgentConsoleView> {
   late final Future<AgentClientConfig> _config;
+  String _clientId = 'claude_code';
 
   @override
   void initState() {
     super.initState();
-    _config = RemoteService.getAgentClientConfig();
+    _config = widget.configFuture ?? RemoteService.getAgentClientConfig();
   }
 
   Future<void> _copy(String value, String label, String client) async {
@@ -44,6 +52,7 @@ class _AgentConsoleViewState extends State<AgentConsoleView> {
   Widget build(BuildContext context) {
     final c = AppColors.of(Theme.of(context).brightness);
     final l10n = AppLocalizations.of(context)!;
+    final apiSlug = widget.apiSlug;
     return Scaffold(
       backgroundColor: c.background,
       appBar: AppBar(
@@ -61,7 +70,44 @@ class _AgentConsoleViewState extends State<AgentConsoleView> {
         padding: const EdgeInsets.fromLTRB(
             AppSpacing.s16, AppSpacing.s24, AppSpacing.s16, AppSpacing.s32),
         children: [
-          Text(l10n.agentConnectTitle, style: AppTextStyles.headlineLg),
+          // Tasks first: value before configuration.
+          Text(l10n.agentTasksTitle, style: AppTextStyles.headlineLg),
+          const SizedBox(height: AppSpacing.s8),
+          Text(
+            l10n.agentTasksSubtitle,
+            style: AppTextStyles.bodyMd.copyWith(color: c.onSurfaceVariant),
+          ),
+          const SizedBox(height: AppSpacing.s16),
+          AgentTaskCard(
+            taskId: 'find',
+            title: l10n.agentTaskFindTitle,
+            prompt: l10n.agentTaskFindPrompt,
+          ),
+          const SizedBox(height: AppSpacing.s12),
+          AgentTaskCard(
+            taskId: 'compare',
+            title: l10n.agentTaskCompareTitle,
+            prompt: l10n.agentTaskComparePrompt,
+          ),
+          const SizedBox(height: AppSpacing.s12),
+          AgentTaskCard(
+            taskId: 'replace',
+            title: l10n.agentTaskReplaceTitle,
+            prompt: l10n.agentTaskReplacePrompt,
+          ),
+          if (apiSlug != null) ...[
+            const SizedBox(height: AppSpacing.s12),
+            AgentTaskCard(
+              taskId: 'evaluate',
+              title: l10n.agentTaskEvaluateTitle(apiSlug),
+              prompt: l10n.agentTaskEvaluatePrompt(apiSlug),
+            ),
+          ],
+          const SizedBox(height: AppSpacing.s32),
+          Text(
+            l10n.agentConnectTitle,
+            style: AppTextStyles.labelSmUpper.copyWith(color: c.onSurface),
+          ),
           const SizedBox(height: AppSpacing.s8),
           Text(
             l10n.agentConnectSubtitle,
@@ -76,9 +122,39 @@ class _AgentConsoleViewState extends State<AgentConsoleView> {
               }
               // The service already falls back, so this is belt and braces.
               final config = snapshot.data ?? AgentClientConfig.fallback;
+              final snippets = agentConfigSnippets(config);
+              final selected = snippets.firstWhere(
+                (s) => s.id == _clientId,
+                orElse: () => snippets.first,
+              );
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  if (config.isFallback)
+                    Container(
+                      key: const ValueKey('agent_config_fallback_notice'),
+                      margin: const EdgeInsets.only(bottom: AppSpacing.s16),
+                      padding: const EdgeInsets.all(AppSpacing.s12),
+                      decoration: BoxDecoration(
+                        color: c.surface,
+                        border: Border.all(color: c.outlineVariant),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(PhosphorIconsRegular.warningCircle,
+                              size: 18, color: c.onSurfaceVariant),
+                          const SizedBox(width: AppSpacing.s8),
+                          Expanded(
+                            child: Text(
+                              l10n.agentConfigFallbackNotice,
+                              style: AppTextStyles.bodySm
+                                  .copyWith(color: c.onSurfaceVariant),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   _valueRow(
                     c: c,
                     label: l10n.agentEndpointLabel,
@@ -97,12 +173,29 @@ class _AgentConsoleViewState extends State<AgentConsoleView> {
                       label: l10n.agentKeyHeaderLabel,
                       value: config.agentKeyHeader,
                       client: 'key_header',
+                    ),
+                  const SizedBox(height: AppSpacing.s16),
+                  Text(
+                    l10n.agentSetupClientLabel,
+                    style: AppTextStyles.labelSmUpper
+                        .copyWith(color: c.onSurfaceVariant),
+                  ),
+                  const SizedBox(height: AppSpacing.s8),
+                  Wrap(
+                    spacing: AppSpacing.s8,
+                    runSpacing: AppSpacing.s8,
+                    children: [
+                      for (final snippet in snippets)
+                        _clientChip(
+                          c: c,
+                          id: snippet.id,
+                          label: snippet.client,
+                        ),
+                    ],
                   ),
                   const SizedBox(height: AppSpacing.s16),
-                  for (final snippet in agentConfigSnippets(config)) ...[
-                    _snippet(c: c, snippet: snippet),
-                    const SizedBox(height: AppSpacing.s16),
-                  ],
+                  _snippet(c: c, snippet: selected),
+                  const SizedBox(height: AppSpacing.s16),
                   Text(
                     l10n.agentRestartHint,
                     style: AppTextStyles.bodySm.copyWith(
@@ -114,11 +207,43 @@ class _AgentConsoleViewState extends State<AgentConsoleView> {
             },
           ),
           const SizedBox(height: AppSpacing.s32),
-          const AgentKeysSection(),
-          const SizedBox(height: AppSpacing.s8),
-          Text(
-            l10n.agentKeysDeviceNotice,
-            style: AppTextStyles.bodySm.copyWith(color: c.onSurfaceVariant),
+          // Keys stay collapsed: a key is for after the first task, and the
+          // section only fetches once expanded.
+          ExpansionTile(
+            tilePadding: const EdgeInsets.symmetric(horizontal: AppSpacing.s12),
+            shape: const Border(),
+            collapsedShape: const Border(),
+            backgroundColor: c.surface,
+            collapsedBackgroundColor: c.surface,
+            title: Text(
+              l10n.agentKeysTitle,
+              style: AppTextStyles.labelSmUpper.copyWith(color: c.onSurface),
+            ),
+            subtitle: Text(
+              l10n.agentKeysAdvancedHint,
+              style: AppTextStyles.bodySm.copyWith(color: c.onSurfaceVariant),
+            ),
+            iconColor: c.onSurface,
+            collapsedIconColor: c.onSurfaceVariant,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.s12, AppSpacing.s8, AppSpacing.s12, AppSpacing.s12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const AgentKeysSection(showTitle: false),
+                    const SizedBox(height: AppSpacing.s8),
+                    Text(
+                      l10n.agentKeysDeviceNotice,
+                      style: AppTextStyles.bodySm.copyWith(
+                        color: c.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: AppSpacing.s32),
           Text(
@@ -130,6 +255,30 @@ class _AgentConsoleViewState extends State<AgentConsoleView> {
           const SizedBox(height: AppSpacing.s4),
           _checkLine(c: c, text: l10n.agentVerifyExpect),
         ],
+      ),
+    );
+  }
+
+  Widget _clientChip({
+    required AppColorScheme c,
+    required String id,
+    required String label,
+  }) {
+    final selected = id == _clientId;
+    return InkWell(
+      onTap: () => setState(() => _clientId = id),
+      child: Container(
+        constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s12),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: c.surface,
+          border: Border.all(color: selected ? c.primary : c.outlineVariant),
+        ),
+        child: Text(
+          label,
+          style: AppTextStyles.bodySm.copyWith(color: c.onSurface),
+        ),
       ),
     );
   }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:api_scout/app/services/in_app_review/in_app_review.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -76,43 +78,23 @@ void main() {
     });
   });
 
-  group('InAppReview.shouldPromptForDetailVisits', () {
-    test('needs at least three detail visits', () {
-      expect(
-        InAppReview.shouldPromptForDetailVisits(
-          visits: 2,
-          lastPromptedAt: null,
-          now: now,
-        ),
-        isFalse,
-      );
-      expect(
-        InAppReview.shouldPromptForDetailVisits(
-          visits: 3,
-          lastPromptedAt: null,
-          now: now,
-        ),
-        isTrue,
-      );
-    });
+  test('detail visits and app shows never trigger the review prompt', () {
+    // Regression: review requests come only after successful saves or
+    // project creation (the win path), never from passive browsing.
+    final service = File(
+      'lib/app/services/in_app_review/in_app_review.dart',
+    ).readAsStringSync();
+    expect(service, isNot(contains('recordDetailVisitAndMaybePrompt')));
+    expect(service, isNot(contains('shouldPromptForDetailVisits')));
+    final detail = File(
+      'lib/app/modules/views/api_detail_view/api_detail_view.dart',
+    ).readAsStringSync();
+    expect(detail, isNot(contains('recordDetailVisitAndMaybePrompt')));
 
-    test('respects the shared cooldown after a prompt', () {
-      expect(
-        InAppReview.shouldPromptForDetailVisits(
-          visits: 30,
-          lastPromptedAt: now.subtract(const Duration(days: 10)),
-          now: now,
-        ),
-        isFalse,
-      );
-      expect(
-        InAppReview.shouldPromptForDetailVisits(
-          visits: 30,
-          lastPromptedAt: now.subtract(const Duration(days: 90)),
-          now: now,
-        ),
-        isTrue,
-      );
-    });
+    // Dead legacy prompt manager stays deleted.
+    final legacy = File(
+      'lib/app/services/in_app_review/in_app_review_show_interface.dart',
+    );
+    expect(legacy.existsSync(), isFalse);
   });
 }

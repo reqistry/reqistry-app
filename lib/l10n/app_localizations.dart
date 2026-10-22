@@ -3944,6 +3944,114 @@ abstract class AppLocalizations {
   /// **'Keys are bound to this device. Link an account to keep them after a reinstall.'**
   String get agentKeysDeviceNotice;
 
+  /// No description provided for @agentTasksTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Try a real task'**
+  String get agentTasksTitle;
+
+  /// No description provided for @agentTasksSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Prompts your connected agent runs with Reqistry\'s evidence tools. Copy one into Claude Code, Codex, OpenCode, Cursor, Antigravity, Windsurf or any MCP client.'**
+  String get agentTasksSubtitle;
+
+  /// No description provided for @agentTaskFindTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Find an API'**
+  String get agentTaskFindTitle;
+
+  /// No description provided for @agentTaskFindPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the Reqistry MCP tools: run search_apis for my requirements, then get_api, check_health, and get_api_trust_score on the best candidate. Show the evidence and what remains unknown before recommending it.'**
+  String get agentTaskFindPrompt;
+
+  /// No description provided for @agentTaskCompareTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare candidates'**
+  String get agentTaskCompareTitle;
+
+  /// No description provided for @agentTaskComparePrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the Reqistry MCP tools compare_apis and assess_api_production_safety on two candidate APIs. Give me a one-paragraph verdict, including what I would have to build myself with each choice.'**
+  String get agentTaskComparePrompt;
+
+  /// No description provided for @agentTaskReplaceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace an API'**
+  String get agentTaskReplaceTitle;
+
+  /// No description provided for @agentTaskReplacePrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask me which API I currently use. Then suggest_alternatives and swap_api from Reqistry to propose a replacement with migration notes.'**
+  String get agentTaskReplacePrompt;
+
+  /// Task card title with the current API slug
+  ///
+  /// In en, this message translates to:
+  /// **'Evaluate {api}'**
+  String agentTaskEvaluateTitle(String api);
+
+  /// Task prompt that names the API slug the user was viewing
+  ///
+  /// In en, this message translates to:
+  /// **'Evaluate the {api} API with get_api_trust_score, check_health, and get_snippet from Reqistry for a starter request. Report unknowns and trust-factor gaps.'**
+  String agentTaskEvaluatePrompt(String api);
+
+  /// No description provided for @agentConfigFallbackNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'The live endpoint config was unavailable, so the documented default is shown instead.'**
+  String get agentConfigFallbackNotice;
+
+  /// No description provided for @agentSetupClientLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a client'**
+  String get agentSetupClientLabel;
+
+  /// No description provided for @actionUseWithAgent.
+  ///
+  /// In en, this message translates to:
+  /// **'Use with your agent'**
+  String get actionUseWithAgent;
+
+  /// No description provided for @agentBridgeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Put your coding agent on Reqistry'**
+  String get agentBridgeTitle;
+
+  /// No description provided for @agentBridgeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready-to-run prompts, MCP setup and keys for Claude Code, Codex, OpenCode, Cursor, Antigravity and more.'**
+  String get agentBridgeSubtitle;
+
+  /// No description provided for @agentBridgeCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Open agent console'**
+  String get agentBridgeCta;
+
+  /// No description provided for @agentKeysAdvancedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Key list, quota and revocation'**
+  String get agentKeysAdvancedHint;
+
+  /// No description provided for @agentPromptCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Prompt copied'**
+  String get agentPromptCopied;
+
   /// No description provided for @agentKeyNeverUsed.
   ///
   /// In en, this message translates to:

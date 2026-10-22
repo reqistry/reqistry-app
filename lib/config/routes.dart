@@ -389,7 +389,9 @@ class AppRouter {
       ),
       GoRoute(
         path: AppRoutes.agentConsole,
-        builder: (context, state) => const AgentConsoleView(),
+        builder: (context, state) => AgentConsoleView(
+          apiSlug: state.uri.queryParameters['api'],
+        ),
       ),
       GoRoute(
         path: AppRoutes.submissions,

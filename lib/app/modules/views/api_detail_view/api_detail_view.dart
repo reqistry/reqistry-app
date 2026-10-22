@@ -23,7 +23,7 @@ import 'package:api_scout/app/modules/views/api_detail_view/widgets/report_issue
 import 'package:api_scout/app/modules/views/home_view/widgets/create_project_bottom_sheet.dart';
 import 'package:api_scout/app/modules/views/main_shell_view/widgets/root_showcase.dart';
 import 'package:api_scout/app/services/analytics/api_detail_analytics.dart';
-import 'package:api_scout/app/services/in_app_review/in_app_review.dart';
+import 'package:api_scout/app/services/analytics/agent_analytics.dart';
 import 'package:api_scout/app/services/local_db/hive/locals_box.dart';
 import 'package:api_scout/app/services/share/share_plus/share_plus.dart';
 import 'package:api_scout/app/utils/design_system/app_colors.dart';
@@ -40,7 +40,7 @@ import 'package:go_router/go_router.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-enum _OverflowAction { addToProject, share, homepage, report }
+enum _OverflowAction { addToProject, useAgent, share, homepage, report }
 
 /// Shows a one-time submit-API nudge after the user opens
 /// [_nudgeVisitThreshold] API detail screens.
@@ -186,6 +186,13 @@ class _ApiDetailViewState extends State<ApiDetailView> {
                         child: DetailMenuItem(
                           icon: PhosphorIconsRegular.folderPlus,
                           label: l10n.actionAddToProject,
+                        ),
+                      ),
+                      PopupMenuItem(
+                        value: _OverflowAction.useAgent,
+                        child: DetailMenuItem(
+                          icon: PhosphorIconsRegular.sparkle,
+                          label: l10n.actionUseWithAgent,
                         ),
                       ),
                       PopupMenuItem(
@@ -385,7 +392,6 @@ class _ApiDetailViewState extends State<ApiDetailView> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) _track('api_detail_view', detail);
       if (mounted) _maybeShowSubmitNudge();
-      unawaited(InAppReview().recordDetailVisitAndMaybePrompt());
     });
   }
 
@@ -490,6 +496,11 @@ class _ApiDetailViewState extends State<ApiDetailView> {
     switch (action) {
       case _OverflowAction.addToProject:
         _showAddToProjectSheet(detail);
+        return;
+      case _OverflowAction.useAgent:
+        AgentAnalytics.handoffOpened();
+        context.push('${AppRoutes.agentConsole}'
+            '?api=${Uri.encodeComponent(detail.slug)}');
         return;
       case _OverflowAction.share:
         _share(detail);

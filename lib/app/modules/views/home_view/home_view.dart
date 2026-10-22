@@ -20,6 +20,7 @@ import 'package:api_scout/config/env.dart';
 import 'package:api_scout/app/modules/views/main_shell_view/widgets/root_showcase.dart';
 import 'package:api_scout/app/modules/views/home_view/widgets/submit_api_sheet.dart';
 
+import 'widgets/agent_bridge_section.dart';
 import 'widgets/continue_work_section.dart';
 import 'widgets/latest_apis_section.dart';
 import 'widgets/registry_changes_section.dart';
@@ -219,6 +220,8 @@ class _HomeViewState extends State<HomeView> {
               const UserActivitySection(),
               const SizedBox(height: AppSpacing.s24),
               const ContinueWorkSection(),
+              const SizedBox(height: AppSpacing.s24),
+              const AgentBridgeSection(),
               const SizedBox(height: AppSpacing.s24),
               const TrendyCategoriesSection(),
               const SizedBox(height: AppSpacing.s24),

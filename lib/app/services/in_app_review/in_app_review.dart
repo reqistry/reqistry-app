@@ -19,12 +19,10 @@ class InAppReview {
   static const winsKey = 'reviewWinsCount';
   static const firstWinAtKey = 'reviewFirstWinAt';
   static const lastPromptedAtKey = 'reviewLastPromptedAt';
-  static const detailVisitsKey = 'reviewDetailVisits';
 
   static const minWins = 3;
   static const minDaysSinceFirstWin = 3;
   static const cooldownDays = 90;
-  static const minDetailVisits = 3;
 
   Future<void> recordWinAndMaybePrompt({DateTime? now}) async {
     try {
@@ -54,47 +52,6 @@ class InAppReview {
     } catch (_) {
       // Review prompts are best-effort; never surface failures.
     }
-  }
-
-  /// Records an API detail visit and prompts once the visitor is engaged
-  /// ([minDetailVisits] visits). No seasoning wait — visits are engagement.
-  /// Shares the prompt cooldown with [recordWinAndMaybePrompt].
-  Future<void> recordDetailVisitAndMaybePrompt({DateTime? now}) async {
-    try {
-      final current = now ?? DateTime.now();
-      final visits =
-          ((_locals.getWithKey(detailVisitsKey) as num?)?.toInt() ?? 0) + 1;
-      await _locals.putWithKey(detailVisitsKey, visits);
-
-      final lastPromptedAt = _parseDate(_locals.getWithKey(lastPromptedAtKey));
-      if (!shouldPromptForDetailVisits(
-        visits: visits,
-        lastPromptedAt: lastPromptedAt,
-        now: current,
-      )) {
-        return;
-      }
-      await _service.request();
-      await _locals.putWithKey(
-          lastPromptedAtKey, current.toIso8601String());
-    } catch (_) {
-      // Review prompts are best-effort; never surface failures.
-    }
-  }
-
-  /// Pure prompt decision, extracted for testing.
-  @visibleForTesting
-  static bool shouldPromptForDetailVisits({
-    required int visits,
-    required DateTime? lastPromptedAt,
-    required DateTime now,
-  }) {
-    if (visits < minDetailVisits) return false;
-    if (lastPromptedAt != null &&
-        now.difference(lastPromptedAt).inDays < cooldownDays) {
-      return false;
-    }
-    return true;
   }
 
   /// Pure prompt decision, extracted for testing.

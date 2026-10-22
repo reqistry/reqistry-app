@@ -2140,6 +2140,70 @@ class AppLocalizationsEs extends AppLocalizations {
       'Las claves están ligadas a este dispositivo. Vincula una cuenta para conservarlas si reinstalas.';
 
   @override
+  String get agentTasksTitle => 'Prueba una tarea real';
+
+  @override
+  String get agentTasksSubtitle =>
+      'Instrucciones que tu agente conectado ejecuta con las herramientas de evidencia de Reqistry. Copia una en Claude Code, Codex, OpenCode, Cursor, Antigravity, Windsurf o cualquier cliente MCP.';
+
+  @override
+  String get agentTaskFindTitle => 'Encontrar una API';
+
+  @override
+  String get agentTaskFindPrompt =>
+      'Usa las herramientas MCP de Reqistry: ejecuta search_apis con mis requisitos, luego get_api, check_health y get_api_trust_score con la mejor candidata. Muestra la evidencia y lo que sigue sin saberse antes de recomendar.';
+
+  @override
+  String get agentTaskCompareTitle => 'Comparar candidatas';
+
+  @override
+  String get agentTaskComparePrompt =>
+      'Usa compare_apis y assess_api_production_safety de Reqistry con dos APIs candidatas. Dame un veredicto de un párrafo, incluido lo que tendría que construir por mi cuenta en cada caso.';
+
+  @override
+  String get agentTaskReplaceTitle => 'Reemplazar una API';
+
+  @override
+  String get agentTaskReplacePrompt =>
+      'Pregúntame qué API uso actualmente. Luego sugiere con suggest_alternatives y swap_api de Reqistry un reemplazo con notas de migración.';
+
+  @override
+  String agentTaskEvaluateTitle(String api) {
+    return 'Evaluar $api';
+  }
+
+  @override
+  String agentTaskEvaluatePrompt(String api) {
+    return 'Evalúa la API $api con get_api_trust_score, check_health y get_snippet de Reqistry para una petición inicial. Informa lo que se desconoce y las brechas de factores de confianza.';
+  }
+
+  @override
+  String get agentConfigFallbackNotice =>
+      'La configuración del endpoint en vivo no estaba disponible, así que se muestra el valor documentado por defecto.';
+
+  @override
+  String get agentSetupClientLabel => 'Elige un cliente';
+
+  @override
+  String get actionUseWithAgent => 'Usar con tu agente';
+
+  @override
+  String get agentBridgeTitle => 'Conecta tu agente de código a Reqistry';
+
+  @override
+  String get agentBridgeSubtitle =>
+      'Instrucciones listas, configuración MCP y claves para Claude Code, Codex, OpenCode, Cursor, Antigravity y más.';
+
+  @override
+  String get agentBridgeCta => 'Abrir consola de agente';
+
+  @override
+  String get agentKeysAdvancedHint => 'Lista de claves, cuota y revocación';
+
+  @override
+  String get agentPromptCopied => 'Instrucción copiada';
+
+  @override
   String get agentKeyNeverUsed => 'Sin llamadas todavía';
 
   @override

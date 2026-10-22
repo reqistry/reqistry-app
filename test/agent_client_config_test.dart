@@ -6,6 +6,25 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('AgentClientConfig.fromJson', () {
+    test('rejects unsafe endpoints and exposes fallback provenance', () {
+      for (final url in [
+        'http://mcp.example.com/mcp',
+        'https://user:secret@mcp.example.com/mcp',
+        'https://mcp.example.com/mcp?key=secret',
+        'https://mcp.example.com/mcp#fragment',
+        'https://mcp.example.com/\$(whoami)',
+        "https://mcp.example.com/'command'",
+        'javascript:alert(1)',
+      ]) {
+        final config = AgentClientConfig.fromJson({'mcpUrl': url});
+        expect(config.mcpUrl, AgentClientConfig.fallback.mcpUrl, reason: url);
+        expect(config.isFallback, isTrue, reason: url);
+      }
+      expect(AgentClientConfig.fallback.isFallback, isTrue);
+      expect(AgentClientConfig.fromJson({
+        'mcpUrl': 'https://mcp.example.com/mcp',
+      }).isFallback, isFalse);
+    });
     test('reads the published server metadata', () {
       final config = AgentClientConfig.fromJson({
         'mcpUrl': 'https://staging-mcp.reqistry.dev/mcp',
@@ -35,7 +54,7 @@ void main() {
       final snippet = agentConfigSnippets(config)
           .firstWhere((s) => s.client == 'Claude Code');
       expect(snippet.code,
-          'claude mcp add --transport http reqistry https://mcp.reqistry.dev/mcp');
+          "claude mcp add --transport http reqistry 'https://mcp.reqistry.dev/mcp'");
     });
 
     test('every JSON snippet stays valid JSON and carries the endpoint', () {
@@ -55,11 +74,26 @@ void main() {
           '[mcp_servers.reqistry]\nurl = "https://mcp.reqistry.dev/mcp"');
     });
 
-    test('generic snippet names the transport and key header', () {
+    test('generic setup is an endpoint, not a fake mandatory secret', () {
       final snippet = agentConfigSnippets(config)
           .firstWhere((s) => s.client == 'Any MCP client');
-      expect(snippet.code, contains('streamable-http'));
-      expect(snippet.code, contains('X-Agent-Key: <your key>'));
+      expect(snippet.code, config.mcpUrl);
+      expect(snippet.code, isNot(contains('<your key>')));
+    });
+
+    test('OpenCode uses the published direct mcp map', () {
+      final snippet = agentConfigSnippets(config)
+          .firstWhere((s) => s.id == 'opencode');
+      final decoded = jsonDecode(snippet.code) as Map<String, dynamic>;
+      expect(decoded['mcp']['reqistry']['url'], config.mcpUrl);
+      expect(decoded['mcp'].containsKey('servers'), isFalse);
+    });
+
+    test('Antigravity uses serverUrl in its MCP settings', () {
+      final snippet = agentConfigSnippets(config)
+          .firstWhere((s) => s.id == 'antigravity');
+      expect(jsonDecode(snippet.code)['mcpServers']['reqistry']['serverUrl'],
+          config.mcpUrl);
     });
 
     test('snippet ids are unique snake_case analytics props', () {

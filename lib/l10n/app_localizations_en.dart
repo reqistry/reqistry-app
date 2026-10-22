@@ -2106,6 +2106,70 @@ class AppLocalizationsEn extends AppLocalizations {
       'Keys are bound to this device. Link an account to keep them after a reinstall.';
 
   @override
+  String get agentTasksTitle => 'Try a real task';
+
+  @override
+  String get agentTasksSubtitle =>
+      'Prompts your connected agent runs with Reqistry\'s evidence tools. Copy one into Claude Code, Codex, OpenCode, Cursor, Antigravity, Windsurf or any MCP client.';
+
+  @override
+  String get agentTaskFindTitle => 'Find an API';
+
+  @override
+  String get agentTaskFindPrompt =>
+      'Use the Reqistry MCP tools: run search_apis for my requirements, then get_api, check_health, and get_api_trust_score on the best candidate. Show the evidence and what remains unknown before recommending it.';
+
+  @override
+  String get agentTaskCompareTitle => 'Compare candidates';
+
+  @override
+  String get agentTaskComparePrompt =>
+      'Use the Reqistry MCP tools compare_apis and assess_api_production_safety on two candidate APIs. Give me a one-paragraph verdict, including what I would have to build myself with each choice.';
+
+  @override
+  String get agentTaskReplaceTitle => 'Replace an API';
+
+  @override
+  String get agentTaskReplacePrompt =>
+      'Ask me which API I currently use. Then suggest_alternatives and swap_api from Reqistry to propose a replacement with migration notes.';
+
+  @override
+  String agentTaskEvaluateTitle(String api) {
+    return 'Evaluate $api';
+  }
+
+  @override
+  String agentTaskEvaluatePrompt(String api) {
+    return 'Evaluate the $api API with get_api_trust_score, check_health, and get_snippet from Reqistry for a starter request. Report unknowns and trust-factor gaps.';
+  }
+
+  @override
+  String get agentConfigFallbackNotice =>
+      'The live endpoint config was unavailable, so the documented default is shown instead.';
+
+  @override
+  String get agentSetupClientLabel => 'Pick a client';
+
+  @override
+  String get actionUseWithAgent => 'Use with your agent';
+
+  @override
+  String get agentBridgeTitle => 'Put your coding agent on Reqistry';
+
+  @override
+  String get agentBridgeSubtitle =>
+      'Ready-to-run prompts, MCP setup and keys for Claude Code, Codex, OpenCode, Cursor, Antigravity and more.';
+
+  @override
+  String get agentBridgeCta => 'Open agent console';
+
+  @override
+  String get agentKeysAdvancedHint => 'Key list, quota and revocation';
+
+  @override
+  String get agentPromptCopied => 'Prompt copied';
+
+  @override
   String get agentKeyNeverUsed => 'No calls yet';
 
   @override

@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 /// Public MCP client metadata from `GET /v1/agent-keys/config`.
 ///
 /// The server is the source of truth for the endpoint so the app never
@@ -8,25 +10,54 @@ class AgentClientConfig {
   final String agentKeyHeader;
   final bool agentKeyOptional;
 
+  /// True when the documented default endpoint is shown instead of a
+  /// server-provided one, so the UI can state that honestly.
+  final bool isFallback;
+
   const AgentClientConfig({
     required this.mcpUrl,
     this.transport = 'streamable-http',
     this.agentKeyHeader = 'X-Agent-Key',
     this.agentKeyOptional = true,
+    this.isFallback = false,
   });
 
   /// Used when the config request fails: matches the server's default.
   static const AgentClientConfig fallback = AgentClientConfig(
     mcpUrl: 'https://mcp.reqistry.dev/mcp',
+    transport: 'streamable-http',
+    agentKeyHeader: 'X-Agent-Key',
+    agentKeyOptional: true,
+    isFallback: true,
   );
+
+  /// Trust boundary: the URL is embedded verbatim into shell commands and
+  /// JSON the user is told to paste into agent clients, so anything that is
+  /// not a plain https endpoint falls back to the documented default.
+  @visibleForTesting
+  static bool isSafeEndpoint(String url) {
+    // Shell metacharacters and whitespace can never appear in the clean URLs
+    // the server sends; their presence means an untrusted or malformed value.
+    const dangerous = [r'$', '`', "'", '"', ' ', '\n', '\r', '\t', '@'];
+    if (dangerous.any(url.contains)) return false;
+    final uri = Uri.tryParse(url);
+    if (uri == null) return false;
+    return uri.scheme == 'https' &&
+        uri.host.isNotEmpty &&
+        uri.userInfo.isEmpty &&
+        uri.query.trim().isEmpty &&
+        uri.fragment.trim().isEmpty;
+  }
 
   factory AgentClientConfig.fromJson(Map<String, dynamic> json) {
     final url = json['mcpUrl']?.toString().trim() ?? '';
+    final safe = isSafeEndpoint(url);
     return AgentClientConfig(
-      mcpUrl: url.isNotEmpty ? url : fallback.mcpUrl,
+      mcpUrl: safe ? url : fallback.mcpUrl,
       transport: json['transport']?.toString() ?? 'streamable-http',
       agentKeyHeader: json['agentKeyHeader']?.toString() ?? 'X-Agent-Key',
       agentKeyOptional: json['agentKeyOptional'] != false,
+      isFallback: !safe,
     );
   }
 }
@@ -55,7 +86,7 @@ List<AgentConfigSnippet> agentConfigSnippets(AgentClientConfig config) {
     AgentConfigSnippet(
       id: 'claude_code',
       client: 'Claude Code',
-      code: 'claude mcp add --transport http reqistry $url',
+      code: "claude mcp add --transport http reqistry '$url'",
     ),
     AgentConfigSnippet(
       id: 'codex',
@@ -70,12 +101,9 @@ List<AgentConfigSnippet> agentConfigSnippets(AgentClientConfig config) {
       code: '{\n'
           '  "\$schema": "https://opencode.ai/config.json",\n'
           '  "mcp": {\n'
-          '    "servers": {\n'
-          '      "reqistry": {\n'
-          '        "type": "remote",\n'
-          '        "url": "$url",\n'
-          '        "oauth": false\n'
-          '      }\n'
+          '    "reqistry": {\n'
+          '      "type": "remote",\n'
+          '      "url": "$url"\n'
           '    }\n'
           '  }\n'
           '}',
@@ -89,6 +117,17 @@ List<AgentConfigSnippet> agentConfigSnippets(AgentClientConfig config) {
           '    "reqistry": {\n'
           '      "type": "http",\n'
           '      "url": "$url"\n'
+          '    }\n'
+          '  }\n'
+          '}',
+    ),
+    AgentConfigSnippet(
+      id: 'antigravity',
+      client: 'Google Antigravity',
+      code: '{\n'
+          '  "mcpServers": {\n'
+          '    "reqistry": {\n'
+          '      "serverUrl": "$url"\n'
           '    }\n'
           '  }\n'
           '}',
@@ -108,7 +147,7 @@ List<AgentConfigSnippet> agentConfigSnippets(AgentClientConfig config) {
     AgentConfigSnippet(
       id: 'generic',
       client: 'Any MCP client',
-      code: '${config.transport} $url\n${config.agentKeyHeader}: <your key>',
+      code: url,
     ),
   ];
 }
