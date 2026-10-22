@@ -49,13 +49,26 @@ class AgentClientConfig {
         uri.fragment.trim().isEmpty;
   }
 
+  /// Same character screen for header/transport labels that get displayed
+  /// verbatim and copied into configs.
+  @visibleForTesting
+  static bool isSafeLabel(String value) {
+    if (value.isEmpty) return false;
+    const dangerous = [r'$', '`', "'", '"', '=', ':', ' ', '\n', '\r', '\t'];
+    return !dangerous.any(value.contains);
+  }
+
   factory AgentClientConfig.fromJson(Map<String, dynamic> json) {
     final url = json['mcpUrl']?.toString().trim() ?? '';
     final safe = isSafeEndpoint(url);
+    final transport = json['transport']?.toString().trim() ?? '';
+    final header = json['agentKeyHeader']?.toString().trim() ?? '';
     return AgentClientConfig(
       mcpUrl: safe ? url : fallback.mcpUrl,
-      transport: json['transport']?.toString() ?? 'streamable-http',
-      agentKeyHeader: json['agentKeyHeader']?.toString() ?? 'X-Agent-Key',
+      transport:
+          isSafeLabel(transport) ? transport : fallback.transport,
+      agentKeyHeader:
+          isSafeLabel(header) ? header : fallback.agentKeyHeader,
       agentKeyOptional: json['agentKeyOptional'] != false,
       isFallback: !safe,
     );

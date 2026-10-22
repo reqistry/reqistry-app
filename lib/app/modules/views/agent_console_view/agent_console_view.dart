@@ -52,7 +52,9 @@ class _AgentConsoleViewState extends State<AgentConsoleView> {
   Widget build(BuildContext context) {
     final c = AppColors.of(Theme.of(context).brightness);
     final l10n = AppLocalizations.of(context)!;
-    final apiSlug = widget.apiSlug;
+    final apiSlug = (widget.apiSlug == null || widget.apiSlug!.isEmpty)
+        ? null
+        : widget.apiSlug;
     return Scaffold(
       backgroundColor: c.background,
       appBar: AppBar(
@@ -208,42 +210,12 @@ class _AgentConsoleViewState extends State<AgentConsoleView> {
           ),
           const SizedBox(height: AppSpacing.s32),
           // Keys stay collapsed: a key is for after the first task, and the
-          // section only fetches once expanded.
-          ExpansionTile(
-            tilePadding: const EdgeInsets.symmetric(horizontal: AppSpacing.s12),
-            shape: const Border(),
-            collapsedShape: const Border(),
-            backgroundColor: c.surface,
-            collapsedBackgroundColor: c.surface,
-            title: Text(
-              l10n.agentKeysTitle,
-              style: AppTextStyles.labelSmUpper.copyWith(color: c.onSurface),
-            ),
-            subtitle: Text(
-              l10n.agentKeysAdvancedHint,
-              style: AppTextStyles.bodySm.copyWith(color: c.onSurfaceVariant),
-            ),
-            iconColor: c.onSurface,
-            collapsedIconColor: c.onSurfaceVariant,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(
-                    AppSpacing.s12, AppSpacing.s8, AppSpacing.s12, AppSpacing.s12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const AgentKeysSection(showTitle: false),
-                    const SizedBox(height: AppSpacing.s8),
-                    Text(
-                      l10n.agentKeysDeviceNotice,
-                      style: AppTextStyles.bodySm.copyWith(
-                        color: c.onSurfaceVariant,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+          // section is only created — and only fetches — once expanded.
+          _KeysSection(
+            c: c,
+            title: l10n.agentKeysTitle,
+            subtitle: l10n.agentKeysAdvancedHint,
+            footer: l10n.agentKeysDeviceNotice,
           ),
           const SizedBox(height: AppSpacing.s32),
           Text(
@@ -390,6 +362,94 @@ class _AgentConsoleViewState extends State<AgentConsoleView> {
       constraints: const BoxConstraints.tightFor(width: 48, height: 48),
       onPressed: onTap,
       icon: const Icon(PhosphorIconsRegular.copy, size: 18),
+    );
+  }
+}
+
+/// Collapsible advanced section. [childBuilder] runs only once expanded, so
+/// the authed key fetch inside it cannot fire while the section is collapsed.
+class _KeysSection extends StatefulWidget {
+  const _KeysSection({
+    required this.c,
+    required this.title,
+    required this.subtitle,
+    required this.footer,
+  });
+
+  final AppColorScheme c;
+  final String title;
+  final String subtitle;
+  final String footer;
+
+  @override
+  State<_KeysSection> createState() => _KeysSectionState();
+}
+
+class _KeysSectionState extends State<_KeysSection> {
+  bool _expanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = widget.c;
+    final rtl = Directionality.of(context) == TextDirection.rtl;
+    return InkWell(
+      onTap: () => setState(() => _expanded = !_expanded),
+      child: Container(
+        padding: const EdgeInsets.all(AppSpacing.s12),
+        decoration: BoxDecoration(
+          color: c.surface,
+          border: Border.all(color: c.outlineVariant),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        widget.title,
+                        style: AppTextStyles.labelSmUpper
+                            .copyWith(color: c.onSurface),
+                      ),
+                      const SizedBox(height: AppSpacing.s2),
+                      Text(
+                        widget.subtitle,
+                        style: AppTextStyles.bodySm
+                            .copyWith(color: c.onSurfaceVariant),
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(
+                  _expanded
+                      ? PhosphorIconsRegular.caretDown
+                      : (rtl
+                          ? PhosphorIconsRegular.caretLeft
+                          : PhosphorIconsRegular.caretRight),
+                  size: 18,
+                  color: c.onSurfaceVariant,
+                ),
+              ],
+            ),
+            // Build the authed key list only when expanded.
+            if (_expanded) ...[
+              const SizedBox(height: AppSpacing.s8),
+              const AgentKeysSection(showTitle: false),
+              const SizedBox(height: AppSpacing.s8),
+              Text(
+                widget.footer,
+                style: AppTextStyles.bodySm
+                    .copyWith(color: c.onSurfaceVariant),
+              ),
+            ],
+          ],
+        ),
+      ),
     );
   }
 }

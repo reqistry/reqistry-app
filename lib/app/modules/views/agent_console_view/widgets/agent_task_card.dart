@@ -75,7 +75,9 @@ class _AgentTaskCardState extends State<AgentTaskCard> {
                   Icon(
                     _expanded
                         ? PhosphorIconsRegular.caretDown
-                        : PhosphorIconsRegular.caretRight,
+                        : (Directionality.of(context) == TextDirection.rtl
+                            ? PhosphorIconsRegular.caretLeft
+                            : PhosphorIconsRegular.caretRight),
                     size: 18,
                     color: c.onSurfaceVariant,
                   ),

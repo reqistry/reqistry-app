@@ -117,4 +117,14 @@ void main() {
       expect(formatKeyUsageWhen(DateTime(2026, 3, 7, 9, 5)), '2026-03-07 09:05');
     });
   });
+
+  test('untrusted header/transport fall back to the documented defaults', () {
+    final config = AgentClientConfig.fromJson({
+      'mcpUrl': 'https://mcp.example.com/mcp',
+      'agentKeyHeader': 'X-Agent-Key" });evil',
+      'transport': r'a $(boom) b',
+    });
+    expect(config.agentKeyHeader, 'X-Agent-Key');
+    expect(config.transport, 'streamable-http');
+  });
 }
