@@ -3660,12 +3660,39 @@
         "properties": {
           "name": {
             "type": "string",
+            "minLength": 1,
+            "maxLength": 255,
             "description": "API name"
           },
           "link": {
             "type": "string",
             "format": "uri",
             "description": "API URL"
+          },
+          "category": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "auth": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "pricing": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "cors": {
+            "type": "string",
+            "maxLength": 10
+          },
+          "submitterName": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "submitterEmail": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "Optional email address; an empty string is also accepted."
           }
         },
         "anyOf": [
