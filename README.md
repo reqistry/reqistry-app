@@ -8,7 +8,7 @@ Discover thousands of public APIs, compare health and trust signals, and monitor
 
 [Browse the catalog](https://reqistry.dev) · [Documentation](https://docs.reqistry.dev) · [Star this repo](https://github.com/reqistry/reqistry-app) · [Report an issue](https://github.com/reqistry/reqistry-app/issues)
 
-**5K+ downloads on [Google Play](https://play.google.com/store/apps/details?id=com.gwhyyy.publicApis&hl=en)** as of October 2026. Free, ad-supported Android app. No subscription.
+Explore APIs on Android, with the hosted website and MCP tools providing other ways into the catalog. [Google Play](https://play.google.com/store/apps/details?id=com.gwhyyy.publicApis&hl=en) · [Engineering case study](https://gwhyyy.com/work/reqistry).
 
 [![Reqistry app — find the right API, build your next idea](fastlane/metadata/android/en-US/images/phoneScreenshots/1_en-US.png)](https://play.google.com/store/apps/details?id=com.gwhyyy.publicApis&hl=en)
 
